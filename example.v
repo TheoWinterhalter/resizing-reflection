@@ -1,6 +1,9 @@
 Set Printing Universes.
 Set Universe Polymorphism.
 
+Require Import ZArith.
+Open Scope Z_scope.
+
 (* Contractible types *)
 
 Record contractible (T : Type) :=
@@ -9,28 +12,38 @@ Record contractible (T : Type) :=
 
 (* h-levels *)
 
-Inductive hlevel@{i j} : nat -> Type@{i} -> Type@{j} :=
-| hlevel_O : forall T : Type@{i}, contractible T -> hlevel O T
-| hlevel_S : forall (m : nat) (T : Type@{i}),
-               (forall x y : T, hlevel m (x = y)) -> hlevel (S m) T.
+Inductive hlevel@{i j} : Z -> Type@{i} -> Type@{j} :=
+| hlevel_0 : forall T : Type@{i}, contractible T -> hlevel (-2) T
+| hlevel_S : forall (m : Z) (T : Type@{i}),
+               (forall x y : T, hlevel m (x = y)) -> hlevel (m + 1) T.
 
 (* h-level 1 : prop *)
 
 Record hProp@{i j} :=
   { hPropX : Type@{i} ;
-    hPropP : hlevel@{i j} 1 hPropX }.
+    hPropP : hlevel@{i j} (-1) hPropX }.
 
 (* h-level 2 : set *)
 
 Record hSet@{i j} :=
   { hSetX : Type@{i} ;
-    hSetP : hlevel@{i j} 2 hSetX }.
+    hSetP : hlevel@{i j} 0 hSetX }.
 
 (* Resizing rules *)
 
+Inductive eq {A : Type} (x : A) : A -> Type :=
+  eq_refl : eq x x.
+
+Definition isEquiv (A : Type) (B : Type) (f : A -> B) :=
+  exists g : B -> A, forall a : A, g (f a) = a /\ forall b : B, f (g b) = b.
+
+Record Equiv (A : Type) (B : Type) :=
+  { equivf : A -> B ;
+    equivp : isEquiv A B equivf }.
+
 Axiom rr0@{i j si} :
-  forall {A : Type@{i}} (B : Type@{j}),
-  forall (*{p : eq A B}*) {q : hlevel@{i si} 1 A@{lol}}, Type@{i}.
+  forall {A: Type@{i}} (B : Type@{j}),
+  forall {p : Equiv A B} {q : hlevel@{i si} (-1) A}, Type@{i}.
 
 (* Axiom rr1 *)
 
