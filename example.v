@@ -9,27 +9,28 @@ Record contractible (T : Type) :=
 
 (* h-levels *)
 
-Inductive hlevel : nat -> Type -> Type :=
-| hlevel_O : forall T : Type, contractible T -> hlevel O T
-| hlevel_S : forall (m : nat) (T : Type), (forall x y : T, hlevel m (x = y)) -> hlevel (S m) T.
+Inductive hlevel@{i j} : nat -> Type@{i} -> Type@{j} :=
+| hlevel_O : forall T : Type@{i}, contractible T -> hlevel O T
+| hlevel_S : forall (m : nat) (T : Type@{i}),
+               (forall x y : T, hlevel m (x = y)) -> hlevel (S m) T.
 
 (* h-level 1 : prop *)
 
-Record hProp :=
-  { hPropX : Type ;
-    hPropP : hlevel 1 hPropX }.
+Record hProp@{i j} :=
+  { hPropX : Type@{i} ;
+    hPropP : hlevel@{i j} 1 hPropX }.
 
 (* h-level 2 : set *)
 
-Record hSet :=
-  { hSetX : Type ;
-    hSetP : hlevel 2 hSetX }.
+Record hSet@{i j} :=
+  { hSetX : Type@{i} ;
+    hSetP : hlevel@{i j} 2 hSetX }.
 
 (* Resizing rules *)
 
-Axiom rr0@{i j} :
+Axiom rr0@{i j si} :
   forall {A : Type@{i}} (B : Type@{j}),
-  forall (*{p : eq A B}*) {q : hlevel@{i i i} 1 A@{lol}}, Type@{i}.
+  forall (*{p : eq A B}*) {q : hlevel@{i si} 1 A@{lol}}, Type@{i}.
 
 (* Axiom rr1 *)
 
@@ -38,19 +39,20 @@ Axiom rr0@{i j} :
 
 (*Inductive compfun@{i j k} (X : Type@{i}) (R : X -> X -> hProp@{k k k k}) (Y : Type@{j}) :=.*)
 
-Record compfun (X : Type) (R : X -> X -> hProp) (Y : hSet) :=
-  { cf : X -> hSetX Y ;
-    cp : forall x x' : X, hPropX (R x x') -> cf x = cf x' }.
+Record compfun@{i si j sj}
+       (X : Type@{i}) (R : X -> X -> hProp@{i si}) (Y : hSet@{j sj}) :=
+  { cf : X -> hSetX@{j sj} Y ;
+    cp : forall x x' : X, hPropX@{j sj} (R x x') -> cf x = cf x' }.
 
 (*Definition evalfun (X : Type) (R : X -> X -> hProp) :
   X -> forall Y : hSet, compfun X R Y -> hSetX Y
-= fun x Y f => cf f x.*)
+:= fun x Y f => cf f x.*)
 
-Definition evalfun@{i}
-           (X : Type@{i}) (R : X -> X -> hProp@{i i i i}) (x : X)
-           (Y : hSet@{i i i i})
-           (f : compfun@{i i i i i i i i i} X R Y) : hSetX@{i i i i} Y =
-  cf@{i i i i i i i i i} X R Y f x.
+Definition evalfun@{i si}
+           (X : Type@{i}) (R : X -> X -> hProp@{i si}) (x : X)
+           (Y : hSet@{i si})
+           (f : compfun@{i si i si} X R Y) : hSetX@{i si} Y :=
+  cf@{i si i si} X R Y f x.
 
 
 
