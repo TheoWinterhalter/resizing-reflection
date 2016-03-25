@@ -54,6 +54,17 @@ Definition evalfun@{i si}
            (f : compfun@{i si i si} X R Y) : hSetX@{i si} Y :=
   cf@{i si i si} X R Y f x.
 
+Record im@{i j} (X : Type@{i}) (Y : Type@{j}) (f : X -> Y) :=
+  { im_y : Y ;
+    im_x : X ;
+    im_p : f im_x = im_y }.
+
+Definition quotient@{i si}
+           (X : Type@{i}) (R : X -> X -> hProp@{i si}) :=
+  im@{i si}
+    X
+    (forall Y : hSet@{i si}, compfun@{i si i si} X R Y -> hSetX@{i si} Y)
+    (evalfun@{i si} X R).
 
 
 
