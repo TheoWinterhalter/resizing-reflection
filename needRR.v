@@ -28,6 +28,10 @@ Record Trunc (n : Z) := TruncMk
   { truncT : Type ;
     truncP : isTrunc n truncT }.
 
+Definition hProp := Trunc (-1).
+
+Definition ishProp := isTrunc (-1).
+
 (* Equivalence *)
 
 Record isEquiv A B (f : A -> B) :=
@@ -44,7 +48,7 @@ Record Equiv A B :=
 
 Axiom rr0@{i j si} :
   forall {A : Type@{i}} (B : Type@{j}),
-  forall {p : Equiv A B} {q : isTrunc@{i si} (-1) A},
+  forall {p : Equiv A B} {q : ishProp@{i si} A},
     Type@{i}.
 
 (* Somethinng that works in Prop *)
@@ -92,17 +96,6 @@ Record IT@{i} (A : Type@{i}) := { ITT : Type@{i} ; ITE : prod ITT A }.
    if it came naturally without having to specifiy the universes at all. *)
 Record IT' (A : Type) := { IT'T : Type ; IT'E : prod IT'T A }.
 
-Example foo' : IT' (IT' True).
-Proof.
-  exists Z.
-  split.
-  - exact 3.
-  - exists nat.
-    split.
-    + exact (S O).
-    + exact I.
-Defined.
-
 Example foo : IT (IT True).
 Proof.
   exists Z.
@@ -125,6 +118,44 @@ Proof.
   exists (peq_refl I).
   intro p.
 Admitted.
+
+(*Lemma truncEquiv : forall hV p, Equiv (truncT (-1) {| truncT := hV; truncP := p |}) hV.
+Proof.
+  intros hV p.
+  exists (fun x => x).*)
+
+Lemma stepList : forall hVm : hProp, ishProp (IT (truncT _ hVm)).
+Proof.
+  intro hVm.
+  apply (trunc_suc (-2)).
+  intros x y.
+  apply trunc_ctr.
+  destruct hVm as [hV p].
+  inversion p as [| minus2 hV' ctr eqminus2 hVeq] ;
+  subst ;
+  assert (minus2 = -2) by omega ; subst ; destruct eqminus2.
+  destruct x as [Tx [x ex]].
+  destruct y as [Ty [y ey]].
+  simpl.
+  pose proof (ctr ex ey) as h.
+  inversion h as [h0 [ctre ctrp] | cccccc ddddd] ; subst.
+  - admit.
+  - (* This shouldn't happen because we go below -2 *)
+    admit.
+Admitted.
+
+Fixpoint heteroVector (n : nat) : hProp :=
+  match n with
+  | O   => TruncMk (-1) True hPropTrue
+  | S m =>
+    let hVm := heteroVector m in
+    TruncMk (-1)
+            (rr0 (IT (truncT _ hVm))
+                 ?
+                 ?
+                 (truncP _ hVm))
+            (stepList hVm)
+  end.
 
 Lemma step : forall Tm : Trunc (-1), isTrunc (-1) (T (truncT _ Tm)).
 Proof.
