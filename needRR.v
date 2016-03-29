@@ -72,6 +72,16 @@ Parameter T@{i j} : let _ := Type@{i} : Type@{j} in Type@{i} -> Type@{j}.
    The point is then to use hProp instead, and show it would work with the rewriting
    rule rr0 as if it was in Prop. *)
 
+(* Instance *)
+Inductive sum A B :=
+| inl : forall a : A, sum A B
+| inr : forall b : B, sum A B.
+
+Notation "A + B" := (sum A B).
+
+Definition IT (A : Type) := nat + A.
+(* Not quite of course, but lists might be an idea. *)
+
 (* True is hProp *)
 Lemma hPropTrue : isTrunc (-1) True.
 Proof.
