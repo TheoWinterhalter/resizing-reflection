@@ -73,18 +73,37 @@ Parameter T@{i j} : let _ := Type@{i} : Type@{j} in Type@{i} -> Type@{j}.
    rule rr0 as if it was in Prop. *)
 
 (* Instance *)
+
 Inductive sum A B :=
 | inl : forall a : A, sum A B
 | inr : forall b : B, sum A B.
 
 Notation "A + B" := (sum A B).
 
+Inductive prod A B :=
+| pair : forall (a : A) (b : B), prod A B.
+
+Notation "A * B" := (prod A B).
+
 (* An instance could be some heterogenous list *)
-Definition IT@{i} (A : Type@{i}) := forall T : Type@{i}, T + A.
+Definition IT@{i} (A : Type@{i}) := forall T : Type@{i}, sum@{i i} (prod T A) True.
 
 (* If we don't leave universes implicit we don't really get what we want, but I guess it would be better
    if it came naturally without having to specifiy the universes at all. *)
-Definition IT' (A : Type) := forall T : Type, T + A.
+Definition IT' (A : Type) := forall T : Type, sum (prod T A) True.
+
+Example foo' : IT' (IT' True).
+Proof.
+  intro T.
+  (* apply inl. *)
+  now apply inr.
+Defined.
+
+Example foo : IT (IT True).
+Proof.
+  intro T.
+  now apply inr.
+Defined.
 
 (* True is hProp *)
 Lemma hPropTrue : isTrunc (-1) True.
