@@ -79,8 +79,8 @@ Inductive sum A B :=
 
 Notation "A + B" := (sum A B).
 
-Definition IT (A : Type) := nat + A.
-(* Not quite of course, but lists might be an idea. *)
+(* An instance could be some heterogenous list *)
+Definition IT@{i} (A : Type@{i}) := forall T : Type@{i}, T + A.
 
 (* True is hProp *)
 Lemma hPropTrue : isTrunc (-1) True.
