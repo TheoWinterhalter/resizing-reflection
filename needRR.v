@@ -86,23 +86,36 @@ Inductive prod A B :=
 Notation "A * B" := (prod A B).
 
 (* An instance could be some heterogenous list *)
-Definition IT@{i} (A : Type@{i}) := forall T : Type@{i}, sum@{i i} (prod T A) True.
+Record IT@{i} (A : Type@{i}) := { ITT : Type@{i} ; ITE : sum@{i i} (prod ITT A) True }.
 
 (* If we don't leave universes implicit we don't really get what we want, but I guess it would be better
    if it came naturally without having to specifiy the universes at all. *)
-Definition IT' (A : Type) := forall T : Type, sum (prod T A) True.
+Record IT' (A : Type) := { IT'T : Type ; IT'E : sum (prod IT'T A) True }.
 
 Example foo' : IT' (IT' True).
 Proof.
-  intro T.
-  (* apply inl. *)
-  now apply inr.
+  exists Z.
+  apply inl.
+  split.
+  - exact 3.
+  - exists nat.
+    apply inl.
+    split.
+      + exact (S O).
+      + exact I.
 Defined.
 
 Example foo : IT (IT True).
 Proof.
-  intro T.
-  now apply inr.
+  exists Z.
+  apply inl.
+  split.
+  - exact 3.
+  - exists nat.
+    apply inl.
+    split.
+      + exact (S O).
+      + exact I.
 Defined.
 
 (* True is hProp *)
