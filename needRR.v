@@ -6,25 +6,25 @@ Open Scope Z_scope.
 
 (* Contractible types *)
 
-Record contractible (T : Type) :=
+Record contractible (T : Type) := CtrMk
   { Point : T ;
     Ctr   : forall t : T, t = Point }.
 
 (* Polymorhpic equality *)
 
-Inductive eq {A : Type} (x : A) : A -> Type :=
-  eq_refl : eq x x.
+Inductive peq {A : Type} (x : A) : A -> Type :=
+  peq_refl : peq x x.
 
-Notation "A = B" := (eq A B).
+Notation "A ?= B" := (peq A B).
 
 (* Trunc *)
 
 Inductive isTrunc@{i j} : Z -> Type@{i} -> Type@{j} :=
 | trunc_ctr : forall T : Type@{i}, contractible T -> isTrunc (-2) T
-| trunc_suc : forall (m : Z) (T : Type@{i}), (forall x y : T, isTrunc m (x = y)) ->
+| trunc_suc : forall (m : Z) (T : Type@{i}), (forall x y : T, isTrunc m (peq@{i i} x y)) ->
                                         isTrunc (m+1) T.
 
-Record Trunc (n : Z) :=
+Record Trunc (n : Z) := TruncMk
   { truncT : Type ;
     truncP : isTrunc n truncT }.
 
@@ -71,6 +71,37 @@ Parameter T@{i j} : let _ := Type@{i} : Type@{j} in Type@{i} -> Type@{j}.
    Prop, depending.
    The point is then to use hProp instead, and show it would work with the rewriting
    rule rr0 as if it was in Prop. *)
+
+(* True is hProp *)
+Lemma hPropTrue : isTrunc (-1) True.
+Proof.
+  apply (trunc_suc (-2)).
+  intros x y.
+  apply trunc_ctr.
+  destruct x.
+  destruct y.
+  exists (peq_refl I).
+  intro p.
+Admitted.
+
+Lemma step : forall Tm : Trunc (-1), isTrunc (-1) (T (truncT _ Tm)).
+Proof.
+  intro Tm.
+  apply (trunc_suc (-2)).
+  intros x y.
+  apply trunc_ctr.
+  destruct Tm as [Tm p].
+Admitted.
+
+Fixpoint Tn (n : nat) : Trunc (-1) :=
+  match n with
+  | O   => TruncMk (-1) True hPropTrue 
+  | S m =>
+    let Tm := Tn m in
+    TruncMk (-1) (T (truncT _ Tm)) (step Tm)
+  end.
+
+
 
 
 
