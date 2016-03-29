@@ -86,36 +86,32 @@ Inductive prod A B :=
 Notation "A * B" := (prod A B).
 
 (* An instance could be some heterogenous list *)
-Record IT@{i} (A : Type@{i}) := { ITT : Type@{i} ; ITE : sum@{i i} (prod ITT A) True }.
+Record IT@{i} (A : Type@{i}) := { ITT : Type@{i} ; ITE : prod ITT A }.
 
 (* If we don't leave universes implicit we don't really get what we want, but I guess it would be better
    if it came naturally without having to specifiy the universes at all. *)
-Record IT' (A : Type) := { IT'T : Type ; IT'E : sum (prod IT'T A) True }.
+Record IT' (A : Type) := { IT'T : Type ; IT'E : prod IT'T A }.
 
 Example foo' : IT' (IT' True).
 Proof.
   exists Z.
-  apply inl.
   split.
   - exact 3.
   - exists nat.
-    apply inl.
     split.
-      + exact (S O).
-      + exact I.
+    + exact (S O).
+    + exact I.
 Defined.
 
 Example foo : IT (IT True).
 Proof.
   exists Z.
-  apply inl.
   split.
   - exact 3.
   - exists nat.
-    apply inl.
     split.
-      + exact (S O).
-      + exact I.
+    + exact (S O).
+    + exact I.
 Defined.
 
 (* True is hProp *)
@@ -141,7 +137,7 @@ Admitted.
 
 Fixpoint Tn (n : nat) : Trunc (-1) :=
   match n with
-  | O   => TruncMk (-1) True hPropTrue 
+  | O   => TruncMk (-1) True hPropTrue
   | S m =>
     let Tm := Tn m in
     TruncMk (-1) (T (truncT _ Tm)) (step Tm)
