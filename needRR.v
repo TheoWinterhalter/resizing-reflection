@@ -82,6 +82,10 @@ Notation "A + B" := (sum A B).
 (* An instance could be some heterogenous list *)
 Definition IT@{i} (A : Type@{i}) := forall T : Type@{i}, T + A.
 
+(* If we don't leave universes implicit we don't really get what we want, but I guess it would be better
+   if it came naturally without having to specifiy the universes at all. *)
+Definition IT' (A : Type) := forall T : Type, T + A.
+
 (* True is hProp *)
 Lemma hPropTrue : isTrunc (-1) True.
 Proof.
