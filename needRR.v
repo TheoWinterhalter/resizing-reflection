@@ -147,7 +147,7 @@ Admitted.
 (* It would be nice to encapsulate [IT (truncT _ hVm)] into something that doesn't grow.
    Can we though? Because our definition is too artificial it might not work at all. *)
 
-Fixpoint heteroVector (n : nat) : hProp :=
+(*Fixpoint heteroVector (n : nat) : hProp :=
   match n with
   | O   => TruncMk (-1) True hPropTrue
   | S m =>
@@ -158,7 +158,7 @@ Fixpoint heteroVector (n : nat) : hProp :=
                  ?
                  (truncP _ hVm))
             (stepList hVm)
-  end.
+  end.*)
 
 Lemma step : forall Tm : Trunc (-1), isTrunc (-1) (T (truncT _ Tm)).
 Proof.
@@ -169,13 +169,25 @@ Proof.
   destruct Tm as [Tm p].
 Admitted.
 
-Fixpoint Tn (n : nat) : Trunc (-1) :=
+(*Fixpoint Tn (n : nat) : Trunc (-1) :=
   match n with
   | O   => TruncMk (-1) True hPropTrue
   | S m =>
     let Tm := Tn m in
     TruncMk (-1) (T (truncT _ Tm)) (step Tm)
-  end.
+  end.*)
+
+
+(* Let's go for a type where universes are justified in a better fashion than ou previous IT.
+   This time however, it isn't really something that would appear naturally, we will work on that
+   afterwards. *)
+
+Definition Too@{i si} (A : Type@{i}) : Type@{si} := forall B : Type@{i}, @peq@{si si} Type@{i} B A -> A -> B.
+
+(* Do we have an equivalent to Too A which lives in the same universe as A? *)
+Lemma smallToo :
+  forall A : Type, Equiv (Too A)
+
 
 
 
