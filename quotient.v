@@ -57,6 +57,11 @@ Notation "n -Type" := (hType n) (at level 75).
 Definition hProp := minus1-Type.
 Definition hSet  := 0-Type.
 
+(* Truncation *)
+
+Parameter trunc : forall n : hlevel, forall A : Type, n-Type.
+Notation "|| A ||" := (trunc minus1 A).
+
 (* Equivalence *)
 
 Definition comp {A B C} (f : B -> C) (g : A -> B) := fun x => f (g x).
@@ -74,6 +79,25 @@ Notation "A * B" := (prod A B).
 Definition isEquiv {A B} (f : A -> B) :=
   { g : B -> A & g ∘ f ~ id A } * { h : B -> A & f ∘ h ~ id B }.
 
+(* Equivalence relations *)
 
+Definition pi1 : hProp -> Type.
+Proof.
+  intro T ; destruct T as [x _] ; exact x.
+Defined.
+
+(* I don't really like this solution with projections but that'll have to do for now. *)
+Record isEqRel {A} (R : A -> A -> hProp) :=
+  { rho : forall x : A, pi1 (R x x) ;
+    sigma : forall x y : A, pi1 (R x y) -> pi1 (R y x) ;
+    tau : forall x y z : A, pi1 (R y z) -> pi1 (R x y) -> pi1 (R x z) }.
+
+(* Quotient *)
+
+Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
+  { x : A & forall y : A,  { f : pi1 (R x y) -> pi1 (P y) & isEquiv f } }.
+
+Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp & pi1 (trunc minus1 (isEqClass R P)) }.
+Notation "A // R" := (quotient A R) (at level 90).
 
 
