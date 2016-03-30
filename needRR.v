@@ -144,6 +144,9 @@ Proof.
     admit.
 Admitted.
 
+(* It would be nice to encapsulate [IT (truncT _ hVm)] into something that doesn't grow.
+   Can we though? Because our definition is too artificial it might not work at all. *)
+
 Fixpoint heteroVector (n : nat) : hProp :=
   match n with
   | O   => TruncMk (-1) True hPropTrue
