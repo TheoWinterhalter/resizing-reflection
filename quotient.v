@@ -57,7 +57,22 @@ Notation "n -Type" := (hType n) (at level 75).
 Definition hProp := minus1-Type.
 Definition hSet  := 0-Type.
 
+(* Equivalence *)
 
+Definition comp {A B C} (f : B -> C) (g : A -> B) := fun x => f (g x).
+Notation "f ∘ g" := (comp f g) (at level 86).
+
+Definition homo {A B} (f g : A -> B) := forall a : A, f a = g a.
+Notation "f ~ g" := (homo f g) (at level 87).
+
+Definition id A := fun x : A => x.
+
+Inductive prod A B :=
+| pair : forall (a : A) (b : B), prod A B.
+Notation "A * B" := (prod A B).
+
+Definition isEquiv {A B} (f : A -> B) :=
+  { g : B -> A & g ∘ f ~ id A } * { h : B -> A & f ∘ h ~ id B }.
 
 
 
