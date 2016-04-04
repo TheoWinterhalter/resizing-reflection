@@ -187,10 +187,3 @@ Definition Too@{i si} (A : Type@{i}) : Type@{si} := forall B : Type@{i}, @peq@{s
 (* Do we have an equivalent to Too A which lives in the same universe as A? *)
 Lemma smallToo :
   forall A : Type, Equiv (Too A)
-
-
-
-
-
-
-

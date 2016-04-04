@@ -1,3 +1,6 @@
+(* -*- coq-prog-args : ("-type-in-type") -*-  *)
+
+
 (** * Univalent Basics.
 
 Vladimir Voevodsky.
@@ -15,13 +18,14 @@ Ported to coq trunk (8.4-8.5) in March 2014.  *)
 
 (** Settings *)
 
+Set Printing Universes.
+
 Unset Automatic Introduction. (* This line has to be removed for the file to compile with Coq8.2 *)
 
 
 
 (** ** Imports *)
-
-Require Export UniMath.Foundations.Basics.Preamble.
+Require Export Preamble.
 
 (* end of "Preamble". *)
 
