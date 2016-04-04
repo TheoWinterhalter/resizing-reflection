@@ -69,7 +69,7 @@ Module Test_sets.
 
   Require Import UniMath.Foundations.Basics.Sets.
 
-  Goal ∀ Y (is:isaset Y) (F:Y->UU) (e :∀ y y', F y -> F y' -> y=y')
+  Goal ∀ Y (is:isaset Y) (F:Y->Type) (e :∀ y y', F y -> F y' -> y=y')
          y (f:F y), squash_pairs_to_set F is e (hinhpr (y,,f)) = y.
   Proof. reflexivity. Qed.
 

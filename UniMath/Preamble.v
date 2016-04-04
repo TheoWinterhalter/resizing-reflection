@@ -11,15 +11,18 @@ It contains some new notations for constructions defined in Coq.Init library as 
 
 (** Preamble. *)
 
+Set Printing Universes.
+Set Universe Polymorphism.
+
 Unset Automatic Introduction.  (** This line has to be removed for the file to compile with Coq8.2 *)
 
 (** Universe structure *)
 
-Notation UUU := Set .
+Notation TypeU := Set .
 
-Definition UU := Type.
+(*Definition Type := Type.*)
 
-Identity Coercion fromUUtoType : UU >-> Sortclass.
+(*Identity Coercion fromTypetoType : Type >-> Sortclass.*)
 
 
 (** Empty type.  The empty type is introduced in Coq.Init.Datatypes by the line:
@@ -91,14 +94,14 @@ Notation "'λ' x .. y , t" := (fun x => .. (fun y => t) ..)
   (* type this in emacs in agda-input method with \lambda *)
 
 Definition coprod_rect_compute_1
-           (A B : UU) (P : A ⨿ B -> UU)
+           (A B : Type) (P : A ⨿ B -> Type)
            (f : ∀ a : A, P (ii1 a))
            (g : ∀ b : B, P (ii2 b)) (a:A) :
   coprod_rect P f g (ii1 a) = f a.
 Proof. reflexivity. Defined.
 
 Definition coprod_rect_compute_2
-           (A B : UU) (P : A ⨿ B -> UU)
+           (A B : Type) (P : A ⨿ B -> Type)
            (f : ∀ a : A, P (ii1 a))
            (g : ∀ b : B, P (ii2 b)) (b:B) :
   coprod_rect P f g (ii2 b) = g b.
@@ -156,7 +159,7 @@ Notation "x ,, y" := (tpair _ x y) (at level 60, right associativity). (* looser
 
 Ltac mkpair := (simple refine (tpair _ _ _ ) ; [| cbn]).
 
-Goal ∀ X (Y : X -> UU) (x : X) (y : Y x), Σ x, Y x.
+Goal ∀ X (Y : X -> Type) (x : X) (y : Y x), Σ x, Y x.
   intros X Y x y.
   mkpair.
   - apply x.
@@ -164,7 +167,7 @@ Goal ∀ X (Y : X -> UU) (x : X) (y : Y x), Σ x, Y x.
 Defined.
 
 (* print out this theorem to see whether "induction" compiles to "match" *)
-Goal ∀ X (Y:X->UU) (w:Σ x, Y x), X.
+Goal ∀ X (Y:X->Type) (w:Σ x, Y x), X.
   intros.
   induction w as [x y].
   exact x.
@@ -172,13 +175,13 @@ Defined.
 
 (* Step through this proof to demonstrate eta expansion for pairs, if primitive
    projections are on: *)
-Goal ∀ X (Y:X->UU) (w:Σ x, Y x), w = (pr1 w,, pr2 w).
+Goal ∀ X (Y:X->Type) (w:Σ x, Y x), w = (pr1 w,, pr2 w).
 Proof. try reflexivity. Abort.
 
-Definition rewrite_pr1_tpair {X} {P:X->UU} x p : pr1 (tpair P x p) = x.
+Definition rewrite_pr1_tpair {X} {P:X->Type} x p : pr1 (tpair P x p) = x.
 reflexivity. Defined.
 
-Definition rewrite_pr2_tpair {X} {P:X->UU} x p : pr2 (tpair P x p) = p.
+Definition rewrite_pr2_tpair {X} {P:X->Type} x p : pr2 (tpair P x p) = p.
 reflexivity. Defined.
 
 (*
@@ -192,7 +195,7 @@ Inductive Phant ( T : Type ) := phant : Phant T .
 
 
 
-(** The following command checks whether the flag [-indices-matter] which modifies the universe level assignment for inductive types has been set. With the flag it returns [ paths 0 0 : UUU ] . Without the flag it returns [ paths 0 0 : Prop ]. *)
+(** The following command checks whether the flag [-indices-matter] which modifies the universe level assignment for inductive types has been set. With the flag it returns [ paths 0 0 : TypeU ] . Without the flag it returns [ paths 0 0 : Prop ]. *)
 
 Check (O = O) .
 
