@@ -108,8 +108,22 @@ Definition hSet  := 0-Type.
 
 (* Truncation *)
 
-Inductive trunc (n : hlevel) (A : Type) : Type :=
-| tr : A -> trunc n A. 
+Module Truncation.
+
+  Local Inductive trunc (n : hlevel) (A : Type) : Type :=
+  | tr : A -> trunc n A.
+  Axiom alpha : forall (n : hlevel) (A : Type) (x y : trunc n A), heq x y.
+
+  (*Definition trunc_rect (n : hlevel) (A B : Type) { h : ishProp B }
+                        (f : trunc n A -> B) : trunc n A -> B :=
+    trunc_rect n A f.*)
+
+  Axiom _trunc_rect : forall  (n : hlevel) (A B : Type) { h : ishProp B }
+        (f : trunc n A -> B), trunc n A -> B.
+
+End Truncation.
+Import Truncation.
+
 Notation "|| A ||" := (trunc minus1 A).
 
 (* Equivalence *)
@@ -130,11 +144,6 @@ Definition isEquiv {A B} (f : A -> B) :=
   { g : B -> A | g ∘ f ~ id A } * { h : B -> A | f ∘ h ~ id B }.
 
 (* Equivalence relations *)
-
-(*Definition pi1 : hProp -> Type.
-Proof.
-  intro T ; destruct T as [x _] ; exact x.
-Defined.*)
 
 Definition pi1 (T : hProp) : Type :=
   let (TT, _) := T in TT.
@@ -160,6 +169,112 @@ Require Import ZArith.
 Inductive R2Ztype : Z -> Z -> Type :=
 | diff_even : forall n m k, (n - m)%Z = (2 * k)%Z -> R2Ztype n m.
 
+Require Eqdep_dec.
+
+Section MyEqdepDec.
+
+  Variable A : Type.
+
+  Let comp (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') : heq y y'.
+  Proof.
+    induction eq1.
+    exact eq2.
+  Defined.
+
+  (*Let comp (A : Type) (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') : heq y y' :=
+    heq_ind _ (fun a => heq a y') eq2 _ eq1.*)
+
+  Remark trans_sym_eq : forall (x y : A) (u : heq x y), comp _ _ _ u u = heq_refl y.
+  Proof.
+    intros x y u.
+    now induction u.
+  Defined.
+
+  (*Definition trans_sym_eq (A : Type) :=
+  let comp :=
+      fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
+        heq_ind _ x (fun a : A => heq a y') eq2 y eq1 in
+  fun (x y : A) (u : heq x y) =>
+    match u as e in (heq _ y0) return (heq (comp x y0 y0 e e) heq_refl) with
+      | heq_refl _ => heq_refl
+    end.*)
+
+  Variable x : A.
+
+  Inductive hsum (A : Type) (B : Type) :=
+  | inl : forall a : A, hsum A B
+  | inr : forall b : B, hsum A B.
+
+  Variable eq_dec : forall y : A, hsum (heq x y) ((heq x y) -> False).
+
+  Let nu (y : A) (u : heq x y) : heq x y :=
+    match eq_dec y with
+      | inl _ _ eqxy => eqxy
+      | inr _ _ neqxy => False_ind _ (neqxy u)
+    end.
+
+  Definition nu_left_inv_on (A : Type) :=
+    let comp :=
+        fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
+          heq_ind x (fun a : A => heq a y') eq2 y eq1 in
+    fun (x : A) (eq_dec : forall y : A, heq x y \/  ~ (heq x y)) =>
+      let nu :=
+          fun (y : A) (u : heq x y) =>
+            match eq_dec y with
+              | or_introl eqxy => eqxy
+              | or_intror neqxy => False_ind (heq x y) (neqxy u)
+            end in
+      let nu_inv := fun (y : A) (v : heq x y) => comp x x y (nu x heq_refl) v in
+      fun (y : A) (u : heq x y) =>
+        match u as e in (heq _ y0) return (heq (nu_inv y0 (nu y0 e)) e) with
+          | heq_refl => trans_sym_eq (nu x heq_refl)
+        end.
+
+Definition eq_proofs_unicity_on (A : Type) :=
+  let comp :=
+      fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
+        eq_ind x (fun a : A => heq a y') eq2 y eq1 in
+  fun (x : A) (eq_dec : forall y : A, heq x y \/  ~ (heq x y)) =>
+    let nu :=
+        fun (y : A) (u : heq x y) =>
+          match eq_dec y with
+          | or_introl eqxy => eqxy
+          | or_intror neqxy => False_ind (heq x y) (neqxy u)
+          end in
+    let nu_constant :=
+        fun (y : A) (u v : heq x y) =>
+          let o := eq_dec y in
+          match
+            o as o0
+            return
+            (match o0 with
+               | or_introl eqxy => eqxy
+               | or_intror neqxy => False_ind (heq x y) (neqxy u)
+             end =
+             match o0 with
+               | or_introl eqxy => eqxy
+               | or_intror neqxy => False_ind (heq x y) (neqxy v)
+             end)
+          with
+            | or_introl Heq => eq_refl
+            | or_intror Hneq =>
+              match
+                Hneq u as f return (False_ind (heq x y) f = False_ind (heq x y) (Hneq v))
+              with
+              end
+          end in
+    let nu_inv := fun (y : A) (v : heq x y) => comp x x y (nu x heq_refl) v in
+    fun (y : A) (p1 p2 : x = y) =>
+      heq_ind (nu_inv y (nu y p1)) (fun p3 : heq x y => heq p3 p2)
+             (heq_ind (nu_inv y (nu y p2)) (fun p3 : heq x y => heq (nu_inv y (nu y p1)) p3)
+                     (heq_ind (nu y p1) (fun e : heq x y => heq (nu_inv y (nu y p1)) (nu_inv y e))
+                             heq_refl (nu y p2) (nu_constant y p1 p2)) p2
+                     (nu_left_inv_on eq_dec p2)) p1
+             (nu_left_inv_on eq_dec p1).
+
+Definition eq_proofs_unicity (A : Type) (eq_dec : forall x y : A, heq x y \/  ~ (heq x y)) (x : A) :=
+  eq_proofs_unicity_on (eq_dec x).
+
 Lemma R2ZhProp : forall n m, ishType minus1 (R2Ztype n m).
 Proof.
   intros n m.
@@ -171,18 +286,16 @@ Proof.
   assert (l = k) as l_k by omega.
   subst.
   assert (e = f) as e_f.
-  - admit.
+  - apply Eqdep_dec.eq_proofs_unicity.
+    intros x y.
+    destruct (Z.eq_dec x y).
+    + now left.
+    + now right.
   - subst.
     exists (heq_refl (diff_even n m k f)).
     intro p.
-    admit.
+    
 Admitted.
-
-(*Definition R2Z (n m : Z) : hProp.
-Proof.
-  exists (R2Ztype n m).
-  exact (R2ZhProp n m).
-Defined.*)
 
 Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
 
