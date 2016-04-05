@@ -277,8 +277,21 @@ Proof.
   - subst.
     exists (heq_refl (diff_even n m k f)).
     intro p.
-    
-Admitted.
+    apply eq_proofs_unicity.
+    intros x y.
+    destruct x as [n m k' e].
+    destruct y as [n m l f'].
+    assert (l = k') as l'_k' by omega.
+    subst.
+    assert (f' = e) as f_e.
+    + apply Eqdep_dec.eq_proofs_unicity.
+      intros x y.
+      destruct (Z.eq_dec x y).
+      * now left.
+      * now right.
+    + subst.
+      now apply inl.
+Defined.
 
 Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
 
