@@ -297,4 +297,6 @@ Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
 
 Definition Z2 := Z // R2Z.
 
+(* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
+Fail Check Z2 : Set.
 
