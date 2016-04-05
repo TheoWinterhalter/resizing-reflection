@@ -110,16 +110,29 @@ Definition hSet  := 0-Type.
 
 Module Truncation.
 
-  Local Inductive trunc (n : hlevel) (A : Type) : Type :=
+  Private Inductive trunc (n : hlevel) (A : Type) : Type :=
   | tr : A -> trunc n A.
-  Axiom alpha : forall (n : hlevel) (A : Type) (x y : trunc n A), heq x y.
+  Bind Scope trunc_scope with trunc.
+  Arguments tr {n A} a.
 
-  (*Definition trunc_rect (n : hlevel) (A B : Type) { h : ishProp B }
-                        (f : trunc n A -> B) : trunc n A -> B :=
-    trunc_rect n A f.*)
+  Section Foo.
 
-  Axiom _trunc_rect : forall  (n : hlevel) (A B : Type) { h : ishProp B }
-        (f : trunc n A -> B), trunc n A -> B.
+    Universes i j.
+
+    Global Lemma ishType_trunc (n : hlevel) (A : Type@{i})
+    : ishType@{i j} n (trunc@{i} n A).
+    Admitted.
+
+  End Foo.
+
+  Definition trunc_ind {n A}
+             (P : trunc n A -> Type) {Pt : forall aa, ishType n (P aa)}
+  : (forall a, P (tr a)) -> (forall aa, P aa)
+    := fun f aa =>
+        match aa with
+            tr a => fun _ => f a
+        end
+          Pt.
 
 End Truncation.
 Import Truncation.
@@ -181,23 +194,11 @@ Section MyEqdepDec.
     exact eq2.
   Defined.
 
-  (*Let comp (A : Type) (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') : heq y y' :=
-    heq_ind _ (fun a => heq a y') eq2 _ eq1.*)
-
-  Remark trans_sym_eq : forall (x y : A) (u : heq x y), comp _ _ _ u u = heq_refl y.
+  Remark trans_sym_eq : forall (x y : A) (u : heq x y), heq (comp _ _ _ u u) (heq_refl y).
   Proof.
     intros x y u.
     now induction u.
   Defined.
-
-  (*Definition trans_sym_eq (A : Type) :=
-  let comp :=
-      fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
-        heq_ind _ x (fun a : A => heq a y') eq2 y eq1 in
-  fun (x y : A) (u : heq x y) =>
-    match u as e in (heq _ y0) return (heq (comp x y0 y0 e e) heq_refl) with
-      | heq_refl _ => heq_refl
-    end.*)
 
   Variable x : A.
 
@@ -210,70 +211,52 @@ Section MyEqdepDec.
   Let nu (y : A) (u : heq x y) : heq x y :=
     match eq_dec y with
       | inl _ _ eqxy => eqxy
-      | inr _ _ neqxy => False_ind _ (neqxy u)
+      | inr _ _ neqxy => False_rect _ (neqxy u)
     end.
 
-  Definition nu_left_inv_on (A : Type) :=
-    let comp :=
-        fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
-          heq_ind x (fun a : A => heq a y') eq2 y eq1 in
-    fun (x : A) (eq_dec : forall y : A, heq x y \/  ~ (heq x y)) =>
-      let nu :=
-          fun (y : A) (u : heq x y) =>
-            match eq_dec y with
-              | or_introl eqxy => eqxy
-              | or_intror neqxy => False_ind (heq x y) (neqxy u)
-            end in
-      let nu_inv := fun (y : A) (v : heq x y) => comp x x y (nu x heq_refl) v in
-      fun (y : A) (u : heq x y) =>
-        match u as e in (heq _ y0) return (heq (nu_inv y0 (nu y0 e)) e) with
-          | heq_refl => trans_sym_eq (nu x heq_refl)
-        end.
+  Let nu_constant : forall (y : A) (u v : heq x y), heq (nu _ u) (nu _ v).
+  Proof.
+    intros y u v.
+    compute.
+    case (eq_dec y).
+    - now intro a.
+    - intro b.
+      exfalso.
+      apply b.
+      exact u.
+  Defined.
 
-Definition eq_proofs_unicity_on (A : Type) :=
-  let comp :=
-      fun (x y y' : A) (eq1 : heq x y) (eq2 : heq x y') =>
-        eq_ind x (fun a : A => heq a y') eq2 y eq1 in
-  fun (x : A) (eq_dec : forall y : A, heq x y \/  ~ (heq x y)) =>
-    let nu :=
-        fun (y : A) (u : heq x y) =>
-          match eq_dec y with
-          | or_introl eqxy => eqxy
-          | or_intror neqxy => False_ind (heq x y) (neqxy u)
-          end in
-    let nu_constant :=
-        fun (y : A) (u v : heq x y) =>
-          let o := eq_dec y in
-          match
-            o as o0
-            return
-            (match o0 with
-               | or_introl eqxy => eqxy
-               | or_intror neqxy => False_ind (heq x y) (neqxy u)
-             end =
-             match o0 with
-               | or_introl eqxy => eqxy
-               | or_intror neqxy => False_ind (heq x y) (neqxy v)
-             end)
-          with
-            | or_introl Heq => eq_refl
-            | or_intror Hneq =>
-              match
-                Hneq u as f return (False_ind (heq x y) f = False_ind (heq x y) (Hneq v))
-              with
-              end
-          end in
-    let nu_inv := fun (y : A) (v : heq x y) => comp x x y (nu x heq_refl) v in
-    fun (y : A) (p1 p2 : x = y) =>
-      heq_ind (nu_inv y (nu y p1)) (fun p3 : heq x y => heq p3 p2)
-             (heq_ind (nu_inv y (nu y p2)) (fun p3 : heq x y => heq (nu_inv y (nu y p1)) p3)
-                     (heq_ind (nu y p1) (fun e : heq x y => heq (nu_inv y (nu y p1)) (nu_inv y e))
-                             heq_refl (nu y p2) (nu_constant y p1 p2)) p2
-                     (nu_left_inv_on eq_dec p2)) p1
-             (nu_left_inv_on eq_dec p1).
+  Let nu_inv (y : A) (v : heq x y) : heq x y := comp _ _ _ (nu _ (heq_refl x)) v.
 
-Definition eq_proofs_unicity (A : Type) (eq_dec : forall x y : A, heq x y \/  ~ (heq x y)) (x : A) :=
-  eq_proofs_unicity_on (eq_dec x).
+  Remark nu_left_inv_on : forall (y : A) (u : heq x y), heq (nu_inv _ (nu _ u)) u.
+  Proof.
+    intros y u.
+    compute.
+    destruct u.
+    apply trans_sym_eq.
+  Defined.
+
+  Theorem eq_proofs_unicity_on : forall (y : A) (p1 p2 : heq x y), heq p1 p2.
+  Proof.
+    intros y p1 p2.
+    eapply (heq_rect _ (nu_inv y (nu y p1)) (fun (p3 : heq x y) _ => heq p3 p2)).
+    - eapply (heq_rect _ (nu_inv y (nu y p2)) (fun (p3 : heq x y) _ => heq (nu_inv y (nu y p1)) p3)).
+      + eapply (heq_rect _ (nu y p1) (fun (e : heq x y) _ => heq (nu_inv y (nu y p1)) (nu_inv y e))).
+        * apply heq_refl.
+        * apply nu_constant.
+      + eapply nu_left_inv_on.
+    - apply nu_left_inv_on.
+  Defined.
+
+End MyEqdepDec.
+
+Definition eq_proofs_unicity (A : Type) (eq_dec : forall x y : A, hsum (heq x y) ((heq x y) -> False)) (x : A)
+: forall (y : A) (p1 p2 : heq x y), heq p1 p2.
+Proof.
+  intros y p1 p2.
+  apply eq_proofs_unicity_on.
+  apply (eq_dec x).
+Defined.
 
 Lemma R2ZhProp : forall n m, ishType minus1 (R2Ztype n m).
 Proof.
