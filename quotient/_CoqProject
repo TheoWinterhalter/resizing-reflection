@@ -1,5 +1,4 @@
 -R . ""
-
--noinit
+-arg -nois
 
 quotient.v
