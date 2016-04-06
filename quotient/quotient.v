@@ -180,7 +180,7 @@ Notation "A // R" := (quotient A R) (at level 90).
 Require Import ZArith.
 
 Inductive R2Ztype : Z -> Z -> Type :=
-| diff_even : forall n m k, heq (n - m)%Z (2 * k)%Z -> R2Ztype n m.
+| diff_even : forall n m k, heq (m - n)%Z (2 * k)%Z -> R2Ztype n m.
 
 Require Eqdep_dec.
 
@@ -270,6 +270,17 @@ Proof.
   - omega.
 Qed.
 
+Lemma division_unicity2 : forall n k l, heq n (2 * k + 1)%Z -> heq n (2 * l + 1)%Z -> heq k l.
+Proof.
+  intros n k l h1 h2.
+  inversion h1 as [hh1].
+  inversion h2 as [hh2].
+  cut (eq k l).
+  - intro h.
+    now destruct h.
+  - omega.
+Qed.
+
 (* To replace Z.eq_dec *)
 Lemma Pos_eq_dec : forall p q : positive, hsum (heq p q) ((heq p q) -> False).
 Proof.
@@ -329,7 +340,7 @@ Proof.
     destruct y as [n m l f].
     assert (heq l k') as l_k'.
     {
-      now apply (division_unicity (n - m)%Z).
+      now apply (division_unicity (m - n)%Z).
     }
     destruct l_k'.
     assert (heq f e') as f_e'.
@@ -372,47 +383,121 @@ Proof.
     assert (heq h h0).
     + apply eq_proofs_unicity.
       intros x y.
-      destruct (Z.eq_dec x y).
-      * destruct e.
+      destruct (Zeq_dec x y).
+      * destruct a.
         now apply inl.
       * apply inr.
         intro eqxy.
         destruct eqxy.
-        now apply n0.
+        now apply b.
     + destruct X.
       exists (heq_refl (is_even n k h)).
       intro p.
       apply eq_proofs_unicity.
       intros x y.
       destruct x ; destruct y.
-      assert (heq k0 k1) by admit.
+      assert (heq k0 k1).
+      {
+        now apply (division_unicity n).
+      }
       destruct X.
-      assert (heq h0 h1) by admit.
+      assert (heq h0 h1).
+      {
+        apply eq_proofs_unicity.
+        intros x y.
+        destruct (Zeq_dec x y).
+        - destruct a ; now left.
+        - right ; intro eqxy ; destruct eqxy ; now apply b.
+      }
       destruct X.
       now apply inl.
-  - admit.
-Admitted.
+  - now apply (division_unicity n).
+Defined.
 
 Lemma oddhProp : forall z, ishProp (odd z).
-Admitted.
+Proof.
+  intro z.
+  apply hsuc.
+  intros x y.
+  apply hctr.
+  destruct x.
+  destruct y.
+  cut (heq k k0).
+  - intro hh.
+    destruct hh.
+    assert (heq h h0).
+    + apply eq_proofs_unicity.
+      intros x y.
+      destruct (Zeq_dec x y).
+      * destruct a.
+        now apply inl.
+      * apply inr.
+        intro eqxy.
+        destruct eqxy.
+        now apply b.
+    + destruct X.
+      exists (heq_refl (is_odd n k h)).
+      intro p.
+      apply eq_proofs_unicity.
+      intros x y.
+      destruct x ; destruct y.
+      assert (heq k0 k1).
+      {
+        now apply (division_unicity2 n).
+      }
+      destruct X.
+      assert (heq h0 h1).
+      {
+        apply eq_proofs_unicity.
+        intros x y.
+        destruct (Zeq_dec x y).
+        - destruct a ; now left.
+        - right ; intro eqxy ; destruct eqxy ; now apply b.
+      }
+      destruct X.
+      now apply inl.
+  - now apply (division_unicity2 n).
+Defined.
 
-Unset Printing Universes.
+(* Random exercise *)
 Goal forall x : True, forall e : heq x x, heq e (heq_refl _).
 Proof.
   destruct x.
   inversion e.
 Abort.
 
+(* m - 0 = m *)
+Lemma minus0_id : forall n, heq (n - 0)%Z n.
+Proof.
+  induction n ; easy.
+Defined.
+
+(* transitivity of heq *)
+Lemma heq_trans {A} : forall a b c : A, heq a b -> heq b c -> heq a c.
+Proof.
+  intros a b c eqab eqbc.
+  destruct eqab.
+  exact eqbc.
+Defined.
+
+Lemma heq_sym {A} : forall a b : A, heq a b -> heq b a.
+Proof.
+  intros a b eq.
+  now destruct eq.
+Defined.
+
 Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
   intros y p.
   compute in p.
   simple refine ((R2Ztype_rect (fun x y _ => heq x 0%Z -> even y) _ _ _ p) (heq_refl _)).
   intros n m k e h.
-  simpl.
-  apply (is_even _ (- k)%Z).
-  inversion h.
-  assert (m = (2 * - k)%Z) by omega.
-  now destruct H0.
+  apply (is_even _ k).
+  apply (heq_trans _ (m - 0)%Z).
+  - apply heq_sym.
+    apply minus0_id.
+  - apply (heq_trans _ (m - n)%Z).
+    + now destruct h.
+    + exact e.
 Defined.
 
 Definition h : forall y, even y -> pi1 (R2Z 0%Z y).
