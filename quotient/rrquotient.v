@@ -195,6 +195,7 @@ Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
   { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
 
 (* This produces the annoying n < m <= i *)
+(* It's alright because we need RR2 to state that hProp : Set *)
 Require Import Coq.Program.Tactics.
 Program Definition quotient@{i j k l m n p q r s e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i}
   := { P : A -> hProp@{m n r} | RR1@{p q} (trunc@{s} minus1 (isEqClass@{e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16} R P)) _ }.
@@ -375,6 +376,8 @@ Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
 
 Definition Z2 := Z // R2Z.
 
-(* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
-Check Z2 : Set.
+(* This time, we still don't have Z2 : Set because we would need RR2 to do so, but as pointed out in the definitin of 
+   quotient, we would keep the same universe if not for hProp being to big for Set. *)
+Fail Check Z2 : Set.
 
+(* In order to show we can still manipulate Z2 even though RR1 is inside, we will show that it is equivalent to bool. *)
