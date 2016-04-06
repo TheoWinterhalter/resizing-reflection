@@ -6,7 +6,7 @@ Set Universe Polymorphism.
 Inductive heq {A : Type} (x : A) : A -> Type :=
   heq_refl : heq x x.
 
-Notation "A = B" := (heq A B).
+Notation "A = B" := (heq A B) (at level 70).
 
 (* Sigma *)
 
@@ -144,7 +144,7 @@ Notation "|| A ||" := (trunc minus1 A).
 Definition comp {A B C} (f : B -> C) (g : A -> B) := fun x => f (g x).
 Notation "f ∘ g" := (comp f g) (at level 86).
 
-Definition homo {A B} (f g : A -> B) := forall a : A, f a = g a.
+Definition homo {A B} (f g : A -> B) := forall a : A, heq (f a) (g a).
 Notation "f ~ g" := (homo f g) (at level 87).
 
 Definition id A := fun x : A => x.
@@ -180,7 +180,7 @@ Notation "A // R" := (quotient A R) (at level 90).
 Require Import ZArith.
 
 Inductive R2Ztype : Z -> Z -> Type :=
-| diff_even : forall n m k, (n - m)%Z = (2 * k)%Z -> R2Ztype n m.
+| diff_even : forall n m k, heq (n - m)%Z (2 * k)%Z -> R2Ztype n m.
 
 Require Eqdep_dec.
 
@@ -258,6 +258,47 @@ Proof.
   apply (eq_dec x).
 Defined.
 
+(* I'll allow myself anything, we will hide it with Qed *)
+Lemma division_unicity : forall n k l, heq n (2 * k)%Z -> heq n (2 * l)%Z -> heq k l.
+Proof.
+  intros n k l h1 h2.
+  inversion h1 as [hh1].
+  inversion h2 as [hh2].
+  cut (eq k l).
+  - intro h.
+    now destruct h.
+  - omega.
+Qed.
+
+(* To replace Z.eq_dec *)
+Lemma Pos_eq_dec : forall p q : positive, hsum (heq p q) ((heq p q) -> False).
+Proof.
+  intro p.
+  induction p ; destruct q ; try (now apply inl) ; try (now apply inr).
+  - destruct (IHp q).
+    + left.
+      now destruct a.
+    + right.
+      intro absurd.
+      apply b.
+      now inversion absurd.
+  - destruct (IHp q).
+    + left ; now destruct a.
+    + right ; intro absurd ; apply b ; now inversion absurd.
+Qed.
+
+Lemma Zeq_dec : forall x y : Z, hsum (heq x y) ((heq x y) -> False).
+Proof.
+  intro x.
+  induction x ; destruct y ; try (now apply inl) ; try (now apply inr).
+  - destruct (Pos_eq_dec p p0).
+    + left ; now destruct a.
+    + right ; intro absurd ; apply b ; now inversion absurd.
+  - destruct (Pos_eq_dec p p0).
+    + left ; now destruct a.
+    + right ; intro absurd ; apply b ; now inversion absurd.
+Qed.
+
 Lemma R2ZhProp : forall n m, ishType minus1 (R2Ztype n m).
 Proof.
   intros n m.
@@ -266,30 +307,38 @@ Proof.
   apply hctr.
   destruct x as [n m k e].
   destruct y as [n m l f].
-  assert (l = k) as l_k by omega.
-  subst.
-  assert (e = f) as e_f.
-  - apply Eqdep_dec.eq_proofs_unicity.
+  assert (heq k l) as k_l.
+  {
+    eapply (division_unicity).
+    - exact e.
+    - exact f.
+  }
+  destruct k_l.
+  assert (heq e f) as e_f.
+  - apply eq_proofs_unicity.
     intros x y.
-    destruct (Z.eq_dec x y).
+    destruct (Zeq_dec x y).
     + now left.
     + now right.
-  - subst.
-    exists (heq_refl (diff_even n m k f)).
+  - destruct e_f.
+    exists (heq_refl (diff_even n m k e)).
     intro p.
     apply eq_proofs_unicity.
     intros x y.
-    destruct x as [n m k' e].
-    destruct y as [n m l f'].
-    assert (l = k') as l'_k' by omega.
-    subst.
-    assert (f' = e) as f_e.
-    + apply Eqdep_dec.eq_proofs_unicity.
+    destruct x as [n m k' e'].
+    destruct y as [n m l f].
+    assert (heq l k') as l_k'.
+    {
+      now apply (division_unicity (n - m)%Z).
+    }
+    destruct l_k'.
+    assert (heq f e') as f_e'.
+    + apply eq_proofs_unicity.
       intros x y.
-      destruct (Z.eq_dec x y).
+      destruct (Zeq_dec x y).
       * now left.
       * now right.
-    + subst.
+    + destruct f_e'.
       now apply inl.
 Defined.
 
@@ -300,3 +349,114 @@ Definition Z2 := Z // R2Z.
 (* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
 Fail Check Z2 : Set.
 
+(* Alternative definition of Z2 (ie bool) *)
+Inductive Z2' : Set := c0 | c1.
+
+Inductive even : Z -> Type :=
+  is_even : forall n k : Z, heq n (2 * k)%Z -> even n.
+
+Inductive odd : Z -> Type :=
+  is_odd : forall n k : Z, heq n (2 * k + 1)%Z -> odd n.
+
+Lemma evenhProp : forall z, ishProp (even z).
+Proof.
+  intro z.
+  apply hsuc.
+  intros x y.
+  apply hctr.
+  destruct x.
+  destruct y.
+  cut (heq k k0).
+  - intro hh.
+    destruct hh.
+    assert (heq h h0).
+    + apply eq_proofs_unicity.
+      intros x y.
+      destruct (Z.eq_dec x y).
+      * destruct e.
+        now apply inl.
+      * apply inr.
+        intro eqxy.
+        destruct eqxy.
+        now apply n0.
+    + destruct X.
+      exists (heq_refl (is_even n k h)).
+      intro p.
+      apply eq_proofs_unicity.
+      intros x y.
+      destruct x ; destruct y.
+      assert (heq k0 k1) by admit.
+      destruct X.
+      assert (heq h0 h1) by admit.
+      destruct X.
+      now apply inl.
+  - admit.
+Admitted.
+
+Lemma oddhProp : forall z, ishProp (odd z).
+Admitted.
+
+Unset Printing Universes.
+Goal forall x : True, forall e : heq x x, heq e (heq_refl _).
+Proof.
+  destruct x.
+  inversion e.
+Abort.
+
+Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
+  intros y p.
+  compute in p.
+  simple refine ((R2Ztype_rect (fun x y _ => heq x 0%Z -> even y) _ _ _ p) (heq_refl _)).
+  intros n m k e h.
+  simpl.
+  apply (is_even _ (- k)%Z).
+  inversion h.
+  assert (m = (2 * - k)%Z) by omega.
+  now destruct H0.
+Defined.
+
+Definition h : forall y, even y -> pi1 (R2Z 0%Z y).
+Proof.
+  intros y p.
+  compute.
+  destruct p.
+  apply (diff_even _ _ (-k)%Z).
+  { assert (n = (2 * k)%Z).
+    - inversion h.
+      omega.
+    - omega.
+  }
+Defined.
+  
+Let f (x : Z2') : Z2.
+Proof.
+  destruct x.
+  - exists (fun z => exist _ (even z) (evenhProp z)).
+    compute.
+    apply tr.
+    exists 0%Z.
+    intro y.
+    exists (g y).
+    split.
+    + exists (h y).
+      intro a. 
+      unfold g.
+
+Let f (x : Z2) : Z2'.
+Proof.
+  destruct x.
+  eapply (@trunc_ind minus1).
+  - intro aa.
+    apply hsuc.
+    intros x y.
+    apply hctr.
+    destruct x ; destruct y.
+    + exists (heq_refl c0).
+      intro p.
+      apply eq_proofs_unicity.
+      intros x y.
+      destruct x ; destruct y ;
+      try (now apply inl) ;
+      try (now apply inr).
+    + 
+      
