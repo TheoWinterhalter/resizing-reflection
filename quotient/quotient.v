@@ -693,6 +693,8 @@ Proof.
   now inversion X0.
 Defined.
 
+Axiom fun_ext : forall {A B} {f g : A -> B}, (forall x, heq (f x) (g x)) -> heq f g.
+
 Lemma hsum_hProp : forall A, ishProp A -> ishProp (hsum A (A -> False)).
 Proof.
   intros A h.
@@ -705,8 +707,9 @@ Proof.
       destruct X as [p eq].
       now destruct p.
     + apply hf_equal.
-      pose proof (inv_hProp h).
-      admit.
+      apply fun_ext.
+      intro x.
+      destruct (b x).
   - destruct X.
     exists (heq_refl _).
     intro p.
@@ -718,8 +721,10 @@ Proof.
       now destruct q.
     + left.
       apply hf_equal.
-      admit.
-Admitted.
+       apply fun_ext.
+      intro tutu.
+      destruct (b tutu).
+Defined.
 
 (*! WARNING : use of omega AND Defined !*)
 Lemma either_in : forall (z : Z) (P : Z -> hProp) (h : trunc minus1 (isEqClass R2Z P)), hsum (pi1 (P z)) (pi1 (P z) -> False).
@@ -758,5 +763,6 @@ Defined.
 
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
-  
+  split.
+  - exists ff.
     
