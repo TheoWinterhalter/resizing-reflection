@@ -727,17 +727,8 @@ Proof.
   intros z P h.
   refine (trunc_ind (fun aa => _) _ h).
   - intro hh.
-    apply hsuc.
-    intros x y.
-    apply hctr.
-    assert (heq x y).
-    + destruct x ; destruct y ; try easy ; admit.
-    + destruct X.
-      exists (heq_refl _).
-      intro p.
-      apply eq_proofs_unicity.
-      intros a b.
-      destruct a ; destruct b ; try (now left) ; try (now right) ; admit.
+    apply hsum_hProp.
+    now destruct (P z).
   - intro p.
     destruct p as [a p].
     destruct (either_even_odd a) as [[k evena] | [k odda]] ;
@@ -756,7 +747,7 @@ Proof.
       * apply eq_to_heq. inversion evenz. inversion odda. omega.
     + left. apply p. apply (diff_even _ _ (l - k)%Z). inversion odda. inversion oddz.
       apply eq_to_heq. omega.
-Admitted.      
+Defined.
 
 Let ff (x : Z2) : Z2'.
   destruct x as [P h].
