@@ -486,7 +486,9 @@ Proof.
   now destruct eq.
 Defined.
 
-Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
+Unset Printing Universes.
+
+(*Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
   intros y p.
   compute in p.
   simple refine ((R2Ztype_rect (fun x y _ => heq x 0%Z -> even y) _ _ _ p) (heq_refl _)).
@@ -498,9 +500,23 @@ Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
   - apply (heq_trans _ (m - n)%Z).
     + now destruct h.
     + exact e.
+Defined.*)
+
+Lemma conveq : forall n k, heq (n - 0)%Z (2 * k)%Z -> heq n (2 * k)%Z.
+Proof.
+  intros n k h.
+  apply (heq_trans _ (n - 0)%Z).
+  - apply heq_sym.
+    apply minus0_id.
+  - exact h.
 Defined.
 
-Definition h : forall y, even y -> pi1 (R2Z 0%Z y).
+Definition g (y : Z) (p : R2Ztype 0%Z y) :=
+  match p in (R2Ztype 0%Z z) return (even z) with
+  | diff_even 0%Z n k h => is_even n k (conveq n k h)
+  end.
+  
+(*Definition h : forall y, even y -> pi1 (R2Z 0%Z y).
 Proof.
   intros y p.
   compute.
@@ -509,16 +525,48 @@ Proof.
   apply (heq_trans _ n).
   - apply minus0_id.
   - exact h.
+Defined.*)
+
+Definition h (y : Z) (p : even y) :=
+  match p in (even z) return (R2Ztype 0%Z z) with
+  | is_even n k h => diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h)
+  end.
+
+Lemma hf_equal : forall {A B : Type} (f : A -> B) {x y : A}, heq x y -> heq (f x) (f y).
+Proof.
+  intros A B f x y h.
+  now destruct h.
 Defined.
 
-Unset Printing Universes.
-
-Lemma hg_id : forall y a, heq (h y (g y a)) a.
+Lemma hg_id0 : forall n k hh, heq (h n (g n (diff_even 0%Z n k hh))) (diff_even 0%Z n k hh).
 Proof.
-  intros y a.
-  inversion a as [n m k ey n_z m_y].
+  intros n k hh.
   unfold g.
-Abort.
+  unfold h.
+  apply hf_equal.
+  apply eq_proofs_unicity.
+  apply Zeq_dec.
+Defined.
+
+Definition hg_id y a : heq (h y (g y a)) a :=
+  match a as p in (R2Ztype 0%Z z) return (@heq (R2Ztype 0%Z z) (h z (g z p)) p) with
+  | diff_even 0%Z n k hh => hg_id0 n k hh
+  end.
+
+Lemma gh_id0 : forall n k hh, heq (g n (h n (is_even n k hh))) (is_even n k hh).
+Proof.
+  intros n k hh.
+  unfold h.
+  unfold g.
+  apply hf_equal.
+  apply eq_proofs_unicity.
+  apply Zeq_dec.
+Defined.
+
+Definition gh_id y a : heq (g y (h y a)) a :=
+  match a as p in (even z) return (@heq (even z) (g z (h z p)) p) with
+  | is_even n k hh => gh_id0 n k hh
+  end.
 
 Let f (x : Z2') : Z2.
 Proof.
@@ -531,26 +579,14 @@ Proof.
     exists (g y).
     split.
     + exists (h y).
-      intro a.
-      destruct (g y a).
-      unfold h.
-      compute.
+      apply hg_id.
+    + exists (h y).
+      apply gh_id.
+  - exists (fun z => exist _ (odd z) (oddhProp z)).
+    compute.
+    apply tr.
+    exists 1%Z.
+    intro y.
+    (* TODO *)
 
-Let f (x : Z2) : Z2'.
-Proof.
-  destruct x.
-  eapply (@trunc_ind minus1).
-  - intro aa.
-    apply hsuc.
-    intros x y.
-    apply hctr.
-    destruct x ; destruct y.
-    + exists (heq_refl c0).
-      intro p.
-      apply eq_proofs_unicity.
-      intros x y.
-      destruct x ; destruct y ;
-      try (now apply inl) ;
-      try (now apply inr).
-    + 
-      
+    
