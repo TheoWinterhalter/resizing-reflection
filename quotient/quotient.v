@@ -568,6 +568,68 @@ Definition gh_id y a : heq (g y (h y a)) a :=
   | is_even n k hh => gh_id0 n k hh
   end.
 
+(* Let's do it again but for odds *)
+
+(* Let's use omega here too *)
+Lemma g2_proof : forall n k, heq (n - 1)%Z (2 * k)%Z -> heq n (2 * k + 1)%Z.
+Proof.
+  intros n k hh.
+  cut (eq n (2 * k + 1))%Z.
+  - intro hhh ; now destruct hhh.
+  - assert (eq (n - 1) (2 * k))%Z.
+    + now inversion hh.
+    + omega.
+Qed.
+
+Definition g2 (y : Z) (p : R2Ztype 1%Z y) :=
+  match p in (R2Ztype 1%Z z) return (odd z) with
+  | diff_even 1%Z n k hh => is_odd n k (g2_proof n k hh)
+  end.
+
+Lemma h2_proof : forall n k, heq n (2 * k + 1)%Z -> heq (n - 1)%Z (2 * k)%Z.
+Proof.
+  intros n k hh.
+  assert (eq (n-1) (2*k))%Z.
+  - inversion hh.
+    omega.
+  - now destruct H.
+Qed.
+
+Definition h2 (y : Z) (p : odd y) :=
+  match p in (odd z) return (R2Ztype 1%Z z) with
+  | is_odd n k hh => diff_even 1%Z n k (h2_proof n k hh)
+  end.
+
+Lemma h2g2_id0 : forall n k hh, heq (h2 n (g2 n (diff_even 1%Z n k hh))) (diff_even 1%Z n k hh).
+Proof.
+  intros n k hh.
+  unfold g2.
+  unfold h2.
+  apply hf_equal.
+  apply eq_proofs_unicity.
+  apply Zeq_dec.
+Defined.
+
+Definition h2g2_id y a : heq (h2 y (g2 y a)) a :=
+  match a as p in (R2Ztype 1%Z z) return (@heq (R2Ztype 1%Z z) (h2 z (g2 z p)) p) with
+  | diff_even 1%Z n k hh => h2g2_id0 n k hh
+  end.
+
+Lemma g2h2_id0 : forall n k hh, heq (g2 n (h2 n (is_odd n k hh))) (is_odd n k hh).
+Proof.
+  intros n k hh.
+  unfold h2.
+  unfold g2.
+  apply hf_equal.
+  apply eq_proofs_unicity.
+  apply Zeq_dec.
+Defined.
+
+Definition g2h2_id y a : heq (g2 y (h2 y a)) a :=
+  match a as p in (odd z) return (@heq (odd z) (g2 z (h2 z p)) p) with
+  | is_odd n k hh => g2h2_id0 n k hh
+  end.
+
 Let f (x : Z2') : Z2.
 Proof.
   destruct x.
@@ -587,6 +649,8 @@ Proof.
     apply tr.
     exists 1%Z.
     intro y.
-    (* TODO *)
-
+    exists (g2 y) ; split.
+    + exists (h2 y) ; apply h2g2_id.
+    + exists (h2 y) ; apply g2h2_id.
+Defined.
     
