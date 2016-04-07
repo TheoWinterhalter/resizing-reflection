@@ -751,7 +751,10 @@ Defined.
 
 Let ff (x : Z2) : Z2'.
   destruct x as [P h].
-  
+  destruct (either_in 0%Z P h).
+  - exact c0.
+  - exact c1.
+Defined.
 
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
