@@ -1,3 +1,7 @@
 *.pdf
 *~
 .DS_Store
+*.aux
+*.glob
+*.d
+Makefile
