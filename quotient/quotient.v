@@ -505,14 +505,21 @@ Proof.
   intros y p.
   compute.
   destruct p.
-  apply (diff_even _ _ (-k)%Z).
-  { assert (n = (2 * k)%Z).
-    - inversion h.
-      omega.
-    - omega.
-  }
+  apply (diff_even _ _ k).
+  apply (heq_trans _ n).
+  - apply minus0_id.
+  - exact h.
 Defined.
-  
+
+Unset Printing Universes.
+
+Lemma hg_id : forall y a, heq (h y (g y a)) a.
+Proof.
+  intros y a.
+  inversion a as [n m k ey n_z m_y].
+  unfold g.
+Abort.
+
 Let f (x : Z2') : Z2.
 Proof.
   destruct x.
@@ -524,8 +531,10 @@ Proof.
     exists (g y).
     split.
     + exists (h y).
-      intro a. 
-      unfold g.
+      intro a.
+      destruct (g y a).
+      unfold h.
+      compute.
 
 Let f (x : Z2) : Z2'.
 Proof.
