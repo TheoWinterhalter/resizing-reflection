@@ -653,4 +653,116 @@ Proof.
     + exists (h2 y) ; apply h2g2_id.
     + exists (h2 y) ; apply g2h2_id.
 Defined.
+
+Lemma eq_to_heq {A} : forall x y : A, eq x y -> heq x y.
+Proof.
+  intros x y eq.
+  now destruct eq.
+Defined.
+
+(*! WARNING : use of omega AND Defined !*)
+Lemma either_even_odd : forall z, hsum (exists k, heq z (2 * k)%Z) (exists k, heq z (2 * k + 1)%Z).
+Proof.
+  intro z.
+  destruct z.
+  - left. exists 0%Z. now compute.
+  - destruct p.
+    + right ; exists (Z.pos p) ; pose proof (Pos2Z.inj_xI p) ; easy.
+    + left ; exists (Z.pos p) ; pose proof (Pos2Z.inj_xO p) ; easy.
+    + right. exists 0%Z. now simpl.
+  - destruct p.
+    + right. exists (Z.neg p - 1)%Z. pose proof (Pos2Z.neg_xI p). apply eq_to_heq. omega.
+    + left. exists (Z.neg p). pose proof (Pos2Z.neg_xO p). easy.
+    + right. exists (-1)%Z. now simpl.
+Defined.
+
+Lemma even_odd_false : forall m k l, heq m (2 * k)%Z -> heq m (2 * l + 1)%Z -> False.
+Proof.
+  intros m k l even odd.
+  rewrite odd in even.
+  destruct k ; destruct l ;
+  try (simpl in even ; easy).
+  induction p0 ; try easy.
+Defined.
+
+Lemma inv_hProp : forall {A}, ishProp A -> forall x y : A, contractible (heq x y).
+Proof.
+  intros A h x y.
+  inversion h.
+  pose proof (X x y).
+  now inversion X0.
+Defined.
+
+Lemma hsum_hProp : forall A, ishProp A -> ishProp (hsum A (A -> False)).
+Proof.
+  intros A h.
+  apply hsuc.
+  intros x y.
+  apply hctr.
+  assert (heq x y).
+  - destruct x ; destruct y ; try easy.
+    + pose proof (inv_hProp h a a0).
+      destruct X as [p eq].
+      now destruct p.
+    + apply hf_equal.
+      pose proof (inv_hProp h).
+      admit.
+  - destruct X.
+    exists (heq_refl _).
+    intro p.
+    apply eq_proofs_unicity.
+    intros a b. destruct a ; destruct b ; try easy.
+    + left.
+      pose proof (inv_hProp h a a0).
+      destruct X as [q eq].
+      now destruct q.
+    + left.
+      apply hf_equal.
+      admit.
+Admitted.
+
+(*! WARNING : use of omega AND Defined !*)
+Lemma either_in : forall (z : Z) (P : Z -> hProp) (h : trunc minus1 (isEqClass R2Z P)), hsum (pi1 (P z)) (pi1 (P z) -> False).
+Proof.
+  intros z P h.
+  refine (trunc_ind (fun aa => _) _ h).
+  - intro hh.
+    apply hsuc.
+    intros x y.
+    apply hctr.
+    assert (heq x y).
+    + destruct x ; destruct y ; try easy ; admit.
+    + destruct X.
+      exists (heq_refl _).
+      intro p.
+      apply eq_proofs_unicity.
+      intros a b.
+      destruct a ; destruct b ; try (now left) ; try (now right) ; admit.
+  - intro p.
+    destruct p as [a p].
+    destruct (either_even_odd a) as [[k evena] | [k odda]] ;
+      destruct (either_even_odd z) as [[l evenz] | [l oddz]].
+    + left. apply p. apply (diff_even _ _ (l - k)%Z). inversion evena. inversion evenz.
+      apply eq_to_heq. omega.
+    + right. intro absurd. destruct (p z) as [f [[g gf] [g' g'f]]].
+      destruct (g absurd) as [n m q eq].
+      eapply (even_odd_false (m - n)%Z q (l - k)%Z).
+      * exact eq.
+      * apply eq_to_heq. inversion evena. inversion oddz. omega.
+    + right. intro absurd. destruct (p z) as [f [[g gf] [g' g'f]]].
+      destruct (g absurd) as [n m q eq].
+      eapply (even_odd_false (m - n)%Z q (l - k - 1)%Z).
+      * exact eq.
+      * apply eq_to_heq. inversion evenz. inversion odda. omega.
+    + left. apply p. apply (diff_even _ _ (l - k)%Z). inversion odda. inversion oddz.
+      apply eq_to_heq. omega.
+Admitted.      
+
+Let ff (x : Z2) : Z2'.
+  destruct x as [P h].
+  
+
+Lemma equiv_bool_Z2 : isEquiv f.
+Proof.
+  
     
