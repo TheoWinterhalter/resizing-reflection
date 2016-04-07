@@ -764,5 +764,8 @@ Defined.
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
   split.
-  - exists ff.
-    
+  - exists ff. intro a. unfold comp. unfold id. destruct a ;
+    unfold f ; unfold ff ; now simpl.
+  - exists ff. intro a. unfold comp. unfold id. destruct a as [P h].
+    unfold ff. destruct (either_in 0%Z P h).
+    + unfold f. (* We probably need something to say that two equivalence classes that share an element are equal. *)
