@@ -175,6 +175,18 @@ Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
 Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.
 Notation "A // R" := (quotient A R) (at level 90).
 
+Section Foo.
+
+  Universes i j k l.
+  Let X := Type@{i} : Type@{j}.
+  Let Y := Type@{j} : Type@{k}.
+  Parameter T : Type@{j}.
+  Parameter R : T -> T -> hProp@{l k l}.
+
+  Fail Check T // R : Type@{j}.
+
+End Foo.
+
 (* Let's try it with Z/2Z *)
 
 Require Import ZArith.
@@ -754,12 +766,47 @@ Proof.
       apply eq_to_heq. omega.
 Defined.
 
+(* Maybe a more generic either_in *)
+Lemma class_dec : forall {A R} (a : A) (P : A -> hProp) (h : trunc minus1 (isEqClass R P)), hsum (pi1 (P a)) (pi1 (P a) -> False).
+Proof.
+  intros A R a P h.
+  refine (trunc_ind (fun aa => _) _ h).
+  - intro hh.
+    apply hsum_hProp.
+    now (destruct (P a)).
+  - intro p.
+    destruct p as [b p].
+Abort.
+
 Let ff (x : Z2) : Z2'.
   destruct x as [P h].
   destruct (either_in 0%Z P h).
   - exact c0.
   - exact c1.
 Defined.
+
+(* Two classes that share an element are equal *)
+Lemma classes_share_eq :
+  forall {A R} (a : A) (P Q : A -> hProp) (hp : trunc minus1 (isEqClass R P)) (hq : trunc minus1 (isEqClass R Q)),
+    pi1 (P a) -> pi1 (Q a) -> heq P Q.
+Proof.
+  intros A R a P Q hp hq pa qa.
+  apply fun_ext.
+  intro x.
+  refine (trunc_ind (fun aa => _) _ hp).
+  - intro hp'.
+    apply hsuc.
+    intros e f.
+    apply hctr.
+    assert (heq e f).
+    + admit.
+    + admit.
+  - intro hpp.
+    refine (trunc_ind (fun aa => _) _ hq).
+    + admit.
+    + intro hqq.
+      destruct hpp as [e he].
+      destruct hqq as [b hb].
 
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
