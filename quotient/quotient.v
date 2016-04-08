@@ -172,18 +172,30 @@ Record isEqRel {A} (R : A -> A -> hProp) :=
 Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
   { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
 
-Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.
+(* Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }. *)
+Definition quotient@{i j k l m n r e3 e10 e11 e12 e13 e14 e15 e16 truc} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i}
+  := { P : A -> hProp@{m n r} | (trunc@{i} minus1 (isEqClass@{i i e3 j k l m n r e10 e11 e12 e13 e14 e15 e16} R P)) }.
 Notation "A // R" := (quotient A R) (at level 90).
 
 Section Foo.
 
   Universes i j k l.
-  Let X := Type@{i} : Type@{j}.
+  (*)Let X := Type@{i} : Type@{j}.*)
   Let Y := Type@{j} : Type@{k}.
   Parameter T : Type@{j}.
-  Parameter R : T -> T -> hProp@{l k l}.
+  Parameter R : T -> T -> hProp@{l j l}.
 
-  Fail Check T // R : Type@{j}.
+  Parameter P : T -> hProp@{l j l}.
+  Parameter eqP : isEqClass R P.
+
+  (* Definition foo : T // R := exist _ P (tr eqP). *)
+  
+  (* Goal T // R. *)
+  (* unfold quotient. *)
+  (* exists P. apply tr. exact eqP. *)
+  (* Defined. *)
+
+  Check T // R : Type@{j}.
 
 End Foo.
 
@@ -191,8 +203,10 @@ End Foo.
 
 Require Import ZArith.
 
+(* Definition Z@{i} := Z : let _ := Set : Type@{i} in Type@{i}. *)
+
 Inductive R2Ztype : Z -> Z -> Type :=
-| diff_even : forall n m k, heq (m - n)%Z (2 * k)%Z -> R2Ztype n m.
+| diff_even : forall n m k : Z, heq (m - n)%Z (2 * k)%Z -> R2Ztype n m.
 
 Require Eqdep_dec.
 
@@ -322,7 +336,7 @@ Proof.
     + right ; intro absurd ; apply b ; now inversion absurd.
 Qed.
 
-Lemma R2ZhProp : forall n m, ishType minus1 (R2Ztype n m).
+Lemma R2ZhProp : forall n m : Z, ishType minus1 (R2Ztype n m).
 Proof.
   intros n m.
   apply hsuc.
@@ -500,20 +514,6 @@ Defined.
 
 Unset Printing Universes.
 
-(*Definition g : forall (y : Z), pi1 (R2Z 0%Z y) -> even y.
-  intros y p.
-  compute in p.
-  simple refine ((R2Ztype_rect (fun x y _ => heq x 0%Z -> even y) _ _ _ p) (heq_refl _)).
-  intros n m k e h.
-  apply (is_even _ k).
-  apply (heq_trans _ (m - 0)%Z).
-  - apply heq_sym.
-    apply minus0_id.
-  - apply (heq_trans _ (m - n)%Z).
-    + now destruct h.
-    + exact e.
-Defined.*)
-
 Lemma conveq : forall n k, heq (n - 0)%Z (2 * k)%Z -> heq n (2 * k)%Z.
 Proof.
   intros n k h.
@@ -527,17 +527,6 @@ Definition g (y : Z) (p : R2Ztype 0%Z y) :=
   match p in (R2Ztype 0%Z z) return (even z) with
   | diff_even 0%Z n k h => is_even n k (conveq n k h)
   end.
-  
-(*Definition h : forall y, even y -> pi1 (R2Z 0%Z y).
-Proof.
-  intros y p.
-  compute.
-  destruct p.
-  apply (diff_even _ _ k).
-  apply (heq_trans _ n).
-  - apply minus0_id.
-  - exact h.
-Defined.*)
 
 Definition h (y : Z) (p : even y) :=
   match p in (even z) return (R2Ztype 0%Z z) with
@@ -642,6 +631,7 @@ Definition g2h2_id y a : heq (g2 y (h2 y a)) a :=
   | is_odd n k hh => g2h2_id0 n k hh
   end.
 
+
 Let f (x : Z2') : Z2.
 Proof.
   destruct x.
@@ -664,6 +654,16 @@ Proof.
     exists (g2 y) ; split.
     + exists (h2 y) ; apply h2g2_id.
     + exists (h2 y) ; apply g2h2_id.
+Defined.
+
+Axiom ff : forall X, X.
+
+Fixpoint foo (n : nat) : Z2.
+destruct n.
+- exact (f c1).
+- simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
+  + apply ff.
+  + apply ff.
 Defined.
 
 Lemma eq_to_heq {A} : forall x y : A, eq x y -> heq x y.
@@ -739,7 +739,12 @@ Proof.
 Defined.
 
 (*! WARNING : use of omega AND Defined !*)
-Lemma either_in : forall (z : Z) (P : Z -> hProp) (h : trunc minus1 (isEqClass R2Z P)), hsum (pi1 (P z)) (pi1 (P z) -> False).
+
+Set Printing Universes.
+
+
+Lemma either_in : forall (z : Z) (P : Z -> hProp) (h : trunc minus1 (isEqClass R2Z P)),
+                    hsum (pi1 (P z)) (pi1 (P z) -> False).
 Proof.
   intros z P h.
   refine (trunc_ind (fun aa => _) _ h).
@@ -766,47 +771,64 @@ Proof.
       apply eq_to_heq. omega.
 Defined.
 
-(* Maybe a more generic either_in *)
-Lemma class_dec : forall {A R} (a : A) (P : A -> hProp) (h : trunc minus1 (isEqClass R P)), hsum (pi1 (P a)) (pi1 (P a) -> False).
-Proof.
-  intros A R a P h.
-  refine (trunc_ind (fun aa => _) _ h).
-  - intro hh.
-    apply hsum_hProp.
-    now (destruct (P a)).
-  - intro p.
-    destruct p as [b p].
-Abort.
-
 Let ff (x : Z2) : Z2'.
   destruct x as [P h].
+  pose (either_in 0%Z P h).
   destruct (either_in 0%Z P h).
   - exact c0.
   - exact c1.
 Defined.
 
+Class Decidable (A : Type) :=
+  dec : hsum A (A -> False).
+Arguments dec A {_}.
+
 (* Two classes that share an element are equal *)
 Lemma classes_share_eq :
   forall {A R} (a : A) (P Q : A -> hProp) (hp : trunc minus1 (isEqClass R P)) (hq : trunc minus1 (isEqClass R Q)),
-    pi1 (P a) -> pi1 (Q a) -> heq P Q.
+    (forall x y, Decidable (pi1 (R x y))) -> isEqRel R -> pi1 (P a) -> pi1 (Q a) -> heq P Q.
 Proof.
-  intros A R a P Q hp hq pa qa.
+  intros A R a P Q hp hq dec eqrel pa qa.
   apply fun_ext.
   intro x.
-  refine (trunc_ind (fun aa => _) _ hp).
-  - intro hp'.
-    apply hsuc.
-    intros e f.
-    apply hctr.
-    assert (heq e f).
-    + admit.
-    + admit.
-  - intro hpp.
-    refine (trunc_ind (fun aa => _) _ hq).
-    + admit.
-    + intro hqq.
-      destruct hpp as [e he].
-      destruct hqq as [b hb].
+  destruct eqrel as [rho sigma tau].
+  destruct (dec x a).
+  - assert (pi1 (P x)) as px.
+    + refine (trunc_ind (fun aa => _) _ hp).
+      * intro hp'. now destruct (P x).
+      * intro hpp. destruct hpp as [e h]. apply h.
+        { apply (tau _ a).
+          - now apply sigma.
+          - now apply h.
+        }
+    + assert (pi1 (Q x)) as qx.
+      * { refine (trunc_ind (fun aa => _) _ hq).
+          - intro hq'. now destruct (Q x).
+          - intro hqq. destruct hqq as [e h]. apply h.
+            apply (tau _ a).
+            + now apply sigma.
+            + now apply h.
+        }
+      * admit.
+  - assert (pi1 (P x) -> False) as npx.
+    + intro px. apply b.
+      refine (trunc_ind (fun aa => _) _ hp).
+      * intro hp'. now destruct (R x a).
+      * intro hpp. destruct hpp as [e h].
+        { apply (tau _ e).
+          - now apply h.
+          - apply sigma. now apply h.
+        }
+    + assert (pi1 (Q x) -> False) as nqx.
+      * intro qx. apply b.
+        { refine (trunc_ind (fun aa => _) _ hq).
+          - intro hq'. now destruct (R x a).
+          - intro hqq. destruct hqq as [e h].
+            apply (tau _ e).
+            + now apply h.
+            + apply sigma. now apply h.
+        }
+      *  
 
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
