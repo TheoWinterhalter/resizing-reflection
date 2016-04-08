@@ -172,9 +172,9 @@ Record isEqRel {A} (R : A -> A -> hProp) :=
 Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
   { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
 
-(* Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }. *)
-Definition quotient@{i j k l m n r e3 e10 e11 e12 e13 e14 e15 e16 truc} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i}
-  := { P : A -> hProp@{m n r} | (trunc@{i} minus1 (isEqClass@{i i e3 j k l m n r e10 e11 e12 e13 e14 e15 e16} R P)) }.
+Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.
+(* Definition quotient@{i j k l m n r e3 e10 e11 e12 e13 e14 e15 e16 truc} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i} *)
+(*   := { P : A -> hProp@{m n r} | (trunc@{i} minus1 (isEqClass@{i i e3 j k l m n r e10 e11 e12 e13 e14 e15 e16} R P)) }. *)
 Notation "A // R" := (quotient A R) (at level 90).
 
 Section Foo.
@@ -658,6 +658,7 @@ Defined.
 
 Axiom ff : forall X, X.
 
+Set Printing Universes.
 Fixpoint foo (n : nat) : Z2.
 destruct n.
 - exact (f c1).
