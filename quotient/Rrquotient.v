@@ -6,6 +6,7 @@ Require Import Quotient.Base.
 (* Rewriting Rule *)
 
 Axiom RR1 : forall (A : Type), ishProp A -> Set.
+Axiom RR1_lift : forall {A B} (f : A -> B) {h : ishProp B}, A -> RR1 B h.
 
 (* This produces the annoying n < m <= i *)
 (* It's alright because we need RR2 to state that hProp : Set *)
@@ -16,35 +17,13 @@ Axiom RR1 : forall (A : Type), ishProp A -> Set.
 (*   apply ishType_trunc. *)
 (* Defined. *)
 
-Require Import Coq.Program.Tactics.
-Program Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) _ }.
-Next Obligation.
-  apply ishType_trunc.
- Defined.
+(* Require Import Coq.Program.Tactics. *)
+Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
+(* Next Obligation. *)
+(*   apply ishType_trunc. *)
+(*  Defined. *)
 
 Notation "A // R" := (quotient A R) (at level 90).
-
-Section Foo.
-
-  Universes i j k l.
-  (*)Let X := Type@{i} : Type@{j}.*)
-  Let Y := Type@{j} : Type@{k}.
-  Parameter T : Type@{j}.
-  Parameter R : T -> T -> hProp@{l j l}.
-
-  Parameter P : T -> hProp@{l j l}.
-  Parameter eqP : isEqClass R P.
-
-  (* Definition foo : T // R := exist _ P (tr eqP). *)
-
-  (* Goal T // R. *)
-  (* unfold quotient. *)
-  (* exists P. apply tr. exact eqP. *)
-  (* Defined. *)
-
-  Check T // R : Type@{j}.
-
-End Foo.
 
 (* Let's try it with Z/2Z *)
 
@@ -332,13 +311,6 @@ Proof.
   - now apply (division_unicity2 n).
 Defined.
 
-(* Random exercise *)
-Goal forall x : True, forall e : heq x x, heq e (heq_refl _).
-Proof.
-  destruct x.
-  inversion e.
-Abort.
-
 (* m - 0 = m *)
 Lemma minus0_id : forall n, heq (n - 0)%Z n.
 Proof.
@@ -485,7 +457,7 @@ Proof.
   - exists (fun z => exist _ (even z) (evenhProp z)).
     compute.
     (* We need something to work on RR1 trunc instead of trunc *)
-    apply tr.
+    apply (RR1_lift tr).
     exists 0%Z.
     intro y.
     exists (g y).
@@ -496,7 +468,7 @@ Proof.
       apply gh_id.
   - exists (fun z => exist _ (odd z) (oddhProp z)).
     compute.
-    apply tr.
+    apply (RR1_lift tr).
     exists 1%Z.
     intro y.
     exists (g2 y) ; split.
@@ -510,183 +482,9 @@ Set Printing Universes.
 Fixpoint foo (n : nat) : Z2.
 destruct n.
 - exact (f c1).
-- Fail simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
-  (*+ apply ff.
+- simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
   + apply ff.
-Defined.*)
-Abort.
-
-(*
-Lemma eq_to_heq {A} : forall x y : A, eq x y -> heq x y.
-Proof.
-  intros x y eq.
-  now destruct eq.
+  + apply ff.
 Defined.
 
-(*! WARNING : use of omega AND Defined !*)
-Lemma either_even_odd : forall z, hsum (exists k, heq z (2 * k)%Z) (exists k, heq z (2 * k + 1)%Z).
-Proof.
-  intro z.
-  destruct z.
-  - left. exists 0%Z. now compute.
-  - destruct p.
-    + right ; exists (Z.pos p) ; pose proof (Pos2Z.inj_xI p) ; easy.
-    + left ; exists (Z.pos p) ; pose proof (Pos2Z.inj_xO p) ; easy.
-    + right. exists 0%Z. now simpl.
-  - destruct p.
-    + right. exists (Z.neg p - 1)%Z. pose proof (Pos2Z.neg_xI p). apply eq_to_heq. omega.
-    + left. exists (Z.neg p). pose proof (Pos2Z.neg_xO p). easy.
-    + right. exists (-1)%Z. now simpl.
-Defined.
-
-Lemma even_odd_false : forall m k l, heq m (2 * k)%Z -> heq m (2 * l + 1)%Z -> False.
-Proof.
-  intros m k l even odd.
-  rewrite odd in even.
-  destruct k ; destruct l ;
-  try (simpl in even ; easy).
-  induction p0 ; try easy.
-Defined.
-
-Lemma inv_hProp : forall {A}, ishProp A -> forall x y : A, contractible (heq x y).
-Proof.
-  intros A h x y.
-  inversion h.
-  pose proof (X x y).
-  now inversion X0.
-Defined.
-
-Axiom fun_ext : forall {A B} {f g : A -> B}, (forall x, heq (f x) (g x)) -> heq f g.
-
-Lemma hsum_hProp : forall A, ishProp A -> ishProp (hsum A (A -> False)).
-Proof.
-  intros A h.
-  apply hsuc.
-  intros x y.
-  apply hctr.
-  assert (heq x y).
-  - destruct x ; destruct y ; try easy.
-    + pose proof (inv_hProp h a a0).
-      destruct X as [p eq].
-      now destruct p.
-    + apply hf_equal.
-      apply fun_ext.
-      intro x.
-      destruct (b x).
-  - destruct X.
-    exists (heq_refl _).
-    intro p.
-    apply eq_proofs_unicity.
-    intros a b. destruct a ; destruct b ; try easy.
-    + left.
-      pose proof (inv_hProp h a a0).
-      destruct X as [q eq].
-      now destruct q.
-    + left.
-      apply hf_equal.
-       apply fun_ext.
-      intro tutu.
-      destruct (b tutu).
-Defined.
-
-(*! WARNING : use of omega AND Defined !*)
-
-Set Printing Universes.
-
-
-Lemma either_in : forall (z : Z) (P : Z -> hProp) (h : trunc minus1 (isEqClass R2Z P)),
-                    hsum (pi1 (P z)) (pi1 (P z) -> False).
-Proof.
-  intros z P h.
-  refine (trunc_ind (fun aa => _) _ h).
-  - intro hh.
-    apply hsum_hProp.
-    now destruct (P z).
-  - intro p.
-    destruct p as [a p].
-    destruct (either_even_odd a) as [[k evena] | [k odda]] ;
-      destruct (either_even_odd z) as [[l evenz] | [l oddz]].
-    + left. apply p. apply (diff_even _ _ (l - k)%Z). inversion evena. inversion evenz.
-      apply eq_to_heq. omega.
-    + right. intro absurd. destruct (p z) as [f [[g gf] [g' g'f]]].
-      destruct (g absurd) as [n m q eq].
-      eapply (even_odd_false (m - n)%Z q (l - k)%Z).
-      * exact eq.
-      * apply eq_to_heq. inversion evena. inversion oddz. omega.
-    + right. intro absurd. destruct (p z) as [f [[g gf] [g' g'f]]].
-      destruct (g absurd) as [n m q eq].
-      eapply (even_odd_false (m - n)%Z q (l - k - 1)%Z).
-      * exact eq.
-      * apply eq_to_heq. inversion evenz. inversion odda. omega.
-    + left. apply p. apply (diff_even _ _ (l - k)%Z). inversion odda. inversion oddz.
-      apply eq_to_heq. omega.
-Defined.
-
-Let ff (x : Z2) : Z2'.
-  destruct x as [P h].
-  pose (either_in 0%Z P h).
-  destruct (either_in 0%Z P h).
-  - exact c0.
-  - exact c1.
-Defined.
-
-Class Decidable (A : Type) :=
-  dec : hsum A (A -> False).
-Arguments dec A {_}.
-
-(* Two classes that share an element are equal *)
-Lemma classes_share_eq :
-  forall {A R} (a : A) (P Q : A -> hProp) (hp : trunc minus1 (isEqClass R P)) (hq : trunc minus1 (isEqClass R Q)),
-    (forall x y, Decidable (pi1 (R x y))) -> isEqRel R -> pi1 (P a) -> pi1 (Q a) -> heq P Q.
-Proof.
-  intros A R a P Q hp hq dec eqrel pa qa.
-  apply fun_ext.
-  intro x.
-  destruct eqrel as [rho sigma tau].
-  destruct (dec x a).
-  - assert (pi1 (P x)) as px.
-    + refine (trunc_ind (fun aa => _) _ hp).
-      * intro hp'. now destruct (P x).
-      * intro hpp. destruct hpp as [e h]. apply h.
-        { apply (tau _ a).
-          - now apply sigma.
-          - now apply h.
-        }
-    + assert (pi1 (Q x)) as qx.
-      * { refine (trunc_ind (fun aa => _) _ hq).
-          - intro hq'. now destruct (Q x).
-          - intro hqq. destruct hqq as [e h]. apply h.
-            apply (tau _ a).
-            + now apply sigma.
-            + now apply h.
-        }
-      * admit.
-  - assert (pi1 (P x) -> False) as npx.
-    + intro px. apply b.
-      refine (trunc_ind (fun aa => _) _ hp).
-      * intro hp'. now destruct (R x a).
-      * intro hpp. destruct hpp as [e h].
-        { apply (tau _ e).
-          - now apply h.
-          - apply sigma. now apply h.
-        }
-    + assert (pi1 (Q x) -> False) as nqx.
-      * intro qx. apply b.
-        { refine (trunc_ind (fun aa => _) _ hq).
-          - intro hq'. now destruct (R x a).
-          - intro hqq. destruct hqq as [e h].
-            apply (tau _ e).
-            + now apply h.
-            + apply sigma. now apply h.
-        }
-      *
-
-Lemma equiv_bool_Z2 : isEquiv f.
-Proof.
-  split.
-  - exists ff. intro a. unfold comp. unfold id. destruct a ;
-    unfold f ; unfold ff ; now simpl.
-  - exists ff. intro a. unfold comp. unfold id. destruct a as [P h].
-    unfold ff. destruct (either_in 0%Z P h).
-    + unfold f. (* We probably need something to say that two equivalence classes that share an element are equal. *)
-*)
+(* END *)
