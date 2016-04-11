@@ -5,3 +5,6 @@
 *.glob
 *.d
 Makefile
+*.bak
+*#
+*.vo
