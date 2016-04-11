@@ -17,11 +17,8 @@ Axiom RR1_lift : forall {A B} (f : A -> B) {h : ishProp B}, A -> RR1 B h.
 (*   apply ishType_trunc. *)
 (* Defined. *)
 
-(* Require Import Coq.Program.Tactics. *)
 Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
-(* Next Obligation. *)
-(*   apply ishType_trunc. *)
-(*  Defined. *)
+(* Print quotient. *)
 
 Notation "A // R" := (quotient A R) (at level 90).
 
@@ -205,9 +202,12 @@ Proof.
       now apply inl.
 Defined.
 
-Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
+Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
+
+Definition R2Z (n m : Z) : hProp := exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) (RR1_hProp _ (R2ZhProp n m)).
 
 Definition Z2 := Z // R2Z.
+(* Print Z2. *)
 
 (* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
 Fail Check Z2 : Set.
@@ -478,13 +478,40 @@ Defined.
 
 Axiom ff : forall X, X.
 
-Set Printing Universes.
+Definition pi2 (T : hProp) : ishProp (pi1 T) :=
+  let (_, h) := T in h.
+
+Axiom fun_ext : forall {A B} {f g : A -> B}, (forall x, heq (f x) (g x)) -> heq f g.
+Axiom dep_fun_ext : forall {A B} {f g : forall a : A, B a}, (forall a, heq (f a) (g a)) -> heq f g.
+
+(* Lemma inv_hProp : forall {A}, ishProp A -> forall x y : A, contractible (heq x y). *)
+(* Proof. *)
+(*   intros A h x y. *)
+(*   inversion h. *)
+(*   pose proof (X x y). *)
+(*   now inversion X0. *)
+(* Defined. *)
+
+(* Lemma bar : forall z b, ishProp (forall x : Z2, heq x (* (foo n) *) b -> let (P, _) := x in pi1 (P z)). *)
+(* Proof. *)
+(*   intros z b. *)
+(*   apply hsuc. *)
+(*   intros x y. *)
+(*   apply hctr. *)
+(*   assert (heq x y) as x_y. *)
+(*   - apply dep_fun_ext. intro a. *)
+(*     apply fun_ext. intro eq. *)
+(*     destruct a as [Pa ha]. *)
+(*     destruct (Pa z) as [Paz haz]. *)
+    
+
+(* Set Printing Universes. *)
 Fixpoint foo (n : nat) : Z2.
 destruct n.
 - exact (f c1).
-- simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
-  + apply ff.
-  + apply ff.
+(* - simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in RR1 (pi1 (P z)) (pi2 (P z)); _)) _). *)
+- apply (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); (ff _))) (ff _)).
+(* - simple refine (exist _ (fun z => (RR1 (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z)) _ ; _)) _). *)
 Defined.
 
 (* END *)
