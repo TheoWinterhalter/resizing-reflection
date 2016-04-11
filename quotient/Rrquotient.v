@@ -1,12 +1,15 @@
 Set Printing Universes.
 Set Universe Polymorphism.
 
-Require Import Quotient.Base.
+Add LoadPath "../quotient".
+Require Import Base.
 
 (* Rewriting Rule *)
 
 Axiom RR1 : forall (A : Type), ishProp A -> Set.
 Axiom RR1_lift : forall {A B} (f : A -> B) {h : ishProp B}, A -> RR1 B h.
+Axiom RR1_unbox : forall {A B} (f : A -> B) {h : ishProp A}, RR1 A h -> B.
+Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
 
 (* This produces the annoying n < m <= i *)
 (* It's alright because we need RR2 to state that hProp : Set *)
@@ -202,18 +205,15 @@ Proof.
       now apply inl.
 Defined.
 
-Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
-
 Definition R2Z (n m : Z) : hProp := exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) (RR1_hProp _ (R2ZhProp n m)).
 
 Definition Z2 := Z // R2Z.
-(* Print Z2. *)
+(*Unset Printing Notations.
+Print Z2.
+Set Printing Notations.*)
 
 (* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
 Fail Check Z2 : Set.
-
-(* Alternative definition of Z2 (ie bool) *)
-Inductive Z2' : Set := c0 | c1.
 
 Inductive even : Z -> Type :=
   is_even : forall n k : Z, heq n (2 * k)%Z -> even n.
@@ -450,19 +450,18 @@ Definition g2h2_id y a : heq (g2 y (h2 y a)) a :=
   | is_odd n k hh => g2h2_id0 n k hh
   end.
 
-
-Let f (x : Z2') : Z2.
+Let f (x : bool) : Z2.
 Proof.
   destruct x.
   - exists (fun z => exist _ (even z) (evenhProp z)).
-    compute.
+    (*compute.*) (* This line causes a loop! *)
     (* We need something to work on RR1 trunc instead of trunc *)
     apply (RR1_lift tr).
     exists 0%Z.
     intro y.
-    exists (g y).
+    exists (RR1_unbox (g y)).
     split.
-    + exists (h y).
+    + exists (RR1_lift (h y)).
       apply hg_id.
     + exists (h y).
       apply gh_id.
@@ -503,15 +502,13 @@ Axiom dep_fun_ext : forall {A B} {f g : forall a : A, B a}, (forall a, heq (f a)
 (*     apply fun_ext. intro eq. *)
 (*     destruct a as [Pa ha]. *)
 (*     destruct (Pa z) as [Paz haz]. *)
-    
 
 (* Set Printing Universes. *)
 Fixpoint foo (n : nat) : Z2.
-destruct n.
-- exact (f c1).
-(* - simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in RR1 (pi1 (P z)) (pi2 (P z)); _)) _). *)
-- apply (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); (ff _))) (ff _)).
-(* - simple refine (exist _ (fun z => (RR1 (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z)) _ ; _)) _). *)
+  destruct n.
+  - exact (f true).
+  - apply (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z) ; _)) _).
+  (*- exact (ff _).*)
 Defined.
 
 (* END *)
