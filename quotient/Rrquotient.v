@@ -7,8 +7,12 @@ Require Import Base.
 (* Rewriting Rule *)
 
 Axiom RR1 : forall (A : Type), ishProp A -> Set.
-Axiom RR1_lift : forall {A B} (f : A -> B) {h : ishProp B}, A -> RR1 B h.
-Axiom RR1_unbox : forall {A B} (f : A -> B) {h : ishProp A}, RR1 A h -> B.
+
+Axiom RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
+Axiom RR1_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h), A.
+Axiom RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
+                        heq (@RR1_unbox A h (@RR1_box A h a)) a.
+
 Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
 
 (* This produces the annoying n < m <= i *)
@@ -456,24 +460,26 @@ Proof.
   - exists (fun z => exist _ (even z) (evenhProp z)).
     (*compute.*) (* This line causes a loop! *)
     (* We need something to work on RR1 trunc instead of trunc *)
-    apply (RR1_lift tr).
+    apply RR1_box.
+    apply tr.
     exists 0%Z.
     intro y.
-    exists (RR1_unbox (g y)).
+    exists (fun x => g y (RR1_unbox x)).
     split.
-    + exists (RR1_lift (h y)).
-      apply hg_id.
-    + exists (h y).
-      apply gh_id.
-  - exists (fun z => exist _ (odd z) (oddhProp z)).
-    compute.
-    apply (RR1_lift tr).
-    exists 1%Z.
-    intro y.
-    exists (g2 y) ; split.
-    + exists (h2 y) ; apply h2g2_id.
-    + exists (h2 y) ; apply g2h2_id.
-Defined.
+    + exists (fun x => RR1_box (h y x)).
+  (*     apply hg_id. *)
+  (*   + exists (h y). *)
+  (*     apply gh_id. *)
+  (* - exists (fun z => exist _ (odd z) (oddhProp z)). *)
+  (*   compute. *)
+  (*   apply (RR1_lift tr). *)
+  (*   exists 1%Z. *)
+  (*   intro y. *)
+  (*   exists (g2 y) ; split. *)
+  (*   + exists (h2 y) ; apply h2g2_id. *)
+  (*   + exists (h2 y) ; apply g2h2_id. *)
+(* Defined. *)
+Admitted.        
 
 Axiom ff : forall X, X.
 
@@ -507,7 +513,7 @@ Axiom dep_fun_ext : forall {A B} {f g : forall a : A, B a}, (forall a, heq (f a)
 Fixpoint foo (n : nat) : Z2.
   destruct n.
   - exact (f true).
-  - apply (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z) ; _)) _).
+  - simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z) ; _)) _).
   (*- exact (ff _).*)
 Defined.
 
