@@ -122,7 +122,7 @@ Definition hSet  := 0-Type.
 
 (* Truncation *)
 
-Module Truncation.
+Module Export Truncation.
 
   Private Inductive trunc (n : hlevel) (A : Type) : Type :=
   | tr : A -> trunc n A.
