@@ -1,3 +1,6 @@
+Set Printing Universes.
+Set Universe Polymorphism.
+
 Require Import Quotient.Base.
 
 (* Rewriting Rule *)
@@ -12,7 +15,7 @@ Program Definition quotient@{i j k l m n p q r s e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 
 Next Obligation.
   apply ishType_trunc.
 Defined.
-  
+
 Notation "A // R" := (quotient A R) (at level 90).
 
 (* Let's try it with Z/2Z *)
@@ -186,7 +189,7 @@ Definition R2Z (n m : Z) : hProp := exist _ (R2Ztype n m) (R2ZhProp n m ).
 
 Definition Z2 := Z // R2Z.
 
-(* This time, we still don't have Z2 : Set because we would need RR2 to do so, but as pointed out in the definitin of 
+(* This time, we still don't have Z2 : Set because we would need RR2 to do so, but as pointed out in the definitin of
    quotient, we would keep the same universe if not for hProp being to big for Set. *)
 Fail Check Z2 : Set.
 

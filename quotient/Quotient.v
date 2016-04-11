@@ -1,3 +1,6 @@
+Set Printing Universes.
+Set Universe Polymorphism.
+
 Require Import Quotient.Base.
 
 Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.
@@ -17,7 +20,7 @@ Section Foo.
   Parameter eqP : isEqClass R P.
 
   (* Definition foo : T // R := exist _ P (tr eqP). *)
-  
+
   (* Goal T // R. *)
   (* unfold quotient. *)
   (* exists P. apply tr. exact eqP. *)
@@ -490,11 +493,13 @@ Set Printing Universes.
 Fixpoint foo (n : nat) : Z2.
 destruct n.
 - exact (f c1).
-- simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
+- Fail simple refine (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z); _)) _).
+  (*+ apply ff.
   + apply ff.
-  + apply ff.
-Defined.
+Defined.*)
+Abort.
 
+(*
 Lemma eq_to_heq {A} : forall x y : A, eq x y -> heq x y.
 Proof.
   intros x y eq.
@@ -657,7 +662,7 @@ Proof.
             + now apply h.
             + apply sigma. now apply h.
         }
-      *  
+      *
 
 Lemma equiv_bool_Z2 : isEquiv f.
 Proof.
@@ -667,3 +672,4 @@ Proof.
   - exists ff. intro a. unfold comp. unfold id. destruct a as [P h].
     unfold ff. destruct (either_in 0%Z P h).
     + unfold f. (* We probably need something to say that two equivalence classes that share an element are equal. *)
+*)
