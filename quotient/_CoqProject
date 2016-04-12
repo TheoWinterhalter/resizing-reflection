@@ -3,5 +3,7 @@
 
 Base.v
 MyEqDepDec.v
+NType.v
+RRnType.v
 Quotient.v
 Rrquotient.v

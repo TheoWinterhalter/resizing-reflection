@@ -2,34 +2,34 @@ Set Printing Universes.
 Set Universe Polymorphism.
 
 Add LoadPath "../quotient".
-Require Import Base.
+Require Import NType.
 
 Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.
 (* Definition quotient@{i j k l m n r e3 e10 e11 e12 e13 e14 e15 e16 truc} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i} *)
 (*   := { P : A -> hProp@{m n r} | (trunc@{i} minus1 (isEqClass@{i i e3 j k l m n r e10 e11 e12 e13 e14 e15 e16} R P)) }. *)
 Notation "A // R" := (quotient A R) (at level 90).
 
-Section Foo.
+(* Section Foo. *)
 
-  Universes i j k l.
-  (*)Let X := Type@{i} : Type@{j}.*)
-  Let Y := Type@{j} : Type@{k}.
-  Parameter T : Type@{j}.
-  Parameter R : T -> T -> hProp@{l j l}.
+(*   Universes i j k l. *)
+(*   (*)Let X := Type@{i} : Type@{j}.*) *)
+(*   Let Y := Type@{j} : Type@{k}. *)
+(*   Parameter T : Type@{j}. *)
+(*   Parameter R : T -> T -> hProp@{l j l}. *)
 
-  Parameter P : T -> hProp@{l j l}.
-  Parameter eqP : isEqClass R P.
+(*   Parameter P : T -> hProp@{l j l}. *)
+(*   Parameter eqP : isEqClass R P. *)
 
-  (* Definition foo : T // R := exist _ P (tr eqP). *)
+(*   (* Definition foo : T // R := exist _ P (tr eqP). *) *)
 
-  (* Goal T // R. *)
-  (* unfold quotient. *)
-  (* exists P. apply tr. exact eqP. *)
-  (* Defined. *)
+(*   (* Goal T // R. *) *)
+(*   (* unfold quotient. *) *)
+(*   (* exists P. apply tr. exact eqP. *) *)
+(*   (* Defined. *) *)
 
-  Check T // R : Type@{j}.
+(*   Check T // R : Type@{j}. *)
 
-End Foo.
+(* End Foo. *)
 
 (* Let's try it with Z/2Z *)
 
@@ -254,20 +254,6 @@ Abort.
 Lemma minus0_id : forall n, heq (n - 0)%Z n.
 Proof.
   induction n ; easy.
-Defined.
-
-(* transitivity of heq *)
-Lemma heq_trans {A} : forall a b c : A, heq a b -> heq b c -> heq a c.
-Proof.
-  intros a b c eqab eqbc.
-  destruct eqab.
-  exact eqbc.
-Defined.
-
-Lemma heq_sym {A} : forall a b : A, heq a b -> heq b a.
-Proof.
-  intros a b eq.
-  now destruct eq.
 Defined.
 
 Unset Printing Universes.

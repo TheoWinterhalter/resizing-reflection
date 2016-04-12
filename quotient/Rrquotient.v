@@ -2,18 +2,7 @@ Set Printing Universes.
 Set Universe Polymorphism.
 
 Add LoadPath "../quotient".
-Require Import Base.
-
-(* Rewriting Rule *)
-
-Axiom RR1 : forall (A : Type), ishProp A -> Set.
-
-Axiom RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
-Axiom RR1_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h), A.
-Axiom RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
-                        heq (@RR1_unbox A h (@RR1_box A h a)) a.
-
-Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
+Require Import RRnType.
 
 (* This produces the annoying n < m <= i *)
 (* It's alright because we need RR2 to state that hProp : Set *)
@@ -24,7 +13,7 @@ Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
 (*   apply ishType_trunc. *)
 (* Defined. *)
 
-Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
+Definition quotient@{{i j k l m n p q r s e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16}} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i} := { P : A -> hProp@{} | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
 (* Print quotient. *)
 
 Notation "A // R" := (quotient A R) (at level 90).
@@ -249,20 +238,6 @@ Proof.
   induction n ; easy.
 Defined.
 
-(* transitivity of heq *)
-Lemma heq_trans {A} : forall a b c : A, heq a b -> heq b c -> heq a c.
-Proof.
-  intros a b c eqab eqbc.
-  destruct eqab.
-  exact eqbc.
-Defined.
-
-Lemma heq_sym {A} : forall a b : A, heq a b -> heq b a.
-Proof.
-  intros a b eq.
-  now destruct eq.
-Defined.
-
 Unset Printing Universes.
 
 Lemma conveq : forall n k, heq (n - 0)%Z (2 * k)%Z -> heq n (2 * k)%Z.
@@ -414,9 +389,6 @@ Axiom ff : forall X, X.
 Definition pi2 (T : hProp) : ishProp (pi1 T) :=
   let (_, h) := T in h.
 
-Axiom fun_ext : forall {A B} {f g : A -> B}, (forall x, heq (f x) (g x)) -> heq f g.
-Axiom dep_fun_ext : forall {A B} {f g : forall a : A, B a}, (forall a, heq (f a) (g a)) -> heq f g.
-
 (* Lemma inv_hProp : forall {A}, ishProp A -> forall x y : A, contractible (heq x y). *)
 (* Proof. *)
 (*   intros A h x y. *)
@@ -437,13 +409,22 @@ Axiom dep_fun_ext : forall {A B} {f g : forall a : A, B a}, (forall a, heq (f a)
 (*     destruct a as [Pa ha]. *)
 (*     destruct (Pa z) as [Paz haz]. *)
 
+Let fooP (foon : Z2) (z : Z) : hProp.
+  simple refine (forall x : Z2, heq x foon -> let (P, _) := x in pi1 (P z) ; _).
+  apply hsuc.
+  intros x y.
+  apply hctr.
+  assert (heq x y) as x_y.
+  - apply dep_fun_ext. intro a.
+    apply fun_ext. intro eq.
+    destruct a as [Pa ha].
+
 Set Printing Universes.
 Unset Printing Notations.
 Fixpoint foo (n : nat) : Z2.
   destruct n.
   - exact (f true).
-  - simple refine
-           (exist _ (fun z => (forall x : Z2, heq x (foo n) -> let (P, _) := x in pi1 (P z) ; _)) _).
+  - simple refine (exist _ (fooP (foo n)) _).
   (*- exact (ff _).*)
 Defined.
 
