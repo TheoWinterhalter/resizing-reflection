@@ -5,13 +5,15 @@ Add LoadPath "../quotient".
 Require Import Base.
 Require Import MyEqDepDec.
 
-(* Contractible types *)
+(*! Contractible types *)
+
+(* Unset Printing Notations. *)
 
 Record contractible (T : Type) := CtrMk
   { Point : T ;
     Ctr   : forall t : T, heq t Point }.
 
-(* Integers for h-levels *)
+(*! Integers for h-levels *)
 
 Inductive hlevel :=
 | minus2 : hlevel
@@ -20,11 +22,11 @@ Inductive hlevel :=
 Definition minus1 := suc minus2.
 Definition zero   := suc minus1.
 
-Notation "-2" := (minus2).
-Notation "-1" := (minus1).
+Notation "-2" := (minus2) (at level 0).
+Notation "-1" := (minus1) (at level 0).
 Notation "0"  := (zero).
 
-(* is-n-Type *)
+(*! is-n-Type *)
 
 Fixpoint _ishType (n : hlevel) (T : Type) : Type :=
   match n with
@@ -32,7 +34,7 @@ Fixpoint _ishType (n : hlevel) (T : Type) : Type :=
   | suc n  => forall x y : T, _ishType n (heq x y)
   end.
 
-Lemma nType_hProp : forall n T, _ishType minus1 (_ishType n T).
+Lemma nType_hProp : forall n T, _ishType (-1) (_ishType n T).
 Proof.
   intro n ; induction n as [| n ihn] ; intro T.
   - intros x y. simpl in x,y. simpl.
@@ -84,7 +86,7 @@ Proof.
       exact pp.
 Defined.
 
-Definition _ishProp := _ishType minus1.
+Definition _ishProp := _ishType (-1).
 
 (* Resizing Rules *)
 
@@ -103,7 +105,7 @@ Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
 Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T) (nType_hProp n T).
 
-Definition hctr : forall T, contractible T -> ishType minus2 T.
+Definition hctr : forall T, contractible T -> ishType (-2) T.
   intros T h. apply _RR1_box. exact h.
 Defined.
 
@@ -115,7 +117,7 @@ Defined.
 
 Notation "is- N -Type" := (ishType N) (at level 80).
 
-Definition ishProp := is-minus1-Type.
+Definition ishProp := is-(-1)-Type.
 Definition ishSet  := is-0-Type.
 
 (* n-Type *)
@@ -124,7 +126,7 @@ Definition hType (n : hlevel) := { T : Type | is-n-Type T }.
 
 Notation "n -Type" := (hType n) (at level 75).
 
-Definition hProp := minus1-Type.
+Definition hProp := (-1)-Type.
 Definition hSet  := 0-Type.
 
 (* Resizing Rules for hType *)

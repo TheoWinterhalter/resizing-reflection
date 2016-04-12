@@ -4,6 +4,9 @@ Set Universe Polymorphism.
 Add LoadPath "../quotient".
 Require Import Base.
 
+(*! We define our own False in order not to have that annoying Coq.Logic.2 *)
+Inductive False :=.
+
 Section MyEqdepDec.
 
   Variable A : Type.
@@ -31,7 +34,7 @@ Section MyEqdepDec.
   Let nu (y : A) (u : heq x y) : heq x y :=
     match eq_dec y with
       | inl _ _ eqxy => eqxy
-      | inr _ _ neqxy => False_rect _ (neqxy u)
+      | inr _ _ neqxy => False_rect (fun bot => heq x y) (neqxy u)
     end.
 
   Let nu_constant : forall (y : A) (u v : heq x y), heq (nu _ u) (nu _ v).
@@ -41,7 +44,7 @@ Section MyEqdepDec.
     case (eq_dec y).
     - now intro a.
     - intro b.
-      exfalso.
+      apply (False_rect).
       apply b.
       exact u.
   Defined.
