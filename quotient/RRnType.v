@@ -9,9 +9,9 @@ Require Import MyEqDepDec.
 
 (* Unset Printing Notations. *)
 
-Record contractible (T : Type) := CtrMk
+Record contractible@{i} (T : Type@{i}) : Type@{i} := CtrMk
   { Point : T ;
-    Ctr   : forall t : T, heq t Point }.
+    Ctr   : forall t : T, heq@{i i} t Point }.
 
 (*! Integers for h-levels *)
 
@@ -28,13 +28,14 @@ Notation "0"  := (zero).
 
 (*! is-n-Type *)
 
-Fixpoint _ishType (n : hlevel) (T : Type) : Type :=
+Fixpoint _ishType@{i} (n : hlevel) (T : Type@{i}) : Type@{i} :=
   match n with
-  | minus2 => contractible T
-  | suc n  => forall x y : T, _ishType n (heq x y)
+  | minus2 => contractible@{i} T
+  | suc n  => forall x y : T, _ishType@{i} n (heq@{i i} x y)
   end.
 
-Lemma nType_hProp : forall n T, _ishType (-1) (_ishType n T).
+
+Lemma nType_hProp@{i} : forall n (T : Type@{i}), _ishType@{i} (-1) (_ishType@{i} n T).
 Proof.
   intro n ; induction n as [| n ihn] ; intro T.
   - intros x y. simpl in x,y. simpl.
@@ -103,7 +104,7 @@ Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
 (*! Actual ishType *)
 
-Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T) (nType_hProp n T).
+Definition ishType (n : hlevel) (T : Type) : Set := _RR1 (_ishType n T) (nType_hProp n T).
 
 Definition hctr : forall T, contractible T -> ishType (-2) T.
   intros T h. apply _RR1_box. exact h.
@@ -166,7 +167,7 @@ Module Export Truncation.
     Universes i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30 u31 u32 u33.
 
     Global Lemma ishType_trunc (n : hlevel) (A : Type@{i})
-    : ishType@{i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30 u31 u32 u33} n (trunc@{i} n A).
+    : ishType@{i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29} n (trunc@{i} n A).
     Admitted.
 
   End Foo.
