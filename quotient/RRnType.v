@@ -35,7 +35,7 @@ Fixpoint _ishType@{i} (n : hlevel) (T : Type@{i}) : Type@{i} :=
   end.
 
 
-Lemma nType_hProp@{i} : forall n (T : Type@{i}), _ishType@{i} (-1) (_ishType@{i} n T).
+Lemma nType_hProp : forall n (T : Type), _ishType (-1) (_ishType n T).
 Proof.
   intro n ; induction n as [| n ihn] ; intro T.
   - intros x y. simpl in x,y. simpl.
@@ -213,7 +213,30 @@ Record isEqRel {A} (R : A -> A -> hProp) :=
     sigma : forall x y : A, pi1 (R x y) -> pi1 (R y x) ;
     tau : forall x y z : A, pi1 (R y z) -> pi1 (R x y) -> pi1 (R x z) }.
 
-(* Quotient *)
+(*! Quotient *)
 
 Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
   { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
+
+(*! hProp is only up to codomain *)
+
+Lemma forall_hProp {A B} : (forall x : A, ishProp (B x)) -> ishProp (forall x, B x).
+Proof.
+  intro h.
+  apply hsuc. intros f g.
+  apply hctr.
+  assert (heq f g) as f_g.
+  - apply dep_fun_ext. intro a.
+    pose proof (h a) as ha.
+    pose proof (_RR1_unbox ha) as hha. simpl in hha.
+    apply hha.
+  - destruct f_g.
+    exists (heq_refl _). intro p.
+    apply eq_proofs_unicity. intros g1 g2.
+    left. apply dep_fun_ext. intro a.
+    pose proof (h a) as ha.
+    pose proof (_RR1_unbox ha) as hha. simpl in hha.
+    apply hha.
+Defined.
+
+  
