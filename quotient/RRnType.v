@@ -84,30 +84,6 @@ Proof.
       exact pp.
 Defined.
 
-Lemma nType_hProp : forall n T, _ishType minus1 (_ishType n T).
-Proof.
-  intros n T.
-  intros x y.
-  assert (heq x y).
-  - induction n.
-    + simpl in x,y.
-      destruct x as [px hx] ; destruct y as [py hy].
-      assert (heq px py) as px_py.
-      * now apply hy.
-      * destruct px_py.
-        { assert (heq hx hy) as hx_hy.
-          - apply dep_fun_ext. intro a.
-            apply eq_proofs_unicity.
-            intros x y.
-            left. apply (heq_trans _ px).
-            + now apply hx.
-            + apply heq_sym ; now apply hx.
-          - now destruct hx_hy.
-        }
-    + simpl in x,y.
-      apply dep_fun_ext. intro a.
-      apply dep_fun_ext. intro b.
-
 (* Resizing Rules *)
 
 Axiom RR1 : forall (A : Type), ishProp A -> Set.
