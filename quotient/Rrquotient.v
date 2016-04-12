@@ -2,6 +2,7 @@ Set Printing Universes.
 Set Universe Polymorphism.
 
 Add LoadPath "../quotient".
+Require Import Base.
 Require Import RRnType.
 
 (* This produces the annoying n < m <= i *)

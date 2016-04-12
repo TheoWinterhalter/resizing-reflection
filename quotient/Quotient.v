@@ -2,6 +2,7 @@ Set Printing Universes.
 Set Universe Polymorphism.
 
 Add LoadPath "../quotient".
+Require Import Base.
 Require Import NType.
 
 Definition quotient A (R : A -> A -> hProp) := { P : A -> hProp | (trunc minus1 (isEqClass R P)) }.

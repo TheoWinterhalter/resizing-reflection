@@ -39,12 +39,6 @@ Definition hsuc : forall l T, (forall x y : T, ishType l (heq x y)) -> ishType (
   intros l T h. easy.
 Defined.
 
-(*Inductive ishType@{i j} : hlevel -> Type@{i} -> Type@{j} :=
-| hctr : forall T : Type@{i}, contractible@{i i} T -> ishType minus2 T
-| hsuc : forall (l : hlevel) (T : Type@{i}),
-           (forall x y : T, ishType l (heq@{i i} x y)) ->
-           ishType (suc l) T.*)
-
 Notation "is- N -Type" := (ishType N) (at level 80).
 
 Goal is-minus2-Type True.
