@@ -413,13 +413,13 @@ Let fooP (foon : Z2) (z : Z) : hProp.
     destruct a as [Pa ha].
 Admitted.
 
-Set Printing Universes.
-Unset Printing Notations.
-Fixpoint foo (n : nat) : Z2.
-  destruct n.
-  - exact (f true).
-  - simple refine (exist _ (fooP (foo n)) _).
-  (*- exact (ff _).*)
-Defined.
+(* Set Printing Universes. *)
+(* Unset Printing Notations. *)
+(* Fixpoint foo (n : nat) : Z2. *)
+(*   destruct n. *)
+(*   - exact (f true). *)
+(*   - simple refine (exist _ (fooP (foo n)) _). *)
+(*   (*- exact (ff _).*) *)
+(* Defined. *)
 
 (* END *)
