@@ -277,12 +277,6 @@ Definition h (y : Z) (p : even y) :=
   | is_even n k h => diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h)
   end.
 
-Lemma hf_equal : forall {A B : Type} (f : A -> B) {x y : A}, heq x y -> heq (f x) (f y).
-Proof.
-  intros A B f x y h.
-  now destruct h.
-Defined.
-
 Lemma hg_id0 : forall n k hh, heq (h n (g n (diff_even 0%Z n k hh))) (diff_even 0%Z n k hh).
 Proof.
   intros n k hh.

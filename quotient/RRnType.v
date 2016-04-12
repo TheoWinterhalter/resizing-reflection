@@ -84,35 +84,36 @@ Proof.
       exact pp.
 Defined.
 
+Definition _ishProp := _ishType minus1.
+
 (* Resizing Rules *)
 
-Axiom RR1 : forall (A : Type), ishProp A -> Set.
+Axiom _RR1 : forall (A : Type), _ishProp A -> Set.
 
-Axiom RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
-Axiom RR1_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h), A.
-Axiom RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
-                        heq (@RR1_unbox A h (@RR1_box A h a)) a.
+Axiom _RR1_box : forall {A : Type} {h : _ishProp A} (a : A), _RR1 A h.
+Axiom _RR1_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h), A.
+Axiom _RR1_unbox_box : forall {A : Type} {h : _ishProp A} (a : A),
+                        heq (@_RR1_unbox A h (@_RR1_box A h a)) a.
 
-Axiom RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
+Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
 (* END *)
 
+(* Actual ishType *)
+
+Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T) (nType_hProp n T).
+
 Definition hctr : forall T, contractible T -> ishType minus2 T.
-  intros T h ; exact h.
+  intros T h. apply _RR1_box. exact h.
 Defined.
 
 Definition hsuc : forall l T, (forall x y : T, ishType l (heq x y)) -> ishType (suc l) T.
-  intros l T h. easy.
+  intros l T h. apply _RR1_box. simpl. intros x y.
+  pose proof (h x y) as hxy.
+  apply (_RR1_unbox hxy).
 Defined.
 
 Notation "is- N -Type" := (ishType N) (at level 80).
-
-Goal is-minus2-Type True.
-Proof.
-  apply hctr.
-  exists I.
-  intro t ; now destruct t.
-Qed.
 
 Definition ishProp := is-minus1-Type.
 Definition ishSet  := is-0-Type.
@@ -125,6 +126,29 @@ Notation "n -Type" := (hType n) (at level 75).
 
 Definition hProp := minus1-Type.
 Definition hSet  := 0-Type.
+
+(* Resizing Rules for hType *)
+
+Definition RR1 : forall (A : Type), ishProp A -> Set.
+  intros A h. apply (_RR1 A). apply (_RR1_unbox h).
+Defined.
+
+Definition RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
+  intros A h a. apply _RR1_box. exact a.
+Defined.
+
+Definition RR1_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h), A.
+  intros A h a. apply (_RR1_unbox a).
+Defined.
+
+Definition RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
+                             heq (@RR1_unbox A h (@RR1_box A h a)) a.
+  intros A h a. unfold RR1_unbox. unfold RR1_box. apply _RR1_unbox_box.
+Defined.
+
+Definition RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
+  intros T h. apply _RR1_box. apply _RR1_hProp.
+Defined.
 
 (* Truncation *)
 

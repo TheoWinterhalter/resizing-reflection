@@ -27,6 +27,12 @@ Proof.
   now destruct eq.
 Defined.
 
+Lemma hf_equal : forall {A B : Type} (f : A -> B) {x y : A}, heq x y -> heq (f x) (f y).
+Proof.
+  intros A B f x y h.
+  now destruct h.
+Defined.
+
 (* Sigma *)
 
 Notation idmap := (fun x => x).
