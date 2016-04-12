@@ -433,7 +433,7 @@ Fixpoint foo (n : nat) : Z2.
       * destruct (fooP (foo n) z) as [T hT]. exact hT.
       * apply RR1_hProp.
     + apply RR1_box. apply tr.
-      unfold isEqClass.
-Abort. (* But it seems promising! \o/ *)
+      apply ff.
+Defined. (* But it seems promising! \o/ *)
 
 (* END *)
