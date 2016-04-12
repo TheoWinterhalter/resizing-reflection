@@ -5,17 +5,9 @@ Add LoadPath "../quotient".
 Require Import Base.
 Require Import RRnType.
 
-(* This produces the annoying n < m <= i *)
-(* It's alright because we need RR2 to state that hProp : Set *)
-(* Require Import Coq.Program.Tactics. *)
-(* Program Definition quotient@{i j k l m n p q r s e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i} *)
-(*   := { P : A -> hProp@{m n r} | RR1@{p q} (trunc@{s} minus1 (isEqClass@{e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16} R P)) _ }. *)
-(* Next Obligation. *)
-(*   apply ishType_trunc. *)
-(* Defined. *)
 
-Definition quotient@{{i j k l m n p q r s e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16}} (A : Type@{i}) (R : A -> A -> hProp@{j k l}) : Type@{i} := { P : A -> hProp@{} | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
-(* Print quotient. *)
+Definition quotient (A : Type) (R : A -> A -> hProp)
+: Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
 
 Notation "A // R" := (quotient A R) (at level 90).
 
@@ -317,7 +309,7 @@ Definition g2 (y : Z) (p : R2Ztype 1%Z y) :=
 Lemma h2_proof : forall n k, heq n (2 * k + 1)%Z -> heq (n - 1)%Z (2 * k)%Z.
 Proof.
   intros n k hh.
-  assert (eq (n-1) (2*k))%Z.
+  assert (eq (n - 1)%Z (2*k))%Z.
   - inversion hh.
     omega.
   - now destruct H.
@@ -419,6 +411,7 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   - apply dep_fun_ext. intro a.
     apply fun_ext. intro eq.
     destruct a as [Pa ha].
+Admitted.
 
 Set Printing Universes.
 Unset Printing Notations.
