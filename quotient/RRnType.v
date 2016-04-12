@@ -65,7 +65,24 @@ Proof.
             + apply heq_sym. now apply ha.
           - now destruct ha_hb.
         }
-  - 
+  - intros x y. simpl in x,y. simpl.
+    assert (heq x y) as x_y.
+    + apply dep_fun_ext. intro a.
+      apply dep_fun_ext. intro b.
+      pose proof (ihn (heq a b)) as hxy.
+      simpl in hxy.
+      destruct (hxy (x a b) (y a b)) as [p h].
+      exact p.
+    + destruct x_y.
+      exists (heq_refl _). intro p.
+      apply eq_proofs_unicity. intros a b. left.
+      apply dep_fun_ext. intro u.
+      apply dep_fun_ext. intro v.
+      pose proof (ihn (heq u v)) as huv.
+      simpl in huv.
+      destruct (huv (a u v) (b u v)) as [pp hh].
+      exact pp.
+Defined.
 
 Lemma nType_hProp : forall n T, _ishType minus1 (_ishType n T).
 Proof.
