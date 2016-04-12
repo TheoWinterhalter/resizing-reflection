@@ -88,7 +88,7 @@ Defined.
 
 Definition _ishProp := _ishType (-1).
 
-(* Resizing Rules *)
+(*! Resizing Rules *)
 
 Axiom _RR1 : forall (A : Type), _ishProp A -> Set.
 
@@ -101,7 +101,7 @@ Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
 (* END *)
 
-(* Actual ishType *)
+(*! Actual ishType *)
 
 Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T) (nType_hProp n T).
 
@@ -120,7 +120,7 @@ Notation "is- N -Type" := (ishType N) (at level 80).
 Definition ishProp := is-(-1)-Type.
 Definition ishSet  := is-0-Type.
 
-(* n-Type *)
+(*! n-Type *)
 
 Definition hType (n : hlevel) := { T : Type | is-n-Type T }.
 
@@ -129,7 +129,7 @@ Notation "n -Type" := (hType n) (at level 75).
 Definition hProp := (-1)-Type.
 Definition hSet  := 0-Type.
 
-(* Resizing Rules for hType *)
+(*! Resizing Rules for hType *)
 
 Definition RR1 : forall (A : Type), ishProp A -> Set.
   intros A h. apply (_RR1 A). apply (_RR1_unbox h).
@@ -152,7 +152,7 @@ Definition RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
   intros T h. apply _RR1_box. apply _RR1_hProp.
 Defined.
 
-(* Truncation *)
+(*! Truncation *)
 
 Module Export Truncation.
 
@@ -185,7 +185,7 @@ Import Truncation.
 
 Notation "|| A ||" := (trunc minus1 A) (at level 85).
 
-(* Equivalence *)
+(*! Equivalence *)
 
 Definition comp {A B C} (f : B -> C) (g : A -> B) := fun x => f (g x).
 Notation "f ∘ g" := (comp f g) (at level 86).
@@ -202,12 +202,11 @@ Notation "A * B" := (prod A B).
 Definition isEquiv {A B} (f : A -> B) :=
   { g : B -> A | g ∘ f ~ id A } * { h : B -> A | f ∘ h ~ id B }.
 
-(* Equivalence relations *)
+(*! Equivalence relations *)
 
 Definition pi1 (T : hProp) : Type :=
   let (TT, _) := T in TT.
 
-(* I don't really like this solution with projections but that'll have to do for now. *)
 Record isEqRel {A} (R : A -> A -> hProp) :=
   { rho : forall x : A, pi1 (R x x) ;
     sigma : forall x y : A, pi1 (R x y) -> pi1 (R y x) ;
