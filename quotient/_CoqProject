@@ -2,5 +2,6 @@
 #-arg -nois
 
 Base.v
+MyEqDepDec.v
 Quotient.v
 Rrquotient.v
