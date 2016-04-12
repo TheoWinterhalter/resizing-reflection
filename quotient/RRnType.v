@@ -163,10 +163,10 @@ Module Export Truncation.
 
   Section Foo.
 
-    Universes i j k l.
+    Universes i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30 u31 u32 u33.
 
     Global Lemma ishType_trunc (n : hlevel) (A : Type@{i})
-    : ishType@{i j k l} n (trunc@{i} n A).
+    : ishType@{i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30 u31 u32 u33} n (trunc@{i} n A).
     Admitted.
 
   End Foo.
@@ -183,7 +183,7 @@ Module Export Truncation.
 End Truncation.
 Import Truncation.
 
-Notation "|| A ||" := (trunc minus1 A).
+Notation "|| A ||" := (trunc minus1 A) (at level 85).
 
 (* Equivalence *)
 
