@@ -404,22 +404,36 @@ Definition pi2 (T : hProp) : ishProp (pi1 T) :=
 
 Let fooP (foon : Z2) (z : Z) : hProp.
   simple refine (forall x : Z2, heq x foon -> let (P, _) := x in pi1 (P z) ; _).
-  apply hsuc.
-  intros x y.
-  apply hctr.
-  assert (heq x y) as x_y.
-  - apply dep_fun_ext. intro a.
-    apply fun_ext. intro eq.
-    destruct a as [Pa ha].
-Admitted.
+  apply forall_hProp.
+  intro x.
+  apply hsuc. intros h1 h2.
+  assert (heq h1 h2) as h1_h2.
+  - apply dep_fun_ext. intro h.
+    destruct x as [px hx]. simpl in h1, h2.
+    destruct (px z) as [T hT]. simpl in h1,h2.
+    pose proof (_RR1_unbox hT) as uhT. simpl in uhT.
+    apply uhT.
+  - apply hctr. destruct h1_h2.
+    exists (heq_refl _). intro p.
+    apply eq_proofs_unicity. intros p1 p2. left.
+    apply fun_ext. intro h.
+    destruct x as [px hx]. simpl in *. destruct p.
+    destruct (px z) as [T hT].
+    pose proof (_RR1_unbox hT) as uhT. simpl in uhT.
+    apply uhT.
+Defined.
 
 (* Set Printing Universes. *)
 (* Unset Printing Notations. *)
-(* Fixpoint foo (n : nat) : Z2. *)
-(*   destruct n. *)
-(*   - exact (f true). *)
-(*   - simple refine (exist _ (fooP (foo n)) _). *)
-(*   (*- exact (ff _).*) *)
-(* Defined. *)
+Fixpoint foo (n : nat) : Z2.
+  destruct n.
+  - exact (f true).
+  - simple refine (exist _ (fun z => _) _).
+    + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
+      * destruct (fooP (foo n) z) as [T hT]. exact hT.
+      * apply RR1_hProp.
+    + apply RR1_box. apply tr.
+      unfold isEqClass.
+Abort. (* But it seems promising! \o/ *)
 
 (* END *)
