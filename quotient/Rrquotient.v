@@ -445,8 +445,8 @@ Fixpoint foo (n : nat) : Z2.
               * unfold homo. intro a. unfold comp. unfold id.
                 rewrite RR1_unbox_box. apply hg1.
             + simple refine (exist _ (fun u => _) _).
-              * simpl in u. simpl. apply g2.
-                pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
+              
+              * apply g2. now apply (RR1_unbox u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
                 unfold comp in hg2.
                 simpl in a.
@@ -455,12 +455,15 @@ Fixpoint foo (n : nat) : Z2.
                 apply dep_fun_ext. intro eqx.
                 
                 
-                (* destruct (heq_sym x (P ; hP) eqx). *)
-                (* rewrite hg2. unfold id. *)
-                (* apply hf_equal. *)
+                destruct (heq_sym x (P ; hP) eqx).
+                rewrite hg2. unfold id.
+                apply hf_equal.
+
+                apply eq_proofs_unicity. intros u v.
+                
 
                 apply ff.
         }       
-Defined. (* But it seems promising! \o/ *)
+Defined.
 
 (* END *)
