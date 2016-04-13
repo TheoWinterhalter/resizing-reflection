@@ -96,7 +96,9 @@ Axiom _RR1 : forall (A : Type), _ishProp A -> Set.
 Axiom _RR1_box : forall {A : Type} {h : _ishProp A} (a : A), _RR1 A h.
 Axiom _RR1_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h), A.
 Axiom _RR1_unbox_box : forall {A : Type} {h : _ishProp A} (a : A),
-                        heq (@_RR1_unbox A h (@_RR1_box A h a)) a.
+                         heq (@_RR1_unbox A h (@_RR1_box A h a)) a.
+Axiom _RR1_box_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h),
+                         heq (@_RR1_box A h (@_RR1_unbox A h a)) a.
 
 Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
@@ -147,6 +149,11 @@ Defined.
 Definition RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
                              heq (@RR1_unbox A h (@RR1_box A h a)) a.
   intros A h a. unfold RR1_unbox. unfold RR1_box. apply _RR1_unbox_box.
+Defined.
+
+Definition RR1_box_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h),
+                             heq (@RR1_box A h (@RR1_unbox A h a)) a.
+  intros A h a. unfold RR1_box. unfold RR1_unbox. apply _RR1_box_unbox.
 Defined.
 
 Definition RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).

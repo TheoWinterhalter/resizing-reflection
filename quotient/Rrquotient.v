@@ -428,29 +428,39 @@ Fixpoint foo (n : nat) : Z2.
     + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
       * destruct (fooP (foo n) z) as [T hT]. exact hT.
       * apply RR1_hProp.
-    + apply RR1_box. apply tr.
-      exists 0%Z. intro z.
-      simple refine (exist _ (fun x => _) _).
-      * unfold pi1. unfold pi1 in x.
-        apply RR1_box. simpl in x. simpl.
-        intros u eq. destruct u as [P hP].
-        pose proof (RR1_unbox hP) as hP'.
-        pose proof (RR1_unbox x) as R0z.
-        { simple refine (trunc_ind (fun aa => _) _ hP').
-          - intro aa. apply hsuc. intros a b. apply hctr.
-            destruct (P z) as [T hT]. simpl in a,b.
-            now apply inv_hProp.
-          - intro h. simpl. destruct h as [a h].
-            apply h.
-            pose proof (h 0%Z) as h0.
-            destruct (isEqRelR2Z) as [rho sigma tau].
-            apply (tau _ 0%Z).
-            + now apply RR1_box.
-            + apply h0.
-              apply ff. (* As long as we can ensure that P 0%Z holds. *)
-        }
-      * { split.
-          -
+    + (* use foo directly somehow? *)
+      destruct (foo n) as [P hP]. pose proof (RR1_unbox hP) as uhP.
+      apply RR1_box.
+      simple refine (trunc_ind (fun aa => _) _ uhP).
+      * intro aa. apply ishType_trunc.
+      * intro a. destruct a as [z h].
+        apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
+        { simple refine (exist _ (fun rzy => _) _).
+          - simpl. apply RR1_box. intros x eq. pose proof (heq_sym _ _ eq) as seq. destruct seq. simpl.
+            now apply f.
+          - destruct hf as [[g1 hg1] [g2 hg2]]. split.
+            + simple refine (exist _ (fun u => _) _).
+              * simpl in u. simpl. apply g1.
+                pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
+              * unfold homo. intro a. unfold comp. unfold id.
+                rewrite RR1_unbox_box. apply hg1.
+            + simple refine (exist _ (fun u => _) _).
+              * simpl in u. simpl. apply g2.
+                pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
+              * unfold homo. intro a. unfold comp. unfold id.
+                unfold comp in hg2.
+                simpl in a.
+                rewrite <- RR1_box_unbox. apply hf_equal.
+                apply dep_fun_ext. intro x.
+                apply dep_fun_ext. intro eqx.
+                
+                
+                (* destruct (heq_sym x (P ; hP) eqx). *)
+                (* rewrite hg2. unfold id. *)
+                (* apply hf_equal. *)
+
+                apply ff.
+        }       
 Defined. (* But it seems promising! \o/ *)
 
 (* END *)
