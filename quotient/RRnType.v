@@ -218,6 +218,14 @@ Record isEqRel {A} (R : A -> A -> hProp) :=
 Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
   { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
 
+(*! hProp can be inverted *)
+Lemma inv_hProp {T} : ishProp T -> forall a b : T, contractible (heq a b).
+Proof.
+  intros h a b.
+  pose proof (_RR1_unbox h) as uh. simpl in uh.
+  apply uh.
+Defined.
+
 (*! hProp is only up to codomain *)
 
 Lemma forall_hProp {A B} : (forall x : A, ishProp (B x)) -> ishProp (forall x, B x).

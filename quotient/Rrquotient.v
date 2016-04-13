@@ -382,26 +382,6 @@ Axiom ff : forall X, X.
 Definition pi2 (T : hProp) : ishProp (pi1 T) :=
   let (_, h) := T in h.
 
-(* Lemma inv_hProp : forall {A}, ishProp A -> forall x y : A, contractible (heq x y). *)
-(* Proof. *)
-(*   intros A h x y. *)
-(*   inversion h. *)
-(*   pose proof (X x y). *)
-(*   now inversion X0. *)
-(* Defined. *)
-
-(* Lemma bar : forall z b, ishProp (forall x : Z2, heq x (* (foo n) *) b -> let (P, _) := x in pi1 (P z)). *)
-(* Proof. *)
-(*   intros z b. *)
-(*   apply hsuc. *)
-(*   intros x y. *)
-(*   apply hctr. *)
-(*   assert (heq x y) as x_y. *)
-(*   - apply dep_fun_ext. intro a. *)
-(*     apply fun_ext. intro eq. *)
-(*     destruct a as [Pa ha]. *)
-(*     destruct (Pa z) as [Paz haz]. *)
-
 Let fooP (foon : Z2) (z : Z) : hProp.
   simple refine (forall x : Z2, heq x foon -> let (P, _) := x in pi1 (P z) ; _).
   apply forall_hProp.
@@ -423,17 +403,68 @@ Let fooP (foon : Z2) (z : Z) : hProp.
     apply uhT.
 Defined.
 
+(* Better later than never: R2Z is an equivalence. *)
+Lemma isEqRelR2Z : isEqRel R2Z.
+Proof.
+  split.
+  - intro z. simpl. apply RR1_box.
+    exists 0%Z. simpl. now rewrite Z.sub_diag.
+  - simpl. intros x y h. apply RR1_box.
+    pose proof (RR1_unbox h) as hh. destruct hh as [n m k p].
+    exists (-k)%Z. assert (eq (n - m)%Z (- (m - n))%Z) by omega.
+    assert (eq (m - n)%Z (2 * k)%Z).
+    + now inversion p.
+    + assert (eq (n - m)%Z (2 * - k)%Z) by omega.
+      now destruct H1.
+  - intros x y z hyz hxy. simpl in *. apply RR1_box.
+    pose proof (RR1_unbox hyz) as ryz. destruct ryz as [n m k p].
+    pose proof (RR1_unbox hxy) as rxy. destruct rxy as [x n l q].
+    exists (k + l)%Z. assert (eq (m - x)%Z (2 * (k + l))%Z).
+    + assert (eq (m - n)%Z (2 * k)%Z) by (now inversion p).
+      assert (eq (n - x)%Z (2 * l)%Z) by (now inversion q).
+      omega.
+    + now destruct H.
+Qed. (* It uses omega and ugly stuff... *)
+
+Definition bar (foo : nat -> Z2) (n : nat) (z : Z) :
+  RR1 (pi1 (fooP (foo n) z)) (let h0 := fooP (foo n) z in pi2 h0) -> pi1 (R2Z 0%Z z).
+  intro h. simpl.
+  apply RR1_box.
+  pose proof (RR1_unbox h) as uh. simpl in uh.
+Abort.
+
 (* Set Printing Universes. *)
 (* Unset Printing Notations. *)
 Fixpoint foo (n : nat) : Z2.
   destruct n.
-  - exact (f true).
+  - exact (f false).
   - simple refine (exist _ (fun z => _) _).
     + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
       * destruct (fooP (foo n) z) as [T hT]. exact hT.
       * apply RR1_hProp.
     + apply RR1_box. apply tr.
-      apply ff.
+      exists 0%Z. intro z.
+      simple refine (exist _ (fun x => _) _).
+      * unfold pi1. unfold pi1 in x.
+        apply RR1_box. simpl in x. simpl.
+        intros u eq. destruct u as [P hP].
+        pose proof (RR1_unbox hP) as hP'.
+        pose proof (RR1_unbox x) as R0z.
+        { simple refine (trunc_ind (fun aa => _) _ hP').
+          - intro aa. apply hsuc. intros a b. apply hctr.
+            destruct (P z) as [T hT]. simpl in a,b.
+            now apply inv_hProp.
+          - intro h. simpl. destruct h as [a h].
+            apply h.
+            pose proof (h 0%Z) as h0.
+            destruct (isEqRelR2Z) as [rho sigma tau].
+            apply (tau _ 0%Z).
+            + now apply RR1_box.
+            + apply h0.
+              apply ff. (* As long as we can ensure that P 0%Z holds. *)
+        }
+      * { split.
+          -
 Defined. (* But it seems promising! \o/ *)
 
 (* END *)
