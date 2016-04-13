@@ -384,23 +384,9 @@ Definition pi2 (T : hProp) : ishProp (pi1 T) :=
 
 Let fooP (foon : Z2) (z : Z) : hProp.
   simple refine (forall x : Z2, heq x foon -> let (P, _) := x in pi1 (P z) ; _).
-  apply forall_hProp.
-  intro x.
-  apply hsuc. intros h1 h2.
-  assert (heq h1 h2) as h1_h2.
-  - apply dep_fun_ext. intro h.
-    destruct x as [px hx]. simpl in h1, h2.
-    destruct (px z) as [T hT]. simpl in h1,h2.
-    pose proof (_RR1_unbox hT) as uhT. simpl in uhT.
-    apply uhT.
-  - apply hctr. destruct h1_h2.
-    exists (heq_refl _). intro p.
-    apply eq_proofs_unicity. intros p1 p2. left.
-    apply fun_ext. intro h.
-    destruct x as [px hx]. simpl in *. destruct p.
-    destruct (px z) as [T hT].
-    pose proof (_RR1_unbox hT) as uhT. simpl in uhT.
-    apply uhT.
+  apply forall_hProp. intro x.
+  apply forall_hProp. intro h. destruct x as [px hx].
+  now destruct (px z).
 Defined.
 
 (* Better later than never: R2Z is an equivalence. *)
