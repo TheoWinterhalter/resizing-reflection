@@ -122,18 +122,9 @@ Defined.
 Definition R2Z (n m : Z) : hProp := exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) (RR1_hProp _ (R2ZhProp n m)).
 
 Definition Z2 := Z // R2Z.
-(*Unset Printing Notations.
-Print Z2.
-Set Printing Notations.*)
-
-(* Even though Z fits in Set, it is not the case of Z/2Z which should be smaller (bool : Set!) *)
-Fail Check Z2 : Set.
 
 Inductive even : Z -> Type :=
   is_even : forall n k : Z, heq n (2 * k)%Z -> even n.
-
-Inductive odd : Z -> Type :=
-  is_odd : forall n k : Z, heq n (2 * k + 1)%Z -> odd n.
 
 Lemma evenhProp : forall z, ishProp (even z).
 Proof.
@@ -178,51 +169,6 @@ Proof.
       destruct X.
       now apply inl.
   - now apply (division_unicity n).
-Defined.
-
-Lemma oddhProp : forall z, ishProp (odd z).
-Proof.
-  intro z.
-  apply hsuc.
-  intros x y.
-  apply hctr.
-  destruct x.
-  destruct y.
-  cut (heq k k0).
-  - intro hh.
-    destruct hh.
-    assert (heq h h0).
-    + apply eq_proofs_unicity.
-      intros x y.
-      destruct (Zeq_dec x y).
-      * destruct a.
-        now apply inl.
-      * apply inr.
-        intro eqxy.
-        destruct eqxy.
-        now apply b.
-    + destruct X.
-      exists (heq_refl (is_odd n k h)).
-      intro p.
-      apply eq_proofs_unicity.
-      intros x y.
-      destruct x ; destruct y.
-      assert (heq k0 k1).
-      {
-        now apply (division_unicity2 n).
-      }
-      destruct X.
-      assert (heq h0 h1).
-      {
-        apply eq_proofs_unicity.
-        intros x y.
-        destruct (Zeq_dec x y).
-        - destruct a ; now left.
-        - right ; intro eqxy ; destruct eqxy ; now apply b.
-      }
-      destruct X.
-      now apply inl.
-  - now apply (division_unicity2 n).
 Defined.
 
 (* m - 0 = m *)
