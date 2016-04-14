@@ -412,12 +412,20 @@ Proof.
     + now destruct H.
 Qed. (* It uses omega and ugly stuff... *)
 
-Definition bar (foo : nat -> Z2) (n : nat) (z : Z) :
-  RR1 (pi1 (fooP (foo n) z)) (let h0 := fooP (foo n) z in pi2 h0) -> pi1 (R2Z 0%Z z).
-  intro h. simpl.
-  apply RR1_box.
-  pose proof (RR1_unbox h) as uh. simpl in uh.
-Abort.
+Lemma heq_sym_heq : forall A (x : A), heq (heq_sym _ _ (heq_refl x)) (heq_refl x).
+Proof.
+  intros A x.
+  now unfold heq_sym.
+Defined.
+
+(* Lemma rewrite_heq_spe : *)
+(*   forall (P : Z -> hProp) *)
+(*     (hP : RR1 (trunc (-1) (isEqClass R2Z P)) (ishType_trunc (-1) (isEqClass R2Z P))) *)
+(*     (y : Z) (x : Z2) (eqx : heq x (P; hP)), *)
+(*     heq (match eqx in (_ = y0) return *)
+(*                (pi1 ((let (π1, _) := y0 in π1) y) -> *)
+(*                 pi1 ((let (π1, _) := x in π1) y)) *)
+(*          with heq_refl _ => idmap end) idmap. *)
 
 (* Set Printing Universes. *)
 (* Unset Printing Notations. *)
@@ -436,8 +444,10 @@ Fixpoint foo (n : nat) : Z2.
       * intro a. destruct a as [z h].
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
-          - simpl. apply RR1_box. intros x eq. pose proof (heq_sym _ _ eq) as seq. destruct seq. simpl.
-            now apply f.
+          - simpl. apply RR1_box. intros x eq.
+            rewrite eq. now apply f.            
+            (* pose proof (heq_sym _ _ eq) as seq. destruct seq. simpl. *)
+            (* now apply f. *)
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
               * simpl in u. simpl. apply g1.
@@ -453,17 +463,11 @@ Fixpoint foo (n : nat) : Z2.
                 rewrite <- RR1_box_unbox. apply hf_equal.
                 apply dep_fun_ext. intro x.
                 apply dep_fun_ext. intro eqx.
-                
-                
-                destruct (heq_sym x (P ; hP) eqx).
+
+                unfold internal_heq_rew_r.
                 rewrite hg2. unfold id.
-                apply hf_equal.
-
-                apply eq_proofs_unicity. intros u v.
-                
-
-                apply ff.
-        }       
+                now destruct eqx.
+        }
 Defined.
 
 (* END *)
