@@ -91,7 +91,7 @@ Definition _ishProp := _ishType (-1).
 
 (*! Resizing Rules *)
 
-Axiom _RR1 : forall (A : Type), _ishProp A -> Set.
+Axiom _RR1@{i j} : forall (A : Type@{i}), _ishProp A -> Type@{j}.
 
 Axiom _RR1_box : forall {A : Type} {h : _ishProp A} (a : A), _RR1 A h.
 Axiom _RR1_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h), A.
@@ -134,9 +134,11 @@ Definition hSet  := 0-Type.
 
 (*! Resizing Rules for hType *)
 
-Definition RR1 : forall (A : Type), ishProp A -> Set.
-  intros A h. apply (_RR1 A). apply (_RR1_unbox h).
-Defined.
+(* Definition RR1 : forall (A : Type), ishProp A -> Set. *)
+(*   intros A h. apply (_RR1 A). apply (_RR1_unbox h). *)
+(* Defined. *)
+Definition RR1@{i j u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30} : forall (A : Type@{i}), ishProp@{u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30} A -> Type@{j} :=
+  fun (A : Type@{i}) (h : ishProp A) => _RR1@{i j} A (_RR1_unbox h).
 
 Definition RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
   intros A h a. apply _RR1_box. exact a.
