@@ -242,42 +242,54 @@ Proof.
   - exact h.
 Defined.
 
-Definition g (y : Z) (p : R2Ztype 0%Z y) :=
-  match p in (R2Ztype 0%Z z) return (even z) with
+Definition g (y : Z) (p : RR1 (R2Ztype 0 y) (R2ZhProp 0 y)) :=
+  match (RR1_unbox p) in (R2Ztype 0%Z z) return (even z) with
   | diff_even 0%Z n k h => is_even n k (conveq n k h)
   end.
 
 Definition h (y : Z) (p : even y) :=
-  match p in (even z) return (R2Ztype 0%Z z) with
-  | is_even n k h => diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h)
+  match p in (even z) return (RR1 (R2Ztype 0 z) (R2ZhProp 0 z)) with
+    | is_even n k h =>
+      RR1_box (diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h))
   end.
 
-Lemma hf_equal : forall {A B : Type} (f : A -> B) {x y : A}, heq x y -> heq (f x) (f y).
-Proof.
-  intros A B f x y h.
-  now destruct h.
-Defined.
-
-Lemma hg_id0 : forall n k hh, heq (h n (g n (diff_even 0%Z n k hh))) (diff_even 0%Z n k hh).
+Lemma hg_id0 :
+  forall n k hh,
+    heq (h n (g n (RR1_box(diff_even 0%Z n k hh))))
+        (RR1_box (diff_even 0%Z n k hh)).
 Proof.
   intros n k hh.
   unfold g.
+  rewrite RR1_unbox_box.
   unfold h.
+  apply hf_equal.
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
 Defined.
 
-Definition hg_id y a : heq (h y (g y a)) a :=
-  match a as p in (R2Ztype 0%Z z) return (@heq (R2Ztype 0%Z z) (h z (g z p)) p) with
+Definition hg_id1 (y : Z) (a : RR1 (R2Ztype 0%Z y) (R2ZhProp 0 y)) :=
+  match (RR1_unbox a) as p in (R2Ztype 0%Z z) return
+        (@heq (RR1 (R2Ztype 0 z) (R2ZhProp 0 z))
+              (h z (g z (RR1_box p))) (RR1_box p))
+  with
   | diff_even 0%Z n k hh => hg_id0 n k hh
   end.
 
-Lemma gh_id0 : forall n k hh, heq (g n (h n (is_even n k hh))) (is_even n k hh).
+Lemma hg_id : forall y a, heq (h y (g y a)) a.
+Proof.
+  intros y a.
+  pose proof (hg_id1 y a) as h.
+  now rewrite !RR1_box_unbox in h.
+Defined.
+
+Lemma gh_id0 :
+  forall n k hh, heq (g n (h n (is_even n k hh))) (is_even n k hh).
 Proof.
   intros n k hh.
   unfold h.
   unfold g.
+  rewrite RR1_unbox_box.
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
@@ -288,99 +300,15 @@ Definition gh_id y a : heq (g y (h y a)) a :=
   | is_even n k hh => gh_id0 n k hh
   end.
 
-(* Let's do it again but for odds *)
-
-(* Let's use omega here too *)
-Lemma g2_proof : forall n k, heq (n - 1)%Z (2 * k)%Z -> heq n (2 * k + 1)%Z.
+Let evenClass : Z2.
 Proof.
-  intros n k hh.
-  cut (eq n (2 * k + 1))%Z.
-  - intro hhh ; now destruct hhh.
-  - assert (eq (n - 1) (2 * k))%Z.
-    + now inversion hh.
-    + omega.
-Qed.
-
-Definition g2 (y : Z) (p : R2Ztype 1%Z y) :=
-  match p in (R2Ztype 1%Z z) return (odd z) with
-  | diff_even 1%Z n k hh => is_odd n k (g2_proof n k hh)
-  end.
-
-Lemma h2_proof : forall n k, heq n (2 * k + 1)%Z -> heq (n - 1)%Z (2 * k)%Z.
-Proof.
-  intros n k hh.
-  assert (eq (n - 1)%Z (2*k))%Z.
-  - inversion hh.
-    omega.
-  - now destruct H.
-Qed.
-
-Definition h2 (y : Z) (p : odd y) :=
-  match p in (odd z) return (R2Ztype 1%Z z) with
-  | is_odd n k hh => diff_even 1%Z n k (h2_proof n k hh)
-  end.
-
-Lemma h2g2_id0 : forall n k hh, heq (h2 n (g2 n (diff_even 1%Z n k hh))) (diff_even 1%Z n k hh).
-Proof.
-  intros n k hh.
-  unfold g2.
-  unfold h2.
-  apply hf_equal.
-  apply eq_proofs_unicity.
-  apply Zeq_dec.
+  exists (fun z => exist _ (even z) (evenhProp z)).
+  apply RR1_box. apply tr.
+  exists 0%Z. intro y.
+  exists (g y). split.
+  - exists (h y). unfold comp, id, homo. apply hg_id.
+  - exists (h y). unfold comp, id, homo. apply gh_id.
 Defined.
-
-Definition h2g2_id y a : heq (h2 y (g2 y a)) a :=
-  match a as p in (R2Ztype 1%Z z) return (@heq (R2Ztype 1%Z z) (h2 z (g2 z p)) p) with
-  | diff_even 1%Z n k hh => h2g2_id0 n k hh
-  end.
-
-Lemma g2h2_id0 : forall n k hh, heq (g2 n (h2 n (is_odd n k hh))) (is_odd n k hh).
-Proof.
-  intros n k hh.
-  unfold h2.
-  unfold g2.
-  apply hf_equal.
-  apply eq_proofs_unicity.
-  apply Zeq_dec.
-Defined.
-
-Definition g2h2_id y a : heq (g2 y (h2 y a)) a :=
-  match a as p in (odd z) return (@heq (odd z) (g2 z (h2 z p)) p) with
-  | is_odd n k hh => g2h2_id0 n k hh
-  end.
-
-Let f (x : bool) : Z2.
-Proof.
-  destruct x.
-  - exists (fun z => exist _ (even z) (evenhProp z)).
-    (*compute.*) (* This line causes a loop! *)
-    (* We need something to work on RR1 trunc instead of trunc *)
-    apply RR1_box.
-    apply tr.
-    exists 0%Z.
-    intro y.
-    exists (fun x => g y (RR1_unbox x)).
-    split.
-    + exists (fun x => RR1_box (h y x)).
-  (*     apply hg_id. *)
-  (*   + exists (h y). *)
-  (*     apply gh_id. *)
-  (* - exists (fun z => exist _ (odd z) (oddhProp z)). *)
-  (*   compute. *)
-  (*   apply (RR1_lift tr). *)
-  (*   exists 1%Z. *)
-  (*   intro y. *)
-  (*   exists (g2 y) ; split. *)
-  (*   + exists (h2 y) ; apply h2g2_id. *)
-  (*   + exists (h2 y) ; apply g2h2_id. *)
-(* Defined. *)
-Admitted.        
-
-Axiom ff : forall X, X.
-
-Definition pi2 (T : hProp) : ishProp (pi1 T) :=
-  let (_, h) := T in h.
 
 Let fooP (foon : Z2) (z : Z) : hProp.
   simple refine (forall x : Z2, heq x foon -> let (P, _) := x in pi1 (P z) ; _).
@@ -389,55 +317,14 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   now destruct (px z).
 Defined.
 
-(* Better later than never: R2Z is an equivalence. *)
-Lemma isEqRelR2Z : isEqRel R2Z.
-Proof.
-  split.
-  - intro z. simpl. apply RR1_box.
-    exists 0%Z. simpl. now rewrite Z.sub_diag.
-  - simpl. intros x y h. apply RR1_box.
-    pose proof (RR1_unbox h) as hh. destruct hh as [n m k p].
-    exists (-k)%Z. assert (eq (n - m)%Z (- (m - n))%Z) by omega.
-    assert (eq (m - n)%Z (2 * k)%Z).
-    + now inversion p.
-    + assert (eq (n - m)%Z (2 * - k)%Z) by omega.
-      now destruct H1.
-  - intros x y z hyz hxy. simpl in *. apply RR1_box.
-    pose proof (RR1_unbox hyz) as ryz. destruct ryz as [n m k p].
-    pose proof (RR1_unbox hxy) as rxy. destruct rxy as [x n l q].
-    exists (k + l)%Z. assert (eq (m - x)%Z (2 * (k + l))%Z).
-    + assert (eq (m - n)%Z (2 * k)%Z) by (now inversion p).
-      assert (eq (n - x)%Z (2 * l)%Z) by (now inversion q).
-      omega.
-    + now destruct H.
-Qed. (* It uses omega and ugly stuff... *)
-
-Lemma heq_sym_heq : forall A (x : A), heq (heq_sym _ _ (heq_refl x)) (heq_refl x).
-Proof.
-  intros A x.
-  now unfold heq_sym.
-Defined.
-
-(* Lemma rewrite_heq_spe : *)
-(*   forall (P : Z -> hProp) *)
-(*     (hP : RR1 (trunc (-1) (isEqClass R2Z P)) (ishType_trunc (-1) (isEqClass R2Z P))) *)
-(*     (y : Z) (x : Z2) (eqx : heq x (P; hP)), *)
-(*     heq (match eqx in (_ = y0) return *)
-(*                (pi1 ((let (π1, _) := y0 in π1) y) -> *)
-(*                 pi1 ((let (π1, _) := x in π1) y)) *)
-(*          with heq_refl _ => idmap end) idmap. *)
-
-(* Set Printing Universes. *)
-(* Unset Printing Notations. *)
 Fixpoint foo (n : nat) : Z2.
   destruct n.
-  - exact (f false).
+  - exact evenClass.
   - simple refine (exist _ (fun z => _) _).
     + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
       * destruct (fooP (foo n) z) as [T hT]. exact hT.
       * apply RR1_hProp.
-    + (* use foo directly somehow? *)
-      destruct (foo n) as [P hP]. pose proof (RR1_unbox hP) as uhP.
+    + destruct (foo n) as [P hP]. pose proof (RR1_unbox hP) as uhP.
       apply RR1_box.
       simple refine (trunc_ind (fun aa => _) _ uhP).
       * intro aa. apply ishType_trunc.
@@ -445,9 +332,7 @@ Fixpoint foo (n : nat) : Z2.
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
           - simpl. apply RR1_box. intros x eq.
-            rewrite eq. now apply f.            
-            (* pose proof (heq_sym _ _ eq) as seq. destruct seq. simpl. *)
-            (* now apply f. *)
+            rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
               * simpl in u. simpl. apply g1.
@@ -463,7 +348,6 @@ Fixpoint foo (n : nat) : Z2.
                 rewrite <- RR1_box_unbox. apply hf_equal.
                 apply dep_fun_ext. intro x.
                 apply dep_fun_ext. intro eqx.
-
                 unfold internal_heq_rew_r.
                 rewrite hg2. unfold id.
                 now destruct eqx.
