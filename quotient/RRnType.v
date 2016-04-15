@@ -100,6 +100,20 @@ Axiom _RR1_unbox_box : forall {A : Type} {h : _ishProp A} (a : A),
 Axiom _RR1_box_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h),
                          heq (@_RR1_box A h (@_RR1_unbox A h a)) a.
 
+
+Require Import Setoids.Setoid.
+Lemma _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
+Proof.
+  intros T h x y.
+  assert (heq (_RR1_unbox x) (_RR1_unbox y)) as eq.
+  - now destruct (h (_RR1_unbox x) (_RR1_unbox y)).
+  - pose proof (hf_equal (@_RR1_box _ h) eq) as eq2.
+    rewrite !_RR1_box_unbox in eq2. destruct eq2.
+    exists (heq_refl _). intro p.
+    destruct (h (_RR1_unbox x) (_RR1_unbox x)) as [up uh]. destruct up.
+    pose proof (uh (hf_equal _RR1_unbox p)) as pp.
+Abort.
+
 Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
 
 (* END *)
