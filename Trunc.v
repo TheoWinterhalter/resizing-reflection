@@ -70,6 +70,25 @@ Section Trunc.
 
 End Trunc.
 
+Inductive TTrunc A : Type :=
+  ttr : A -> TTrunc A.
+Arguments ttr {A} a.
+
+Section TTrunc. (* No real interest in this result though... It's just trivial. *)
+
+  Variable A : Type.
+  Variable h : ishProp A.
+  Variable th : ishProp (TTrunc A).
+
+  Lemma equiv_ttrunc : Equiv A (TTrunc A).
+  Proof.
+    exists (fun a => ttr a). exists (fun aa => match aa with ttr a => a end). split.
+    - unfold comp, homo, id. intro aa.
+      now destruct aa.
+    - unfold homo, comp, id. intro a. easy.
+  Defined.
+
+End TTrunc.
 
 
 
