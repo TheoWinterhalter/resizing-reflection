@@ -22,6 +22,7 @@ Module Export Truncation.
 
   Definition trunc (A : Type) : Prop := exists _ : A , True. 
   Definition tr A : A -> trunc A. intro a. exists a. exact I. Defined.
+  Arguments tr {A} a.
   (* If I can justify I can eliminate it into hProp this can be a model. *)
   (* I would also need Prop to be proof-irrelevant (which is admissible) in order
      not to need the ishProp_truc axiom. *)
@@ -31,20 +32,20 @@ Module Export Truncation.
   (* Bind Scope trunc_scope with trunc. *)
   (* Arguments tr {A} a. *)
 
-  (* Global Lemma ishProp_trunc (A : Type) : ishProp (trunc A). *)
-  (* Admitted. *)
+  Global Lemma ishProp_trunc (A : Type) : ishProp (trunc A).
+  Admitted.
 
-  Definition trunc_ind {A} (P : trunc A -> Type) {Pt : forall aa, ishProp (P aa)}
+  Definition trunc_rect {A} (P : trunc A -> Type) {Pt : forall aa, ishProp (P aa)}
   : (forall a, P (tr a)) -> (forall aa, P aa).
     intros f aa.
-    destruct aa.
+  Admitted.
 
     
-    := fun f aa =>
-        match aa with
-            tr a => fun _ => f a
-        end
-          Pt.
+    (* := fun f aa => *)
+    (*     match aa with *)
+    (*         tr a => fun _ => f a *)
+    (*     end *)
+    (*       Pt. *)
 
 End Truncation.
 Import Truncation.
