@@ -263,6 +263,37 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   now destruct (px z).
 Defined.
 
+(* Ltac rrintro x := *)
+(*   match goal with *)
+(*     | |- RR1 (forall y : ?A, ?B) ?h => (apply RR1_box ; intro x) *)
+(*     (* | |- RR1 (?A -> ?B) ?h => (apply RR1_box ; intro x) *) *)
+(*     | |- forall y : ?A, ?B => (intro x) *)
+(*     (* | |- ?A -> ?B => (intro x) *) *)
+(*     | _ => fail *)
+(*   end. *)
+
+(* Ltac rrintro x := *)
+(*   match goal with *)
+(*     | |- RR1 ?A ?h => (apply RR1_box ; intro x) *)
+(*     | _ => intro x *)
+(*   end. *)
+
+(* Ltac rrintro x := ((try apply RR1_box) ; intro x). *)
+
+Tactic Notation "rrintro" ident(x) :=
+  (try apply RR1_box) ; intro x.
+
+(* Ltac rrintros2 x y := rrintro x ; rrintro y. *)
+(* Ltac rrintros3 x y z := rrintro x ; rrintro y ; rrintro z. *)
+(* Ltac rrintros4 x y z t := rrintro x ; rrintro y ; rrintro z ; rrintro t. *)
+
+Tactic Notation "rrintros" ident(x) := rrintro x.
+Tactic Notation "rrintros" ident(x) ident(y) := rrintro x ; rrintro y.
+Tactic Notation "rrintros" ident(x) ident(y) ident(z) :=
+  rrintro x ; rrintro y ; rrintro z.
+Tactic Notation "rrintros" ident(x) ident(y) ident(z) ident(t) :=
+  rrintro x ; rrintro y ; rrintro z ; rrintro t.
+
 Fixpoint foo (n : nat) : Z2.
   destruct n.
   - exact evenClass.
@@ -277,7 +308,7 @@ Fixpoint foo (n : nat) : Z2.
       * intro a. destruct a as [z h].
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
-          - simpl. apply RR1_box. intros x eq.
+          - simpl. rrintros x eq.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
