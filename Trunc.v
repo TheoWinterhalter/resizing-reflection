@@ -16,6 +16,8 @@ Definition isEquiv {A B} (f : A -> B) :=
 Definition Equiv A B :=
   { f : A -> B & isEquiv f }.
 
+Notation "( x ; y )" := (existT _ x y) : core_scope.
+
 (* Let's try with the excluded middle *)
 
 Section EM.
