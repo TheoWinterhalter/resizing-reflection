@@ -6,6 +6,26 @@ Require Import Base.
 Require Import RRnType.
 
 
+(* Lifting usual tactics to do my bidding. *)
+
+Tactic Notation "intro" ident(x) :=
+  (try apply RR1_box) ; intro x.
+
+Tactic Notation "intros" ident(x) := intro x.
+Tactic Notation "intros" ident(x) ident(y) := intro x ; intro y.
+Tactic Notation "intros" ident(x) ident(y) ident(z) :=
+  intros x y ; intro z.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) :=
+  intros x y z ; intro t.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) :=
+  intros x y z t ; intro t2.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) ident(t3) :=
+  intros x y z t t2 ; intro t3.
+
+Tactic Notation "unfold" constr(f) :=
+  unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox).
+
+
 Definition quotient (A : Type) (R : A -> A -> hProp)
 : Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
 
@@ -206,7 +226,7 @@ Lemma hg_id0 :
 Proof.
   intros n k hh.
   unfold g.
-  rewrite RR1_unbox_box.
+  (* rewrite RR1_unbox_box. *)
   unfold h.
   apply hf_equal.
   apply hf_equal.
@@ -235,7 +255,7 @@ Proof.
   intros n k hh.
   unfold h.
   unfold g.
-  rewrite RR1_unbox_box.
+  (* rewrite RR1_unbox_box. *)
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
@@ -252,7 +272,7 @@ Proof.
   apply RR1_box. apply tr.
   exists 0%Z. intro y.
   exists (g y). split.
-  - exists (h y). unfold comp, id, homo. apply hg_id.
+  - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
   - exists (h y). unfold comp, id, homo. apply gh_id.
 Defined.
 
@@ -262,18 +282,6 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   apply forall_hProp. intro h. destruct x as [px hx].
   now destruct (px z).
 Defined.
-
-(* Lifting usual tactics to do my bidding. *)
-
-Tactic Notation "intro" ident(x) :=
-  (try apply RR1_box) ; intro x.
-
-Tactic Notation "intros" ident(x) := intro x.
-Tactic Notation "intros" ident(x) ident(y) := intro x ; intro y.
-Tactic Notation "intros" ident(x) ident(y) ident(z) :=
-  intros x y ; intro z.
-Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) :=
-  intros x y z ; intro t.
 
 Fixpoint foo (n : nat) : Z2.
   destruct n.
