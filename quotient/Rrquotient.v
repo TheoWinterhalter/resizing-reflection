@@ -22,7 +22,7 @@ Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) :=
 Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) ident(t3) :=
   intros x y z t t2 ; intro t3.
 
-Tactic Notation "unfold" constr(f) :=
+Tactic Notation "unfold" reference(f) :=
   unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox).
 
 
@@ -273,7 +273,7 @@ Proof.
   exists 0%Z. intro y.
   exists (g y). split.
   - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
-  - exists (h y). unfold comp, id, homo. apply gh_id.
+  - exists (h y). unfold comp. unfold id. unfold homo. apply gh_id.
 Defined.
 
 Let fooP (foon : Z2) (z : Z) : hProp.
@@ -304,9 +304,8 @@ Fixpoint foo (n : nat) : Z2.
               * simpl in u. simpl. apply g1.
                 pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
-                rewrite RR1_unbox_box. apply hg1.
+                apply hg1.
             + simple refine (exist _ (fun u => _) _).
-              
               * apply g2. now apply (RR1_unbox u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
                 unfold comp in hg2.
