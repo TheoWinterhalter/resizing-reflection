@@ -22,12 +22,12 @@ Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) :=
 Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) ident(t3) :=
   intros x y z t t2 ; intro t3.
 
-Tactic Notation "unfold" reference(f) :=
-  unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox).
+(* Tactic Notation "unfold" reference(f) := *)
+(*   unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox). *)
 
 
 Definition quotient (A : Type) (R : A -> A -> hProp)
-: Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
+: Type := { P : A -> hProp | trunc minus1 (isEqClass R P) }.
 
 Notation "A // R" := (quotient A R) (at level 90).
 
@@ -226,7 +226,7 @@ Lemma hg_id0 :
 Proof.
   intros n k hh.
   unfold g.
-  (* rewrite RR1_unbox_box. *)
+  rewrite RR1_unbox_box.
   unfold h.
   apply hf_equal.
   apply hf_equal.
@@ -255,7 +255,7 @@ Proof.
   intros n k hh.
   unfold h.
   unfold g.
-  (* rewrite RR1_unbox_box. *)
+  rewrite RR1_unbox_box.
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
@@ -269,7 +269,7 @@ Definition gh_id y a : heq (g y (h y a)) a :=
 Let evenClass : Z2.
 Proof.
   exists (fun z => exist _ (even z) (evenhProp z)).
-  apply RR1_box. apply tr.
+  apply tr.
   exists 0%Z. intro y.
   exists (g y). split.
   - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
@@ -290,8 +290,7 @@ Fixpoint foo (n : nat) : Z2.
     + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
       * destruct (fooP (foo n) z) as [T hT]. exact hT.
       * apply RR1_hProp.
-    + destruct (foo n) as [P hP]. pose proof (RR1_unbox hP) as uhP.
-      apply RR1_box.
+    + destruct (foo n) as [P hP]. pose proof hP as uhP.
       simple refine (trunc_ind (fun aa => _) _ uhP).
       * intro aa. apply ishType_trunc.
       * intro a. destruct a as [z h].
@@ -304,6 +303,7 @@ Fixpoint foo (n : nat) : Z2.
               * simpl in u. simpl. apply g1.
                 pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
+                rewrite RR1_unbox_box.
                 apply hg1.
             + simple refine (exist _ (fun u => _) _).
               * apply g2. now apply (RR1_unbox u (P ; hP)).
