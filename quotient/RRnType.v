@@ -63,7 +63,7 @@ Axiom RR1 : forall (P : hProp), hProp.
 (* Unset Printing Notations. *)
 Axiom RR1_1@{i j k l m maxil} :
   forall {P : hProp@{maxil j}},
-    heq@{i k} (π1@{l m} (fun T : Type@{l} => ishType@{l} (-1) T) (RR1@{i j l m} P)) (π1@{i j} (fun T : Type@{i} => ishType@{i} (-1) T) P).
+    heq@{maxil k} (π1@{l m} (fun T : Type@{l} => ishType@{l} (-1) T) (RR1@{i j l m} P)) (π1@{i j} (fun T : Type@{i} => ishType@{i} (-1) T) P).
 (* Axiom RR1_1@{i j k l m n w p q r s t u v} : *)
 (*   forall {P : hProp@{i j}}, *)
 (*     heq@{k l} (π1@{m n} (fun T : Type@{w} => ishType@{w} (-1) T) (RR1@{p q r s} P)) (π1@{t u} (fun T : Type@{v} => ishType@{v} (-1) T) P). *)
