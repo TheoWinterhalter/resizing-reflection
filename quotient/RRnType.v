@@ -61,8 +61,8 @@ Definition hSet  := 0-Type.
 Axiom RR1 : forall (P : hProp), hProp.
 (* Axiom RR1_1 : forall {P : hProp}, heq (RR1 P).1 P.1. *)
 (* Unset Printing Notations. *)
-Axiom RR1_1@{i j k l m} :
-  forall {P : hProp@{i j}},
+Axiom RR1_1@{i j k l m maxil} :
+  forall {P : hProp@{maxil j}},
     heq@{i k} (π1@{l m} (fun T : Type@{l} => ishType@{l} (-1) T) (RR1@{i j l m} P)) (π1@{i j} (fun T : Type@{i} => ishType@{i} (-1) T) P).
 (* Axiom RR1_1@{i j k l m n w p q r s t u v} : *)
 (*   forall {P : hProp@{i j}}, *)
