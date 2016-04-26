@@ -65,10 +65,14 @@ Axiom RR1_1@{i j j' k l m m' maxil} :
   let le_i_maxil : Type@{maxil} := Type@{i} in
   let le_l_maxil : Type@{maxil} := Type@{l} in
   forall {P : hProp@{i j}},
-    heq@{maxil k} (π1@{l m'} (fun T : Type@{l} => ishType@{l} (-1) T) (RR1@{i j l m} P)) (π1@{i j'} (fun T : Type@{i} => ishType@{i} (-1) T) P).
-(* Axiom RR1_1@{i j k l m n w p q r s t u v} : *)
-(*   forall {P : hProp@{i j}}, *)
-(*     heq@{k l} (π1@{m n} (fun T : Type@{w} => ishType@{w} (-1) T) (RR1@{p q r s} P)) (π1@{t u} (fun T : Type@{v} => ishType@{v} (-1) T) P). *)
+    heq@{maxil k}
+       (π1@{l m'} (fun T : Type@{l} => ishProp@{l} T) (RR1@{i j l m} P))
+       (π1@{i j'} (fun T : Type@{i} => ishProp@{i} T) P).
+(* Axiom RR1_1 : *)
+(*   let le_i_maxil : Type := Type in *)
+(*   let le_l_maxil : Type := Type in *)
+(*   forall {P : hProp}, *)
+(*     heq (π1 (fun T : Type => ishType (-1) T) (RR1 P)) (π1 (fun T : Type => ishType (-1) T) P). *)
 (* The problem here is that it equates the universes of P and RR P, so basically it was all for nothing... *)
 
 (*! Truncation *)
