@@ -6,7 +6,7 @@ Require Import Base.
 Require Import RRnType.
 
 Definition quotient (A : Type) (R : A -> A -> hProp)
-: Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P) ; ishType_trunc _ _) }.
+: Type := { P : A -> hProp | trunc minus1 (isEqClass R P) }.
 
 Notation "A // R" := (quotient A R) (at level 90).
 
@@ -118,7 +118,7 @@ Proof.
       now apply inl.
 Defined.
 
-Definition R2Z (n m : Z) : hProp := exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) (RR1_hProp _ (R2ZhProp n m)).
+Definition R2Z (n m : Z) : hProp := RR1 (R2Ztype n m ; R2ZhProp n m).
 
 Definition Z2 := Z // R2Z.
 
@@ -187,36 +187,33 @@ Proof.
   - exact h.
 Defined.
 
-Definition g (y : Z) (p : RR1 (R2Ztype 0 y) (R2ZhProp 0 y)) :=
-  match (RR1_unbox p) in (R2Ztype 0%Z z) return (even z) with
+Definition g (y : Z) (p : R2Ztype 0 y) :=
+  match p in (R2Ztype 0%Z z) return (even z) with
   | diff_even 0%Z n k h => is_even n k (conveq n k h)
   end.
 
 Definition h (y : Z) (p : even y) :=
-  match p in (even z) return (RR1 (R2Ztype 0 z) (R2ZhProp 0 z)) with
-    | is_even n k h =>
-      RR1_box (diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h))
+  match p in (even z) return (R2Ztype 0 z) with
+    | is_even n k h => diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h)
   end.
 
 Lemma hg_id0 :
   forall n k hh,
-    heq (h n (g n (RR1_box(diff_even 0%Z n k hh))))
-        (RR1_box (diff_even 0%Z n k hh)).
+    heq (h n (g n (diff_even 0%Z n k hh)))
+        (diff_even 0%Z n k hh).
 Proof.
   intros n k hh.
   unfold g.
-  (* rewrite RR1_unbox_box. *)
   unfold h.
-  apply hf_equal.
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
 Defined.
 
-Definition hg_id1 (y : Z) (a : RR1 (R2Ztype 0%Z y) (R2ZhProp 0 y)) :=
-  match (RR1_unbox a) as p in (R2Ztype 0%Z z) return
-        (@heq (RR1 (R2Ztype 0 z) (R2ZhProp 0 z))
-              (h z (g z (RR1_box p))) (RR1_box p))
+Definition hg_id1 (y : Z) (a : R2Ztype 0%Z y) :=
+  match a as p in (R2Ztype 0%Z z) return
+        (@heq (R2Ztype 0 z)
+              (h z (g z p)) p)
   with
   | diff_even 0%Z n k hh => hg_id0 n k hh
   end.
@@ -224,8 +221,7 @@ Definition hg_id1 (y : Z) (a : RR1 (R2Ztype 0%Z y) (R2ZhProp 0 y)) :=
 Lemma hg_id : forall y a, heq (h y (g y a)) a.
 Proof.
   intros y a.
-  pose proof (hg_id1 y a) as h.
-  now rewrite !RR1_box_unbox in h.
+  pose proof (hg_id1 y a) as h. apply h.
 Defined.
 
 Lemma gh_id0 :
@@ -234,7 +230,6 @@ Proof.
   intros n k hh.
   unfold h.
   unfold g.
-  (* rewrite RR1_unbox_box. *)
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
@@ -248,8 +243,9 @@ Definition gh_id y a : heq (g y (h y a)) a :=
 Let evenClass : Z2.
 Proof.
   exists (fun z => exist _ (even z) (evenhProp z)).
-  apply RR1_box. apply tr.
+  apply tr.
   exists 0%Z. intro y.
+  unfold R2Z. rewrite RR1_1.
   exists (g y). split.
   - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
   - exists (h y). unfold comp. unfold id. unfold homo. apply gh_id.
@@ -262,21 +258,23 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   now destruct (px z).
 Defined.
 
+Set Printing Universes.
+
 Fixpoint foo (n : nat) : Z2.
   destruct n.
   - exact evenClass.
   - simple refine (exist _ (fun z => _) _).
-    + simple refine ((RR1 (pi1 (fooP (foo n) z)) _) ; _).
-      * destruct (fooP (foo n) z) as [T hT]. exact hT.
-      * apply RR1_hProp.
-    + destruct (foo n) as [P hP]. pose proof (RR1_unbox hP) as uhP.
-      apply RR1_box.
+    + apply (RR1 (fooP (foo n) z)).
+    + destruct (foo n) as [P hP]. pose proof (hP) as uhP.
       simple refine (trunc_ind (fun aa => _) _ uhP).
       * intro aa. apply ishType_trunc.
       * intro a. destruct a as [z h].
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
-          - simpl. intros x eq.
+          - simpl. pose proof (@RR1_1 (fooP (P ; hP) y)) as rreq.
+            rewrite rreq.
+            
+            rewrite (@RR1_1 (fooP (P ; hP) y)). intros x eq.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
