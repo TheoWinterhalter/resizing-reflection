@@ -60,6 +60,7 @@ Definition hSet  := 0-Type.
 
 Axiom RR1 : forall (P : hProp), hProp.
 (* Axiom RR1_1 : forall {P : hProp}, heq (RR1 P).1 P.1. *)
+(* The problem here is that it equates the universes of P and RR P, so basically it was all for nothing... *)
 Unset Printing Notations.
 Axiom RR1_1@{i j k l m maxil} :
   let le_i_maxil : Type@{maxil} := Type@{i} in
@@ -68,12 +69,6 @@ Axiom RR1_1@{i j k l m maxil} :
     heq@{maxil k}
        (π1@{l m} (fun T : Type@{m} => ishProp@{m} T) (RR1@{i j l m} P))
        (π1@{i j} (fun T : Type@{j} => ishProp@{j} T) P).
-(* Axiom RR1_1 : *)
-(*   let le_i_maxil : Type := Type in *)
-(*   let le_l_maxil : Type := Type in *)
-(*   forall {P : hProp}, *)
-(*     heq (π1 (fun T : Type => ishType (-1) T) (RR1 P)) (π1 (fun T : Type => ishType (-1) T) P). *)
-(* The problem here is that it equates the universes of P and RR P, so basically it was all for nothing... *)
 
 (*! Truncation *)
 
