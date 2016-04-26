@@ -5,29 +5,8 @@ Add LoadPath "../quotient".
 Require Import Base.
 Require Import RRnType.
 
-
-(* Lifting usual tactics to do my bidding. *)
-
-Tactic Notation "intro" ident(x) :=
-  (try apply RR1_box) ; intro x.
-
-Tactic Notation "intros" ident(x) := intro x.
-Tactic Notation "intros" ident(x) ident(y) := intro x ; intro y.
-Tactic Notation "intros" ident(x) ident(y) ident(z) :=
-  intros x y ; intro z.
-Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) :=
-  intros x y z ; intro t.
-Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) :=
-  intros x y z t ; intro t2.
-Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) ident(t3) :=
-  intros x y z t t2 ; intro t3.
-
-Tactic Notation "unfold" reference(f) :=
-  unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox).
-
-
 Definition quotient (A : Type) (R : A -> A -> hProp)
-: Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
+: Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P) ; ishType_trunc _ _) }.
 
 Notation "A // R" := (quotient A R) (at level 90).
 
