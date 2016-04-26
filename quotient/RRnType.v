@@ -88,39 +88,18 @@ Proof.
 Defined.
 
 Definition _ishProp := _ishType (-1).
+Definition _hProp := { A : Type | _ishProp A }.
 
 (*! Resizing Rules *)
 
-Axiom _RR1@{i j} : forall (A : Type@{i}), _ishProp A -> Type@{j}.
-
-Axiom _RR1_box : forall {A : Type} {h : _ishProp A} (a : A), _RR1 A h.
-Axiom _RR1_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h), A.
-Axiom _RR1_unbox_box : forall {A : Type} {h : _ishProp A} (a : A),
-                         heq (@_RR1_unbox A h (@_RR1_box A h a)) a.
-Axiom _RR1_box_unbox : forall {A : Type} {h : _ishProp A} (a : _RR1 A h),
-                         heq (@_RR1_box A h (@_RR1_unbox A h a)) a.
-
-
-Require Import Setoids.Setoid.
-Lemma _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
-Proof.
-  intros T h x y.
-  assert (heq (_RR1_unbox x) (_RR1_unbox y)) as eq.
-  - now destruct (h (_RR1_unbox x) (_RR1_unbox y)).
-  - pose proof (hf_equal (@_RR1_box _ h) eq) as eq2.
-    rewrite !_RR1_box_unbox in eq2. destruct eq2.
-    exists (heq_refl _). intro p.
-    destruct (h (_RR1_unbox x) (_RR1_unbox x)) as [up uh]. destruct up.
-    pose proof (uh (hf_equal _RR1_unbox p)) as pp.
-Abort.
-
-Axiom _RR1_hProp : forall T (h : _ishProp T), _ishProp (_RR1 T h).
+Axiom _RR1 : forall (P : _hProp), _hProp.
+Axiom _RR1_1 : forall {P : _hProp}, (_RR1 P).1 = P.1.
 
 (* END *)
 
 (*! Actual ishType *)
 
-Definition ishType (n : hlevel) (T : Type) : Set := _RR1 (_ishType n T) (nType_hProp n T).
+Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T ; nType_hProp n T).
 
 Definition hctr : forall T, contractible T -> ishType (-2) T.
   intros T h. apply _RR1_box. exact h.
