@@ -28,87 +28,18 @@ Notation "0"  := (zero).
 
 (*! is-n-Type *)
 
-Fixpoint _ishType@{i} (n : hlevel) (T : Type@{i}) : Type@{i} :=
+Fixpoint ishType@{i} (n : hlevel) (T : Type@{i}) : Type@{i} :=
   match n with
   | minus2 => contractible@{i} T
-  | suc n  => forall x y : T, _ishType@{i} n (heq@{i i} x y)
+  | suc n  => forall x y : T, ishType@{i} n (heq@{i i} x y)
   end.
 
-
-Lemma nType_hProp : forall n (T : Type), _ishType (-1) (_ishType n T).
-Proof.
-  intro n ; induction n as [| n ihn] ; intro T.
-  - intros x y. simpl in x,y. simpl.
-    assert (heq x y) as x_y.
-    + destruct x as [px hx] ; destruct y as [py hy].
-      assert (heq px py) as px_py.
-      * now apply hy.
-      * destruct px_py.
-        { assert (heq hx hy) as hx_hy.
-          - apply dep_fun_ext. intro a.
-            apply eq_proofs_unicity.
-            intros x y.
-            left. apply (heq_trans _ px).
-            + now apply hx.
-            + apply heq_sym ; now apply hx.
-          - now destruct hx_hy.
-        }
-    + destruct x_y.
-      exists (heq_refl _). intro p.
-      apply eq_proofs_unicity. intros a b. left.
-      destruct a as [pa ha] ; destruct b as [pb hb].
-      assert (heq pa pb) as pa_pb.
-      * now apply hb.
-      * destruct pa_pb.
-        { assert (heq ha hb) as ha_hb.
-          - apply dep_fun_ext. intro u.
-            apply eq_proofs_unicity. intros v w.
-            left. apply (heq_trans _ pa).
-            + now apply ha.
-            + apply heq_sym. now apply ha.
-          - now destruct ha_hb.
-        }
-  - intros x y. simpl in x,y. simpl.
-    assert (heq x y) as x_y.
-    + apply dep_fun_ext. intro a.
-      apply dep_fun_ext. intro b.
-      pose proof (ihn (heq a b)) as hxy.
-      simpl in hxy.
-      destruct (hxy (x a b) (y a b)) as [p h].
-      exact p.
-    + destruct x_y.
-      exists (heq_refl _). intro p.
-      apply eq_proofs_unicity. intros a b. left.
-      apply dep_fun_ext. intro u.
-      apply dep_fun_ext. intro v.
-      pose proof (ihn (heq u v)) as huv.
-      simpl in huv.
-      destruct (huv (a u v) (b u v)) as [pp hh].
-      exact pp.
-Defined.
-
-Definition _ishProp := _ishType (-1).
-Definition _hProp := { A : Type | _ishProp A }.
-
-(*! Resizing Rules *)
-
-Axiom _RR1 : forall (P : _hProp), _hProp.
-Axiom _RR1_1 : forall {P : _hProp}, (_RR1 P).1 = P.1.
-
-(* END *)
-
-(*! Actual ishType *)
-
-Definition ishType (n : hlevel) (T : Type) := _RR1 (_ishType n T ; nType_hProp n T).
-
 Definition hctr : forall T, contractible T -> ishType (-2) T.
-  intros T h. apply _RR1_box. exact h.
+  intros T h. exact h.
 Defined.
 
 Definition hsuc : forall l T, (forall x y : T, ishType l (heq x y)) -> ishType (suc l) T.
-  intros l T h. apply _RR1_box. simpl. intros x y.
-  pose proof (h x y) as hxy.
-  apply (_RR1_unbox hxy).
+  intros l T h. simpl. exact h.
 Defined.
 
 Notation "is- N -Type" := (ishType N) (at level 80).
@@ -127,33 +58,8 @@ Definition hSet  := 0-Type.
 
 (*! Resizing Rules for hType *)
 
-(* Definition RR1 : forall (A : Type), ishProp A -> Set. *)
-(*   intros A h. apply (_RR1 A). apply (_RR1_unbox h). *)
-(* Defined. *)
-Definition RR1@{i j u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30} : forall (A : Type@{i}), ishProp@{u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30} A -> Type@{j} :=
-  fun (A : Type@{i}) (h : ishProp A) => _RR1@{i j} A (_RR1_unbox h).
-
-Definition RR1_box : forall {A : Type} {h : ishProp A} (a : A), RR1 A h.
-  intros A h a. apply _RR1_box. exact a.
-Defined.
-
-Definition RR1_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h), A.
-  intros A h a. apply (_RR1_unbox a).
-Defined.
-
-Definition RR1_unbox_box : forall {A : Type} {h : ishProp A} (a : A),
-                             heq (@RR1_unbox A h (@RR1_box A h a)) a.
-  intros A h a. unfold RR1_unbox. unfold RR1_box. apply _RR1_unbox_box.
-Defined.
-
-Definition RR1_box_unbox : forall {A : Type} {h : ishProp A} (a : RR1 A h),
-                             heq (@RR1_box A h (@RR1_unbox A h a)) a.
-  intros A h a. unfold RR1_box. unfold RR1_unbox. apply _RR1_box_unbox.
-Defined.
-
-Definition RR1_hProp : forall T (h : ishProp T), ishProp (RR1 T h).
-  intros T h. apply _RR1_box. apply _RR1_hProp.
-Defined.
+Axiom RR1 : forall (P : hProp), hProp.
+Axiom RR1_1 : forall {P : hProp}, (RR1 P).1 = P.1.
 
 (*! Truncation *)
 
@@ -166,10 +72,10 @@ Module Export Truncation.
 
   Section Foo.
 
-    Universes i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29 u30 u31 u32 u33.
+    Universes i.
 
     Global Lemma ishType_trunc (n : hlevel) (A : Type@{i})
-    : ishType@{i u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 u29} n (trunc@{i} n A).
+    : ishType@{i} n (trunc@{i} n A).
     Admitted.
 
   End Foo.
@@ -224,8 +130,7 @@ Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
 Lemma inv_hProp {T} : ishProp T -> forall a b : T, contractible (heq a b).
 Proof.
   intros h a b.
-  pose proof (_RR1_unbox h) as uh. simpl in uh.
-  apply uh.
+  apply h.
 Defined.
 
 (*! hProp is only up to codomain *)
@@ -238,15 +143,13 @@ Proof.
   assert (heq f g) as f_g.
   - apply dep_fun_ext. intro a.
     pose proof (h a) as ha.
-    pose proof (_RR1_unbox ha) as hha. simpl in hha.
-    apply hha.
+    apply ha.
   - destruct f_g.
     exists (heq_refl _). intro p.
     apply eq_proofs_unicity. intros g1 g2.
     left. apply dep_fun_ext. intro a.
     pose proof (h a) as ha.
-    pose proof (_RR1_unbox ha) as hha. simpl in hha.
-    apply hha.
+    apply ha.
 Defined.
 
   
