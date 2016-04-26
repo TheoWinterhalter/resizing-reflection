@@ -6,6 +6,26 @@ Require Import Base.
 Require Import RRnType.
 
 
+(* Lifting usual tactics to do my bidding. *)
+
+Tactic Notation "intro" ident(x) :=
+  (try apply RR1_box) ; intro x.
+
+Tactic Notation "intros" ident(x) := intro x.
+Tactic Notation "intros" ident(x) ident(y) := intro x ; intro y.
+Tactic Notation "intros" ident(x) ident(y) ident(z) :=
+  intros x y ; intro z.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) :=
+  intros x y z ; intro t.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) :=
+  intros x y z t ; intro t2.
+Tactic Notation "intros" ident(x) ident(y) ident(z) ident(t) ident(t2) ident(t3) :=
+  intros x y z t t2 ; intro t3.
+
+Tactic Notation "unfold" reference(f) :=
+  unfold f ; (try rewrite -> !RR1_unbox_box ; try rewrite !RR1_box_unbox).
+
+
 Definition quotient (A : Type) (R : A -> A -> hProp)
 : Type := { P : A -> hProp | RR1 (trunc minus1 (isEqClass R P)) (ishType_trunc _ _) }.
 
@@ -206,7 +226,7 @@ Lemma hg_id0 :
 Proof.
   intros n k hh.
   unfold g.
-  rewrite RR1_unbox_box.
+  (* rewrite RR1_unbox_box. *)
   unfold h.
   apply hf_equal.
   apply hf_equal.
@@ -235,7 +255,7 @@ Proof.
   intros n k hh.
   unfold h.
   unfold g.
-  rewrite RR1_unbox_box.
+  (* rewrite RR1_unbox_box. *)
   apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
@@ -252,8 +272,8 @@ Proof.
   apply RR1_box. apply tr.
   exists 0%Z. intro y.
   exists (g y). split.
-  - exists (h y). unfold comp, id, homo. apply hg_id.
-  - exists (h y). unfold comp, id, homo. apply gh_id.
+  - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
+  - exists (h y). unfold comp. unfold id. unfold homo. apply gh_id.
 Defined.
 
 Let fooP (foon : Z2) (z : Z) : hProp.
@@ -277,16 +297,15 @@ Fixpoint foo (n : nat) : Z2.
       * intro a. destruct a as [z h].
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
-          - simpl. apply RR1_box. intros x eq.
+          - simpl. intros x eq.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
               * simpl in u. simpl. apply g1.
                 pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
-                rewrite RR1_unbox_box. apply hg1.
+                apply hg1.
             + simple refine (exist _ (fun u => _) _).
-              
               * apply g2. now apply (RR1_unbox u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
                 unfold comp in hg2.
