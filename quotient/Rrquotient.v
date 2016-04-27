@@ -280,14 +280,13 @@ Fixpoint foo (n : nat) : Z2.
               * unfold homo. intro a.
                 rewrite <- hg1. unfold comp. apply hf_equal.
                 unfold internal_heq_rew, internal_heq_rew_r.
+                simpl.
                 
-                apply hg1.
+                (* apply hg1. *) admit.
             + simple refine (exist _ (fun u => _) _).
-              * apply g2. now apply (RR1_unbox u (P ; hP)).
+              * apply g2. rewrite RR1_1 in u. now apply (u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
-                unfold comp in hg2.
-                simpl in a.
-                rewrite <- RR1_box_unbox. apply hf_equal.
+                unfold comp in hg2. (* rewrite RR1_1 in a. *)
                 apply dep_fun_ext. intro x.
                 apply dep_fun_ext. intro eqx.
                 unfold internal_heq_rew_r.
