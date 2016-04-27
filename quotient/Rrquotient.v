@@ -286,7 +286,7 @@ Fixpoint foo (n : nat) : Z2.
             + simple refine (exist _ (fun u => _) _).
               * apply g2. rewrite RR1_1 in u. now apply (u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
-                unfold comp in hg2. (* rewrite RR1_1 in a. *)
+                unfold comp in hg2. rewrite RR1_1 in a.
                 apply dep_fun_ext. intro x.
                 apply dep_fun_ext. intro eqx.
                 unfold internal_heq_rew_r.
