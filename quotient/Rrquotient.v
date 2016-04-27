@@ -276,7 +276,9 @@ Fixpoint foo (n : nat) : Z2.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
-              * apply g1. rewrite RR1_1 in u. now apply (u (P ; hP)).
+              * apply g1.
+                pose proof (@RR1_1 (fooP (P ; hP) y)) as rreq. (* destruct rreq. *)
+                rewrite RR1_1 in u. now apply (u (P ; hP)).
               * unfold homo. intro a.
                 rewrite <- hg1. unfold comp. apply hf_equal.
                 unfold internal_heq_rew, internal_heq_rew_r.
