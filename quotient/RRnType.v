@@ -140,7 +140,7 @@ Record isEqRel {A} (R : A -> A -> hProp) :=
 (*! Quotient *)
 
 Definition isEqClass {A} (R : A -> A -> hProp) (P : A -> hProp) :=
-  { x : A | forall y : A,  { f : (R x y).1 -> (P y).1 | isEquiv f } }.
+  { x : A | forall y : A,  { f : pi1 (R x y) -> pi1 (P y) | isEquiv f } }.
 
 (*! hProp can be inverted *)
 Lemma inv_hProp {T} : ishProp T -> forall a b : T, contractible (heq a b).

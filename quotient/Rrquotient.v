@@ -258,7 +258,7 @@ Let fooP (foon : Z2) (z : Z) : hProp.
   now destruct (px z).
 Defined.
 
-Set Printing Universes.
+(* Set Printing Universes. *)
 
 Fixpoint foo (n : nat) : Z2.
   destruct n.
@@ -272,15 +272,15 @@ Fixpoint foo (n : nat) : Z2.
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
           - simpl. pose proof (@RR1_1 (fooP (P ; hP) y)) as rreq.
-            rewrite rreq.
-            
-            rewrite (@RR1_1 (fooP (P ; hP) y)). intros x eq.
+            rewrite rreq. intros x eq.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
-              * simpl in u. simpl. apply g1.
-                pose proof (RR1_unbox u) as uu. now apply (uu (P ; hP)).
-              * unfold homo. intro a. unfold comp. unfold id.
+              * apply g1. rewrite RR1_1 in u. now apply (u (P ; hP)).
+              * unfold homo. intro a.
+                rewrite <- hg1. unfold comp. apply hf_equal.
+                unfold internal_heq_rew, internal_heq_rew_r.
+                
                 apply hg1.
             + simple refine (exist _ (fun u => _) _).
               * apply g2. now apply (RR1_unbox u (P ; hP)).
