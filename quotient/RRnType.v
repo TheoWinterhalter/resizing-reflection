@@ -58,17 +58,24 @@ Definition hSet  := 0-Type.
 
 (*! Resizing Rules for hType *)
 
+Definition pi1 : hProp -> Type :=
+  fun P => let (T,_) := P in T.
+
 Axiom RR1 : forall (P : hProp), hProp.
 (* Axiom RR1_1 : forall {P : hProp}, heq (RR1 P).1 P.1. *)
 (* The problem here is that it equates the universes of P and RR P, so basically it was all for nothing... *)
 Unset Printing Notations.
-Axiom RR1_1@{i j k l m maxil} :
+Axiom RR1_1@{i j k l m maxil maxjm} :
   let le_i_maxil : Type@{maxil} := Type@{i} in
   let le_l_maxil : Type@{maxil} := Type@{l} in
   forall {P : hProp@{i j}},
-    heq@{maxil k}
-       (π1@{l m} (fun T : Type@{m} => ishProp@{m} T) (RR1@{i j l m} P))
-       (π1@{i j} (fun T : Type@{j} => ishProp@{j} T) P).
+    (* let t1 : Type@{m} := π1@{l m} (fun T : Type@{m} => ishProp@{m} T) (RR1@{i j l m} P) in *)
+    (* let t2 : Type@{j} := π1@{i j} (fun T : Type@{j} => ishProp@{j} T) P in *)
+    let rrp1 : Type@{m} := pi1@{l m m} (RR1@{i j l m} P) in
+    let p1 : Type@{j} := pi1@{i j j} P in
+    @heq@{maxil k} (Type@{maxjm}) rrp1 p1.
+       (* (π1@{l m} (fun T : Type@{m} => ishProp@{m} T) (RR1@{i j l m} P)) *)
+       (* (π1@{i j} (fun T : Type@{j} => ishProp@{j} T) P). *)
 
 (*! Truncation *)
 
@@ -122,8 +129,8 @@ Definition isEquiv {A B} (f : A -> B) :=
 
 (*! Equivalence relations *)
 
-Definition pi1 (T : hProp) : Type :=
-  let (TT, _) := T in TT.
+(* Definition pi1 (T : hProp) : Type := *)
+(*   let (TT, _) := T in TT. *)
 
 Record isEqRel {A} (R : A -> A -> hProp) :=
   { rho : forall x : A, pi1 (R x x) ;
