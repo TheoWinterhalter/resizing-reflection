@@ -95,4 +95,25 @@
   \)
   \end{center}
 
+\section{Computation}
+
+We present weak-head reduction as follows:
+
+\begin{center}
+\(
+  \ru{t \rew f \qquad
+      f~u \rew a
+    }{t~u \rew a}
+  \qquad
+  \ru{}{a \rew a}
+  \qquad
+  \ru{t[u/x] \rew a
+    }{(\lambda x:U.t)~u \rew a}
+  \qquad
+  \ru{}{n~u \rew n~u}
+  \qquad
+  \ru{}{(\RRe{A}{h}).\type \rew A}
+\)
+\end{center}
+
 \end{document}
