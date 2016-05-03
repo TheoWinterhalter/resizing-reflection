@@ -28,7 +28,7 @@
 \input{macros}
 
 % Title and so...
-\title{Trust me I'm a Mere Proposition}
+\title{Trust me I'm a an hProp}
 \author[1]{Théo Winterhalter}
 
 \begin{document}
@@ -81,6 +81,17 @@
         \Gamma \der B : s \qquad
         \Gamma \der A \le B
       }{\Gamma \der t : B}
+  \)
+  \end{center}
+
+  The one rule we would like to add:
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der A : \Type_i \qquad
+        \Gamma \der B : \Type_j \qquad
+        \Gamma \der h : \emb{A}{B}
+      }{\Gamma \der \RRe{A}{h} : \Type_j}
   \)
   \end{center}
 
