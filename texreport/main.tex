@@ -1,0 +1,87 @@
+\documentclass[a4paper,english]{lipics-utf8x}
+
+\usepackage[T1]{fontenc} %
+
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{pifont}
+\PrerenderUnicode{é} % For the author names in the heading
+
+% Add some colors
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+ linktocpage,
+ colorlinks,
+ citecolor=BlueViolet,
+ filecolor=red,
+ linkcolor=Blue,
+ urlcolor=BrickRed
+}
+
+\usepackage{graphicx}
+\usepackage{placeins}
+
+% Meta comment
+\newcommand\meta[1]{\noindent\textcolor{blue}{\emph{#1}}}
+
+% Include the macro file
+\input{macros}
+
+% Title and so...
+\title{Trust me I'm a Mere Proposition}
+\author[1]{Théo Winterhalter}
+
+\begin{document}
+
+  \maketitle
+
+  \begin{abstract}
+    As if I had something to say...
+  \end{abstract}
+
+  \section{Rules}
+
+  \begin{center}
+  \(
+    \ru{}{\der \cdot}
+    \qquad
+    \ru{\Gamma \der T : s \qquad
+        x \notin \Gamma
+      }{\der \Gamma, x : T}
+    \qquad
+    \ru{\der \Gamma
+      }{\Gamma \der \Type_i : \Type_{i+1}}
+    \qquad
+    \ru{\der \Gamma \qquad
+        (x : T) \in \Gamma
+      }{\Gamma \der x : T}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \Pi x:A.B \qquad
+        \Gamma \der t' : A
+      }{\Gamma \der t\ t' : B[t'/x]}
+    \qquad
+    \ru{\Gamma \der A : s \qquad
+        \Gamma, x:A \der B : s' \qquad
+        (s,s',s'') \in \R
+      }{\Gamma \der \Pi x:A.B : s''}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \Pi x:A.B : s \qquad
+        \Gamma, x:A \der t : B
+      }{\Gamma \der \lambda x:A.t : \Pi x:A.B}
+    \qquad
+    \ru{\Gamma \der t : A \qquad
+        \Gamma \der B : s \qquad
+        \Gamma \der A \le B
+      }{\Gamma \der t : B}
+  \)
+  \end{center}
+
+\end{document}
