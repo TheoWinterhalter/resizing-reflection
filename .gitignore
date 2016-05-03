@@ -8,3 +8,9 @@ Makefile
 *.bak
 *#
 *.vo
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.gz
+*.vtc
