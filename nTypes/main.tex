@@ -125,16 +125,12 @@
   \meta{TODO: Add an elimination rule for equality.}
 
   \noindent %
-  We then add the rules regarding the $n$-Types which will also make explicit
-  what $\Gamma \der T \type$ means.
+  We then add the rules regarding the $n$-Types, giving us base types.
 
   \begin{center}
   \(
     \ru{\der \Gamma
-      }{\Gamma \der n-\Type : (n+1)-\Type}
-    \qquad
-    \ru{\Gamma \der T : n-\Type
-      }{\Gamma \der T \type}
+      }{\Gamma \der n-\Type \type}
     \qquad
     \ru{\Gamma \der T : (-2)-\Type
       }{\Gamma \der \ctr_T : \Sigma x:T. \Pi y:T. x =_T y}
