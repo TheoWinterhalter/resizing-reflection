@@ -28,7 +28,7 @@
 \input{macros}
 
 % Title and so...
-\title{$n$-Types are sufficient for Coq}
+\title{$n$-Types live a peaceful life without universes}
 \author[1]{Théo Winterhalter}
 
 \begin{document}
@@ -58,9 +58,6 @@
         x \notin \Gamma
       }{\der \Gamma, x : T}
     \qquad
-    \ru{\der \Gamma
-      }{\Gamma \der n-\Type : (n+1)-\Type}
-    \qquad
     \ru{\der \Gamma \qquad
         (x : T) \in \Gamma
       }{\Gamma \der x : T}
@@ -79,52 +76,72 @@
   \)
   \end{center}
 
-  \meta{Is the formation rule of $Pi$-types correct?}
-
   \begin{center}
   \(
     \ru{\Gamma \der \Pi x:A.B : s \qquad
         \Gamma, x:A \der t : B
       }{\Gamma \der \lambda x:A.t : \Pi x:A.B}
     \qquad
+    \ru{\Gamma \der t : \Sigma x:A.B
+      }{\Gamma \der t.1 : A}
+    \qquad
+    \ru{\Gamma \der t : \Sigma x:A.B
+      }{\Gamma \der t.2 : B[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der t : A \qquad
-        \Gamma \der B : s \qquad
-        \Gamma \der A \le B
+        \Gamma \der t' : B[t/x]
+      }{\Gamma \der (t ; t') : \Sigma x:A.B}
+    \qquad
+    \ru{\Gamma \der A \type \qquad
+        \Gamma, x:A \der B \type
+      }{\Gamma \der \Sigma x:A.B \type}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : A \qquad
+        \Gamma \der B \type \qquad
+        \Gamma \der A = B
       }{\Gamma \der t : B}
   \)
   \end{center}
 
-  The one rule we would like to add:
+  \noindent %
+  We then add the rules regarding the $n$-Types which will also make explicit
+  what $\Gamma \der T \type$ means.
 
   \begin{center}
   \(
-    \ru{\Gamma \der A : \Type_i \qquad
-        \Gamma \der B : \Type_j \qquad
-        \Gamma \der h : \emb{A}{B}
-      }{\Gamma \der \RRe{A}{h} : \Type_j}
+    \ru{\der \Gamma
+      }{\Gamma \der n-\Type : (n+1)-\Type}
   \)
   \end{center}
 
-\section{Computation}
-
-We present weak-head reduction as follows:
-
-\begin{center}
-\(
-  \ru{t \rew f \qquad
-      f~u \rew a
-    }{t~u \rew a}
-  \qquad
-  \ru{}{a \rew a}
-  \qquad
-  \ru{t[u/x] \rew a
-    }{(\lambda x:U.t)~u \rew a}
-  \qquad
-  \ru{}{n~u \rew n~u}
-  \qquad
-  \ru{T \rew A
-    }{(\RRe{T}{h}).\type \rew A}
-\)
-\end{center}
+% \section{Computation}
+%
+% We present weak-head reduction as follows:
+%
+% \begin{center}
+% \(
+%   \ru{t \rew f \qquad
+%       f~u \rew a
+%     }{t~u \rew a}
+%   \qquad
+%   \ru{}{a \rew a}
+%   \qquad
+%   \ru{t[u/x] \rew a
+%     }{(\lambda x:U.t)~u \rew a}
+%   \qquad
+%   \ru{}{n~u \rew n~u}
+%   \qquad
+%   \ru{T \rew A
+%     }{(\RRe{T}{h}).\type \rew A}
+% \)
+% \end{center}
 
 \end{document}
