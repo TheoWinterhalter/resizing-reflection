@@ -111,6 +111,8 @@
   \)
   \end{center}
 
+  \meta{TODO: Add identity types.}
+
   \noindent %
   We then add the rules regarding the $n$-Types which will also make explicit
   what $\Gamma \der T \type$ means.
@@ -119,8 +121,26 @@
   \(
     \ru{\der \Gamma
       }{\Gamma \der n-\Type : (n+1)-\Type}
+    \qquad
+    \ru{\Gamma \der T : n-\Type
+      }{\Gamma \der T \type}
+    \qquad
+    \ru{\Gamma \der T : (-2)-\Type
+      }{\Gamma \der \ctr_T : \Sigma x:T. \Pi y:T. x =_T y}
   \)
   \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T : (n+1)-\Type \qquad
+        \Gamma \der t,t' : T
+      }{\Gamma \der t =_T t' : n-\Type}
+  \)
+  \end{center}
+
+  This last rule is problematic...
+  We want the system to be decidable.
+
 
 % \section{Computation}
 %
