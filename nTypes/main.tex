@@ -104,6 +104,17 @@
 
   \begin{center}
   \(
+    \ru{\Gamma \der T \type \qquad
+        \Gamma \der t,t' : T
+      }{\Gamma \der t =_T t' \type}
+    \qquad
+    \ru{\Gamma \der t : A
+      }{\Gamma \der \refl_t : t =_T t}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der t : A \qquad
         \Gamma \der B \type \qquad
         \Gamma \der A = B
@@ -111,7 +122,7 @@
   \)
   \end{center}
 
-  \meta{TODO: Add identity types.}
+  \meta{TODO: Add an elimination rule for equality.}
 
   \noindent %
   We then add the rules regarding the $n$-Types which will also make explicit
