@@ -28,7 +28,7 @@
 \input{macros}
 
 % Title and so...
-\title{Trust me I'm a an hProp}
+\title{$n$-Types are sufficient for Coq}
 \author[1]{Théo Winterhalter}
 
 \begin{document}
@@ -36,21 +36,30 @@
   \maketitle
 
   \begin{abstract}
-    As if I had something to say...
+    We'll try to define a system with no universe hierarchy except for
+    $n$-Types, hopefully showing it's consistent and has a decidable type
+    checking.
   \end{abstract}
 
   \section{Rules}
+
+  We give ourselves basic dependent type theory with $\Pi$-types and
+  $\Sigma$-types, as well as the indentity types necessary to define the
+  $n$-Types.
+  This theory doesn't have the usual universes that one require to ensure
+  consistency. The goal is to prove that they are unnecessary as long as you
+  remain in the realm of $n$-Types (finite homotopy complexity).
 
   \begin{center}
   \(
     \ru{}{\der \cdot}
     \qquad
-    \ru{\Gamma \der T : s \qquad
+    \ru{\Gamma \der T \type \qquad
         x \notin \Gamma
       }{\der \Gamma, x : T}
     \qquad
     \ru{\der \Gamma
-      }{\Gamma \der \Type_i : \Type_{i+1}}
+      }{\Gamma \der n-\Type : (n+1)-\Type}
     \qquad
     \ru{\der \Gamma \qquad
         (x : T) \in \Gamma
@@ -64,12 +73,13 @@
         \Gamma \der t' : A
       }{\Gamma \der t\ t' : B[t'/x]}
     \qquad
-    \ru{\Gamma \der A : s \qquad
-        \Gamma, x:A \der B : s' \qquad
-        (s,s',s'') \in \R
-      }{\Gamma \der \Pi x:A.B : s''}
+    \ru{\Gamma \der A \type \qquad
+        \Gamma, x:A \der B \type
+      }{\Gamma \der \Pi x:A.B \type}
   \)
   \end{center}
+
+  \meta{Is the formation rule of $Pi$-types correct?}
 
   \begin{center}
   \(
