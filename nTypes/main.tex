@@ -46,7 +46,8 @@
   \[
     \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
       \Var  & \ni & x,y,X,Y \\
-      \Exp  & \ni & t,u,T,U & ::= & \Pi x:U.T \mid \Sigma x:U.T \\
+      \Exp  & \ni & t,u,T,U & ::= & \Pi x:U.T \mid \Sigma x:U.T \mid
+                                    \isnType{n}{T} \mid \nType{n} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid (t;u) \mid t.1 \mid t.2 \\
                          &&& \mid & {<} t {>} \mid {<} T ; t {>} \mid \ctr_t
@@ -208,27 +209,63 @@
   \meta{Shouldn't homotopy level be a part of the syntax? We need to define them
   somewhere, and the user might want to do a case analysis on them.}
 
+  \section{Algorithmic Equality}
 
-% \section{Computation}
-%
-% We present weak-head reduction as follows:
-%
-% \begin{center}
-% \(
-%   \ru{t \rew f \qquad
-%       f~u \rew a
-%     }{t~u \rew a}
-%   \qquad
-%   \ru{}{a \rew a}
-%   \qquad
-%   \ru{t[u/x] \rew a
-%     }{(\lambda x:U.t)~u \rew a}
-%   \qquad
-%   \ru{}{n~u \rew n~u}
-%   \qquad
-%   \ru{T \rew A
-%     }{(\RRe{T}{h}).\type \rew A}
-% \)
-% \end{center}
+  Weak head normal forms (whnfs) are given by the following grammar:
+
+  \begin{align*}
+    \Whnf &\ni r,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid
+                                 \isnType{n}{T} \mid \nType{n} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid {<}t{>} \mid {<}T;t{>} \\
+    \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid \ctr n \mid \pi_n
+               \mid n \gettype \mid n \getproof
+  \end{align*}
+
+  Weak head reduction $t \rew a$ is given as follows:
+
+  \begin{center}
+  \(
+    \ru{t \rew \lambda x:U.t' \qquad
+        t'[u/x] \rew a
+      }{t~u \rew a}
+    \qquad
+    \ru{t \rew (u;v) \qquad
+        u \rew a
+      }{t.1 \rew a}
+    \qquad
+    \ru{t \rew (u;v) \qquad
+        v \rew a
+      }{t.2 \rew a}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{t \rew n
+      }{t~u \rew n~u}
+    \qquad
+    \ru{t \rew n
+      }{t.1 \rew n.1}
+    \qquad
+    \ru{t \rew n
+      }{t.2 \rew n.2}
+    \qquad
+    \ru{t \rew n
+      }{\ctr_t \rew \ctr_n}
+    \qquad
+    \ru{t \rew n
+      }{\pi_n \rew n}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{t \rew n
+      }{t \gettype \rew n \gettype}
+    \qquad
+    \ru{t \rew n
+      }{t \getproof \rew n \getproof}
+  \)
+  \end{center}
 
 \end{document}
