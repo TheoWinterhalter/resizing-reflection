@@ -36,10 +36,24 @@
   \maketitle
 
   \begin{abstract}
-    We'll try to define a system with no universe hierarchy except for
+    We'll try to define a system with no universe hierarchy but with
     $n$-Types, hopefully showing it's consistent and has a decidable type
     checking.
   \end{abstract}
+
+  \section{Syntax}
+
+  \[
+    \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
+      \Var  & \ni & x,y,X,Y \\
+      \Exp  & \ni & t,u,T,U & ::= & \Pi x:U.T \mid \Sigma x:U.T \\
+                         &&& \mid & x \mid \lambda x:U.t \mid t~u
+                               \mid (t;u) \mid t.1 \mid t.2 \\
+                         &&& \mid & {<} t {>} \mid {<} T ; t {>} \mid \ctr_t
+                               \mid \pi_t \mid t \gettype \mid t \getproof \\
+      \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
+    \end{array}
+  \]
 
   \section{Rules}
 
