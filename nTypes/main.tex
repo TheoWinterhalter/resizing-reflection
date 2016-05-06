@@ -163,6 +163,30 @@
   \)
   \end{center}
 
+  We also add $\nType{n}$ as a base type for quantification
+  purposes. This is basically a $\Sigma$-type except that it is
+  defined on the whole universe.
+
+  \begin{center}
+  \(
+    \ru{}{\Gamma \der \nType{n} \type}
+    \qquad
+    \ru{\Gamma \der T \type \qquad
+        \Gamma \der h : \isnType{n}{T}
+      }{\Gamma \der {<} T ; h {>} : \nType{n}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \nType{n}
+      }{\Gamma \der t \gettype \type}
+    \qquad
+    \ru{\Gamma \der t : \nType{n}
+      }{\Gamma \der t \getproof : \isnType{n}{t \gettype}}
+  \)
+  \end{center}
+
 
 % \section{Computation}
 %
