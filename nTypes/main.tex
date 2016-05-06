@@ -127,31 +127,41 @@
   \noindent %
   We then add the rules regarding the $n$-Types, giving us base
   types.
+  Basically we are defining types that couldn't be defined without
+  quantification on a universe. Our purpose is then to prove
+  that all of these $n$-Types can live in the smalleest universe:
+  indeed, $\Gamma \der T \type$ can be seen as
+  $\Gamma \der T : \Type_0$ in a PTS with smallest universe
+  $\Type_0$.
 
   \begin{center}
   \(
-    \ru{\der \Gamma
-      }{\Gamma \der n-\Type \type}
+    \ru{\Gamma \der T \type
+      }{\Gamma \der \isnType{n}{T} \type}
     \qquad
-    \ru{\Gamma \der T : (-2)-\Type
-      }{\Gamma \der \ctr_T : \Sigma x:T. \Pi y:T. x =_T y}
+    \ru{%\Gamma \der T \type \qquad
+        \Gamma \der h : \Sigma x:T. \Pi y:T. x =_T y
+      }{\Gamma \der {<} h {>} : \isnType{(-2)}{T}}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \ru{\Gamma \der T : (n+1)-\Type \qquad
-        \Gamma \der t,t' : T
-      }{\Gamma \der t =_T t' : n-\Type}
+    \ru{%\Gamma \der T \type \qquad
+        \Gamma \der h : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
+      }{\Gamma \der {<} h {>} : \isnType{(n+1)}{T}}
   \)
   \end{center}
 
-  This last rule is problematic...
-  We want the system to be decidable.
-
-  \meta{What we want is actually a definition of $n$-Type that
-  works inside the system without the need for a $\Sigma$
-  that quantifies on a universe.}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \isnType{(-2)}{T}
+      }{\Gamma \der \ctr_t : \Sigma x:T. \Pi y:T. x =_T y}
+    \qquad
+    \ru{\Gamma \der t : \isnType{(n+1)}{T}
+      }{\Gamma \der \pi_t : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}}
+  \)
+  \end{center}
 
 
 % \section{Computation}
