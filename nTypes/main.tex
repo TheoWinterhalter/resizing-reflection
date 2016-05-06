@@ -55,7 +55,7 @@
     \end{array}
   \]
 
-  \section{Rules}
+  \section{Typing Rules}
 
   We give ourselves basic dependent type theory with $\Pi$-types and
   $\Sigma$-types, as well as the indentity types necessary to define the
@@ -200,6 +200,10 @@
       }{\Gamma \der t \getproof : \isnType{n}{t \gettype}}
   \)
   \end{center}
+
+  As one can guess, both $\ctr_{{<} h {>}}$ and $\pi_{{<}h{>}}$ reduce to $h$
+  and $\_ \gettype$ and $\_ \getproof$ are respectively first and second
+  projections.
 
 
 % \section{Computation}
