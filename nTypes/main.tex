@@ -248,23 +248,19 @@
     \ru{t \rew {<}t'{>} \qquad
         t' \rew a
       }{\pi_t \rew a}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
+    \qquad
     \ru{t \rew {<}T;t'{>} \qquad
         T \rew A
       }{t \gettype \rew A}
-    \qquad
-    \ru{t \rew {<}T;t'{>} \qquad
-        t' \rew a
-      }{t \getproof \rew a}
   \)
   \end{center}
 
   \begin{center}
   \(
+    \ru{t \rew {<}T;t'{>} \qquad
+        t' \rew a
+      }{t \getproof \rew a}
+    \qquad
     \ru{t \rew n
       }{t~u \rew n~u}
     \qquad
@@ -273,17 +269,17 @@
     \qquad
     \ru{t \rew n
       }{t.2 \rew n.2}
-    \qquad
-    \ru{t \rew n
-      }{\ctr_t \rew \ctr_n}
-    \qquad
-    \ru{t \rew n
-      }{\pi_n \rew n}
   \)
   \end{center}
 
   \begin{center}
   \(
+    \ru{t \rew n
+      }{\ctr_t \rew \ctr_n}
+    \qquad
+    \ru{t \rew n
+      }{\pi_n \rew n}
+    \qquad
     \ru{t \rew n
       }{t \gettype \rew n \gettype}
     \qquad
