@@ -241,6 +241,30 @@
 
   \begin{center}
   \(
+    \ru{t \rew {<}t'{>} \qquad
+        t' \rew a
+      }{\ctr_t \rew a}
+    \qquad
+    \ru{t \rew {<}t'{>} \qquad
+        t' \rew a
+      }{\pi_t \rew a}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{t \rew {<}T;t'{>} \qquad
+        T \rew A
+      }{t \gettype \rew A}
+    \qquad
+    \ru{t \rew {<}T;t'{>} \qquad
+        t' \rew a
+      }{t \getproof \rew a}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{t \rew n
       }{t~u \rew n~u}
     \qquad
@@ -267,5 +291,8 @@
       }{t \getproof \rew n \getproof}
   \)
   \end{center}
+
+  \meta{Perhaps the definition of $\isnType{n}{T}$ should only be a
+  meta-definition.}
 
 \end{document}
