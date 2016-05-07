@@ -21,6 +21,10 @@
 \newcommand{\Wlog}{W.\,l.\,o.\,g.}
 \newcommand{\wrt}{w.\,r.\,t.}
 
+% space-preserving paragraph headings (for lipics)
+\newcommand{\subheading}[1]{\subparagraph{#1.}} %Alt: \subsection{#1}
+\newcommand{\paradot}[1]{\subparagraph{#1.}}
+
 % Inference rules
 \newcommand{\rulename}[1]{\ensuremath{\mbox{\sc#1}}}
 \newcommand{\ru}[2]{\dfrac{\begin{array}[b]{@{}c@{}} #1 \end{array}}{#2}}
@@ -54,3 +58,5 @@
 \newcommand\Ctx{\operatorname{Ctx}}
 \newcommand\Whnf{\operatorname{Whnf}}
 \newcommand\Wne{\operatorname{Wne}}
+\newcommand\hiff{\mathrel{\hat{\iff}}}
+\newcommand\red{{\downarrow}}

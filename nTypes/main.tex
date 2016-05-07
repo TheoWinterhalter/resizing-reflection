@@ -211,6 +211,8 @@
 
   \section{Algorithmic Equality}
 
+  \paradot{Weak head normalization}
+
   Weak head normal forms (whnfs) are given by the following grammar:
 
   \begin{align*}
@@ -290,5 +292,48 @@
 
   \meta{Perhaps the definition of $\isnType{n}{T}$ should only be a
   meta-definition.}
+
+  \paradot{Type-directed Equality}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t \iff t' : \red T
+      }{\Gamma \der t \hiff t' : T}
+    \qquad
+    \ru{\Gamma, x:U \der t~x \hiff t'~x : V
+      }{\Gamma \der t \iff t' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t.1 \hiff t'.1 : U \qquad
+        \Gamma \der t.2 \hiff t'.2 : V[t.1/x]
+      }{\Gamma \der t \iff t' : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \ctr_t \iff \ctr_{t'} : \Sigma x:T. \Pi y:T. x =_T y
+      }{\Gamma \der t \iff t' : \isnType{(-2)}{T}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \pi_t \iff \pi_{t'}
+        : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
+      }{\Gamma \der t \iff t' : \isnType{(n+1)}{T}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t \gettype \hiff t' \gettype \qquad
+        \Gamma \der t \getproof \hiff t' \getproof : \isnType{n}{t \gettype}
+      }{\Gamma \der t \iff t' : \nType{n}}
+  \)
+  \end{center}
 
 \end{document}
