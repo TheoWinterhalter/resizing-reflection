@@ -353,4 +353,37 @@
   \)
   \end{center}
 
+  \paradot{An Induction Measure}
+
+  In order to define a logical relation, we define a hierarchy.
+  In similar works, this hierarchy would be a semantic universe hierarchy but
+  instead we want to interpret our types as $n$-Types whose semantics
+  counterpart shall be noted $\Hu_n$.
+
+  \begin{center}
+  \(
+    \ru{}{(N, \Wne) \in \Hu_n}
+    \qquad
+    \rux{}{(\nType{n}, \mid \Hu_n \mid) \in \Hu_m}{n < m}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{\Hu_n} \qquad
+        \forall u \in \widehat{\mathcal{A}},\ (V[u/x], \mathcal{F}(u)) \in \Hu_m
+       }{(\Pi x:U.V, \Pi \mathcal{A} \mathcal{F}) \in \Hu_k
+       }{n,m \le k}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{\Hu_n} \qquad
+        \forall u \in \widehat{\mathcal{A}},\ (V[u/x], \mathcal{F}(u)) \in \Hu_m
+       }{(\Sigma x:U.V, \Sigma \mathcal{A} \mathcal{F}) \in \Hu_k
+       }{n,m \le k}
+  \)
+  \end{center}
+
 \end{document}
