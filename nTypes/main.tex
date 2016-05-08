@@ -309,6 +309,18 @@
   \)
   \end{center}
 
-  \meta{What to do with $\gettype$?}
+  \begin{center}
+  \(
+    \ru{\Gamma \der n \steq n' : \nType{m}
+      }{\Gamma \der n \gettype \hsteq n' : \_}
+    \qquad
+    \ru{\Gamma \der n \steq n' : \nType{m}
+      }{\Gamma \der n \getproof \hsteq n' \getproof : \isnType{m}{n \gettype}}
+  \)
+  \end{center}
+
+  In the penultimate case, we return virtually nothing (anything actually) as
+  type equality doesn't care much about the type returned by structural
+  equality.
 
 \end{document}
