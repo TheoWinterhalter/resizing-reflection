@@ -333,6 +333,9 @@
     \ru{\Gamma \der U \hiff U' \qquad
         \Gamma, x:U \der V \hiff V'
       }{\Gamma \der \Pi x:U.V \iff \Pi x:U'.V'}
+    \qquad
+    \ru{\Gamma \der N \hsteq N' : \_
+      }{\Gamma \der N \iff N'}
   \)
   \end{center}
 
@@ -343,13 +346,6 @@
       }{\Gamma \der \Sigma x:U.V \iff \Sigma x:U'.V'}
     \qquad
     \ru{}{\Gamma \der \nType{n} \iff \nType{n}}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der N \hsteq N' : \_
-      }{\Gamma \der N \iff N'}
   \)
   \end{center}
 
