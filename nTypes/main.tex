@@ -47,11 +47,11 @@
     \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
       \Var  & \ni & x,y,X,Y \\
       \Exp  & \ni & t,u,T,U & ::= & \Pi x:U.T \mid \Sigma x:U.T \mid
-                                    \isnType{n}{T} \mid \nType{n} \\
+                                    \nType{n} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid (t;u) \mid t.1 \mid t.2 \\
-                         &&& \mid & {<} t {>} \mid {<} T ; t {>} \mid \ctr_t
-                               \mid \pi_t \mid t \gettype \mid t \getproof \\
+                         &&& \mid & {<} T ; t {>}
+                               \mid t \gettype \mid t \getproof \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -149,34 +149,14 @@
   $\Gamma \der T : \Type_0$ in a PTS with smallest universe
   $\Type_0$.
 
-  \begin{center}
-  \(
-    \ru{\Gamma \der T \type
-      }{\Gamma \der \isnType{n}{T} \type}
-    \qquad
-    \ru{%\Gamma \der T \type \qquad
-        \Gamma \der h : \Sigma x:T. \Pi y:T. x =_T y
-      }{\Gamma \der {<} h {>} : \isnType{(-2)}{T}}
-  \)
-  \end{center}
+  For this we define $\isnType{n}{T}$ as a shortcut for the following:
 
-  \begin{center}
-  \(
-    \ru{%\Gamma \der T \type \qquad
-        \Gamma \der h : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
-      }{\Gamma \der {<} h {>} : \isnType{(n+1)}{T}}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der t : \isnType{(-2)}{T}
-      }{\Gamma \der \ctr_t : \Sigma x:T. \Pi y:T. x =_T y}
-    \qquad
-    \ru{\Gamma \der t : \isnType{(n+1)}{T}
-      }{\Gamma \der \pi_t : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}}
-  \)
-  \end{center}
+  \[
+  \begin{array}{l@{~}l}
+    \isnType{(-2)}{T}  & := \Sigma x:T. \Pi y:T. x =_T y \\
+    \isnType{(n+1)}{T} & := \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
+  \end{array}
+  \]
 
   We also add $\nType{n}$ as a base type for quantification
   purposes. This is basically a $\Sigma$-type except that it is
@@ -202,9 +182,8 @@
   \)
   \end{center}
 
-  As one can guess, both $\ctr_{{<} h {>}}$ and $\pi_{{<}h{>}}$ reduce to $h$
-  and $\_ \gettype$ and $\_ \getproof$ are respectively first and second
-  projections.
+  As one can guess, both $\_ \gettype$ and $\_ \getproof$ are respectively first
+  and second projections.
 
   \meta{Shouldn't homotopy level be a part of the syntax? We need to define them
   somewhere, and the user might want to do a case analysis on them.}
@@ -217,9 +196,9 @@
 
   \begin{align*}
     \Whnf &\ni r,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid
-                                 \isnType{n}{T} \mid \nType{n} \\
-        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid {<}t{>} \mid {<}T;t{>} \\
-    \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid \ctr n \mid \pi_n
+                                 \nType{n} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid {<}T;t{>} \\
+    \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
                \mid n \gettype \mid n \getproof
   \end{align*}
 
@@ -243,26 +222,18 @@
 
   \begin{center}
   \(
-    \ru{t \rew {<}t'{>} \qquad
-        t' \rew a
-      }{\ctr_t \rew a}
-    \qquad
-    \ru{t \rew {<}t'{>} \qquad
-        t' \rew a
-      }{\pi_t \rew a}
-    \qquad
     \ru{t \rew {<}T;t'{>} \qquad
         T \rew A
       }{t \gettype \rew A}
+    \qquad
+    \ru{t \rew {<}T;t'{>} \qquad
+        t' \rew a
+      }{t \getproof \rew a}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \ru{t \rew {<}T;t'{>} \qquad
-        t' \rew a
-      }{t \getproof \rew a}
-    \qquad
     \ru{t \rew n
       }{t~u \rew n~u}
     \qquad
@@ -271,16 +242,6 @@
     \qquad
     \ru{t \rew n
       }{t.2 \rew n.2}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \ru{t \rew n
-      }{\ctr_t \rew \ctr_n}
-    \qquad
-    \ru{t \rew n
-      }{\pi_n \rew n}
     \qquad
     \ru{t \rew n
       }{t \gettype \rew n \gettype}
@@ -289,9 +250,6 @@
       }{t \getproof \rew n \getproof}
   \)
   \end{center}
-
-  \meta{Perhaps the definition of $\isnType{n}{T}$ should only be a
-  meta-definition.}
 
   \paradot{Type-directed Equality}
 
@@ -310,21 +268,6 @@
     \ru{\Gamma \der t.1 \hiff t'.1 : U \qquad
         \Gamma \der t.2 \hiff t'.2 : V[t.1/x]
       }{\Gamma \der t \iff t' : \Sigma x:U.V}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der \ctr_t \iff \ctr_{t'} : \Sigma x:T. \Pi y:T. x =_T y
-      }{\Gamma \der t \iff t' : \isnType{(-2)}{T}}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der \pi_t \iff \pi_{t'}
-        : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
-      }{\Gamma \der t \iff t' : \isnType{(n+1)}{T}}
   \)
   \end{center}
 
@@ -366,16 +309,6 @@
   \)
   \end{center}
 
-  \begin{center}
-  \(
-    \ru{\Gamma \der n \steq n' : \Sigma x:T. \Pi y:T. x =_T y
-      }{\Gamma \der \ctr_n \hsteq \ctr_{n'} : \isnType{n}{T}}
-    \qquad
-    \ru{\Gamma \der n \steq n' : \Pi x:T. \Pi y:T. \isnType{n}{x =_T y}
-      }{\Gamma \der \pi_n \hsteq \pi_{n'} : \isnType{(n+1)}{T}}
-  \)
-  \end{center}
-
-  \meta{What to do with $\gettype$.}
+  \meta{What to do with $\gettype$?}
 
 \end{document}
