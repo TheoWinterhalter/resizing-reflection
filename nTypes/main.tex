@@ -188,6 +188,8 @@
   \meta{Shouldn't homotopy level be a part of the syntax? We need to define them
   somewhere, and the user might want to do a case analysis on them.}
 
+  \meta{TODO: Add definitional equality}
+
   \section{Algorithmic Equality}
 
   \paradot{Weak head normalization}
@@ -349,6 +351,8 @@
   \)
   \end{center}
 
+  \section{A Logical Relation for Soundness}
+
   \paradot{An Induction Measure}
 
   In order to define a logical relation, we define a hierarchy.
@@ -398,5 +402,71 @@
   The dependent sum space is defined as
   $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in \mathcal{A}
   \text{ and } f.2 \in \mathcal{F}(f.1) \}$.
+
+  Throughout this paper, the induction measure $A \in \Hu_n$ shall mean the
+  minimum height of a derivation of $(A, \mathcal{A}) \in \Hu_n$ for some
+  $\mathcal{A}$.
+  Note that we also have that $A \in \Hu_n$ is smaller than $\Hu_n \in \Hu_m$.
+  We also write $A \in h$ for $A \in \Hu_n$ for some $n$.
+
+  \paradot{A Krikpe Logical Relation}
+  Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
+  \begin{itemize}
+    \item $\Gamma \der t,t' : T$ and
+    \item $\Gamma \der t = t' : T$.
+  \end{itemize}
+  %
+  By induction on $A \in h$, we define two Kripke relations:
+  \begin{itemize}
+    \item $\Gamma \der A \Sr A'$
+    \item $\Gamma \der a \Sr a' : A$
+  \end{itemize}
+  together with their respective closures $\hSr$.
+  We define them in rule form for better readability meaning we have to see the
+  conclusion to be defined as the conjunction of the premises.
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der N :=: N'
+      }{\Gamma \der N \Sr N'}
+    \qquad
+    \ru{\Gamma \der n :=: n' : N
+      }{\Gamma \der n \Sr n' : N}
+    \qquad
+    \ru{\der \Gamma
+      }{\Gamma \der \nType{m} \Sr \nType{m}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \tru{\Gamma \der U \hSr U'
+       }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+         \Delta \der V[u/x] \hSr V'[u'/x]
+       }{\Gamma \der \Pi x:U.V :=: \Pi x:U'.V'
+       }{\Gamma \der \Pi x:U.V \Sr \Pi x:U'.V'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+         \Delta \der f~u \hSr f'~u' : V[u/x]
+       }{\Gamma \der f :=: f' : \Pi x:U.V
+       }{\Gamma \der f \Sr f' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \tru{\Gamma \der U \hSr U'
+       }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+         \Delta \der V[u/x] \hSr V'[u'/x]
+       }{\Gamma \der \Sigma x:U.V :=: \Sigma x:U'.V'
+       }{\Gamma \der \Sigma x:U.V \Sr \Sigma x:U'.V'}
+  \)
+  \end{center}
+
+  \meta{Sigma member rule, $hSr$ rule}
 
 \end{document}
