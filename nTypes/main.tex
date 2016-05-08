@@ -359,6 +359,8 @@
   In similar works, this hierarchy would be a semantic universe hierarchy but
   instead we want to interpret our types as $n$-Types whose semantics
   counterpart shall be noted $\Hu_n$.
+  By recursion on $i \in \mathbb{N}$, we define
+  $\Hu_n \subseteq \Whnf \times \mathcal{P}(\Whnf)$ as follows.
 
   \begin{center}
   \(
@@ -385,5 +387,20 @@
        }{n,m \le k}
   \)
   \end{center}
+
+  \noindent %
+  Here, $\mathcal{A}$ denotes sets of expressions, $\mathcal{F}$ functions from
+  expressions to set of expressions while
+  $\widehat{\Hu_n} = \{ (T,\mathcal{A}) \mid (\red T, \mathcal{A}) \in \Hu_n \}$
+  and $\mid \Hu_n \mid = \{ A \mid (A, \mathcal{A}) \in \Hu_n \text{ for some }
+  \mathcal{A} \}$.
+  $\widehat{\mathcal{A}} = \{ t \mid \red t \in \mathcal{A} \}$ is the closure
+  of $\mathcal{A}$ by weak head expansion.
+  The dependent function space is defined as
+  $\Pi \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid \forall u \in
+  \widehat{\mathcal{A}},\ f~u \in \mathcal{F}(u) \}$.
+  The dependent sum space is defined as
+  $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in \mathcal{A}
+  \text{ and } f.2 \in \mathcal{F}(f.1) \}$.
 
 \end{document}
