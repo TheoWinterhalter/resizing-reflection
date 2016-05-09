@@ -607,6 +607,36 @@
   \)
   \end{center}
 
-  \meta{Sigma member rule, $hSr$ rule, $\nType{n}$ rules}
+  \begin{center}
+  \(
+    \dru{\Gamma \der f.1 \hSr f'.1 : U \qquad
+         \Gamma \der f.2 \hSr f'.2 : V[f.1/x]
+       }{\Gamma \der f :=: f' : \Sigma x:U.V
+       }{\Gamma \der f \Sr f' : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\Gamma \der f \gettype \hSr f' \gettype \qquad
+         \Gamma \der f \getproof \hSr f' \getproof : \isnType{m}{f \gettype}
+       }{\Gamma \der f :=: f' : \nType{m}
+       }{\Gamma \der f \Sr f' : \nType{m}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \qru{T \rew A \qquad
+         \Gamma \der T = A
+       }{t \rew a \qquad
+         \Gamma \der t = a : A \qquad
+         \Gamma \der t' = a' : A \qquad
+         t' \rew a'
+       }{\Gamma \der a \Sr a' : A
+       }{\Gamma \der t :=: t' : T
+       }{\Gamma \der t \hSr t' : T}
+  \)
+  \end{center}
 
 \end{document}
