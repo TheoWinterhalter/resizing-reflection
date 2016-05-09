@@ -221,11 +221,109 @@
   \(
     \ru{\Gamma \der T \type \qquad
         \Gamma \der h : \isnType{n}{T}
-      }{\Gamma \der \hsig{T;h} \gettype = T \type}
+      }{\Gamma \der \hsig{T;h} \gettype = T}
     \qquad
     \ru{\Gamma \der T \type \qquad
         \Gamma \der h : \isnType{n}{T}
       }{\Gamma \der \hsig{T;h} \getproof = h : \isnType{n}{T}}
+  \)
+  \end{center}
+
+  \paradot{Equivalence Rules}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : T
+      }{\Gamma \der t = t : T}
+    \qquad
+    \ru{\Gamma \der t' = t : T
+      }{\Gamma \der t = t' : T}
+    \qquad
+    \ru{\Gamma \der t_1 = t_2 : T \qquad
+        \Gamma \der t_2 = t_3 : T
+      }{\Gamma \der t_1 = t_3 : T}
+  \)
+  \end{center}
+
+  \paradot{Compatibility Rules}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' \qquad
+        \Gamma, x:U \der V = V'
+      }{\Gamma \der \Pi x:U.V = \Pi x:U'.V'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' \qquad
+        \Gamma, x:U \der V \qquad
+        \Gamma, x:U \der t = t' : V
+      }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Pi x:U.V \qquad
+        \Gamma \der u = u' : U
+      }{\Gamma \der t~u = t'~u' : V[u/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' \qquad
+        \Gamma, x:U \der V = V'
+      }{\Gamma \der \Sigma x:U.V = \Sigma x:U'.V'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t_1 = t'_1 : U \qquad
+        \Gamma, x:U \der V \qquad
+        \Gamma \der t_2 = t'_2 : V[t_1/x]
+      }{\Gamma \der (t_1;t_2) = (t'_1;t'_2) : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.1 = t'.1 : U}
+    \qquad
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.2 = t'.2 : V[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' \qquad
+        \Gamma \der t = t' : \isnType{n}{T}
+      }{\Gamma \der \hsig{T,t} = \hsig{T';t'} : \nType{n}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \nType{n}
+      }{\Gamma \der t \gettype = t' \gettype}
+    \qquad
+    \ru{\Gamma \der t = t' : \nType{n}
+      }{\Gamma \der t \getproof = t' \getproof : \isnType{n}{T}}
+  \)
+  \end{center}
+
+  \paradot{Conversion Rule}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \quad
+        \Gamma \der T = T'
+      }{\Gamma \der t = t' : T'}
   \)
   \end{center}
 
