@@ -50,7 +50,7 @@
                                     \nType{n} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid (t;u) \mid t.1 \mid t.2 \\
-                         &&& \mid & {<} T ; t {>}
+                         &&& \mid & \hsig{T ; t}
                                \mid t \gettype \mid t \getproof \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
@@ -168,7 +168,7 @@
     \qquad
     \ru{\Gamma \der T \type \qquad
         \Gamma \der h : \isnType{n}{T}
-      }{\Gamma \der {<} T ; h {>} : \nType{n}}
+      }{\Gamma \der \hsig{T ; h} : \nType{n}}
   \)
   \end{center}
 
@@ -199,7 +199,7 @@
   \begin{align*}
     \Whnf &\ni r,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid
                                  \nType{n} \\
-        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid {<}T;t{>} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \hsig{T;t} \\
     \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
                \mid n \gettype \mid n \getproof
   \end{align*}
@@ -224,11 +224,11 @@
 
   \begin{center}
   \(
-    \ru{t \rew {<}T;t'{>} \qquad
+    \ru{t \rew \hsig{T;t'} \qquad
         T \rew A
       }{t \gettype \rew A}
     \qquad
-    \ru{t \rew {<}T;t'{>} \qquad
+    \ru{t \rew \hsig{T;t'} \qquad
         t' \rew a
       }{t \getproof \rew a}
   \)
