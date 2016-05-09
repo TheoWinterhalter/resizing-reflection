@@ -503,7 +503,11 @@
   \(
     \ru{}{(N, \Wne) \in \Hu_n}
     \qquad
-    \rux{}{(\nType{n}, \mid \Hu_n \mid) \in \Hu_m}{n < m}
+    % \rux{}{(\nType{n}, \mid \Hu_n \mid) \in \Hu_m}{n < m}
+    \rux{\forall T \in \widehat{\mid \Hu_n \mid},\ %
+         (\isnType{n}{T}, \mathcal{F}(T)) \in \Hu_{-1}
+       }{(\nType{n}, \bigoplus \mid \Hu_n \mid \mathcal{F}) \in \Hu_m
+       }{n < m}
   \)
   \end{center}
 
@@ -539,6 +543,9 @@
   The dependent sum space is defined as
   $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in \mathcal{A}
   \text{ and } f.2 \in \mathcal{F}(f.1) \}$.
+  A slightly different version of dependent sum space is defined as
+  $\bigoplus \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f \gettype \in
+  \mathcal{A} \text{ and } f \getproof \in \mathcal{F}(f \gettype) \}$.
 
   Throughout this paper, the induction measure $A \in \nType{n}$ shall mean the
   minimum height of a derivation of $(A, \mathcal{A}) \in \Hu_n$ for some
@@ -546,8 +553,6 @@
   Note that we also have that $A \in \nType{n}$ is smaller than
   $\nType{n} \in \nType{m}$.
   We also write $A \in \hType$ for $A \in \nType{n}$ for some $n$.
-
-  \meta{Check the interpretation of $\nType{n}$ is enough for the measure.}
 
   \paradot{A Krikpe Logical Relation}
   Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
@@ -624,6 +629,9 @@
        }{\Gamma \der f \Sr f' : \nType{m}}
   \)
   \end{center}
+
+  \meta{There is currently a problem, how can we be sure that
+  $f \gettype \in \nType{m}$?}
 
   \begin{center}
   \(
