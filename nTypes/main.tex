@@ -188,7 +188,44 @@
   \meta{Shouldn't homotopy level be a part of the syntax? We need to define them
   somewhere, and the user might want to do a case analysis on them.}
 
-  \meta{TODO: Add definitional equality}
+  \section{Equality Rules}
+
+  \paradot{Computation ($\beta$) and extensionality ($\eta$)}
+
+  \begin{center}
+  \(
+    \ru{\Gamma, x:U \der t:V \qquad
+        \Gamma \der u : U
+      }{\Gamma \der (\lambda x:U.t)~u = t[u/x] : V[u/x]}
+    \qquad
+    \ru{\Gamma \der t : \Pi x:U.V
+      }{\Gamma \der t = \lambda x:U.t~x : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').1 = t : U}
+    \qquad
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').2 = t' : V[t/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T \type \qquad
+        \Gamma \der h : \isnType{n}{T}
+      }{\Gamma \der \hsig{T;h} \gettype = T \type}
+    \qquad
+    \ru{\Gamma \der T \type \qquad
+        \Gamma \der h : \isnType{n}{T}
+      }{\Gamma \der \hsig{T;h} \getproof = h : \isnType{n}{T}}
+  \)
+  \end{center}
 
   \section{Algorithmic Equality}
 
