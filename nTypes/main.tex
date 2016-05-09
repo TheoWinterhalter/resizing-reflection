@@ -94,42 +94,44 @@
   \begin{center}
   \(
     \ru{\Gamma \der \Pi x:A.B : s \qquad
-        \Gamma, x:A \der t : B
+        \Gamma, x:A \der t : B \qquad
+        \Gamma \der \Pi x:A.B
       }{\Gamma \der \lambda x:A.t : \Pi x:A.B}
     \qquad
     \ru{\Gamma \der t : \Sigma x:A.B
       }{\Gamma \der t.1 : A}
-    \qquad
-    \ru{\Gamma \der t : \Sigma x:A.B
-      }{\Gamma \der t.2 : B[t.1/x]}
   \)
   \end{center}
 
   \begin{center}
   \(
+    \ru{\Gamma \der t : \Sigma x:A.B
+      }{\Gamma \der t.2 : B[t.1/x]}
+    \qquad
     \ru{\Gamma \der t : A \qquad
         \Gamma \der t' : B[t/x]
+        \Gamma \der \Sigma x:A.B
       }{\Gamma \der (t ; t') : \Sigma x:A.B}
-    \qquad
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der A \type \qquad
         \Gamma, x:A \der B \type
       }{\Gamma \der \Sigma x:A.B \type}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
+    \qquad
     \ru{\Gamma \der T \type \qquad
         \Gamma \der t,t' : T
       }{\Gamma \der t =_T t' \type}
-    \qquad
-    \ru{\Gamma \der t : A
-      }{\Gamma \der \refl_t : t =_T t}
   \)
   \end{center}
 
   \begin{center}
   \(
+    \ru{\Gamma \der t : A
+      }{\Gamma \der \refl_t : t =_T t}
+    \qquad
     \ru{\Gamma \der t : A \qquad
         \Gamma \der B \type \qquad
         \Gamma \der A = B
