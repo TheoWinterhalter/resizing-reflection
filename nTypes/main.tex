@@ -350,9 +350,9 @@
   Weak head normal forms (whnfs) are given by the following grammar:
 
   \begin{align*}
-    \Whnf &\ni r,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid
+    \Whnf &\ni a,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u \mid
                                  \nType{n} \\
-        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \hsig{T;t} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \mid \hsig{T;t} \\
     \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
                \mid n \gettype \mid n \getproof
   \end{align*}
@@ -384,6 +384,8 @@
     \ru{t \rew \hsig{T;t'} \qquad
         t' \rew a
       }{t \getproof \rew a}
+    \qquad
+    \ru{}{a \rew a}
   \)
   \end{center}
 
