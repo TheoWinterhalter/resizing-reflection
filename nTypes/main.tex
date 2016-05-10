@@ -49,7 +49,7 @@
       \Exp  & \ni & t,u,T,U & ::= & \Pi x:U.T \mid \Sigma x:U.T \mid
                                     t =_T u \mid \nType{n} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
-                               \mid (t;u) \mid t.1 \mid t.2 \\
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \\
                          &&& \mid & \hsig{T ; t}
                                \mid t \gettype \mid t \getproof \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
