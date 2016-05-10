@@ -436,6 +436,9 @@
   \)
   \end{center}
 
+  \meta{We need observations for equality to define it, don't we?
+  Otherwise we could just state equality for $\refl$.}
+
   \paradot{Structural Equality}
 
   \begin{center}
@@ -503,6 +506,15 @@
       }{\Gamma \der \Sigma x:U.V \iff \Sigma x:U'.V'}
     \qquad
     \ru{}{\Gamma \der \nType{n} \iff \nType{n}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T \hiff T' \qquad
+        \Gamma \der t \hiff t' : T \qquad
+        \Gamma \der u \hiff u' : T
+      }{\Gamma \der t =_T u \iff t' =_T u'}
   \)
   \end{center}
 
