@@ -1,6 +1,6 @@
 Rules:
   ✔ Add equality to the syntax @done(2016-05-10 11:39) @project(Rules)
   ☐ Add elimination rule for equality
-  ☐ Add equality type to definitional equality
+  ✔ Add equality type to definitional equality @done(2016-05-10 11:45) @project(Rules)
   ☐ Add equality to alg. eq.
   ☐ Add equality to the induction measure

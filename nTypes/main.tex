@@ -129,7 +129,7 @@
 
   \begin{center}
   \(
-    \ru{\Gamma \der t : A
+    \ru{\Gamma \der t : T
       }{\Gamma \der \refl_t : t =_T t}
     \qquad
     \ru{\Gamma \der t : A \qquad
@@ -296,6 +296,22 @@
     \qquad
     \ru{\Gamma \der t = t' : \Sigma x:U.V
       }{\Gamma \der t.2 = t'.2 : V[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' \qquad
+        \Gamma \der t = t' : T \qquad
+        \Gamma \der u = u' : T
+      }{\Gamma \der t =_T u = t' =_{T'} u'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \qquad
+      }{\Gamma \der \refl_t = \refl_{t'} : t =_T t}
   \)
   \end{center}
 
