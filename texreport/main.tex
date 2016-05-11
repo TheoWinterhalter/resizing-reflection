@@ -513,4 +513,75 @@
   \)
   \end{center}
 
+  \section{A Logical Relation for Soundness}
+
+  \paradot{An Induction Measure}
+
+  In order to define a logical relation, we define semantic universe hierarchy.
+  By recursion on $i \in \mathbb{N}$, we define
+  $\U_i \in \Whnf \times \mathcal{P}(\Whnf)$ as follows.
+
+  \begin{center}
+  \(
+    \ru{}{(N, \Wne) \in \U_i}
+    \qquad
+    \rux{}{(\Type_i, \mid \U_i \mid) \in \U_j}{(\Type_i,\Type_j) \in \Ax}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{U_i} \qquad
+         \forall u \in \widehat{\mathcal{A}}.\ (T[u/x],\mathcal{F}(u)) \in
+         \widehat{\U_j}
+       }{(\Pi x:U.T, \Pi \mathcal{A} \mathcal{F}) \in \U_k
+       }{(\Type_i, \Type_j, \Type_k) \in \R}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{\U_i} \qquad
+        \forall u \in \widehat{\mathcal{A}},\ (V[u/x], \mathcal{F}(u)) \in
+        \widehat{\U_j}
+       }{(\Sigma x:U.V, \Sigma \mathcal{A} \mathcal{F}) \in \U_k
+       }{(\Type_i, \Type_j, \Type_k) \in \R}
+  \)
+  \end{center}
+
+  \meta{Here we also need to find a way to observe equalities to interperet
+  the equaity type...}
+
+  \begin{center}
+  \(
+    \ru{(U, \mathcal{A}) \in \widehat{\U_i}
+      }{(\RRe{T}{U}{h}, \RRcal{\mathcal{A}}{h})}
+  \)
+  \end{center}
+
+  \noindent %
+  Here, $\mathcal{A}$ denotes sets of expressions, $\mathcal{F}$ functions from
+  expressions to set of expressions while
+  $\widehat{\U_i} = \{ (T,\mathcal{A}) \mid (\red T, \mathcal{A}) \in \U_i \}$
+  and $\mid \U_i \mid = \{ A \mid (A, \mathcal{A}) \in \U_i \text{ for some }
+  \mathcal{A} \}$.
+  $\widehat{\mathcal{A}} = \{ t \mid \red t \in \mathcal{A} \}$ is the closure
+  of $\mathcal{A}$ by weak head expansion.
+  The dependent function space is defined as
+  $\Pi \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid \forall u \in
+  \widehat{\mathcal{A}},\ f~u \in \mathcal{F}(u) \}$.
+  The dependent sum space is defined as
+  $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in
+  \widehat{\mathcal{A}} \text{ and } f.2 \in \mathcal{F}(f.1) \}$.
+  The resized space derived from an embedding is defined as
+  $\RRcal{\mathcal{A}}{h} = \{ f \in \Whnf \mid h.1~f \in \widehat{\mathcal{A}}
+  \}$ (note that intuitively, this corresponds to the interpretation of $T$
+  which we can't mention yet for universe stratification reasons).
+
+  Throughout this paper, the induction measure $A \in \Type_i$ shall mean the
+  minimum height of a derivation of $(A, \mathcal{A}) \in \U_i$ for some
+  $\mathcal{A}$. Note that we also have that $A \in \Type_i$ is smaller
+  than $\Type_i \in \Type_j$.
+  We also write $A \in s$ for $A \in \Type_i$ for some $i$.
+
 \end{document}
