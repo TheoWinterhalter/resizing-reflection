@@ -40,6 +40,38 @@
     them, including the equivalence and the hProp ones.
   \end{abstract}
 
+  \section{Syntax}
+
+  \[
+    \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
+      \Var  & \ni & x,y,X,Y \\
+      \Sort & \ni & s             & ::= & \Type_k \mbox{ }
+                                                (k \in \mathbb{N}) \\
+      \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
+                                    t =_T u \\ %\mid \emb{U}{T} \\
+                         &&& \mid & x \mid \lambda x:U.t \mid t~u
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \\
+      \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
+    \end{array}
+  \]
+
+  \noindent %
+  We write $A \to B$ as short for $\Pi \_:A.B$, the non-dependent product.
+  We also write $=$ for $=_T$ when $T$ is understood.
+  %
+  The notation $\emb{A}{B}$ denotes the type of embeddings of $A$ into $B$.
+  \[
+    \begin{array}{l@{\quad}l@{~}l@{~}l}
+      & \emb{A}{B} &:=& \Sigma (f : A \to B). \isEquiv \ap_f \\
+      \text{where} & \ap_f &:& (x =_A y) \to (f(x) =_B f(y)) \\
+      \text{and} & \isEquiv f &:=& \Sigma_{(g : B \to A)}
+                               \Sigma_{(\eta : g \circ f \sim \id_A)}
+                               \Sigma_{(\varepsilon : f \circ g \sim \id_B)}
+                               \Pi_{(x : A)} f~(\eta~x) = \varepsilon~(f~x) \\
+      \text{and} & h_1 \sim h_2 &:=& \Pi_{(x : T)} h_1~x = h_2~x.
+    \end{array}
+  \]
+
   \section{Rules}
 
   \begin{center}
@@ -92,7 +124,7 @@
     \ru{\Gamma \der A : \Type_i \qquad
         \Gamma \der B : \Type_j \qquad
         \Gamma \der h : \emb{A}{B}
-      }{\Gamma \der \RRe{A}{h} : \Type_j}
+      }{\Gamma \der \RRe{A}{B}{h} : \Type_j}
   \)
   \end{center}
 
@@ -114,7 +146,7 @@ We present weak-head reduction as follows:
   \ru{}{n~u \rew n~u}
   \qquad
   \ru{T \rew A
-    }{(\RRe{T}{h}).\type \rew A}
+    }{(\RRe{T}{U}{h}).\type \rew A}
 \)
 \end{center}
 

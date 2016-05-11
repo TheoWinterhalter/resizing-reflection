@@ -40,9 +40,19 @@
 \newcommand{\ndrux}[5]{#1\ \ru{\dstack{#2}{#3}}{#4}\ #5}
 
 % Symbols and names
-\newcommand\Type{\operatorname{Type}}
+% \newcommand\Type{\operatorname{Type}}
+\DeclareMathOperator{\Type}{\mathbf{Type}}
 \newcommand\R{\operatorname{R}}
-\newcommand\emb[2]{\operatorname{embedding}#1\ #2}
-\newcommand\RRe[2]{\operatorname{RR_e}#1\ #2}
+% \newcommand\emb[2]{\operatorname{embedding}#1\ #2}
+\newcommand\emb[2]{#1 \hookrightarrow #2}
+\newcommand\RRe[3]{\operatorname{\mathbf{RR_e}}#1\ #2\ #3}
 \newcommand\type{\operatorname{type}}
 \newcommand\rew{\searrow}
+\newcommand\Var{\operatorname{Var}}
+\newcommand\Exp{\operatorname{Exp}}
+\newcommand\Ctx{\operatorname{Ctx}}
+\DeclareMathOperator{\refl}{\mathbf{refl}}
+\newcommand\Sort{\operatorname{Sort}}
+\DeclareMathOperator{\isEquiv}{\mathbf{isEquiv}}
+\DeclareMathOperator{\ap}{\mathbf{ap}}
+\DeclareMathOperator{\id}{\mathbf{id}}
