@@ -446,4 +446,34 @@
   \)
   \end{center}
 
+  \paradot{Structural Equality}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der n \hsteq n' : T
+      }{\Gamma \der n \steq n' :\ \red T}
+    \qquad
+    \ru{(x:T) \in \Gamma
+      }{\Gamma \der x \hsteq x : T}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der n \steq n' : \Pi x:U.V \qquad
+        \Gamma \der u \hiff u' : U
+      }{\Gamma \der n~u \hsteq n'~u' : V[u/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der n \steq n' : \Sigma x:U.V
+      }{\Gamma \der n.1 \hsteq n'.1 : U}
+    \qquad
+    \ru{\Gamma \der n \steq n' : \Sigma x:U.V
+      }{\Gamma \der n.2 \hsteq n'.2 : V[n.1/x]}
+  \)
+  \end{center}
+
 \end{document}
