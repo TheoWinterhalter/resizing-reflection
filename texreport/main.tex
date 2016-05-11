@@ -584,4 +584,102 @@
   than $\Type_i \in \Type_j$.
   We also write $A \in s$ for $A \in \Type_i$ for some $i$.
 
+  \paradot{A Kripke Logical Relation}
+
+  Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
+  \begin{itemize}
+    \item $\Gamma \der t,t' : T$ and
+    \item $\Gamma \der t = t' : T$.
+  \end{itemize}
+  %
+  By induction on $A \in s$, we define two Kripke relations:
+  \begin{itemize}
+    \item $\Gamma \der A \Sr A' : s$
+    \item $\Gamma \der a \Sr a' : A$
+  \end{itemize}
+  together with their respective closures $\hSr$.
+  We define them in rule form for better readability meaning we have to see the
+  conclusion to be defined as the conjunction of the premises.
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der N :=: N'
+      }{\Gamma \der N \Sr N'}
+    \qquad
+    \ru{\Gamma \der n :=: n' : N
+      }{\Gamma \der n \Sr n' : N}
+    \qquad
+    \rux{\der \Gamma
+       }{\Gamma \der s \Sr s : s'
+       }{(s,s')}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \trux{\Gamma \der U \hSr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+          \Delta \der V[u/x] \hSr V'[u'/x] : s'
+        }{\Gamma \der \Pi x:U.V :=: \Pi x:U'.V' : s''
+        }{\Gamma \der \Pi x:U.V \Sr \Pi x:U'.V' : s''
+        }{(s,s',s'')}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+         \Delta \der f~u \hSr f'~u' : V[u/x]
+       }{\Gamma \der f :=: f' : \Pi x:U.V
+       }{\Gamma \der f \Sr f' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \trux{\Gamma \der U \hSr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
+          \Delta \der V[u/x] \hSr V'[u'/x] : s'
+        }{\Gamma \der \Sigma x:U.V :=: \Sigma x:U'.V' : s''
+        }{\Gamma \der \Sigma x:U.V \Sr \Sigma x:U'.V' : s''
+        }{(s,s',s'')}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\Gamma \der f.1 \hSr f'.1 : U \qquad
+         \Gamma \der f.2 \hSr f'.2 : V[f.1/x]
+       }{\Gamma \der f :=: f' : \Sigma x:U.V
+       }{\Gamma \der f \Sr f' : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\Gamma \der T \hSr T' : s \qquad
+         \Gamma \der U \hSr U' : s'
+       }{\Gamma \der h \hSr h : \emb{T}{U} \qquad
+         \Gamma \der h' \hSr h' : \emb{T}{U}
+       }{\Gamma \der \RRe{T}{U}{h} \Sr \RRe{T'}{U'}{h'} : s'}
+  \)
+  \end{center}
+
+  \meta{If I'm not mistaken, this rule doesn't actually work, it would be nicer
+  if we didn't need $\Gamma \der T \hSr T' : s$ to hold...}
+
+  \begin{center}
+  \(
+    \qru{T \rew A \qquad
+         \Gamma \der T = A
+       }{t \rew a \qquad
+         \Gamma \der t = a : A \qquad
+         \Gamma \der t' = a' : A \qquad
+         t' \rew a'
+       }{\Gamma \der a \Sr a' : A
+       }{\Gamma \der t :=: t' : T
+       }{\Gamma \der t \hSr t' : T}
+  \)
+  \end{center}
+
 \end{document}

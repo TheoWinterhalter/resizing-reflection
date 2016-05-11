@@ -14,4 +14,7 @@ Structure of the Document:
   ☐ Add Alg. eq. rules for equality / refl / J
   ✔ Induction Measure @done(2016-05-11 17:13) @project(Structure of the Document)
   ☐ Treat equality in the induction measure
-  ☐ Logical Relation for Soundness
+  ✔ Logical Relation for Soundness @done(2016-05-11 18:07) @project(Structure of the Document)
+  ☐ Equality in logical relation
+  ☐ Fix equality of RRe in log. rel.
+  ☐ Add member equality for RRe in log. rel.
