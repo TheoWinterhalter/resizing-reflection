@@ -48,10 +48,9 @@
       \Sort & \ni & s             & ::= & \Type_k \mbox{ }
                                                 (k \in \mathbb{N}) \\
       \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
-                                    t =_T u \mid [\Type_i]_j \\
+                                    t =_T u \mid \RRe{U}{T}{h} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
-                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t
-                               \mid t \gettype \\
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -115,7 +114,7 @@
       }{\Gamma \der t.1 : A}
     \qquad
     \ru{\Gamma \der t : \Sigma x:A.B
-      }{\Gamma \der t.2 : A}
+      }{\Gamma \der t.2 : B[t.1/x]}
   \)
   \end{center}
 
@@ -136,7 +135,7 @@
   \(
     \ru{\Gamma \der t : A \qquad
         \Gamma \der t' : B[t/x] \qquad
-        \Gamma \der \Sigma x:A.B
+        \Gamma \der \Sigma x:A.B : s
       }{\Gamma \der (t;t') : \Sigma x:A.B}
     \qquad
     \ru{\Gamma \der t : T
@@ -153,23 +152,59 @@
   \)
   \end{center}
 
-  Then the rules regarding resizing:
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der t : [\Type_i]_j
-      }{\Gamma \der t \gettype : \Type_i}
-    \qquad
-    \ru{}{\Gamma \der [\Type_i]_j : \Type_j}
-  \)
-  \end{center}
+  \noindent %
+  Rules regarding resized types mirror those for the type they are
+  \emph{hiding}.
 
   \begin{center}
   \(
     \ru{\Gamma \der A : \Type_i \qquad
         \Gamma \der B : \Type_j \qquad
         \Gamma \der h : \emb{A}{B}
-      }{\Gamma \der \RRe{A}{B}{h} : [\Type_i]_j}
+      }{\Gamma \der \RRe{A}{B}{h} : \Type_j}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \RRe{(\Pi x:A.B)}{C}{h} \qquad
+        \Gamma \der t' : A
+      }{\Gamma \der t\ t' : B[t'/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \RRe{(\Pi x:A.B)}{C}{h} : s \qquad
+        \Gamma, x:A \der t : B
+      }{\Gamma \der \lambda x:A.t : \RRe{(\Pi x:A.B)}{C}{h}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \RRe{(\Sigma x:A.B)}{C}{h}
+      }{\Gamma \der t.1 : A}
+    \qquad
+    \ru{\Gamma \der t : \RRe{(\Sigma x:A.B)}{C}{h}
+      }{\Gamma \der t.2 : B[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : A \qquad
+        \Gamma \der t' : B[t/x] \qquad
+        \Gamma \der \RRe{(\Sigma x:A.B)}{C}{h} : s
+      }{\Gamma \der (t;t') : \RRe{(\Sigma x:A.B)}{C}{h}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : T \qquad
+        \Gamma \der \RRe{(t =_T t)}{U}{h} : s
+      }{\Gamma \der \refl_t : \RRe{(t =_T t)}{U}{h}}
   \)
   \end{center}
 
@@ -184,9 +219,10 @@
 Weak head normal forms (whnfs) are given by the following grammar:
 
 \begin{align*}
-  \Whnf &\ni a,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u \\
+  \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u
+                         \mid \RRe{U}{T}{t} \\
       &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
-  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid n \gettype
+  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
 \end{align*}
 
 We present weak-head reduction as follows:
@@ -208,9 +244,6 @@ We present weak-head reduction as follows:
 
 \begin{center}
 \(
-  \ru{T \rew A
-    }{(\RRe{T}{U}{h}).\type \rew A}
-  \qquad
   \ru{t \rew (u;v) \qquad
       u \rew a
     }{t.1 \rew a}
@@ -218,19 +251,12 @@ We present weak-head reduction as follows:
   \ru{t \rew (u;v) \qquad
       v \rew a
     }{t.2 \rew a}
-\)
-\end{center}
-
-\begin{center}
-\(
+  \qquad
   \ru{t \rew n
     }{t.1 \rew n.1}
   \qquad
   \ru{t \rew n
     }{t.2 \rew n.2}
-  \qquad
-  \ru{t \rew n
-    }{t \gettype \rew n \gettype}
 \)
 \end{center}
 
