@@ -163,7 +163,19 @@
   \)
   \end{center}
 
-\section{Computation}
+\section{Equality Rules}
+
+\section{Algorithmic Equality}
+
+\paradot{Weak head normalization}
+
+Weak head normal forms (whnfs) are given by the following grammar:
+
+\begin{align*}
+  \Whnf &\ni a,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u \\
+      &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
+  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
+\end{align*}
 
 We present weak-head reduction as follows:
 
@@ -179,9 +191,34 @@ We present weak-head reduction as follows:
     }{(\lambda x:U.t)~u \rew a}
   \qquad
   \ru{}{n~u \rew n~u}
-  \qquad
+\)
+\end{center}
+
+\begin{center}
+\(
   \ru{T \rew A
     }{(\RRe{T}{U}{h}).\type \rew A}
+  \qquad
+  \ru{t \rew (u;v) \qquad
+      u \rew a
+    }{t.1 \rew a}
+  \qquad
+  \ru{t \rew (u;v) \qquad
+      v \rew a
+    }{t.2 \rew a}
+\)
+\end{center}
+
+\begin{center}
+\(
+  \ru{t \rew n
+    }{t.1 \rew n.1}
+  \qquad
+  \ru{t \rew n
+    }{t.2 \rew n.2}
+  \qquad
+  \ru{t \rew n
+    }{t.type \rew n.type}
 \)
 \end{center}
 

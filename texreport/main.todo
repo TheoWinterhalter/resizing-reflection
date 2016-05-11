@@ -2,3 +2,11 @@ About Syntax:
   ☐ Add ap_f in the syntax?
   ☐ Give meaning to the applications between functions and equalities
   ☐ Add J
+  ☐ Add .type to syntax?
+
+Computation:
+  ☐ What meaning is there to .type when it is not an RR?
+
+Structure of the Document:
+  ☐ Add Equality Rules
+  ☐ Add Alg. eq. rules
