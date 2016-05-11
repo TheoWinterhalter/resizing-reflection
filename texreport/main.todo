@@ -17,4 +17,4 @@ Structure of the Document:
   ✔ Logical Relation for Soundness @done(2016-05-11 18:07) @project(Structure of the Document)
   ☐ Equality in logical relation
   ☐ Fix equality of RRe in log. rel.
-  ☐ Add member equality for RRe in log. rel.
+  ✔ Add member equality for RRe in log. rel. @done(2016-05-11 18:18) @project(Structure of the Document)
