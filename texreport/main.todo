@@ -10,5 +10,5 @@ Computation:
 Structure of the Document:
   ✔ Add Equality Rules @done(2016-05-11 15:47) @project(Structure of the Document)
   ✔ Add Cumulativity Rules @done(2016-05-11 16:00) @project(Structure of the Document)
-  ☐ Add Alg. eq. rules
+  ✔ Add Alg. eq. rules @done(2016-05-11 16:28) @project(Structure of the Document)
   ☐ Add Alg. eq. rules for equality / refl / J

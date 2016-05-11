@@ -476,4 +476,41 @@
   \)
   \end{center}
 
+  \paradot{Type Equality}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \red T \iff \red T'
+      }{\Gamma \der T \hiff T'}
+    \qquad
+    \ru{\Gamma \der U \hiff U' \qquad
+        \Gamma, x:U \der V \hiff V'
+      }{\Gamma \der \Pi x:U.V \iff \Pi x:U'.V'}
+    \qquad
+    \ru{\Gamma \der N \hsteq N' : \_
+      }{\Gamma \der N \iff N'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der U \hiff U' \qquad
+        \Gamma, x:U \der V \hiff V'
+      }{\Gamma \der \Sigma x:U.V \iff \Sigma x:U'.V'}
+    \qquad
+    \ru{\Gamma \der U \hiff U' \qquad
+        \Gamma \der T \hiff T'
+      }{\Gamma \der \RRe{U}{T}{h} \iff \RRe{U'}{T'}{h'}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T \hiff T' \qquad
+        \Gamma \der t \hiff t' : T \qquad
+        \Gamma \der u \hiff u' : T
+      }{\Gamma \der t =_T u \iff t' =_T u'}
+  \)
+  \end{center}
+
 \end{document}
