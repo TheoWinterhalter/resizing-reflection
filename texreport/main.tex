@@ -208,212 +208,242 @@
   \)
   \end{center}
 
-\section{Equality Rules}
+  \section{Equality Rules}
 
-\paradot{Computation ($\beta$) and extensionality ($\eta$)}
+  \paradot{Computation ($\beta$) and extensionality ($\eta$)}
 
-\begin{center}
-\(
-  \ru{\Gamma, x:U \der t:V \qquad
-      \Gamma \der u : U
-    }{\Gamma \der (\lambda x:U.t)~u = t[u/x] : V[u/x]}
-  \qquad
-  \ru{\Gamma \der t : \Pi x:U.V
-    }{\Gamma \der t = \lambda x:U.t~x : \Pi x:U.V}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma, x:U \der t:V \qquad
+        \Gamma \der u : U
+      }{\Gamma \der (\lambda x:U.t)~u = t[u/x] : V[u/x]}
+    \qquad
+    \ru{\Gamma \der t : \Pi x:U.V
+      }{\Gamma \der t = \lambda x:U.t~x : \Pi x:U.V}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t : U \qquad
-      \Gamma \der t' : V[t/x]
-    }{\Gamma \der (t;t').1 = t : U}
-  \qquad
-  \ru{\Gamma \der t : U \qquad
-      \Gamma \der t' : V[t/x]
-    }{\Gamma \der (t;t').2 = t' : V[t/x]}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').1 = t : U}
+    \qquad
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').2 = t' : V[t/x]}
+  \)
+  \end{center}
 
-\paradot{Equivalence Rules}
+  \paradot{Equivalence Rules}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t : T
-    }{\Gamma \der t = t : T}
-  \qquad
-  \ru{\Gamma \der t' = t : T
-    }{\Gamma \der t = t' : T}
-  \qquad
-  \ru{\Gamma \der t_1 = t_2 : T \qquad
-      \Gamma \der t_2 = t_3 : T
-    }{\Gamma \der t_1 = t_3 : T}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : T
+      }{\Gamma \der t = t : T}
+    \qquad
+    \ru{\Gamma \der t' = t : T
+      }{\Gamma \der t = t' : T}
+    \qquad
+    \ru{\Gamma \der t_1 = t_2 : T \qquad
+        \Gamma \der t_2 = t_3 : T
+      }{\Gamma \der t_1 = t_3 : T}
+  \)
+  \end{center}
 
-\paradot{Compatibility Rules}
+  \paradot{Compatibility Rules}
 
-\begin{center}
-\(
-  \rux{\Gamma \der U = U' : s \qquad
-       \Gamma, x:U \der V = V' : s'
-     }{\Gamma \der \Pi x:U.V = \Pi x:U'.V' : s''
-     }{(s,s',s'') \in \R}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \rux{\Gamma \der U = U' : s \qquad
+         \Gamma, x:U \der V = V' : s'
+       }{\Gamma \der \Pi x:U.V = \Pi x:U'.V' : s''
+       }{(s,s',s'') \in \R}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der U = U' : s \qquad
-      \Gamma, x:U \der V : s' \qquad
-      \Gamma, x:U \der t = t' : V
-    }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' : s \qquad
+        \Gamma, x:U \der V : s' \qquad
+        \Gamma, x:U \der t = t' : V
+      }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t = t' : \Pi x:U.V \qquad
-      \Gamma \der u = u' : U
-    }{\Gamma \der t~u = t'~u' : V[u/x]}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Pi x:U.V \qquad
+        \Gamma \der u = u' : U
+      }{\Gamma \der t~u = t'~u' : V[u/x]}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \rux{\Gamma \der U = U' : s \qquad
-       \Gamma, x:U \der V = V' : s'
-     }{\Gamma \der \Sigma x:U.V = \Sigma x:U'.V' : s''
-     }{(s,s',s'') \in \R}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \rux{\Gamma \der U = U' : s \qquad
+         \Gamma, x:U \der V = V' : s'
+       }{\Gamma \der \Sigma x:U.V = \Sigma x:U'.V' : s''
+       }{(s,s',s'') \in \R}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t_1 = t'_1 : U \qquad
-      \Gamma, x:U \der V : s \qquad
-      \Gamma \der t_2 = t'_2 : V[t_1/x]
-    }{\Gamma \der (t_1;t_2) = (t'_1;t'_2) : \Sigma x:U.V}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t_1 = t'_1 : U \qquad
+        \Gamma, x:U \der V : s \qquad
+        \Gamma \der t_2 = t'_2 : V[t_1/x]
+      }{\Gamma \der (t_1;t_2) = (t'_1;t'_2) : \Sigma x:U.V}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t = t' : \Sigma x:U.V
-    }{\Gamma \der t.1 = t'.1 : U}
-  \qquad
-  \ru{\Gamma \der t = t' : \Sigma x:U.V
-    }{\Gamma \der t.2 = t'.2 : V[t.1/x]}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.1 = t'.1 : U}
+    \qquad
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.2 = t'.2 : V[t.1/x]}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der T = T' \qquad
-      \Gamma \der t = t' : T \qquad
-      \Gamma \der u = u' : T
-    }{\Gamma \der t =_T u = t' =_{T'} u'}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' \qquad
+        \Gamma \der t = t' : T \qquad
+        \Gamma \der u = u' : T
+      }{\Gamma \der t =_T u = t' =_{T'} u'}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t = t' : T \qquad
-    }{\Gamma \der \refl_t = \refl_{t'} : t =_T t}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \qquad
+      }{\Gamma \der \refl_t = \refl_{t'} : t =_T t}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der U = U' : s \qquad
-      \Gamma \der T = T' : s' \qquad
-      \Gamma \der h, h' : \emb{U}{T}
-    }{\Gamma \der \RRe{U}{T}{h} = \RRe{U'}{T'}{h'} : s'}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' : s \qquad
+        \Gamma \der T = T' : s' \qquad
+        \Gamma \der h, h' : \emb{U}{T}
+      }{\Gamma \der \RRe{U}{T}{h} = \RRe{U'}{T'}{h'} : s'}
+  \)
+  \end{center}
 
-\paradot{Conversion Rule}
+  \paradot{Conversion Rule}
 
-\begin{center}
-\(
-  \ru{\Gamma \der t = t' : T \quad
-      \Gamma \der T \le T'
-    }{\Gamma \der t = t' : T'}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \quad
+        \Gamma \der T \le T'
+      }{\Gamma \der t = t' : T'}
+  \)
+  \end{center}
 
 
-\section{Cumulativity}
+  \section{Cumulativity}
 
-\begin{center}
-\(
-  \rux{}{\Gamma \der \Type_i \le \Type_j}{i \le j}
-  \qquad
-  \ru{\Gamma \der U = U' : s \qquad
-      \Gamma, x:U \der T \le T'
-    }{\Gamma \der \Pi x:U.T \le \Pi x:U'.T'}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \rux{}{\Gamma \der \Type_i \le \Type_j}{i \le j}
+    \qquad
+    \ru{\Gamma \der U = U' : s \qquad
+        \Gamma, x:U \der T \le T'
+      }{\Gamma \der \Pi x:U.T \le \Pi x:U'.T'}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{\Gamma \der T = T' : s
-    }{\Gamma \der T \le T'}
-  \qquad
-  \ru{\Gamma \der T_1 \le T_2 \qquad
-      \Gamma \der T_2 \le T_3
-    }{\Gamma \der T_1 \le T_3}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' : s
+      }{\Gamma \der T \le T'}
+    \qquad
+    \ru{\Gamma \der T_1 \le T_2 \qquad
+        \Gamma \der T_2 \le T_3
+      }{\Gamma \der T_1 \le T_3}
+  \)
+  \end{center}
 
-\section{Algorithmic Equality}
+  \section{Algorithmic Equality}
 
-\paradot{Weak head normalization}
+  \paradot{Weak head normalization}
 
-Weak head normal forms (whnfs) are given by the following grammar:
+  Weak head normal forms (whnfs) are given by the following grammar:
 
-\begin{align*}
-  \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u
-                         \mid \RRe{U}{T}{t} \\
-      &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
-  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
-\end{align*}
-%
-We present weak-head reduction as follows:
+  \begin{align*}
+    \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u
+                           \mid \RRe{U}{T}{t} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
+    \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
+  \end{align*}
+  %
+  We present weak-head reduction as follows:
 
-\begin{center}
-\(
-  \ru{t \rew f \qquad
-      f~u \rew a
-    }{t~u \rew a}
-  \qquad
-  \ru{}{a \rew a}
-  \qquad
-  \ru{t[u/x] \rew a
-    }{(\lambda x:U.t)~u \rew a}
-  \qquad
-  \ru{}{n~u \rew n~u}
-\)
-\end{center}
+  \begin{center}
+  \(
+    \ru{t \rew f \qquad
+        f~u \rew a
+      }{t~u \rew a}
+    \qquad
+    \ru{}{a \rew a}
+    \qquad
+    \ru{t[u/x] \rew a
+      }{(\lambda x:U.t)~u \rew a}
+    \qquad
+    \ru{}{n~u \rew n~u}
+  \)
+  \end{center}
 
-\begin{center}
-\(
-  \ru{t \rew (u;v) \qquad
-      u \rew a
-    }{t.1 \rew a}
-  \qquad
-  \ru{t \rew (u;v) \qquad
-      v \rew a
-    }{t.2 \rew a}
-  \qquad
-  \ru{t \rew n
-    }{t.1 \rew n.1}
-  \qquad
-  \ru{t \rew n
-    }{t.2 \rew n.2}
-\)
-\end{center}
-%
-We will write $\red t$ for $a$ when $t \rew a$.
+  \begin{center}
+  \(
+    \ru{t \rew (u;v) \qquad
+        u \rew a
+      }{t.1 \rew a}
+    \qquad
+    \ru{t \rew (u;v) \qquad
+        v \rew a
+      }{t.2 \rew a}
+    \qquad
+    \ru{t \rew n
+      }{t.1 \rew n.1}
+    \qquad
+    \ru{t \rew n
+      }{t.2 \rew n.2}
+  \)
+  \end{center}
+  %
+  We will write $\red t$ for $a$ when $t \rew a$.
+
+  \paradot{Type-directed Equality}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t \iff t' : \red T
+      }{\Gamma \der t \hiff t' : T}
+    \qquad
+    \ru{\Gamma, x:U \der t~x \hiff t'~x : V
+      }{\Gamma \der t \iff t' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t.1 \hiff t'.1 : U \qquad
+        \Gamma \der t.2 \hiff t'.2 : V[t.1/x]
+      }{\Gamma \der t \iff t' : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \meta{We need observations for equality to define it, don't we?
+  Otherwise we could just state equality for $\refl$.}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t \hiff t' : T
+      }{\Gamma \der t \iff t' : \RRe{T}{U}{h}}
+  \)
+  \end{center}
 
 \end{document}
