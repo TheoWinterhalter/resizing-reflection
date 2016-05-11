@@ -48,9 +48,10 @@
       \Sort & \ni & s             & ::= & \Type_k \mbox{ }
                                                 (k \in \mathbb{N}) \\
       \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
-                                    t =_T u \\ %\mid \emb{U}{T} \\
+                                    t =_T u \mid [\Type_i]_j \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
-                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \\
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t
+                               \mid t \gettype \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -152,18 +153,29 @@
   \)
   \end{center}
 
-  The one rule we would like to add:
+  Then the rules regarding resizing:
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : [\Type_i]_j
+      }{\Gamma \der t \gettype : \Type_i}
+    \qquad
+    \ru{}{\Gamma \der [\Type_i]_j : \Type_j}
+  \)
+  \end{center}
 
   \begin{center}
   \(
     \ru{\Gamma \der A : \Type_i \qquad
         \Gamma \der B : \Type_j \qquad
         \Gamma \der h : \emb{A}{B}
-      }{\Gamma \der \RRe{A}{B}{h} : \Type_j}
+      }{\Gamma \der \RRe{A}{B}{h} : [\Type_i]_j}
   \)
   \end{center}
 
 \section{Equality Rules}
+
+\section{Cumulativity}
 
 \section{Algorithmic Equality}
 
@@ -174,7 +186,7 @@ Weak head normal forms (whnfs) are given by the following grammar:
 \begin{align*}
   \Whnf &\ni a,f,A,B,F &::=~&  \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u \\
       &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
-  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
+  \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid n \gettype
 \end{align*}
 
 We present weak-head reduction as follows:
@@ -218,7 +230,7 @@ We present weak-head reduction as follows:
     }{t.2 \rew n.2}
   \qquad
   \ru{t \rew n
-    }{t.type \rew n.type}
+    }{t \gettype \rew n \gettype}
 \)
 \end{center}
 
