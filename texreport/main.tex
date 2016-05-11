@@ -378,7 +378,7 @@ Weak head normal forms (whnfs) are given by the following grammar:
       &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \\
   \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2
 \end{align*}
-
+%
 We present weak-head reduction as follows:
 
 \begin{center}
@@ -413,5 +413,7 @@ We present weak-head reduction as follows:
     }{t.2 \rew n.2}
 \)
 \end{center}
+%
+We will write $\red t$ for $a$ when $t \rew a$.
 
 \end{document}
