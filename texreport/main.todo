@@ -11,7 +11,7 @@ Structure of the Document:
   ✔ Add Equality Rules @done(2016-05-11 15:47) @project(Structure of the Document)
   ✔ Add Cumulativity Rules @done(2016-05-11 16:00) @project(Structure of the Document)
   ✔ Add Alg. eq. rules @done(2016-05-11 16:28) @project(Structure of the Document)
-  ☐ Add Alg. eq. rules for equality / refl / J
+  ✔ Add Alg. eq. rules for equality / refl / J @done(2016-05-12 18:27) @project(Structure of the Document)
   ✔ Induction Measure @done(2016-05-11 17:13) @project(Structure of the Document)
   ☐ Treat equality in the induction measure
   ✔ Logical Relation for Soundness @done(2016-05-11 18:07) @project(Structure of the Document)
