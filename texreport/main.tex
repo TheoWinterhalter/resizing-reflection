@@ -278,6 +278,16 @@
   \)
   \end{center}
 
+  \begin{center}
+  \(
+    \dru{\Gamma \der A : s \qquad
+         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x \qquad
+         \Gamma \der u : A
+       }{\Gamma \der \J (A,C,b,u,u,\refl_u) = b\ u : C\ u\ u\ \refl_u}
+  \)
+  \end{center}
+
   \paradot{Equivalence Rules}
 
   \begin{center}
