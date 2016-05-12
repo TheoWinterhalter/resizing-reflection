@@ -228,7 +228,7 @@
          \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
        }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x
        }{\Gamma \der u, v : A \qquad
-         \Gamma \der p : \RRe{u =_A v}{B}{h}
+         \Gamma \der p : \RRe{(u =_A v)}{B}{h}
        }{\Gamma \der \J (A,C,b,u,v,p) : C\ u\ v\ p}
   \)
   \end{center}
@@ -268,6 +268,13 @@
     \ru{\Gamma \der t : U \qquad
         \Gamma \der t' : V[t/x]
       }{\Gamma \der (t;t').2 = t' : V[t/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \Sigma x:U.T
+      }{\Gamma \der t = (t.1 ; t.2) : \Sigma x:U.T}
   \)
   \end{center}
 
