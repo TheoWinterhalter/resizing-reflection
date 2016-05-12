@@ -378,6 +378,18 @@
 
   \begin{center}
   \(
+    \tru{\Gamma \der A = A' : s \qquad
+         \Gamma \der C = C' : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b = b' : \Pi x:A. C\ x\ x\ \refl_x
+       }{\Gamma \der u = u' : A \qquad
+         \Gamma \der v = v' : A \qquad
+         \Gamma \der p = p' : u =_A v
+       }{\Gamma \der \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') : C\ u\ v\ p}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der U = U' : s \qquad
         \Gamma \der T = T' : s' \qquad
         \Gamma \der h, h' : \emb{U}{T}
