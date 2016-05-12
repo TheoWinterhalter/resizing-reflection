@@ -591,6 +591,27 @@
   than $\Type_i \in \Type_j$.
   We also write $A \in s$ for $A \in \Type_i$ for some $i$.
 
+  \begin{proof}[The resized interpretation is identical]
+    Say we have $(\RRe{A}{B}{h}, \RRcal{\mathcal{B}}{h}) \in \U_i$
+    and $(A, \mathcal{A}) \in U_j$.
+    Let's show $\RRcal{\mathcal{B}}{h} = \mathcal{A}$, meaning that they
+    have the same elements.
+
+    Let $f \in \mathcal{A}$ and show $f \in \RRcal{\mathcal{B}}{h}$, \ie
+    show $h.1~f \in \mathcal{B}$.
+    We should have that $h.1 \in \Pi \mathcal{A} \mathcal{F}$ where for any
+    $u \in \widehat{\mathcal{A}}$, $\mathcal{F}(u) = \mathcal{B}$.
+    So $h.1~f \in \mathcal{F}(f) = \mathcal{B}$.
+    \meta{There is the problem of how to justify that $h.1$ indeed belongs to
+    the interprertation of its type since we never required it to have one.}
+
+    Now, conversely, assume $f \in \RRcal{\mathcal{B}}{h}$ and show
+    $f \in \mathcal{A}$.%  We have $h.2.1 \in \Pi \mathcal{B} \mathcal{G}$
+    % where $\mathcal{G}(v) = \mathcal{A}$ for any $v \in \mathcal{B}$.
+    \meta{We need a way to give an interpretation to equality types if we want
+    to go any further...}
+  \end{proof}
+
   \paradot{A Kripke Logical Relation}
 
   Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
