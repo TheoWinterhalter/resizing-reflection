@@ -555,7 +555,7 @@
   \begin{center}
   \(
     \ru{(U, \mathcal{A}) \in \widehat{\U_i}
-      }{(\RRe{T}{U}{h}, \RRcal{\mathcal{A}}{h})}
+      }{(\RRe{T}{U}{h}, \RRcal{\mathcal{A}}{h}) \in \U_i}
   \)
   \end{center}
 
@@ -573,10 +573,17 @@
   The dependent sum space is defined as
   $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in
   \widehat{\mathcal{A}} \text{ and } f.2 \in \widehat{\mathcal{F}(f.1)} \}$.
+
   The resized space derived from an embedding is defined as
   $\RRcal{\mathcal{A}}{h} = \{ f \in \Whnf \mid h.1~f \in \widehat{\mathcal{A}}
-  \}$ (note that intuitively, this corresponds to the interpretation of $T$
-  which we can't mention yet for universe stratification reasons).
+  \}$.
+  Note that intuitively, this corresponds to the interpretation of $T$
+  which we can't mention yet for universe stratification reasons.
+  With that in mind, we have $T \in \Type_i$ instead of $T \in \Type_j$ for
+  a possibly larger $j$. This implies that, when considering the measure,
+  we can make a recursive call on $T$ when it shouldn't be possible.
+  \meta{I'm not sure of what I'm saying because this would work in a larger
+  setting wouldn't it?}
 
   Throughout this paper, the induction measure $A \in \Type_i$ shall mean the
   minimum height of a derivation of $(A, \mathcal{A}) \in \U_i$ for some
