@@ -1,7 +1,7 @@
 About Syntax:
   ☐ Add ap_f in the syntax?
   ☐ Give meaning to the applications between functions and equalities
-  ☐ Add J
+  ✔ Add J @done(2016-05-12 15:30) @project(About Syntax)
   ✔ Add .type to syntax? @done(2016-05-11 13:35) @project(About Syntax)
 
 Computation:

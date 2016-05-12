@@ -50,7 +50,8 @@
       \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
                                     t =_T u \mid \RRe{U}{T}{h} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
-                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \\
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \mid
+                               \J (T,U,t_{refl},u_1,u_2,t_{eq}) \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -145,6 +146,17 @@
 
   \begin{center}
   \(
+    \tru{\Gamma \der A : s \qquad
+         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x
+       }{\Gamma \der u, v : A \qquad
+         \Gamma \der p : u =_A v
+       }{\Gamma \der \J (A,C,b,u,v,p) : C\ u\ v\ p}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der t : A \qquad
         \Gamma \der B : s \qquad
         \Gamma \der A \le B
@@ -199,6 +211,20 @@
       }{\Gamma \der (t;t') : \RRe{(\Sigma x:A.B)}{C}{h}}
   \)
   \end{center}
+
+  \begin{center}
+  \(
+    \tru{\Gamma \der A : s \qquad
+         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x
+       }{\Gamma \der u, v : A \qquad
+         \Gamma \der p : \RRe{u =_A v}{B}{h}
+       }{\Gamma \der \J (A,C,b,u,v,p) : C\ u\ v\ p}
+  \)
+  \end{center}
+
+  \meta{This raises the problem of how to give a $\RRe{A}{B}{h}$ when $A$ is
+  required.}
 
   \begin{center}
   \(
