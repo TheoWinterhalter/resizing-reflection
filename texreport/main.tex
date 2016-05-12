@@ -187,6 +187,16 @@
 
   \begin{center}
   \(
+    \ru{\Gamma \der t : \Pi x:A.B \qquad
+        \Gamma \der t' : \RRe{A}{C}{h}
+      }{\Gamma \der t\ t' : B[t'/x]}
+  \)
+  \end{center}
+
+  \meta{If we do that, then isn't the substitution ill-typed?}
+
+  \begin{center}
+  \(
     \ru{\Gamma \der \RRe{(\Pi x:A.B)}{C}{h} : s \qquad
         \Gamma, x:A \der t : B
       }{\Gamma \der \lambda x:A.t : \RRe{(\Pi x:A.B)}{C}{h}}
