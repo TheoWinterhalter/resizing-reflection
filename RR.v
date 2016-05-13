@@ -43,6 +43,8 @@ End Bar.
 
 (* Let's go for a rule with embedding instead *)
 
+Set Universe Polymorphism.
+
 Notation "A == B" := (eq A B) (at level 50).
 
 Definition ap {A B} (f : A -> B) {x y  : A} (e : eq x y) : eq (f x) (f y) :=
@@ -83,4 +85,21 @@ Section Checking.
   Check (eq_refl _ : lift A B h (proj y) == y).
 
 End Checking.
+
+Set Printing Universes.
+Unset Universe Polymorphism.
+
+Let Uni := Type.
+Definition BigUnit : Type := forall T : Uni, T = True -> T.
+Fail Check BigUnit : Uni.
+
+Axiom funext : forall A B (f g : forall x : A, B x), (forall x : A, f x == g x) -> f == g.
+
+Lemma small_bigunit : Embedding BigUnit True.
+Proof.
+  exists (fun _ => I). intros x y.
+  simple refine (Build_isEquiv (x == y) ((fun _ => I) x == (fun _ => I) y) (fun e => _) _ _ _ _).
+  - intro e. unfold BigUnit in x,y. apply funext. intro z. apply funext. intro t.
+    rewrite t. destruct (x True Logic.eq_refl). now destruct (y True Logic.eq_refl).
+  - intro e.
 
