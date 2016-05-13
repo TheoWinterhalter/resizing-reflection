@@ -506,6 +506,9 @@
     \ru{\Gamma \der t \iff t' : \red T
       }{\Gamma \der t \hiff t' : T}
     \qquad
+    \ru{\Gamma \der \red t \hsteq \red t' : \_
+      }{\Gamma \der t \iff t' : N}
+    \qquad
     \ru{\Gamma, x:U \der t~x \hiff t'~x : V
       }{\Gamma \der t \iff t' : \Pi x:U.V}
   \)
@@ -521,20 +524,26 @@
 
   \begin{center}
   \(
-    \dru{\Gamma, C : \Pi x:T. \Pi y:T. (x =_T y) \to s,
-         b : \Pi x:T. C\ x\ x\ \refl_x
-       }{\der \J (T,C,b,u,v,t) \hiff \J (T,C,b,u,v,t')
-         : C\ u\ v\ t
-       }{\Gamma \der t \iff t' : u =_T v}
+    \ru{\Gamma \der t \hindeq t' : u =_T v
+      }{\Gamma \der t \iff t' : u =_T v}
+    \qquad
+    \ru{\Gamma \der t \hiff t' : T
+      }{\Gamma \der t \iff t' : \RRe{T}{U}{h}}
   \)
   \end{center}
 
-  \meta{This an awful definiton... It doesn't seem reasonable.}
+  \paradot{Inductive Equality}
 
   \begin{center}
   \(
+    \ru{\Gamma \der \red t \indeq t' : T
+      }{\Gamma \der t \hindeq t' : T}
+    \qquad
+    \ru{\Gamma \der n \steq n' : \_
+      }{\Gamma \der n \indeq n' : T}
+    \qquad
     \ru{\Gamma \der t \hiff t' : T
-      }{\Gamma \der t \iff t' : \RRe{T}{U}{h}}
+      }{\Gamma \der \refl_t \indeq \refl_{t'} : u =_T v}
   \)
   \end{center}
 
