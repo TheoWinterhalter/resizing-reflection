@@ -71,3 +71,21 @@
 \newcommand{\hSr}{\mathrel{\widehat{\Sr}}}
 \newcommand\gives{\Longrightarrow}
 \DeclareMathOperator{\J}{\mathbf{J}}
+
+% Making my own symbols (thanks StackOverflow)
+\usepackage{mathabx}
+
+\makeatletter
+\newcommand\incircbin
+{%
+  \mathpalette\@incircbin
+}
+\newcommand\@incircbin[2]
+{%
+  \mathbin%
+  {%
+    \ooalign{\hidewidth$#1#2$\hidewidth\crcr$#1\ovoid$}%
+  }%
+}
+\newcommand{\oeq}{\incircbin{=}}
+\makeatother

@@ -663,13 +663,13 @@
   \)
   \end{center}
 
-  \meta{Here we also need to find a way to observe equalities to interperet
-  the equaity type...}
-
   \begin{center}
   \(
-    \ru{(U, \mathcal{A}) \in \widehat{\U_i}
-      }{(\RRe{T}{U}{h}, \RRcal{\mathcal{A}}{h}) \in \U_i}
+    \ru{(T,\mathcal{A}) \in \U_i
+      }{(u =_T v, \oeq\ \mathcal{A}\ u\ v) \in \U_i}
+    \qquad
+    \ru{(U, \mathcal{B}) \in \widehat{\U_i}
+      }{(\RRe{T}{U}{h}, \RRcal{\mathcal{B}}{h}) \in \U_i}
   \)
   \end{center}
 
@@ -687,6 +687,9 @@
   The dependent sum space is defined as
   $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in
   \widehat{\mathcal{A}} \text{ and } f.2 \in \widehat{\mathcal{F}(f.1)} \}$.
+  The equality space is defined as
+  $\oeq\ \mathcal{A}\ u\ v = \Wne \bigcup \{ \refl_t \mid t \in
+  \widehat{\mathcal{A}} \}$
 
   The resized space derived from an embedding is defined as
   $\RRcal{\mathcal{A}}{h} = \{ f \in \Whnf \mid h.1~f \in \widehat{\mathcal{A}}
@@ -712,10 +715,10 @@
     have the same elements.
 
     Let $f \in \mathcal{A}$ and show $f \in \RRcal{\mathcal{B}}{h}$, \ie
-    show $h.1~f \in \mathcal{B}$.
+    show $h.1~f \in \widehat{\mathcal{B}}$.
     We should have that $h.1 \in \Pi \mathcal{A} \mathcal{F}$ where for any
     $u \in \widehat{\mathcal{A}}$, $\mathcal{F}(u) = \mathcal{B}$.
-    So $h.1~f \in \mathcal{F}(f) = \mathcal{B}$.
+    So $h.1~f \in \widehat{\mathcal{F}(f)} = \widehat{\mathcal{B}}$.
     \meta{There is the problem of how to justify that $h.1$ indeed belongs to
     the interprertation of its type since we never required it to have one.}
 
