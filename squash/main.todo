@@ -1,0 +1,4 @@
+Ideas to asses:
+  ☐ Use irrelevance to treat both squash cases for (S) without recursive call
+  ☐ Only accept ||A|| as whnf, that is, reduction goes under squash
+  ☐ This previous idea would have probably been better with ||N|| only, perhaps it would be ideal to fonctorize the squash?
