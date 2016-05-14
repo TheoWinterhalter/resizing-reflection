@@ -395,6 +395,84 @@
   created to prove soundness of algorithmic equality, we will mainly focus
   on consistency. We might handle decidability later.
 
+  \paradot{Weak head normalization}
+
+  Weak head normal forms (whnfs) are given by the following grammar:
+
+  \begin{align*}
+    \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u
+                           \mid \squash{T} \\
+        &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \mid [t] \\
+    \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid \elim(T,U,t,u,n)
+                           \mid \J (T,U,b,u,v,n)
+  \end{align*}
+  %
+  We present weak-head reduction as follows:
+
+  \begin{center}
+  \(
+    \ru{t \rew f \qquad
+        f~u \rew a
+      }{t~u \rew a}
+    \qquad
+    \ru{}{a \rew a}
+    \qquad
+    \ru{t[u/x] \rew a
+      }{(\lambda x:U.t)~u \rew a}
+    \qquad
+    \ru{}{n~u \rew n~u}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{t \rew (u;v) \qquad
+        u \rew a
+      }{t.1 \rew a}
+    \qquad
+    \ru{t \rew (u;v) \qquad
+        v \rew a
+      }{t.2 \rew a}
+    \qquad
+    \ru{t \rew n
+      }{t.1 \rew n.1}
+    \qquad
+    \ru{t \rew n
+      }{t.2 \rew n.2}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{p \rew \refl_t \qquad
+        u \rew a \qquad
+        v \rew a \qquad
+        t \rew a \qquad
+        b\ u \rew a'
+      }{\J (T,U,b,u,v,p) \rew a'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{p \rew n
+      }{\J (T,U,b,u,v,p) \rew \J (T,U,b,u,v,n)}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{v \rew [v'] \qquad
+        t\ v' \rew a
+      }{\elim(T,U,t,u,v) \rew a}
+    \qquad
+    \ru{v \rew n
+      }{\elim(T,U,t,u,v) \rew \elim(T,U,t,u,n)}
+  \)
+  \end{center}
+  %
+  We will write $\red t$ for $a$ when $t \rew a$.
+
   \paradot{An Induction Measure}
 
   In order to define the logical relation, we define semantic universe hierarchy.
