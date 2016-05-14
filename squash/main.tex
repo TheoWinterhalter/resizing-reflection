@@ -640,4 +640,91 @@
   \)
   \end{center}
 
+  \begin{lemma}[Weakening]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der a \Sr a' : A$ and $\Delta \le \Gamma$ then there
+      exists a derivation of $\Delta \der a \Sr a' : A$ with the same height.
+      \item Analogously for $\Gamma \der t \hSr t' : T$.
+    \end{itemize}
+  \end{lemma}
+  %
+  I dont' believe it's necessary to focus on this one.
+
+  \begin{lemma}[Type Conversion]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der A \Sr A' : s$ then
+      $\Gamma \der a \Sr a' : A$ iff $\Gamma \der a \Sr a' : A'$.
+      \item If $\Gamma \der T \hSr T' : s$ then
+      $\Gamma \der t \hSr t : T$ iff $\Gamma \der t \Sr t' : T'$.
+    \end{itemize}
+  \end{lemma}
+
+  \begin{proof}
+    Simultaneously by induction on $A \in s$ and $T \in s$.
+    We only show the ``if'' direction.
+
+    In all the proofs, we'll only focus on the squash, since it's the only
+    thing that changes (forgetting sigma and equality on purpose) from
+    Andreas and Gabriel's work.
+
+    \begin{center}
+    \(
+      \ru{\Gamma \der T :=: T' : s
+        }{\Gamma \der \squash{T} \Sr \squash{T'} : s'}
+      \qquad
+      \ru{\Gamma \der f : \squash{T} \qquad
+          \Gamma \der f' : \squash{T}
+        }{\Gamma \der f \Sr f' : \squash{T}}
+    \)
+    \end{center}
+    %
+    By conversion for typing, $\Gamma \der f, f' : \squash{T'}$, hence the
+    result.
+  \end{proof}
+
+  \begin{lemma}[Symmetry and Transitivity]
+    Let $\Gamma \der T \hSr T : s$.
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der t \hSr t' : T$ then $\Gamma \der t' \hSr t : T$.
+      \item If $\Gamma \der t_1 \hSr t_2 : T$ and $\Gamma \der t_2 \hSr t_3 : T$
+      then $\Gamma \der t_1 \hSr t_3 : T$.
+    \end{itemize}
+  \end{lemma}
+
+  \begin{proof}
+    We generalize the two statements to whnfs $\Gamma \der A \Sr A : s$ and
+    prove all four statements simultaneously by induction.
+
+    \begin{center}
+    \(
+      \ru{\Gamma \der T :=: T' : s
+        }{\Gamma \der \squash{T} \Sr \squash{T'} : s'}
+    \)
+    \end{center}
+
+    \begin{caselist}
+      \nextcase Symmetry.
+      \begin{center}
+      \(
+        \ru{\Gamma \der f : \squash{T} \qquad
+            \Gamma \der f' : \squash{T}
+          }{\Gamma \der f \Sr f' : \squash{T}}
+      \)
+      \end{center}
+      Symmetry holds directly.
+
+      \nextcase Transitivity also holds immediately.
+    \end{caselist}
+  \end{proof}
+
+  \begin{lemma}[Into the logical relation]
+    Let $T \in s$.
+    If $\Gamma \der n :=: n' : T$ then $\Gamma \der n \hSr n' : T$.
+  \end{lemma}
+  %
+  Once again the proof extends trivially.
+
 \end{document}

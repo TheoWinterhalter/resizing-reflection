@@ -39,6 +39,22 @@
 \newcommand{\ndru}[4]{#1\ \ru{\dstack{#2}{#3}}{#4}}
 \newcommand{\ndrux}[5]{#1\ \ru{\dstack{#2}{#3}}{#4}\ #5}
 
+% proof by cases
+\newenvironment{caselist}{%
+  \begin{list}{{\it Case}}{}%
+}{\end{list}%
+}
+\newenvironment{subcaselist}{%
+  \begin{list}{{\it Subcase}}{}%
+}{\end{list}%
+}
+\newenvironment{subsubcaselist}{%
+  \begin{list}{{\it Subsubcase}}{}%
+}{\end{list}%
+}
+
+\newcommand{\nextcase}{\item~}
+
 % Symbols and names
 % \newcommand\Type{\operatorname{Type}}
 \DeclareMathOperator{\Type}{\mathbf{Type}}
