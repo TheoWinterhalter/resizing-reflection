@@ -51,7 +51,8 @@
                                     t =_T u \mid \squash{T} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \mid
-                               \J (T,U,t_{refl},u_1,u_2,t_{eq}) \mid [t] \\
+                               \J (T,U,t_{refl},u_1,u_2,t_{eq}) \\
+                         &&& \mid & [t] \mid \elim(T,U,f,h,t) \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -59,5 +60,13 @@
   \noindent %
   We write $A \to B$ as short for $\Pi \_:A.B$, the non-dependent product.
   We also write $=$ for $=_T$ when $T$ is understood.
+
+  The \emph{novelty} here, with respect to MLTT, is the introduction of a squash
+  $\squash{T}$ with an injection $[t]$ from $T$, all of its inhabitants being
+  definitionally equal (which I believe is key). The only way to eliminate is
+  in a (semantically) irrelevant context, \ie through something hProp.
+  This will be translated by $\elim$.
+  Basically $\elim(A,B,f,h,a)$ takes $f : A \to B$ with
+  $h : \Pi x:B. \Pi y:B. x = y$ and $a : \squash{A}$ to return a $B$.
 
 \end{document}
