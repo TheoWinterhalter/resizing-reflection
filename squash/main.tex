@@ -69,4 +69,117 @@
   Basically $\elim(A,B,f,h,a)$ takes $f : A \to B$ with
   $h : \Pi x:B. \Pi y:B. x = y$ and $a : \squash{A}$ to return a $B$.
 
+  \section{Typing Rules}
+
+  \begin{center}
+  \(
+    \ru{}{\der \cdot}
+    \qquad
+    \ru{\Gamma \der T : s \qquad
+        x \notin \Gamma
+      }{\der \Gamma, x : T}
+    \qquad
+    \ru{\der \Gamma
+      }{\Gamma \der \Type_i : \Type_{i+1}}
+    \qquad
+    \ru{\der \Gamma \qquad
+        (x : T) \in \Gamma
+      }{\Gamma \der x : T}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \Pi x:A.B \qquad
+        \Gamma \der t' : A
+      }{\Gamma \der t\ t' : B[t'/x]}
+    \qquad
+    \ru{\Gamma \der A : s \qquad
+        \Gamma, x:A \der B : s' \qquad
+        (s,s',s'') \in \R
+      }{\Gamma \der \Pi x:A.B : s''}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der \Pi x:A.B : s \qquad
+        \Gamma, x:A \der t : B
+      }{\Gamma \der \lambda x:A.t : \Pi x:A.B}
+    \qquad
+    \ru{\Gamma \der t : \Sigma x:A.B
+      }{\Gamma \der t.1 : A}
+    \qquad
+    \ru{\Gamma \der t : \Sigma x:A.B
+      }{\Gamma \der t.2 : B[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der A : s \qquad
+        \Gamma, x:A \der B : s' \qquad
+        (s,s',s'') \in \R
+      }{\Gamma \der \Sigma x:A.B : s''}
+    \qquad
+    \ru{\Gamma \der T : s \qquad
+        \Gamma \der t,t' : T
+      }{\Gamma \der t =_T t' : s}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : A \qquad
+        \Gamma \der t' : B[t/x] \qquad
+        \Gamma \der \Sigma x:A.B : s
+      }{\Gamma \der (t;t') : \Sigma x:A.B}
+    \qquad
+    \ru{\Gamma \der t : T
+      }{\Gamma \der \refl_t : t =_T t}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \tru{\Gamma \der A : s \qquad
+         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x
+       }{\Gamma \der u, v : A \qquad
+         \Gamma \der p : u =_A v
+       }{\Gamma \der \J (A,C,b,u,v,p) : C\ u\ v\ p}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : A \qquad
+        \Gamma \der B : s \qquad
+        \Gamma \der A \le B
+      }{\Gamma \der t : B}
+  \)
+  \end{center}
+
+  \noindent %
+  Now, we consider our rules for squash (acting as a resizing rule!).
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der A : \Type_i
+      }{\Gamma \der \squash{A} : \Type_0}
+    \qquad
+    \ru{\Gamma \der t : A
+      }{\Gamma \der [t] : \squash{A}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der f : A \to B \qquad
+        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+        \Gamma \der a : \squash{A}
+      }{\Gamma \der \elim(A,B,f,h,a) : B}
+  \)
+  \end{center}
+
 \end{document}
