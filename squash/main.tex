@@ -389,4 +389,73 @@
   \)
   \end{center}
 
+  \section{Consistency}
+
+  While, initially, the Kripke logical relation we're going to define was
+  created to prove soundness of algorithmic equality, we will mainly focus
+  on consistency. We might handle decidability later.
+
+  \paradot{An Induction Measure}
+
+  In order to define the logical relation, we define semantic universe hierarchy.
+  By recursion on $i \in \mathbb{N}$, we define
+  $\U_i \in \Whnf \times \mathcal{P}(\Whnf)$ as follows.
+
+  \begin{center}
+  \(
+    \ru{}{(N, \Wne) \in \U_i}
+    \qquad
+    \rux{}{(\Type_i, \mid \U_i \mid) \in \U_j}{(\Type_i,\Type_j)}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{U_i} \qquad
+         \forall u \in \widehat{\mathcal{A}}.\ (T[u/x],\mathcal{F}(u)) \in
+         \widehat{\U_j}
+       }{(\Pi x:U.T, \Pi \mathcal{A} \mathcal{F}) \in \U_k
+       }{(\Type_i, \Type_j, \Type_k)}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{(U, \mathcal{A}) \in \widehat{\U_i} \qquad
+        \forall u \in \widehat{\mathcal{A}},\ (V[u/x], \mathcal{F}(u)) \in
+        \widehat{\U_j}
+       }{(\Sigma x:U.V, \Sigma \mathcal{A} \mathcal{F}) \in \U_k
+       }{(\Type_i, \Type_j, \Type_k)}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{(T,\mathcal{A}) \in \U_i
+      }{(u =_T v, \oeq\ \mathcal{A}\ u\ v) \in \U_i}
+    \qquad
+    \ru{}{(\squash{A}, \Squash) \in \U_i}
+  \)
+  \end{center}
+
+  \noindent %
+  Here, $\mathcal{A}$ denotes sets of expressions, $\mathcal{F}$ functions from
+  expressions to set of expressions while
+  $\widehat{\U_i} = \{ (T,\mathcal{A}) \mid (\red T, \mathcal{A}) \in \U_i \}$
+  and $\mid \U_i \mid = \{ A \mid (A, \mathcal{A}) \in \U_i \text{ for some }
+  \mathcal{A} \}$.
+  $\widehat{\mathcal{A}} = \{ t \mid \red t \in \mathcal{A} \}$ is the closure
+  of $\mathcal{A}$ by weak head expansion.
+  The dependent function space is defined as
+  $\Pi \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid \forall u \in
+  \widehat{\mathcal{A}},\ f~u \in \widehat{\mathcal{F}(u)} \}$.
+  The dependent sum space is defined as
+  $\Sigma \mathcal{A} \mathcal{F} = \{ f \in \Whnf \mid f.1 \in
+  \widehat{\mathcal{A}} \text{ and } f.2 \in \widehat{\mathcal{F}(f.1)} \}$.
+  The equality space is defined as
+  $\oeq\ \mathcal{A}\ u\ v = \Wne \bigcup \{ \refl_t \mid t \in
+  \widehat{\mathcal{A}} \}$.
+  Finally, the squash space is just
+  $\Squash = \Wne \bigcup \{ [t] \mid \red t \in \Whnf \}$.
+
 \end{document}
