@@ -1,0 +1,63 @@
+\documentclass[a4paper,english]{lipics-utf8x}
+
+\usepackage[T1]{fontenc} %
+
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{pifont}
+\PrerenderUnicode{é} % For the author names in the heading
+
+% Add some colors
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+ linktocpage,
+ colorlinks,
+ citecolor=BlueViolet,
+ filecolor=red,
+ linkcolor=Blue,
+ urlcolor=BrickRed
+}
+
+\usepackage{graphicx}
+\usepackage{placeins}
+
+% Meta comment
+\newcommand\meta[1]{\noindent\textcolor{blue}{\emph{#1}}}
+
+% Include the macro file
+\input{macros}
+
+% Title and so...
+\title{Squash me to the Smallest Universe}
+\author[1]{Théo Winterhalter}
+
+\begin{document}
+
+  \maketitle
+
+  \begin{abstract}
+    This time we propose a development of a squash lying in the smallest
+    universe (or any universe for that matter).
+  \end{abstract}
+
+  \section{Syntax}
+
+  \[
+    \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
+      \Var  & \ni & x,y,X,Y \\
+      \Sort & \ni & s             & ::= & \Type_k \mbox{ }
+                                                (k \in \mathbb{N}) \\
+      \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
+                                    t =_T u \mid \squash{T} \\
+                         &&& \mid & x \mid \lambda x:U.t \mid t~u
+                               \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \mid
+                               \J (T,U,t_{refl},u_1,u_2,t_{eq}) \mid [t] \\
+      \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
+    \end{array}
+  \]
+
+  \noindent %
+  We write $A \to B$ as short for $\Pi \_:A.B$, the non-dependent product.
+  We also write $=$ for $=_T$ when $T$ is understood.
+
+\end{document}
