@@ -182,4 +182,188 @@
   \)
   \end{center}
 
+  \section{Equality Rules}
+
+  \paradot{Computation ($\beta$) and extensionality ($\eta$)}
+
+  \begin{center}
+  \(
+    \ru{\Gamma, x:U \der t:V \qquad
+        \Gamma \der u : U
+      }{\Gamma \der (\lambda x:U.t)~u = t[u/x] : V[u/x]}
+    \qquad
+    \ru{\Gamma \der t : \Pi x:U.V
+      }{\Gamma \der t = \lambda x:U.t~x : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').1 = t : U}
+    \qquad
+    \ru{\Gamma \der t : U \qquad
+        \Gamma \der t' : V[t/x]
+      }{\Gamma \der (t;t').2 = t' : V[t/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : \Sigma x:U.T
+      }{\Gamma \der t = (t.1 ; t.2) : \Sigma x:U.T}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\Gamma \der A : s \qquad
+         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x \qquad
+         \Gamma \der u : A
+       }{\Gamma \der \J (A,C,b,u,u,\refl_u) = b\ u : C\ u\ u\ \refl_u}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der f : A \to B \qquad
+        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+        \Gamma \der t : A
+      }{\Gamma \der \elim(A,B,f,h,[t]) = f\ t : B}
+  \)
+  \end{center}
+
+  \paradot{Equivalence Rules}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t : T
+      }{\Gamma \der t = t : T}
+    \qquad
+    \ru{\Gamma \der t' = t : T
+      }{\Gamma \der t = t' : T}
+    \qquad
+    \ru{\Gamma \der t_1 = t_2 : T \qquad
+        \Gamma \der t_2 = t_3 : T
+      }{\Gamma \der t_1 = t_3 : T}
+  \)
+  \end{center}
+
+  \paradot{Compatibility Rules}
+
+  \begin{center}
+  \(
+    \rux{\Gamma \der U = U' : s \qquad
+         \Gamma, x:U \der V = V' : s'
+       }{\Gamma \der \Pi x:U.V = \Pi x:U'.V' : s''
+       }{(s,s',s'')}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der U = U' : s \qquad
+        \Gamma, x:U \der V : s' \qquad
+        \Gamma, x:U \der t = t' : V
+      }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Pi x:U.V \qquad
+        \Gamma \der u = u' : U
+      }{\Gamma \der t~u = t'~u' : V[u/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \rux{\Gamma \der U = U' : s \qquad
+         \Gamma, x:U \der V = V' : s'
+       }{\Gamma \der \Sigma x:U.V = \Sigma x:U'.V' : s''
+       }{(s,s',s'')}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t_1 = t'_1 : U \qquad
+        \Gamma, x:U \der V : s \qquad
+        \Gamma \der t_2 = t'_2 : V[t_1/x]
+      }{\Gamma \der (t_1;t_2) = (t'_1;t'_2) : \Sigma x:U.V}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.1 = t'.1 : U}
+    \qquad
+    \ru{\Gamma \der t = t' : \Sigma x:U.V
+      }{\Gamma \der t.2 = t'.2 : V[t.1/x]}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' \qquad
+        \Gamma \der t = t' : T \qquad
+        \Gamma \der u = u' : T
+      }{\Gamma \der t =_T u = t' =_{T'} u'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \qquad
+      }{\Gamma \der \refl_t = \refl_{t'} : t =_T t}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \tru{\Gamma \der A = A' : s \qquad
+         \Gamma \der C = C' : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+       }{\Gamma \der b = b' : \Pi x:A. C\ x\ x\ \refl_x
+       }{\Gamma \der u = u' : A \qquad
+         \Gamma \der v = v' : A \qquad
+         \Gamma \der p = p' : u =_A v
+       }{\Gamma \der \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') : C\ u\ v\ p}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der A = A' : s
+      }{\Gamma \der \squash{A} = \squash{A'} : \Type_0}
+    \qquad
+    \ru{\Gamma \der t, t' : \squash{A}
+      }{\Gamma \der t = t' : \squash{A}}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \dru{\Gamma \der A = A' : s \qquad
+         \Gamma \der B = B' : s'
+       }{\Gamma \der f = f' : A \to B \qquad
+         \Gamma \der h, h' : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+         \Gamma \der a, a' : \squash{A}
+       }{\Gamma \der \elim(A,B,f,h,a) = \elim(A,B,f,h,a) : B}
+  \)
+  \end{center}
+
+  \paradot{Conversion Rule}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der t = t' : T \quad
+        \Gamma \der T \le T'
+      }{\Gamma \der t = t' : T'}
+  \)
+  \end{center}
+
 \end{document}
