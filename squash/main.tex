@@ -366,4 +366,27 @@
   \)
   \end{center}
 
+  \section{Cumulativity}
+
+  \begin{center}
+  \(
+    \rux{}{\Gamma \der \Type_i \le \Type_j}{i \le j}
+    \qquad
+    \ru{\Gamma \der U = U' : s \qquad
+        \Gamma, x:U \der T \le T'
+      }{\Gamma \der \Pi x:U.T \le \Pi x:U'.T'}
+  \)
+  \end{center}
+
+  \begin{center}
+  \(
+    \ru{\Gamma \der T = T' : s
+      }{\Gamma \der T \le T'}
+    \qquad
+    \ru{\Gamma \der T_1 \le T_2 \qquad
+        \Gamma \der T_2 \le T_3
+      }{\Gamma \der T_1 \le T_3}
+  \)
+  \end{center}
+
 \end{document}
