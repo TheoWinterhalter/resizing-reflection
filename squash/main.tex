@@ -1034,4 +1034,53 @@
   As a consequence, context equality is symmetric and transitive, thus we can
   apply context conversion in the other direction as well.
 
+  \paradot{Inversion, injectivity and type unicity}
+
+  \begin{lemma}[Inversion]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der x : T$ then $(x:U) \in \Gamma$ for some
+      $U$ with $\Gamma \der U \le T$.
+      \item If $\Gamma \der \lambda x:U.t : T$ then $\Gamma, x:U \der t : T'$
+      for some $T'$ with $\Gamma \der \Pi x:U.T' \le T$.
+      \item If $\Gamma \der t\ u : T$ then $\Gamma \der t : \Pi x:U.T'$
+      for some $U$ and $T'$ with $\Gamma \der T'[u/x] \le T$.
+      \item If $s : T$ then there is $s'$ such that $(s,s') \in \Ax$
+      and $\Gamma \der s' = T$.
+      \item If $\Gamma \der \Pi x:U.T' : T$ then $\Gamma \der U : s$
+      and $\Gamma, x:U \der T : s'$ and for some $s''$ we have
+      $\Gamma \der s'' = T$ and $(s,s',s'') \in \R$.
+      \item If $\Gamma \der (t ; t') : T$ then $\Gamma \der t : U$ and
+      $\Gamma \der t' : T'[t/x]$ for some $U,T'$ such that
+      $\Gamma \der \Sigma x:U.T' \le T$.
+      \item If $\Gamma \der t.1 : T$ then $\Gamma \der t : \Sigma x:U.T'$
+      for some $U,T'$ with $\Gamma \der U \le T$.
+      \item If $\Gamma \der t.2 : T$ then $\Gamma \der t : \Sigma x:U.T'$
+      for some $U,T'$ with $\Gamma \der T'[t.1/x] \le T$.
+      \item If $\Gamma \der \Sigma x:U.T' : T$ then $\Gamma \der U : s$
+      and $\Gamma, x:U \der T : s'$ and for some $s''$ we have
+      $\Gamma \der s'' = T$ and $(s,s',s'') \in \R$.
+      \item If $\Gamma \der \refl_t : T$ then $\Gamma \der t : U$
+      for some $U$ with $\Gamma \der t =_U t = T$.
+      \item If $\Gamma \der \J(A,C,b,u,v,p) : T$ then $\Gamma \der A : s$
+      and $\Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'$ and
+      $\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x$ and $\Gamma \der u, v : A$
+      and $\Gamma \der p : u =_A v$ for some $s,s'$ with
+      $\Gamma \der C\ u\ v\ p \le T$.
+      \item If $\Gamma \der t =_{T'} t' : T$ then $\Gamma \der t,t' : T'$
+      and $\Gamma \der s = T$ for some $s$.
+      \item If $\Gamma \der [t] : T$ then $\Gamma \der t : T'$ for some
+      $T'$ with $\Gamma \der \squash{T'} = T$.
+      \item If $\Gamma \der \elim(A,B,f,h,a) : T$ then
+      $\Gamma \der f : A \to B$ and $\Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y$
+      and $\Gamma \der a : \squash{A}$ and $\Gamma \der B \le T$.
+      \item If $\Gamma \der \squash{T'} : T$ then $\Gamma \der T' : s$ for
+      some $s$ and $\Gamma \der s' = T'$ for some $s'$.
+    \end{itemize}
+  \end{lemma}
+
+  \begin{proof}
+    By induction on the typing derivation.
+  \end{proof}
+
 \end{document}
