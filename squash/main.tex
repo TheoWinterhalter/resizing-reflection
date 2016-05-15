@@ -1002,4 +1002,36 @@
   \end{lemma}
   Same here.
 
+  \paradot{Context Conversion}
+
+  Context equality $\der \Gamma = \Gamma'$ is defined inductively by the rules:
+  \begin{mathc}
+    \ru{}{\der \cdot = \cdot}
+    \qquad
+    \ru{\der \Gamma = \Gamma' \qquad
+        \Gamma \der U = U'
+      }{\der \Gamma, x:U = \Gamma', x:U'}
+  \end{mathc}
+  All declarative judgements are closed under context conversion.
+  This fact is easy to prove by induction over derivations, but we get it as a
+  special case of substitution.
+
+  \begin{lemma}[Identity substitution]
+    If $\der \Gamma = \Gamma'$ then $\Gamma \der \id = \id : \Gamma'$.
+  \end{lemma}
+  No problem.
+
+  \begin{theorem}[Context conversion]
+    Let $\der \Gamma' = \Gamma$.
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der t : T$ then $\Gamma' \der t : T$.
+      \item If $\Gamma \der t = t' : T$ then $\Gamma' \der t = t' : T$.
+    \end{itemize}
+  \end{theorem}
+  Ok.
+
+  As a consequence, context equality is symmetric and transitive, thus we can
+  apply context conversion in the other direction as well.
+
 \end{document}
