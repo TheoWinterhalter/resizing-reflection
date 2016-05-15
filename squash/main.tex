@@ -727,8 +727,12 @@
     Let $T \in s$.
     If $\Gamma \der n :=: n' : T$ then $\Gamma \der n \hSr n' : T$.
   \end{lemma}
-  %
-  Once again the proof extends trivially.
+
+  \begin{proof}
+    By induction on $T \in s$. We treat the case of the squash.
+    $\squash{T} \in s$ and $\Gamma \der n :=: n' : \squash{T}$.
+    By well-typing, we have $\Gamma \der n \Sr n' : \squash{T}$.
+  \end{proof}
 
   \paradot{Validity in the Model}
 
