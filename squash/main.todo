@@ -16,7 +16,7 @@ Things to Do:
   ✔ Validity of elim reduction @done(2016-05-15 12:28) @project(Things to Do)
   ✔ Validity of squash irrelevance @done(2016-05-15 12:36) @project(Things to Do)
   ☐ Sigma / Indentity type injectivity
-  ☐ Complete consistency proof
+  ✔ Complete consistency proof @done(2016-05-15 16:20) @project(Things to Do)
 
 Concerns:
   ☐ Validity proof for elim didn't use the h to ensure everything went fine

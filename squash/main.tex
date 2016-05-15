@@ -1037,6 +1037,7 @@
   \paradot{Inversion, injectivity and type unicity}
 
   \begin{lemma}[Inversion]
+    \label{lem:inversion}
     \leavevmode
     \begin{itemize}
       \item If $\Gamma \der x : T$ then $(x:U) \in \Gamma$ for some
@@ -1163,11 +1164,22 @@
     relation since it preserves the shape) to a sort, a $\Pi$-type, a
     $\Sigma$-type, an indentity type or a squash type.
     Thus, $a$ can neither be a $\lambda$, nor a pair, nor a $\refl$,
-    nor a $[]$ nor a $\Pi$-type, a $\Sigma$-type, an indentity type or
+    nor a $[\_]$ nor a $\Pi$-type, a $\Sigma$-type, an indentity type or
     a squash type, nor a sort, it can only be neutral.
 
-    Several cases are possible now.
-    \meta{TODO: Case distinction on neutral terms.}
+    $X$ being the only variable, it is the only reason for the term to be
+    blocked.
+    Since $X$ is not of $\Pi$-type, it cannot be applied.
+    Since $X$ is not of $\Sigma$-type, it cannot be projected.
+    Since $X$ is not of identity type, it cannot be eliminated with $\J$.
+    Since $X$ is not of squash type, it cannot be eliminated through $\elim$.
+    So $a \equiv X$ and then $\Gamma \der X : X$, implying
+    $\Gamma \der \Type_0 \le X$ by inversion
+    (lemma~\ref{lem:inversion}), meaning $\Gamma \der \Type_i = X$ for some
+    $i$ which is in contradiction with lemma~\ref{lem:cons-discr}.
   \end{proof}
+
+  \noindent %
+  Did we win?
 
 \end{document}
