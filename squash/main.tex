@@ -896,7 +896,18 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{TODO}
+    $\Der \Gamma$ is trivial again, same as $\Gamma \Der \squash{T}$.
+    Now assume $\Delta, \sigma, \sigma'$ such that
+    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
+    show $\Delta \der t \sigma \hSr t' \sigma' : \squash{T \sigma}$.
+    By instantiating the hypotheses, we have $a,a',b,b'$ in whnf such that
+    $t \sigma \rew a$ and $t \sigma' \rew a'$ and $t' \sigma \rew b$
+    and $t' \sigma' \rew b'$ with the corresponding equalities under the type
+    $\squash{T \sigma}$.
+
+    We have to show $\Delta \der t \sigma :=: t' \sigma' : \squash{T \sigma}$
+    and $\Delta \der a \Sr b' : \squash{T \sigma}$. They both hold by
+    well-typing and irrelevance on squashes.
   \end{proof}
 
   \begin{theorem}[Fundamental theorem of logical relations]
