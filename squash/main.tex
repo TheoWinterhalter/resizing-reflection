@@ -808,4 +808,90 @@
   \end{lemma}
   Again, everything's fine.
 
+  \paradot{Fundamental Theorem}
+  We prove a series of lemmata which constitute parts of the fundamental theorem
+  for the Kripke logical relation.
+
+  \begin{lemma}[Validity of $\beta$-reduction]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma, x:U \Der t : T \qquad
+          \Gamma \Der u : U
+        }{\Gamma \Der (\lambda x:U.t)\ u = t[u/x] : T[u/x]}
+    \end{mathc}
+  \end{lemma}
+  All ok.
+
+  \begin{lemma}[Validity of $\eta$]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der t : \Pi x:U.T
+        }{\Gamma \Der t = \lambda x:U.t\ x : \Pi x:U.T}
+    \end{mathc}
+  \end{lemma}
+  No problem.
+
+  \begin{lemma}[Validity of function equality]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der U = U' \qquad
+          \Gamma, x:U \Der t = t' : T
+        }{\Gamma \Der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.T}
+    \end{mathc}
+  \end{lemma}
+  Ok.
+
+  \meta{We need something similar as the three previous lemmata for sigmas and
+  equality. We only treat the case of squash for now.}
+
+  \begin{lemma}[Validity of $\elim$ reduction]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der f : U \to T \qquad
+          \Gamma \Der h : \Pi_{x:T} \Pi_{y:T} x = y \qquad
+          \Gamma \Der t : U
+        }{\Gamma \Der \elim(U,T,f,h,[t]) = f\ t : T}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
+  \begin{lemma}[Validity of squash irrelevance]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der t : \squash{T} \qquad
+          \Gamma \Der t' : \squash{T}
+        }{\Gamma \Der t = t' : \squash{T}}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
+  \begin{theorem}[Fundamental theorem of logical relations]
+    \leavevmode
+    \begin{itemize}
+      \item If $\der \Gamma$ then $\Der \Gamma$.
+      \item If $\Gamma \der t : T$ then $\Gamma \Der t : T$.
+      \item If $\Gamma \der t = t' : T$ then $\Gamma \Der t = t' : T$.
+    \end{itemize}
+  \end{theorem}
+
+  \begin{proof}
+    By induction on the derivation.
+  \end{proof}
+
+  \begin{corollary}[Syntactic validity]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der t : T$ then $\Gamma \der T$.
+      \item If $\Gamma \der t = t' : T$ then $\Gamma \der t : T$ and
+      $\Gamma \der t' : T$.
+    \end{itemize}
+  \end{corollary}
+  Alright.
+
 \end{document}

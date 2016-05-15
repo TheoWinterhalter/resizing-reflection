@@ -5,6 +5,12 @@ Ideas to Assess:
 
 Things to Check:
   ☐ Is the definition of Squash space ok?
+  ☐ The fundamental theorem really holds without need for a proof
 
 Things to Add (Maybe):
   ☐ Lemmata for constructor injectivity (sigma, equality, squash)
+
+Things to Do:
+  ☐ Validity of beta/eta/constructor equality for sigma and identity
+  ☐ Validity of elim reduction
+  ☐ Validity of squash irrelevance
