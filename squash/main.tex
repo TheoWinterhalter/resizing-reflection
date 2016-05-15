@@ -1083,4 +1083,22 @@
     By induction on the typing derivation.
   \end{proof}
 
+  \begin{lemma}[Function type injectivity]
+    If $\Gamma \der \Pi x:U.T = \Pi x:U'.T' : s$ then $\Gamma \der U = U'$
+    and $\Gamma \der T = T'$.
+  \end{lemma}
+  Ok.
+
+  \meta{Same for sigma and indentity.}
+
+  \begin{lemma}[Type unicity (up to cumulativity)]
+    If $\Gamma \der t : T$ and $\Gamma \der t : T'$ then either
+    $\Gamma \der T \le T'$ or $\Gamma \der T' \le T$.
+  \end{lemma}
+
+  \begin{proof}
+    By inversion on t, using inversion and remarking that when two types
+    have a principle type, they are ordered by subtyping.
+  \end{proof}
+
 \end{document}
