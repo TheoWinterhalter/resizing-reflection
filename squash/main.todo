@@ -17,6 +17,9 @@ Things to Do:
   ✔ Validity of squash irrelevance @done(2016-05-15 12:36) @project(Things to Do)
   ☐ Sigma / Indentity type injectivity
   ✔ Complete consistency proof @done(2016-05-15 16:20) @project(Things to Do)
+  ☐ Complete box/box case of elim equality validity
+  ☐ Complete box/wne case of elim equality validity
+  ☐ Complete wne/wne case of elim equality validity
 
 Concerns:
-  ☐ Validity proof for elim didn't use the h to ensure everything went fine
+  ✘ Validity proof for elim didn't use the h to ensure everything went fine @cancelled(2016-05-15 20:31) @project(Concerns) @why(Validity of elim equality lifts that concern)

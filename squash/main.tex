@@ -875,7 +875,7 @@
     We instantiate the first hypothesis to get
     $\Delta \der f \sigma \hSr f \sigma' : U \sigma \to T \sigma$
     and the last to get
-    $\Delta \der t \sigma \hSr t' \sigma' : U \sigma$.
+    $\Delta \der t \sigma \hSr t \sigma' : U \sigma$.
     We then get
     $\Delta \der f \sigma\ t \sigma \hSr f \sigma'\ t \sigma' : T \sigma$.
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
@@ -888,6 +888,49 @@
     We also have $f \sigma'\ t \sigma' \rew a'$ for some $a'$ and
     $\Delta \der f \sigma'\ t \sigma' = a' : A$
     and $\Delta \der a \Sr a' : A$ which concludes our proof.
+  \end{proof}
+
+  \begin{lemma}[Validity of $\elim$ equality]
+    \leavevmode
+    \begin{mathc}
+      \dru{\Gamma \Der U = U' \qquad
+           \Gamma \Der T = T'
+         }{\Gamma \Der f = f' : U \to T \qquad
+           \Gamma \Der h, h' : \Pi_{x:T} \Pi_{y:T} x = y \qquad
+           \Gamma \Der t,t' : \squash{U}
+         }{\Gamma \Der \elim(U,T,f,h,t) = \elim(U',T',f',h',t') : T}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    $\Der \Gamma$ is contained in any of the hypotheses.
+    $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
+    is a PER.
+    Now assume $\Delta, \sigma, \sigma'$ such that
+    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
+    show
+    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hSr
+    \elim(U' \sigma',T' \sigma',f' \sigma',h' \sigma',t' \sigma') : T \sigma.\]
+    Like before, we have $A$ in whnf such that $T \sigma \rew A$ and
+    $\Gamma \der T \sigma = A$ and $a,a'$ in whnf such that $t \sigma \rew a$
+    and $t' \sigma' \rew a'$ (with the equalities).
+    We have three possible cases (by symmetry):
+    \begin{caselist}
+      \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
+      We instantiate $\Gamma \Der f = f' : U \to T$ to
+      $\Delta \der f \sigma \hSr f' \sigma' : U \sigma \to T \sigma$.
+      Here, we don't have any hypothesis to conclude
+      $\Delta \der u \hSr u' : U \sigma$ but we still wish to conclude that
+      $f \sigma\ u$ and $f' \sigma'\ u'$ reduce to related terms thanks to
+      the proven irrelevance of $T \sigma$.
+      \meta{TODO, this is where we get smart, the proof lies here!}
+
+      \nextcase $a \equiv n$ and $a' \equiv [u']$.
+      \meta{TODO / To say likewise}
+
+      \nextcase $a \equiv n$ and $a' \equiv n'$.
+      \meta{TODO / To say likewise}
+    \end{caselist}
   \end{proof}
 
   \begin{lemma}[Validity of squash irrelevance]
