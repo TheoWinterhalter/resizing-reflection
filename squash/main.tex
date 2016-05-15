@@ -933,4 +933,46 @@
   \end{corollary}
   Alright.
 
+  \section{Meta-Theoretic Consequences of the Model Construction}
+
+  \paradot{Admissibility of Substitutions}
+
+  To show that the judgements are closed under substitution we introduce
+  relations $\Gamma \der \sigma : \Gamma'$ for substitution typing and
+  $\Gamma \der \sigma = \sigma' : \Gamma'$ for substitution equality
+  which are given inductively by the following rules:
+
+  \begin{mathc}
+    \ru{\der \Gamma
+      }{\Gamma \der \sigma : \cdot}
+    \qquad
+    \ru{\Gamma \der \sigma : \Gamma' \qquad
+        \Gamma' \der U \qquad
+        \Gamma \der \sigma(x) : U \sigma
+      }{\Gamma \der \sigma : \Gamma', x:U}
+  \end{mathc}
+
+  \begin{mathc}
+    \ru{\der \Gamma
+      }{\Gamma \der \sigma = \sigma' : \cdot}
+    \qquad
+    \ru{\Gamma \der \sigma = \sigma' : \Gamma' \qquad
+        \Gamma' \der U \qquad
+        \Gamma \der \sigma(x) = \sigma'(x) : U \sigma
+      }{\Gamma \der \sigma = \sigma' : \Gamma', x:U}
+  \end{mathc}
+  Substitution typing and equality are closed under weakening.
+
+  We define substitutions validity as follows, in rule form but not inductively:
+  \begin{mathc}
+    \ru{\Gamma \Der \sigma = \sigma : \Gamma'
+      }{\Gamma \Der \sigma : \Gamma'}
+    \qquad
+    \dru{\Der \Gamma \qquad
+         \Der \Gamma'
+       }{\forall \Delta \der \rho \hSr \rho' : \Gamma'.\ %
+         \Delta \der \sigma \rho \hSr \sigma' \rho' : \Gamma'
+       }{\Gamma \Der \sigma = \sigma' : \Gamma'}
+  \end{mathc}
+
 \end{document}
