@@ -12,5 +12,5 @@ Things to Add (Maybe):
 
 Things to Do:
   ☐ Validity of beta/eta/constructor equality for sigma and identity
-  ☐ Validity of elim reduction
+  ✔ Validity of elim reduction @done(2016-05-15 12:28) @project(Things to Do)
   ☐ Validity of squash irrelevance

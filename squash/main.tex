@@ -475,7 +475,8 @@
 
   \paradot{An Induction Measure}
 
-  In order to define the logical relation, we define semantic universe hierarchy.
+  In order to define the logical relation, we define semantic universe
+  hierarchy.
   By recursion on $i \in \mathbb{N}$, we define
   $\U_i \in \Whnf \times \mathcal{P}(\Whnf)$ as follows.
 
@@ -789,6 +790,7 @@
   lemmata~\ref{lem:s-conv} and \ref{lem:s-per}.
 
   \begin{lemma}[Function type injectivity is valid]
+    \label{lem:fun-inj-valid}
     If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
     $\Gamma, x:U \Der T = T'$.
   \end{lemma}
@@ -855,7 +857,33 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{TODO}
+    $\Der \Gamma$ is contained in any of the hypothesese.
+    $\Gamma \Der T$ is implied by $\Gamma \Der f : U \to T$ and
+    lemma~\ref{lem:fun-inj-valid}.
+    %
+    Now assume $\Delta, \sigma, \sigma'$ such that
+    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
+    show
+    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hSr
+    f \sigma'\ t \sigma' : T \sigma.\]
+    Since $\Gamma \Der T$, there exists $A$ in whnf such that $T \sigma \rew A$
+    and $\Delta \der T \sigma = A$.
+    We instantiate the first hypothesis to get
+    $\Delta \der f \sigma \hSr f \sigma' : U \sigma \to T \sigma$
+    and the last to get
+    $\Delta \der t \sigma \hSr t' \sigma' : U \sigma$.
+    We then get
+    $\Delta \der f \sigma\ t \sigma \hSr f \sigma'\ t \sigma' : T \sigma$.
+    With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
+    $[t \sigma] \rew [t \sigma]$, we deduce
+    $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
+
+    \noindent %
+    $\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) = a : A$
+    is deduced form transitivity.
+    We also have $f \sigma'\ t \sigma' \rew a'$ for some $a'$ and
+    $\Delta \der f \sigma'\ t \sigma' = a' : A$
+    and $\Delta \der a \Sr a' : A$ which concludes our proof.
   \end{proof}
 
   \begin{lemma}[Validity of squash irrelevance]
