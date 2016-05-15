@@ -652,6 +652,7 @@
   I dont' believe it's necessary to focus on this one.
 
   \begin{lemma}[Type Conversion]
+    \label{lem:s-conv}
     \leavevmode
     \begin{itemize}
       \item If $\Gamma \der A \Sr A' : s$ then
@@ -685,6 +686,7 @@
   \end{proof}
 
   \begin{lemma}[Symmetry and Transitivity]
+    \label{lem:s-per}
     Let $\Gamma \der T \hSr T : s$.
     \leavevmode
     \begin{itemize}
@@ -772,5 +774,38 @@
     \ru{\Gamma \Der t = t : T
       }{\Gamma \Der t : T}
   \end{mathc}
+
+  \begin{lemma}[Substitution Relation is a PER]
+    If $\Der \Gamma$, then $\Delta \der \_ \hSr \_ : \Gamma$ is symmetric and
+    transitive.
+  \end{lemma}
+  %
+  The proof is identical.
+
+  \begin{lemma}[Validity is a PER]
+    The relation $\Gamma \Der \_ = \_ : T$ is symmetric and transitive.
+  \end{lemma}
+  Again, this doesn't look at the terms in detail as long as they verify
+  lemmata~\ref{lem:s-conv} and \ref{lem:s-per}.
+
+  \begin{lemma}[Function type injectivity is valid]
+    If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
+    $\Gamma, x:U \Der T = T'$.
+  \end{lemma}
+  This doesn't talk about the squash.
+
+  \meta{Perhaps we would need similar lemmata for sigma, equality and squash.}
+
+  \begin{lemma}[Context Satisfiable]
+    If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hSr \id : \Gamma$.
+  \end{lemma}
+  Nothing new.
+
+  We can show that every equation valid in the model is derivable.
+  \begin{lemma}[Completeness of rules]
+    If $\Gamma \Der t = t' : T$ then $\Gamma \der t : T$ and
+    $\Gamma \der t' : T$ and $\Gamma \der t = t' : T$ and $\Gamma \der T$.
+  \end{lemma}
+  Again, everything's fine.
 
 \end{document}
