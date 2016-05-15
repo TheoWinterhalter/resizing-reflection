@@ -975,4 +975,31 @@
        }{\Gamma \Der \sigma = \sigma' : \Gamma'}
   \end{mathc}
 
+  \begin{lemma}[Fundamental lemma for substitutions]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der \sigma : \Gamma'$ then
+      $\Gamma \Der \sigma : \Gamma'$.
+      \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ then
+      $\Gamma \Der \sigma = \sigma' : \Gamma'$.
+    \end{itemize}
+  \end{lemma}
+  Still fine.
+
+  \begin{lemma}[Substitutions and functionality]
+    \leavevmode
+    \begin{itemize}
+      \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t : T$
+      then $\Gamma \der t \sigma : T \sigma$.
+      \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t = t' : T$
+      then $\Gamma \der t \sigma = t' \sigma : T \sigma$.
+      \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and $\Gamma \der t : T$
+      then $\Gamma \der t \sigma = t \sigma' : T \sigma$.
+      \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and
+      $\Gamma \der t = t' : T$ then
+      $\Gamma \der t \sigma = t' \sigma' : T \sigma$.
+    \end{itemize}
+  \end{lemma}
+  Same here.
+
 \end{document}
