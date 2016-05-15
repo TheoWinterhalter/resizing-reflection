@@ -1116,4 +1116,58 @@
     contains a derivation of $\Gamma \der t = \red t : T$.
   \end{proof}
 
+  \paradot{Consistency}
+
+  Importantly, not every type is inhabited, thus, it can be used as a logic.
+  A prerequisite is that types can be distinguished, which follows immediately
+  from the construction of the logical relation.
+
+  \begin{lemma}[Type constructor discrimination]
+    \label{lem:cons-discr}
+    Neutral types, sorts, $\Pi$-types, $\Sigma$-types, identity types and
+    squash types are mutually unequal.
+    \leavevmode
+    \begin{itemize}
+      \item $\Gamma \der N \neq s$.
+      \item $\Gamma \der N \neq \Pi x:U.T$.
+      \item $\Gamma \der N \neq \Sigma x:U.T$.
+      \item $\Gamma \der N \neq u =_T v$.
+      \item $\Gamma \der N \neq \squash{T}$.
+      \item $\Gamma \der s = s'$ implies $s \equiv s'$.
+      \item $\Gamma \der s \neq \Pi x:U.T$.
+      \item $\Gamma \der s \neq \Sigma x:U.T$.
+      \item $\Gamma \der s \neq u =_T v$.
+      \item $\Gamma \der s \neq \squash{T}$.
+      \item $\Gamma \der \Pi x:U.T \neq \Sigma x:U'.T'$.
+      \item $\Gamma \der \Pi x:U.T \neq u =_{T'} v$.
+      \item $\Gamma \der \Pi x:U.T \neq \squash{T'}$.
+      \item $\Gamma \der \Sigma x:U.T \neq u =_{T'} v$.
+      \item $\Gamma \der \Sigma x:U.T \neq \squash{T'}$.
+      \item $\Gamma \der u =_T v \neq \squash{T'}$.
+    \end{itemize}
+  \end{lemma}
+
+  \begin{proof}
+    By the fundamental theorem applied to the identity substitution.
+  \end{proof}
+
+  \begin{theorem}[Consistency]
+    $X : \Type_0 \nvdash t : X$.
+  \end{theorem}
+
+  \begin{proof}
+    Let $\Gamma = (X : \Type_0)$.
+    Assuming $\Gamma \der t : X$, we have $\Gamma \der a : X$ for $a$ the whnf
+    of $t$. We invert on the typing of $a$.
+    By lemma~\ref{lem:cons-discr}, $X$ cannot be equal (or in a subtype
+    relation since it preserves the shape) to a sort, a $\Pi$-type, a
+    $\Sigma$-type, an indentity type or a squash type.
+    Thus, $a$ can neither be a $\lambda$, nor a pair, nor a $\refl$,
+    nor a $[]$ nor a $\Pi$-type, a $\Sigma$-type, an indentity type or
+    a squash type, nor a sort, it can only be neutral.
+
+    Several cases are possible now.
+    \meta{TODO: Case distinction on neutral terms.}
+  \end{proof}
+
 \end{document}
