@@ -23,3 +23,4 @@ Things to Do:
 
 Concerns:
   ✘ Validity proof for elim didn't use the h to ensure everything went fine @cancelled(2016-05-15 20:31) @project(Concerns) @why(Validity of elim equality lifts that concern)
+  ☐ It doesn't seem possible to turn a proof of equality into an actual one in the model
