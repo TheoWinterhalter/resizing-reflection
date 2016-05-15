@@ -39,6 +39,14 @@
 \newcommand{\ndru}[4]{#1\ \ru{\dstack{#2}{#3}}{#4}}
 \newcommand{\ndrux}[5]{#1\ \ru{\dstack{#2}{#3}}{#4}\ #5}
 
+% Centered math environment
+\newenvironment{mathc}{%
+  \begin{center}%
+  \(%
+}{\)%
+  \end{center}%
+}
+
 % proof by cases
 \newenvironment{caselist}{%
   \begin{list}{{\it Case}}{}%

@@ -727,4 +727,50 @@
   %
   Once again the proof extends trivially.
 
+  \paradot{Validity in the Model}
+
+  We now extend our logical relation $\hSr$ to substitutions by
+  induction on the destination context.
+  %
+  \begin{center}
+  \(
+    \ru{}{\Delta \der \sigma \hSr \sigma' : \cdot}
+    \qquad
+    \ru{\Delta \der \sigma \hSr \sigma' : \Gamma \qquad
+        \Delta \der \sigma(x) \hSr \sigma'(x) : U \sigma
+      }{\Delta \der \sigma \hSr \sigma' : \Gamma, x:U}
+  \)
+  \end{center}
+  This relation inherits weakening from $\hSr$ for terms.
+
+  We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
+  term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
+  of contexts.
+
+  \begin{mathc}
+    \ru{}{\Der \cdot}
+    \qquad
+    \ru{\Der \Gamma \qquad
+        \Gamma \Der U
+      }{\Der \Gamma, x:U}
+    \qquad
+    \ru{\Gamma \Der T = T' : s
+      }{\Gamma \Der T = T'}
+    \qquad
+    \ru{\Gamma \Der T = T
+      }{\Gamma \Der T}
+  \end{mathc}
+
+  \begin{mathc}
+    \dru{\Der \Gamma \qquad
+         (\Gamma \Der T \text{ unless } T = s)
+       }{\forall \Delta, \sigma, \sigma',
+         \Delta \der \sigma \hSr \sigma' : \Gamma \gives
+         \Delta \der t \sigma \hSr t' \sigma' : T \sigma
+       }{\Gamma \Der t = t' : T}
+    \qquad
+    \ru{\Gamma \Der t = t : T
+      }{\Gamma \Der t : T}
+  \end{mathc}
+
 \end{document}
