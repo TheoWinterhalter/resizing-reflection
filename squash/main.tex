@@ -309,10 +309,10 @@
 
   \begin{center}
   \(
-    \ru{\Gamma \der T = T' \qquad
+    \ru{\Gamma \der T = T' : s \qquad
         \Gamma \der t = t' : T \qquad
         \Gamma \der u = u' : T
-      }{\Gamma \der t =_T u = t' =_{T'} u'}
+      }{\Gamma \der t =_T u = t' =_{T'} u' : s}
   \)
   \end{center}
 
@@ -615,6 +615,18 @@
        }{\Gamma \der f \Sr f' : \Sigma x:U.V}
   \)
   \end{center}
+
+  \begin{mathc}
+    \ru{\Gamma \der u \hSr u' : T \qquad
+        \Gamma \der T \hSr T' : s \qquad
+        \Gamma \der v \hSr v' : T
+      }{\Gamma \der u =_T v \Sr u' =_{T'} v' : s}
+  \end{mathc}
+
+  \begin{mathc}
+    \ru{\Gamma \der f :=: f' : u =_T v
+      }{\Gamma \der f \Sr f' : u =_T v}
+  \end{mathc}
 
   \begin{center}
   \(

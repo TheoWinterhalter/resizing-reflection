@@ -7,6 +7,7 @@ Things to Check:
   ☐ Is the definition of Squash space ok?
   ☐ The fundamental theorem really holds without need for a proof
   ☐ Type constructor discrimination
+  ☐ Is our definiton of (S) for equality suitable?
 
 Things to Add (Maybe):
   ☐ Lemmata for constructor injectivity (sigma, equality, squash)
@@ -20,6 +21,7 @@ Things to Do:
   ☐ Complete box/box case of elim equality validity
   ☐ Complete box/wne case of elim equality validity
   ☐ Complete wne/wne case of elim equality validity
+  ✔ Treat equality in (S) @done(2016-05-16 10:14) @project(Things to Do)
 
 Concerns:
   ✘ Validity proof for elim didn't use the h to ensure everything went fine @cancelled(2016-05-15 20:31) @project(Concerns) @why(Validity of elim equality lifts that concern)
