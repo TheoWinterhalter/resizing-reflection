@@ -120,9 +120,8 @@ Defined.
 
 Definition R2Z (n m : Z) : hProp.
   refine (exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) _).
-  intros x y. destruct x as [x] ; destruct y as [y].
-  destruct ((R2ZhProp n m) x y). destruct Point.
-  exists (heq_refl _). intro t.
+  apply RR1_hProp.
+Defined.
 
 Definition Z2 := Z // R2Z.
 
@@ -191,33 +190,34 @@ Proof.
   - exact h.
 Defined.
 
-Definition g (y : Z) (p : R2Ztype 0 y) :=
-  match p in (R2Ztype 0%Z z) return (even z) with
+Definition g (y : Z) (p : RR1 (R2Ztype 0 y) (R2ZhProp 0 y)) :=
+  match (unbox p) in (R2Ztype 0%Z z) return (even z) with
   | diff_even 0%Z n k h => is_even n k (conveq n k h)
   end.
 
 Definition h (y : Z) (p : even y) :=
-  match p in (even z) return (R2Ztype 0 z) with
-    | is_even n k h => diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h)
+  match p in (even z) return (RR1 (R2Ztype 0 z) (R2ZhProp 0 z)) with
+    | is_even n k h => box (diff_even 0%Z n k (heq_trans (n-0)%Z n (2*k)%Z (minus0_id n) h))
   end.
 
 Lemma hg_id0 :
   forall n k hh,
-    heq (h n (g n (diff_even 0%Z n k hh)))
-        (diff_even 0%Z n k hh).
+    heq (h n (g n (box (diff_even 0%Z n k hh))))
+        (box (diff_even 0%Z n k hh)).
 Proof.
   intros n k hh.
   unfold g.
   unfold h.
   apply hf_equal.
+  apply hf_equal.
   apply eq_proofs_unicity.
   apply Zeq_dec.
 Defined.
 
-Definition hg_id1 (y : Z) (a : R2Ztype 0%Z y) :=
-  match a as p in (R2Ztype 0%Z z) return
-        (@heq (R2Ztype 0 z)
-              (h z (g z p)) p)
+Definition hg_id1 (y : Z) (a : RR1 (R2Ztype 0%Z y) (R2ZhProp 0 y)) :=
+  match (unbox a) as p in (R2Ztype 0%Z z) return
+        (@heq (RR1 (R2Ztype 0 z) (R2ZhProp 0 z))
+              (h z (g z (box p))) (box p))
   with
   | diff_even 0%Z n k hh => hg_id0 n k hh
   end.
@@ -225,7 +225,8 @@ Definition hg_id1 (y : Z) (a : R2Ztype 0%Z y) :=
 Lemma hg_id : forall y a, heq (h y (g y a)) a.
 Proof.
   intros y a.
-  pose proof (hg_id1 y a) as h. apply h.
+  pose proof (hg_id1 y a) as h.
+  apply h.
 Defined.
 
 Lemma gh_id0 :
@@ -249,7 +250,7 @@ Proof.
   exists (fun z => exist _ (even z) (evenhProp z)).
   apply tr.
   exists 0%Z. intro y.
-  unfold R2Z. rewrite RR1_1.
+  unfold R2Z. simpl.
   exists (g y). split.
   - exists (h y). unfold comp. unfold id. unfold homo. apply hg_id.
   - exists (h y). unfold comp. unfold id. unfold homo. apply gh_id.
@@ -264,35 +265,35 @@ Defined.
 
 (* Set Printing Universes. *)
 
+Definition pi2 (h : hProp) := h.2.
+
 Fixpoint foo (n : nat) : Z2.
   destruct n.
   - exact evenClass.
   - simple refine (exist _ (fun z => _) _).
-    + apply (RR1 (fooP (foo n) z)).
+    + pose (bar := (fooP (foo n) z)).
+      refine (RR1 (pi1 bar) (pi2 bar) ; _).
+      apply RR1_hProp.
     + destruct (foo n) as [P hP]. pose proof (hP) as uhP.
       simple refine (trunc_ind (fun aa => _) _ uhP).
       * intro aa. apply ishType_trunc.
       * intro a. destruct a as [z h].
         apply tr. exists z. intro y. pose proof (h y) as hy. destruct hy as [f hf].
         { simple refine (exist _ (fun rzy => _) _).
-          - simpl. pose proof (@RR1_1 (fooP (P ; hP) y)) as rreq.
-            rewrite rreq. intros x eq.
+          - simpl. apply box. intros x eq.
             rewrite eq. now apply f.
           - destruct hf as [[g1 hg1] [g2 hg2]]. split.
             + simple refine (exist _ (fun u => _) _).
-              * apply g1.
-                pose proof (@RR1_1 (fooP (P ; hP) y)) as rreq. (* destruct rreq. *)
-                rewrite RR1_1 in u. now apply (u (P ; hP)).
+              * apply g1. pose (uu := unbox u).
+                now apply (uu (P ; hP)).
               * unfold homo. intro a.
                 rewrite <- hg1. unfold comp. apply hf_equal.
-                unfold internal_heq_rew, internal_heq_rew_r.
-                simpl.
-                
-                (* apply hg1. *) admit.
+                now simpl.                
             + simple refine (exist _ (fun u => _) _).
-              * apply g2. rewrite RR1_1 in u. now apply (u (P ; hP)).
+              * apply g2. now apply (unbox u (P ; hP)).
               * unfold homo. intro a. unfold comp. unfold id.
-                unfold comp in hg2. rewrite RR1_1 in a.
+                unfold comp in hg2. simpl in a.
+                rewrite <- box_unbox. apply hf_equal.
                 apply dep_fun_ext. intro x.
                 apply dep_fun_ext. intro eqx.
                 unfold internal_heq_rew_r.

@@ -1,5 +1,6 @@
 Set Printing Universes.
 Set Universe Polymorphism.
+Set Primitive Projections.
 
 Add LoadPath "../quotient".
 Require Import Base.
@@ -72,6 +73,19 @@ Section RR1.
 End RR1.
 
 OFF Unsafe Universes.
+
+Arguments rr {_ _} r.
+
+Definition box {A} {h : ishProp A} (a : A) : RR1 A h := Build_RR1 A h a.
+Definition unbox {A} {h : ishProp A} (a : RR1 A h) : A := a.(rr).
+
+Lemma box_unbox {A} {h : ishProp A} (x : RR1 A h) : heq (box (unbox x)) x.
+  reflexivity.
+Defined.
+
+Lemma unbox_box {A} {h : ishProp A} (x : A) : heq (@unbox A h (box x)) x.
+  reflexivity.
+Defined.
 
 Definition concat_Vp {A : Type} {x y : A} (p : heq x y) : heq (heq_trans _ _ _ p (heq_sym _ _ p)) (heq_refl _) :=
   match p with heq_refl _ => heq_refl _ end.
