@@ -61,21 +61,51 @@ Definition hSet  := 0-Type.
 Definition pi1 : hProp -> Type :=
   fun P => let (T,_) := P in T.
 
-Axiom RR1 : forall (P : hProp), hProp.
-(* Axiom RR1_1 : forall {P : hProp}, heq (RR1 P).1 P.1. *)
-(* The problem here is that it equates the universes of P and RR P, so basically it was all for nothing... *)
-(* Axiom RR1_1 : *)
-(*   forall {P : hProp}, *)
-(*     let rrp1 := pi1 (RR1 P) in *)
-(*     let p1 := pi1 P in *)
-(*     heq rrp1 p1. *)
-Axiom RR1_1@{i j k l m maxil maxjm} :
-  let le_i_maxil : Type@{maxil} := Type@{i} in
-  let le_l_maxil : Type@{maxil} := Type@{l} in
-  forall {P : hProp@{i j}},
-    let rrp1 : Type@{m} := pi1@{l m m} (RR1@{i j l m} P) in
-    let p1 : Type@{j} := pi1@{i j j} P in
-    @heq@{maxil k} (Type@{maxjm}) rrp1 p1.
+ON Unsafe Universes.
+
+Section RR1.
+
+  Universes i j.
+
+  Record RR1 (A : Type@{i}) (h : ishProp@{i} A) : Type@{j} := { rr : A }.
+
+End RR1.
+
+OFF Unsafe Universes.
+
+Definition concat_Vp {A : Type} {x y : A} (p : heq x y) : heq (heq_trans _ _ _ p (heq_sym _ _ p)) (heq_refl _) :=
+  match p with heq_refl _ => heq_refl _ end.
+
+Definition path_contr {A} (h : contractible A) (x y : A) : heq x y :=
+  heq_trans _ _ _ (Ctr _ h x) (heq_sym _ _ (Ctr _ h y)).
+
+Lemma path2_contr (A : Type) (h : contractible A) (x y : A) (p q : heq x y) : heq p q.
+  assert (K : forall (r : heq x y), heq r (path_contr h x y)).
+  - intro r ; destruct r ; symmetry ; unfold path_contr ; now apply concat_Vp.
+  - eapply (heq_trans _ (path_contr h x y)).
+    + easy.
+    + easy.
+Defined.
+
+Lemma contr_paths_contr : forall (A : Type) (h : contractible A) (x y : A), contractible (heq x y).
+  intros A h x y. destruct h as [c ctr].
+  refine ({| Point := (heq_trans _ _ _ (ctr x) (heq_sym _ _ (ctr y))) ; Ctr := _ |}).
+  symmetry. apply path2_contr. exact {| Point := c ; Ctr := ctr |}.
+Defined.
+
+Lemma hProp_allpath (A : Type) : (forall (x y : A), heq x y) -> ishProp A.
+  intros h x y.
+  assert (forall x y : A, heq y x) as h'.
+  - intros a b. apply h.
+  - pose (C := CtrMk A x (h' x)).
+    now apply contr_paths_contr.
+Defined.
+
+Lemma RR1_hProp : forall (A : Type) (h : ishProp A), ishProp (RR1 A h).
+  intros A h. apply hProp_allpath. intros x y.
+  destruct x as [x] ; destruct y as [y]. destruct (h x y) as [p _].
+  now destruct p.
+Defined.
 
 (*! Truncation *)
 

@@ -118,7 +118,11 @@ Proof.
       now apply inl.
 Defined.
 
-Definition R2Z (n m : Z) : hProp := RR1 (R2Ztype n m ; R2ZhProp n m).
+Definition R2Z (n m : Z) : hProp.
+  refine (exist _ (RR1 (R2Ztype n m) (R2ZhProp n m)) _).
+  intros x y. destruct x as [x] ; destruct y as [y].
+  destruct ((R2ZhProp n m) x y). destruct Point.
+  exists (heq_refl _). intro t.
 
 Definition Z2 := Z // R2Z.
 

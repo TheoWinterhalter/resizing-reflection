@@ -1,4 +1,5 @@
 -R . ""
+COQC = /usr/local/bin/coqc
 #-arg -nois
 
 Base.v
