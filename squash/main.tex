@@ -553,89 +553,89 @@
   By induction on $A \in s$, we define two Kripke relations:
   \begin{center}
   \(
-    \Gamma \der A \Sr A' : s
+    \Gamma \der A \Er A' : s
     \qquad
-    \Gamma \der a \Sr a' : A
+    \Gamma \der a \Er a' : A
   \)
   \end{center}
-  together with their respective closures $\hSr$.
+  together with their respective closures $\hEr$.
   We define them in rule form for better readability meaning we have to see the
   conclusion to be defined as the conjunction of the premises.
 
   \begin{center}
   \(
     \ru{\Gamma \der N :=: N'
-      }{\Gamma \der N \Sr N'}
+      }{\Gamma \der N \Er N'}
     \qquad
     \ru{\Gamma \der n :=: n' : N
-      }{\Gamma \der n \Sr n' : N}
+      }{\Gamma \der n \Er n' : N}
     \qquad
     \rux{\der \Gamma
-       }{\Gamma \der s \Sr s : s'
+       }{\Gamma \der s \Er s : s'
        }{(s,s')}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \trux{\Gamma \der U \hSr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
-          \Delta \der V[u/x] \hSr V'[u'/x] : s'
+    \trux{\Gamma \der U \hEr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
+          \Delta \der V[u/x] \hEr V'[u'/x] : s'
         }{\Gamma \der \Pi x:U.V :=: \Pi x:U'.V' : s''
-        }{\Gamma \der \Pi x:U.V \Sr \Pi x:U'.V' : s''
+        }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
-         \Delta \der f~u \hSr f'~u' : V[u/x]
+    \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
+         \Delta \der f~u \hEr f'~u' : V[u/x]
        }{\Gamma \der f :=: f' : \Pi x:U.V
-       }{\Gamma \der f \Sr f' : \Pi x:U.V}
+       }{\Gamma \der f \Er f' : \Pi x:U.V}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \trux{\Gamma \der U \hSr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der u \hSr u' : U \gives
-          \Delta \der V[u/x] \hSr V'[u'/x] : s'
+    \trux{\Gamma \der U \hEr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
+          \Delta \der V[u/x] \hEr V'[u'/x] : s'
         }{\Gamma \der \Sigma x:U.V :=: \Sigma x:U'.V' : s''
-        }{\Gamma \der \Sigma x:U.V \Sr \Sigma x:U'.V' : s''
+        }{\Gamma \der \Sigma x:U.V \Er \Sigma x:U'.V' : s''
         }{(s,s',s'')}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \dru{\Gamma \der f.1 \hSr f'.1 : U \qquad
-         \Gamma \der f.2 \hSr f'.2 : V[f.1/x]
+    \dru{\Gamma \der f.1 \hEr f'.1 : U \qquad
+         \Gamma \der f.2 \hEr f'.2 : V[f.1/x]
        }{\Gamma \der f :=: f' : \Sigma x:U.V
-       }{\Gamma \der f \Sr f' : \Sigma x:U.V}
+       }{\Gamma \der f \Er f' : \Sigma x:U.V}
   \)
   \end{center}
 
   \begin{mathc}
-    \ru{\Gamma \der u \hSr u' : T \qquad
-        \Gamma \der T \hSr T' : s \qquad
-        \Gamma \der v \hSr v' : T
-      }{\Gamma \der u =_T v \Sr u' =_{T'} v' : s}
+    \ru{\Gamma \der u \hEr u' : T \qquad
+        \Gamma \der T \hEr T' : s \qquad
+        \Gamma \der v \hEr v' : T
+      }{\Gamma \der u =_T v \Er u' =_{T'} v' : s}
   \end{mathc}
 
   \begin{mathc}
     \ru{\Gamma \der f :=: f' : u =_T v
-      }{\Gamma \der f \Sr f' : u =_T v}
+      }{\Gamma \der f \Er f' : u =_T v}
   \end{mathc}
 
   \begin{center}
   \(
     \ru{\Gamma \der T :=: T' : s
-      }{\Gamma \der \squash{T} \Sr \squash{T'} : s'}
+      }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
     \qquad
     \ru{\Gamma \der f : \squash{T} \qquad
         \Gamma \der f' : \squash{T}
-      }{\Gamma \der f \Sr f' : \squash{T}}
+      }{\Gamma \der f \Er f' : \squash{T}}
   \)
   \end{center}
 
@@ -647,18 +647,18 @@
          \Gamma \der t = a : A \qquad
          \Gamma \der t' = a' : A \qquad
          t' \rew a'
-       }{\Gamma \der a \Sr a' : A
+       }{\Gamma \der a \Er a' : A
        }{\Gamma \der t :=: t' : T
-       }{\Gamma \der t \hSr t' : T}
+       }{\Gamma \der t \hEr t' : T}
   \)
   \end{center}
 
   \begin{lemma}[Weakening]
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der a \Sr a' : A$ and $\Delta \le \Gamma$ then there
-      exists a derivation of $\Delta \der a \Sr a' : A$ with the same height.
-      \item Analogously for $\Gamma \der t \hSr t' : T$.
+      \item If $\Gamma \der a \Er a' : A$ and $\Delta \le \Gamma$ then there
+      exists a derivation of $\Delta \der a \Er a' : A$ with the same height.
+      \item Analogously for $\Gamma \der t \hEr t' : T$.
     \end{itemize}
   \end{lemma}
   %
@@ -668,10 +668,10 @@
     \label{lem:s-conv}
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der A \Sr A' : s$ then
-      $\Gamma \der a \Sr a' : A$ iff $\Gamma \der a \Sr a' : A'$.
-      \item If $\Gamma \der T \hSr T' : s$ then
-      $\Gamma \der t \hSr t : T$ iff $\Gamma \der t \Sr t' : T'$.
+      \item If $\Gamma \der A \Er A' : s$ then
+      $\Gamma \der a \Er a' : A$ iff $\Gamma \der a \Er a' : A'$.
+      \item If $\Gamma \der T \hEr T' : s$ then
+      $\Gamma \der t \hEr t : T$ iff $\Gamma \der t \Er t' : T'$.
     \end{itemize}
   \end{lemma}
 
@@ -686,11 +686,11 @@
     \begin{center}
     \(
       \ru{\Gamma \der T :=: T' : s
-        }{\Gamma \der \squash{T} \Sr \squash{T'} : s'}
+        }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
       \qquad
       \ru{\Gamma \der f : \squash{T} \qquad
           \Gamma \der f' : \squash{T}
-        }{\Gamma \der f \Sr f' : \squash{T}}
+        }{\Gamma \der f \Er f' : \squash{T}}
     \)
     \end{center}
     %
@@ -700,23 +700,23 @@
 
   \begin{lemma}[Symmetry and Transitivity]
     \label{lem:s-per}
-    Let $\Gamma \der T \hSr T : s$.
+    Let $\Gamma \der T \hEr T : s$.
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der t \hSr t' : T$ then $\Gamma \der t' \hSr t : T$.
-      \item If $\Gamma \der t_1 \hSr t_2 : T$ and $\Gamma \der t_2 \hSr t_3 : T$
-      then $\Gamma \der t_1 \hSr t_3 : T$.
+      \item If $\Gamma \der t \hEr t' : T$ then $\Gamma \der t' \hEr t : T$.
+      \item If $\Gamma \der t_1 \hEr t_2 : T$ and $\Gamma \der t_2 \hEr t_3 : T$
+      then $\Gamma \der t_1 \hEr t_3 : T$.
     \end{itemize}
   \end{lemma}
 
   \begin{proof}
-    We generalize the two statements to whnfs $\Gamma \der A \Sr A : s$ and
+    We generalize the two statements to whnfs $\Gamma \der A \Er A : s$ and
     prove all four statements simultaneously by induction.
 
     \begin{center}
     \(
       \ru{\Gamma \der T :=: T' : s
-        }{\Gamma \der \squash{T} \Sr \squash{T'} : s'}
+        }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
     \)
     \end{center}
 
@@ -726,7 +726,7 @@
       \(
         \ru{\Gamma \der f : \squash{T} \qquad
             \Gamma \der f' : \squash{T}
-          }{\Gamma \der f \Sr f' : \squash{T}}
+          }{\Gamma \der f \Er f' : \squash{T}}
       \)
       \end{center}
       Symmetry holds directly.
@@ -737,30 +737,30 @@
 
   \begin{lemma}[Into the logical relation]
     Let $T \in s$.
-    If $\Gamma \der n :=: n' : T$ then $\Gamma \der n \hSr n' : T$.
+    If $\Gamma \der n :=: n' : T$ then $\Gamma \der n \hEr n' : T$.
   \end{lemma}
 
   \begin{proof}
     By induction on $T \in s$. We treat the case of the squash.
     $\squash{T} \in s$ and $\Gamma \der n :=: n' : \squash{T}$.
-    By well-typing, we have $\Gamma \der n \Sr n' : \squash{T}$.
+    By well-typing, we have $\Gamma \der n \Er n' : \squash{T}$.
   \end{proof}
 
   \paradot{Validity in the Model}
 
-  We now extend our logical relation $\hSr$ to substitutions by
+  We now extend our logical relation $\hEr$ to substitutions by
   induction on the destination context.
   %
   \begin{center}
   \(
-    \ru{}{\Delta \der \sigma \hSr \sigma' : \cdot}
+    \ru{}{\Delta \der \sigma \hEr \sigma' : \cdot}
     \qquad
-    \ru{\Delta \der \sigma \hSr \sigma' : \Gamma \qquad
-        \Delta \der \sigma(x) \hSr \sigma'(x) : U \sigma
-      }{\Delta \der \sigma \hSr \sigma' : \Gamma, x:U}
+    \ru{\Delta \der \sigma \hEr \sigma' : \Gamma \qquad
+        \Delta \der \sigma(x) \hEr \sigma'(x) : U \sigma
+      }{\Delta \der \sigma \hEr \sigma' : \Gamma, x:U}
   \)
   \end{center}
-  This relation inherits weakening from $\hSr$ for terms.
+  This relation inherits weakening from $\hEr$ for terms.
 
   We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
   term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
@@ -784,8 +784,8 @@
     \dru{\Der \Gamma \qquad
          (\Gamma \Der T \text{ unless } T = s)
        }{\forall \Delta, \sigma, \sigma',
-         \Delta \der \sigma \hSr \sigma' : \Gamma \gives
-         \Delta \der t \sigma \hSr t' \sigma' : T \sigma
+         \Delta \der \sigma \hEr \sigma' : \Gamma \gives
+         \Delta \der t \sigma \hEr t' \sigma' : T \sigma
        }{\Gamma \Der t = t' : T}
     \qquad
     \ru{\Gamma \Der t = t : T
@@ -793,7 +793,7 @@
   \end{mathc}
 
   \begin{lemma}[Substitution Relation is a PER]
-    If $\Der \Gamma$, then $\Delta \der \_ \hSr \_ : \Gamma$ is symmetric and
+    If $\Der \Gamma$, then $\Delta \der \_ \hEr \_ : \Gamma$ is symmetric and
     transitive.
   \end{lemma}
   %
@@ -815,7 +815,7 @@
   \meta{Perhaps we would need similar lemmata for sigma, equality and squash.}
 
   \begin{lemma}[Context Satisfiable]
-    If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hSr \id : \Gamma$.
+    If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hEr \id : \Gamma$.
   \end{lemma}
   Nothing new.
 
@@ -878,18 +878,18 @@
     lemma~\ref{lem:fun-inj-valid}.
     %
     Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
+    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
     show
-    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hSr
+    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
     f \sigma'\ t \sigma' : T \sigma.\]
     Since $\Gamma \Der T$, there exists $A$ in whnf such that $T \sigma \rew A$
     and $\Delta \der T \sigma = A$.
     We instantiate the first hypothesis to get
-    $\Delta \der f \sigma \hSr f \sigma' : U \sigma \to T \sigma$
+    $\Delta \der f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
     and the last to get
-    $\Delta \der t \sigma \hSr t \sigma' : U \sigma$.
+    $\Delta \der t \sigma \hEr t \sigma' : U \sigma$.
     We then get
-    $\Delta \der f \sigma\ t \sigma \hSr f \sigma'\ t \sigma' : T \sigma$.
+    $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$.
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
     $[t \sigma] \rew [t \sigma]$, we deduce
     $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
@@ -899,7 +899,7 @@
     is deduced form transitivity.
     We also have $f \sigma'\ t \sigma' \rew a'$ for some $a'$ and
     $\Delta \der f \sigma'\ t \sigma' = a' : A$
-    and $\Delta \der a \Sr a' : A$ which concludes our proof.
+    and $\Delta \der a \Er a' : A$ which concludes our proof.
   \end{proof}
 
   \begin{lemma}[Validity of $\elim$ equality]
@@ -919,9 +919,9 @@
     $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
     is a PER.
     Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
+    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
     show
-    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hSr
+    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hEr
     \elim(U' \sigma',T' \sigma',f' \sigma',h' \sigma',t' \sigma') : T \sigma.\]
     Like before, we have $A$ in whnf such that $T \sigma \rew A$ and
     $\Gamma \der T \sigma = A$ and $a,a'$ in whnf such that $t \sigma \rew a$
@@ -930,9 +930,9 @@
     \begin{caselist}
       \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
       We instantiate $\Gamma \Der f = f' : U \to T$ to
-      $\Delta \der f \sigma \hSr f' \sigma' : U \sigma \to T \sigma$.
+      $\Delta \der f \sigma \hEr f' \sigma' : U \sigma \to T \sigma$.
       Here, we don't have any hypothesis to conclude
-      $\Delta \der u \hSr u' : U \sigma$ but we still wish to conclude that
+      $\Delta \der u \hEr u' : U \sigma$ but we still wish to conclude that
       $f \sigma\ u$ and $f' \sigma'\ u'$ reduce to related terms thanks to
       the proven irrelevance of $T \sigma$.
       \meta{TODO, this is where we get smart, the proof lies here!}
@@ -960,15 +960,15 @@
   \begin{proof}
     $\Der \Gamma$ is trivial again, same as $\Gamma \Der \squash{T}$.
     Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hSr \sigma' : \Gamma$ and
-    show $\Delta \der t \sigma \hSr t' \sigma' : \squash{T \sigma}$.
+    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
+    show $\Delta \der t \sigma \hEr t' \sigma' : \squash{T \sigma}$.
     By instantiating the hypotheses, we have $a,a',b,b'$ in whnf such that
     $t \sigma \rew a$ and $t \sigma' \rew a'$ and $t' \sigma \rew b$
     and $t' \sigma' \rew b'$ with the corresponding equalities under the type
     $\squash{T \sigma}$.
 
     We have to show $\Delta \der t \sigma :=: t' \sigma' : \squash{T \sigma}$
-    and $\Delta \der a \Sr b' : \squash{T \sigma}$. They both hold by
+    and $\Delta \der a \Er b' : \squash{T \sigma}$. They both hold by
     well-typing and irrelevance on squashes.
   \end{proof}
 
@@ -1032,8 +1032,8 @@
     \qquad
     \dru{\Der \Gamma \qquad
          \Der \Gamma'
-       }{\forall \Delta \der \rho \hSr \rho' : \Gamma'.\ %
-         \Delta \der \sigma \rho \hSr \sigma' \rho' : \Gamma'
+       }{\forall \Delta \der \rho \hEr \rho' : \Gamma'.\ %
+         \Delta \der \sigma \rho \hEr \sigma' \rho' : \Gamma'
        }{\Gamma \Der \sigma = \sigma' : \Gamma'}
   \end{mathc}
 
@@ -1175,7 +1175,7 @@
   \end{theorem}
 
   \begin{proof}
-    By the fundamental theorem, $\Gamma \der t \hSr t : T$ which by definition
+    By the fundamental theorem, $\Gamma \der t \hEr t : T$ which by definition
     contains a derivation of $\Gamma \der t = \red t : T$.
   \end{proof}
 
