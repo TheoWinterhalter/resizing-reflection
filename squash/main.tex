@@ -661,7 +661,9 @@
     \end{itemize}
   \end{lemma}
   %
-  I dont' believe it's necessary to focus on this one.
+  \begin{proof}
+    By induction on $A \in s$ and $T \in s$.
+  \end{proof}
 
   \begin{lemma}[Type Conversion]
     \label{lem:s-conv}
@@ -678,23 +680,47 @@
     Simultaneously by induction on $A \in s$ and $T \in s$.
     We only show the ``if'' direction.
 
-    In all the proofs, we'll only focus on the squash, since it's the only
-    thing that changes (forgetting sigma and equality on purpose) from
-    Andreas and Gabriel's work.
+    We show the case of functions first, and then the squash.
 
-    \begin{center}
-    \(
-      \ru{\Gamma \der T :=: T' : s
-        }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
-      \qquad
-      \ru{\Gamma \der f : \squash{T} \qquad
-          \Gamma \der f' : \squash{T}
-        }{\Gamma \der f \Er f' : \squash{T}}
-    \)
-    \end{center}
-    %
-    By conversion for typing, $\Gamma \der f, f' : \squash{T'}$, hence the
-    result.
+    \begin{caselist}
+      \nextcase
+      \begin{center}
+      \(
+        \trux{\Gamma \der U \hEr U' : s
+            }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
+              \Delta \der V[u/x] \hEr V'[u'/x] : s'
+            }{\Gamma \der e : \Id s''\ (\Pi x:U.V)\ (\Pi x:U'.V')
+            }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
+            }{(s,s',s'')}
+      \)
+      \end{center}
+      \begin{center}
+      \(
+        \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
+             \Delta \der f~u \hEr f'~u' : V[u/x]
+           }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
+           }{\Gamma \der f \Er f' : \Pi x:U.V}
+      \)
+      \end{center}
+      \meta{Assuming $\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'$, isn't the type
+      $\Id (\Pi x:U'.V')\ f\ f'$ ill-typed?}
+
+      \nextcase
+      \begin{center}
+      \(
+        \ru{\Gamma \der e : \Id s\ T\ T'
+          }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
+        \qquad
+        \ru{\Gamma \der f : \squash{T} \qquad
+            \Gamma \der f' : \squash{T}
+          }{\Gamma \der f \Er f' : \squash{T}}
+      \)
+      \end{center}
+      %
+      By conversion for typing, $\Gamma \der f, f' : \squash{T'}$, hence the
+      result. \meta{Same here, we no longer have an hypothesis strong enough
+      to call conversion.}
+    \end{caselist}
   \end{proof}
 
   \begin{lemma}[Symmetry and Transitivity]
