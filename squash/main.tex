@@ -538,16 +538,16 @@
 
   \paradot{A Kripke Logical Relation}
 
-  Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
-  \begin{center}
-  \(
-    \Gamma \der t : T
-    \qquad
-    \Gamma \der t' : T
-    \qquad
-    \Gamma \der t = t' : T.
-  \)
-  \end{center}
+  % Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
+  % \begin{center}
+  % \(
+  %   \Gamma \der t : T
+  %   \qquad
+  %   \Gamma \der t' : T
+  %   \qquad
+  %   \Gamma \der t = t' : T.
+  % \)
+  % \end{center}
   %
   By induction on $A \in s$, we define two Kripke relations:
   \begin{center}
@@ -563,10 +563,10 @@
 
   \begin{center}
   \(
-    \ru{\Gamma \der N :=: N'
+    \ru{\Gamma \der e : \Id s\ N\ N'
       }{\Gamma \der N \Er N'}
     \qquad
-    \ru{\Gamma \der n :=: n' : N
+    \ru{\Gamma \der e : \Id N\ n\ n'
       }{\Gamma \der n \Er n' : N}
     \qquad
     \rux{\der \Gamma
@@ -580,7 +580,7 @@
     \trux{\Gamma \der U \hEr U' : s
         }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
           \Delta \der V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der \Pi x:U.V :=: \Pi x:U'.V' : s''
+        }{\Gamma \der e : \Id s''\ (\Pi x:U.V)\ (\Pi x:U'.V')
         }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
@@ -590,7 +590,7 @@
   \(
     \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
          \Delta \der f~u \hEr f'~u' : V[u/x]
-       }{\Gamma \der f :=: f' : \Pi x:U.V
+       }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
        }{\Gamma \der f \Er f' : \Pi x:U.V}
   \)
   \end{center}
@@ -600,7 +600,7 @@
     \trux{\Gamma \der U \hEr U' : s
         }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
           \Delta \der V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der \Sigma x:U.V :=: \Sigma x:U'.V' : s''
+        }{\Gamma \der e : \Id s''\ (\Sigma x:U.V)\ (\Sigma x:U'.V')
         }{\Gamma \der \Sigma x:U.V \Er \Sigma x:U'.V' : s''
         }{(s,s',s'')}
   \)
@@ -610,7 +610,7 @@
   \(
     \dru{\Gamma \der f.1 \hEr f'.1 : U \qquad
          \Gamma \der f.2 \hEr f'.2 : V[f.1/x]
-       }{\Gamma \der f :=: f' : \Sigma x:U.V
+       }{\Gamma \der e : \Id (\Sigma x:U.V)\ f\ f'
        }{\Gamma \der f \Er f' : \Sigma x:U.V}
   \)
   \end{center}
@@ -623,13 +623,13 @@
   \end{mathc}
 
   \begin{mathc}
-    \ru{\Gamma \der f :=: f' : \Id T\ u\ v
+    \ru{\Gamma \der e : \Id (\Id T\ u\ v)\ f\ f'
       }{\Gamma \der f \Er f' : \Id T\ u\ v}
   \end{mathc}
 
   \begin{center}
   \(
-    \ru{\Gamma \der T :=: T' : s
+    \ru{\Gamma \der e : \Id s\ T\ T'
       }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
     \qquad
     \ru{\Gamma \der f : \squash{T} \qquad
@@ -647,7 +647,7 @@
          \Gamma \der t' = a' : A \qquad
          t' \rew a'
        }{\Gamma \der a \Er a' : A
-       }{\Gamma \der t :=: t' : T
+       }{\Gamma \der e : \Id T\ t\ t' : T
        }{\Gamma \der t \hEr t' : T}
   \)
   \end{center}
