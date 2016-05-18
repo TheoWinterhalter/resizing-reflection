@@ -48,7 +48,7 @@
       \Sort & \ni & s             & ::= & \Type_k \mbox{ }
                                                 (k \in \mathbb{N}) \\
       \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid \Sigma x:U.T \mid
-                                    t =_T u \mid \squash{T} \\
+                                    \Id T\ t\ u \mid \squash{T} \\
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid (t;u) \mid t.1 \mid t.2 \mid \refl_t \mid
                                \J (T,U,t_{refl},u_1,u_2,t_{eq}) \\
@@ -59,7 +59,6 @@
 
   \noindent %
   We write $A \to B$ as short for $\Pi \_:A.B$, the non-dependent product.
-  We also write $=$ for $=_T$ when $T$ is understood.
 
   The \emph{novelty} here, with respect to MLTT, is the introduction of a squash
   $\squash{T}$ with an injection $[t]$ from $T$, all of its inhabitants being
@@ -67,7 +66,7 @@
   in a (semantically) irrelevant context, \ie through something hProp.
   This will be translated by $\elim$.
   Basically $\elim(A,B,f,h,a)$ takes $f : A \to B$ with
-  $h : \Pi x:B. \Pi y:B. x = y$ and $a : \squash{A}$ to return a $B$.
+  $h : \Pi x:B. \Pi y:B. \Id B\ x\ y$ and $a : \squash{A}$ to return a $B$.
 
   \section{Typing Rules}
 
@@ -124,7 +123,7 @@
     \qquad
     \ru{\Gamma \der T : s \qquad
         \Gamma \der t,t' : T
-      }{\Gamma \der t =_T t' : s}
+      }{\Gamma \der \Id T\ t\ t' : s}
   \)
   \end{center}
 
@@ -136,17 +135,17 @@
       }{\Gamma \der (t;t') : \Sigma x:A.B}
     \qquad
     \ru{\Gamma \der t : T
-      }{\Gamma \der \refl_t : t =_T t}
+      }{\Gamma \der \refl_t : \Id T\ t\ t}
   \)
   \end{center}
 
   \begin{center}
   \(
     \tru{\Gamma \der A : s \qquad
-         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+         \Gamma \der C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
        }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x
        }{\Gamma \der u, v : A \qquad
-         \Gamma \der p : u =_A v
+         \Gamma \der p : \Id A\ u\ v
        }{\Gamma \der \J (A,C,b,u,v,p) : C\ u\ v\ p}
   \)
   \end{center}
@@ -176,7 +175,7 @@
   \begin{center}
   \(
     \ru{\Gamma \der f : A \to B \qquad
-        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} \Id A\ x\ y \qquad
         \Gamma \der a : \squash{A}
       }{\Gamma \der \elim(A,B,f,h,a) : B}
   \)
@@ -219,7 +218,7 @@
   \begin{center}
   \(
     \dru{\Gamma \der A : s \qquad
-         \Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+         \Gamma \der C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
        }{\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x \qquad
          \Gamma \der u : A
        }{\Gamma \der \J (A,C,b,u,u,\refl_u) = b\ u : C\ u\ u\ \refl_u}
@@ -229,7 +228,7 @@
   \begin{center}
   \(
     \ru{\Gamma \der f : A \to B \qquad
-        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+        \Gamma \der h : \Pi_{x:A} \Pi_{y:A} \Id A\ x\ y \qquad
         \Gamma \der t : A
       }{\Gamma \der \elim(A,B,f,h,[t]) = f\ t : B}
   \)
@@ -312,25 +311,25 @@
     \ru{\Gamma \der T = T' : s \qquad
         \Gamma \der t = t' : T \qquad
         \Gamma \der u = u' : T
-      }{\Gamma \der t =_T u = t' =_{T'} u' : s}
+      }{\Gamma \der \Id T\ t\ u = \Id T'\ t'\ u' : s}
   \)
   \end{center}
 
   \begin{center}
   \(
     \ru{\Gamma \der t = t' : T \qquad
-      }{\Gamma \der \refl_t = \refl_{t'} : t =_T t}
+      }{\Gamma \der \refl_t = \refl_{t'} : \Id T\ t\ t}
   \)
   \end{center}
 
   \begin{center}
   \(
     \tru{\Gamma \der A = A' : s \qquad
-         \Gamma \der C = C' : \Pi x:A. \Pi y:A. (x =_A y) \to s'
+         \Gamma \der C = C' : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
        }{\Gamma \der b = b' : \Pi x:A. C\ x\ x\ \refl_x
        }{\Gamma \der u = u' : A \qquad
          \Gamma \der v = v' : A \qquad
-         \Gamma \der p = p' : u =_A v
+         \Gamma \der p = p' : \Id A\ u\ v
        }{\Gamma \der \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') : C\ u\ v\ p}
   \)
   \end{center}
@@ -350,7 +349,7 @@
     \dru{\Gamma \der A = A' : s \qquad
          \Gamma \der B = B' : s'
        }{\Gamma \der f = f' : A \to B \qquad
-         \Gamma \der h, h' : \Pi_{x:A} \Pi_{y:A} x = y \qquad
+         \Gamma \der h, h' : \Pi_{x:A} \Pi_{y:A} \Id A\ x\ y \qquad
          \Gamma \der a, a' : \squash{A}
        }{\Gamma \der \elim(A,B,f,h,a) = \elim(A,B,f,h,a) : B}
   \)
@@ -400,7 +399,7 @@
   Weak head normal forms (whnfs) are given by the following grammar:
 
   \begin{align*}
-    \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid t =_T u
+    \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Sigma x:U.T \mid \Id T\ t\ u
                            \mid \squash{T} \\
         &&\mid~& n \mid \lambda x:U.t \mid (t;u) \mid \refl_t \mid [t] \\
     \Wne  &\ni n,N &::=~& x \mid n~u \mid n.1 \mid n.2 \mid \elim(T,U,t,u,n)
@@ -511,7 +510,7 @@
   \begin{center}
   \(
     \ru{(T,\mathcal{A}) \in \U_i
-      }{(u =_T v, \oeq\ \mathcal{A}\ u\ v) \in \U_i}
+      }{(\Id T\ u\ v, \oeq\ \mathcal{A}\ u\ v) \in \U_i}
     \qquad
     \ru{}{(\squash{A}, \Squash) \in \U_i}
   \)
@@ -620,12 +619,12 @@
     \ru{\Gamma \der u \hEr u' : T \qquad
         \Gamma \der T \hEr T' : s \qquad
         \Gamma \der v \hEr v' : T
-      }{\Gamma \der u =_T v \Er u' =_{T'} v' : s}
+      }{\Gamma \der \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
 
   \begin{mathc}
-    \ru{\Gamma \der f :=: f' : u =_T v
-      }{\Gamma \der f \Er f' : u =_T v}
+    \ru{\Gamma \der f :=: f' : \Id T\ u\ v
+      }{\Gamma \der f \Er f' : \Id T\ u\ v}
   \end{mathc}
 
   \begin{center}
@@ -866,7 +865,7 @@
     \leavevmode
     \begin{mathc}
       \ru{\Gamma \Der f : U \to T \qquad
-          \Gamma \Der h : \Pi_{x:T} \Pi_{y:T} x = y \qquad
+          \Gamma \Der h : \Pi_{x:T} \Pi_{y:T} \Id T\ x\ y \qquad
           \Gamma \Der t : U
         }{\Gamma \Der \elim(U,T,f,h,[t]) = f\ t : T}
     \end{mathc}
@@ -908,7 +907,7 @@
       \dru{\Gamma \Der U = U' \qquad
            \Gamma \Der T = T'
          }{\Gamma \Der f = f' : U \to T \qquad
-           \Gamma \Der h, h' : \Pi_{x:T} \Pi_{y:T} x = y \qquad
+           \Gamma \Der h, h' : \Pi_{x:T} \Pi_{y:T} \Id T\ x\ y \qquad
            \Gamma \Der t,t' : \squash{U}
          }{\Gamma \Der \elim(U,T,f,h,t) = \elim(U',T',f',h',t') : T}
     \end{mathc}
@@ -1124,18 +1123,19 @@
       and $\Gamma, x:U \der T : s'$ and for some $s''$ we have
       $\Gamma \der s'' = T$ and $(s,s',s'') \in \R$.
       \item If $\Gamma \der \refl_t : T$ then $\Gamma \der t : U$
-      for some $U$ with $\Gamma \der t =_U t = T$.
+      for some $U$ with $\Gamma \der \Id U\ t\ t = T$.
       \item If $\Gamma \der \J(A,C,b,u,v,p) : T$ then $\Gamma \der A : s$
-      and $\Gamma \der C : \Pi x:A. \Pi y:A. (x =_A y) \to s'$ and
+      and $\Gamma \der C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'$ and
       $\Gamma \der b : \Pi x:A. C\ x\ x\ \refl_x$ and $\Gamma \der u, v : A$
-      and $\Gamma \der p : u =_A v$ for some $s,s'$ with
+      and $\Gamma \der p : \Id A\ u\ v$ for some $s,s'$ with
       $\Gamma \der C\ u\ v\ p \le T$.
-      \item If $\Gamma \der t =_{T'} t' : T$ then $\Gamma \der t,t' : T'$
+      \item If $\Gamma \der \Id T'\ t\ t' : T$ then $\Gamma \der t,t' : T'$
       and $\Gamma \der s = T$ for some $s$.
       \item If $\Gamma \der [t] : T$ then $\Gamma \der t : T'$ for some
       $T'$ with $\Gamma \der \squash{T'} = T$.
       \item If $\Gamma \der \elim(A,B,f,h,a) : T$ then
-      $\Gamma \der f : A \to B$ and $\Gamma \der h : \Pi_{x:A} \Pi_{y:A} x = y$
+      $\Gamma \der f : A \to B$ and
+      $\Gamma \der h : \Pi_{x:A} \Pi_{y:A} \Id A\ x\ y$
       and $\Gamma \der a : \squash{A}$ and $\Gamma \der B \le T$.
       \item If $\Gamma \der \squash{T'} : T$ then $\Gamma \der T' : s$ for
       some $s$ and $\Gamma \der s' = T'$ for some $s'$.
@@ -1194,19 +1194,19 @@
       \item $\Gamma \der N \neq s$.
       \item $\Gamma \der N \neq \Pi x:U.T$.
       \item $\Gamma \der N \neq \Sigma x:U.T$.
-      \item $\Gamma \der N \neq u =_T v$.
+      \item $\Gamma \der N \neq \Id T\ u\ v$.
       \item $\Gamma \der N \neq \squash{T}$.
       \item $\Gamma \der s = s'$ implies $s \equiv s'$.
       \item $\Gamma \der s \neq \Pi x:U.T$.
       \item $\Gamma \der s \neq \Sigma x:U.T$.
-      \item $\Gamma \der s \neq u =_T v$.
+      \item $\Gamma \der s \neq \Id T\ u\ v$.
       \item $\Gamma \der s \neq \squash{T}$.
       \item $\Gamma \der \Pi x:U.T \neq \Sigma x:U'.T'$.
-      \item $\Gamma \der \Pi x:U.T \neq u =_{T'} v$.
+      \item $\Gamma \der \Pi x:U.T \neq \Id T'\ u\ v$.
       \item $\Gamma \der \Pi x:U.T \neq \squash{T'}$.
-      \item $\Gamma \der \Sigma x:U.T \neq u =_{T'} v$.
+      \item $\Gamma \der \Sigma x:U.T \neq \Id T'\ u\ v$.
       \item $\Gamma \der \Sigma x:U.T \neq \squash{T'}$.
-      \item $\Gamma \der u =_T v \neq \squash{T'}$.
+      \item $\Gamma \der \Id T\ u\ v \neq \squash{T'}$.
     \end{itemize}
   \end{lemma}
 
