@@ -616,7 +616,7 @@
   \begin{center}
   \(
     \dru{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
-         \Delta \der f~u \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ f'~u' : V[u/x]
+         \Delta \der f~u \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ (f'~u') : V[u/x]
        }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
        }{\Gamma \der f \Er f' : \Pi x:U.V}
   \)
@@ -692,15 +692,20 @@
     By induction on $A \in s$ and $T \in s$.
   \end{proof}
 
+  Before stating conversion, we should remark that the relation $\Er$ on
+  weak-head normal types also contains a proof of equality.
+  We will, as for $\hEr$ write $\Gamma \der \hideq{p} A \Er A' : s$.
+
   \begin{lemma}[Type Conversion]
     \label{lem:s-conv}
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der A \Er A' : s$ then
-      $\Gamma \der a \Er a' : A$ iff $\Gamma \der a \Er a' : A'$.
-      \item If $\Gamma \der T \hEr T' : s$ then
-      $\Gamma \der t \hEr t : T$ iff $\Gamma \der t \Er t' : T'$.
+      \item If $\Gamma \der \hideq{p} A \Er A' : s$ and
+      $\Gamma \der a \Er a' : A$ then $\Gamma \der p_*\ a \Er p_*\ a' : A'$.
+      \item If $\Gamma \der \hideq{p} T \hEr T' : s$ and
+      $\Gamma \der t \hEr t : T$ then $\Gamma \der p_*\ t \Er p_*\ t' : T'$.
     \end{itemize}
+    And in both cases, we have to converse using $p\inv$.
   \end{lemma}
 
   \begin{proof}
@@ -713,40 +718,57 @@
       \nextcase
       \begin{center}
       \(
-        \trux{\Gamma \der U \hEr U' : s
+        \trux{\Gamma \der \hideq{r} U \hEr U' : s
             }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
               \Delta \der V[u/x] \hEr V'[u'/x] : s'
-            }{\Gamma \der e : \Id s''\ (\Pi x:U.V)\ (\Pi x:U'.V')
+            }{\Gamma \der p : \Id s''\ (\Pi x:U.V)\ (\Pi x:U'.V')
             }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
             }{(s,s',s'')}
       \)
       \end{center}
       \begin{center}
       \(
-        \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
-             \Delta \der f~u \hEr f'~u' : V[u/x]
+        \dru{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U
+             \gives
+             \Delta \der f~u \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ (f'~u') :
+             V[u/x]
            }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
            }{\Gamma \der f \Er f' : \Pi x:U.V}
       \)
       \end{center}
-      \meta{Assuming $\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'$, isn't the type
-      $\Id (\Pi x:U'.V')\ f\ f'$ ill-typed?}
-
-      \nextcase
-      \begin{center}
-      \(
-        \ru{\Gamma \der e : \Id s\ T\ T'
-          }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
-        \qquad
-        \ru{\Gamma \der f : \squash{T} \qquad
-            \Gamma \der f' : \squash{T}
-          }{\Gamma \der f \Er f' : \squash{T}}
-      \)
-      \end{center}
+      First, we have
+      $\Gamma \der \ap p_*\ e : \Id (\Pi x:U'.V')\ (p_*\ f)\ (p_*\ f')$.
+      Now assume arbitrary $\Delta \le \Gamma$ and
+      $\Delta \der \hideq{q} u \hEr u' : U'$ and show
+      $\Delta \der p_*\ f\ u \hEr ((\ap (\lambda x.V')\ q)\inv)_*\ (p_*\ f'\ u')
+      : V'[u/x]$.
       %
-      By conversion for typing, $\Gamma \der f, f' : \squash{T'}$, hence the
-      result. \meta{Same here, we no longer have an hypothesis strong enough
-      to call conversion.}
+      By induction hypothesis on $U \in s$, we have
+      $\Delta \der \hideq{q'} (p\inv)_*\ u \hEr (p\inv)_*\ u' : U$.
+      So
+      $\Delta \der f\ ((p\inv)_*\ u) \hEr
+      ((\ap (\lambda x.V)\ q')\inv)_*\ f'\ ((p\inv)_*\ u') : V[(p\inv)_*\ u/x]$.
+      Then by induction hypothesis on $V[(p\inv)_*\ u/x] \in s'$ we have
+      $\Delta \der p'_*\ (f\ ((p\inv)_*\ u)) \hEr p'_*\ %
+      (((\ap (\lambda x.V)\ q')\inv)_*\ f'\ ((p\inv)_*\ u')) :
+      V'[(p\inv)_*\ u'/x]$ for some $p'$.
+      \meta{This doesn't seem to work...}
+
+      % \nextcase
+      % \begin{center}
+      % \(
+      %   \ru{\Gamma \der e : \Id s\ T\ T'
+      %     }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
+      %   \qquad
+      %   \ru{\Gamma \der f : \squash{T} \qquad
+      %       \Gamma \der f' : \squash{T}
+      %     }{\Gamma \der f \Er f' : \squash{T}}
+      % \)
+      % \end{center}
+      % %
+      % By conversion for typing, $\Gamma \der f, f' : \squash{T'}$, hence the
+      % result. \meta{Same here, we no longer have an hypothesis strong enough
+      % to call conversion.}
     \end{caselist}
   \end{proof}
 
