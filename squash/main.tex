@@ -536,19 +536,44 @@
   Finally, the squash space is just
   $\Squash = \Wne \bigcup \{ [t] \mid \red t \in \Whnf \}$.
 
+  \paradot{Transports}
+
+  In order to define the logical relation, we first need to define some
+  transports that will make sure everything is well-typed. We indeed need to
+  since our logical relation doesn't only capture conversion but all provable
+  equalities.
+
+  \[\transport : \Pi A\ A' : \Type.(\Id \Type\ A\ A') \to A \to A'\]
+  \[\transport A\ A'\ p\ x := \J(\Type, (\lambda T\ T'\ eq. T \to T'),
+  (\lambda T\ x. x), A, A', p)\ x\]
+  %
+  We will write $p_*$ for $\transport A\ A'\ p$.
+
+  \[\ap : \Pi A\ B : \Type. \Pi (f : A \to B). \Pi (u\ v : A).
+    (\Id u\ v) \to (\Id (f\ u)\ (f\ v))\]
+  \[\ap A\ B\ f\ u\ v\ p := \J(A, (\lambda x\ y\ p. \Id (f\ x)\ (f\ y)),
+  (\lambda x. \refl_{f\ x}), u, v, p)\]
+  %
+  We will write $\ap f : \Id x\ y \to \Id (f\ x)\ (f\ y)$ with the other
+  arguments understood.
+
+  \[\sym : \Pi A : \Type. \Pi x\ y : A. (\Id x\ y) \to (\Id y\ x)\]
+  \[\sym A\ x\ y\ p := \J(A, (\lambda u\ v\ e. \Id v\ u), (\lambda u. \refl_u),
+  x,y,p)\]
+  %
+  We will write $p\inv$ for $\sym A\ x\ y\ p$.
+
+  \[\trans : \Pi A : \Type. \Pi x\ y\ z : A.
+  (\Id x\ y) \to (\Id y\ z) \to (\Id x\ z)\]
+  \[
+    \trans A\ x\ y\ z\ p := \J(A, (\lambda u\ v\ e. \Id v\ z \to \Id u\ z),
+    (\lambda u\ e. e), x, y, p)
+  \]
+  %
+  We will write $p \cons q$ for $\trans A\ x\ y\ z\ p\ q$.
+
   \paradot{A Kripke Logical Relation}
 
-  % Let $\Gamma \der t :=: t' : T$ stand for the conjunction of propositions
-  % \begin{center}
-  % \(
-  %   \Gamma \der t : T
-  %   \qquad
-  %   \Gamma \der t' : T
-  %   \qquad
-  %   \Gamma \der t = t' : T.
-  % \)
-  % \end{center}
-  %
   By induction on $A \in s$, we define two Kripke relations:
   \begin{center}
   \(
@@ -560,11 +585,13 @@
   together with their respective closures $\hEr$.
   We define them in rule form for better readability meaning we have to see the
   conclusion to be defined as the conjunction of the premises.
+  We write $\Gamma \der \hideq{p} t \hEr t' : T$ when $p$ is the underlying
+  proof of equality contained in $\Gamma \der t \hEr t' : T$.
 
   \begin{center}
   \(
     \ru{\Gamma \der e : \Id s\ N\ N'
-      }{\Gamma \der N \Er N'}
+      }{\Gamma \der N \Er N' : s}
     \qquad
     \ru{\Gamma \der e : \Id N\ n\ n'
       }{\Gamma \der n \Er n' : N}
@@ -588,8 +615,8 @@
 
   \begin{center}
   \(
-    \dru{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
-         \Delta \der f~u \hEr f'~u' : V[u/x]
+    \dru{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
+         \Delta \der f~u \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ f'~u' : V[u/x]
        }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
        }{\Gamma \der f \Er f' : \Pi x:U.V}
   \)
@@ -608,17 +635,17 @@
 
   \begin{center}
   \(
-    \dru{\Gamma \der f.1 \hEr f'.1 : U \qquad
-         \Gamma \der f.2 \hEr f'.2 : V[f.1/x]
+    \dru{\Gamma \der \hideq{p} f.1 \hEr f'.1 : U \qquad
+         \Gamma \der f.2 \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ f'.2 : V[f.1/x]
        }{\Gamma \der e : \Id (\Sigma x:U.V)\ f\ f'
        }{\Gamma \der f \Er f' : \Sigma x:U.V}
   \)
   \end{center}
 
   \begin{mathc}
-    \ru{\Gamma \der u \hEr u' : T \qquad
-        \Gamma \der T \hEr T' : s \qquad
-        \Gamma \der v \hEr v' : T
+    \ru{\Gamma \der \hideq{p} T \hEr T' : s \qquad
+        \Gamma \der u \hEr (p\inv)_*\ u' : T \qquad
+        \Gamma \der v \hEr (p\inv)_*\ v' : T
       }{\Gamma \der \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
 
