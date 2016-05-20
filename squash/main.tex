@@ -579,22 +579,23 @@
   \(
     \Gamma \der A \Er A' : s
     \qquad
-    \Gamma \der a \Er a' : A
+    \Gamma \der \hideq{p} a \Er a' : A
   \)
   \end{center}
   together with their respective closures $\hEr$.
   We define them in rule form for better readability meaning we have to see the
   conclusion to be defined as the conjunction of the premises.
-  We write $\Gamma \der \hideq{p} t \hEr t' : T$ when $p$ is the underlying
-  proof of equality contained in $\Gamma \der t \hEr t' : T$.
+
+  \begin{mathc}
+    \ru{\Gamma \der e : \Id A\ a\ a' \qquad
+        A \nequiv s
+      }{\Gamma \der \hideq{e} a \Er a' : A}
+  \end{mathc}
 
   \begin{center}
   \(
     \ru{\Gamma \der e : \Id s\ N\ N'
       }{\Gamma \der N \Er N' : s}
-    \qquad
-    \ru{\Gamma \der e : \Id N\ n\ n'
-      }{\Gamma \der n \Er n' : N}
     \qquad
     \rux{\der \Gamma
        }{\Gamma \der s \Er s : s'
@@ -604,10 +605,10 @@
 
   \begin{center}
   \(
-    \trux{\Gamma \der U \hEr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
-          \Delta \der V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der e : \Id s''\ (\Pi x:U.V)\ (\Pi x:U'.V')
+    \drux{\Gamma \der U \hEr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
+          % \Delta \der \hideq{\ap (\lambda x.V)\ p ???} V[u/x] \hEr V'[u'/x] : s'
+          \Delta \der \hideq{q} V[u/x] \hEr V'[u'/x] : s'
         }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
@@ -615,30 +616,11 @@
 
   \begin{center}
   \(
-    \dru{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
-         \Delta \der f~u \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ (f'~u') : V[u/x]
-       }{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
-       }{\Gamma \der f \Er f' : \Pi x:U.V}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \trux{\Gamma \der U \hEr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der u \hEr u' : U \gives
-          \Delta \der V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der e : \Id s''\ (\Sigma x:U.V)\ (\Sigma x:U'.V')
+    \drux{\Gamma \der U \hEr U' : s
+        }{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
+          \Delta \der \hideq{q} V[u/x] \hEr V'[u'/x] : s'
         }{\Gamma \der \Sigma x:U.V \Er \Sigma x:U'.V' : s''
         }{(s,s',s'')}
-  \)
-  \end{center}
-
-  \begin{center}
-  \(
-    \dru{\Gamma \der \hideq{p} f.1 \hEr f'.1 : U \qquad
-         \Gamma \der f.2 \hEr ((\ap (\lambda x.V)\ p)\inv)_*\ f'.2 : V[f.1/x]
-       }{\Gamma \der e : \Id (\Sigma x:U.V)\ f\ f'
-       }{\Gamma \der f \Er f' : \Sigma x:U.V}
   \)
   \end{center}
 
@@ -649,19 +631,10 @@
       }{\Gamma \der \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
 
-  \begin{mathc}
-    \ru{\Gamma \der e : \Id (\Id T\ u\ v)\ f\ f'
-      }{\Gamma \der f \Er f' : \Id T\ u\ v}
-  \end{mathc}
-
   \begin{center}
   \(
     \ru{\Gamma \der e : \Id s\ T\ T'
       }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
-    \qquad
-    \ru{\Gamma \der f : \squash{T} \qquad
-        \Gamma \der f' : \squash{T}
-      }{\Gamma \der f \Er f' : \squash{T}}
   \)
   \end{center}
 
@@ -675,7 +648,7 @@
          t' \rew a'
        }{\Gamma \der a \Er a' : A
        }{\Gamma \der e : \Id T\ t\ t' : T
-       }{\Gamma \der t \hEr t' : T}
+       }{\Gamma \der \hideq{e} t \hEr t' : T}
   \)
   \end{center}
 
