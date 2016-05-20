@@ -621,6 +621,9 @@
     \qquad
     \ru{\Gamma \der e : \Id s''\ s\ s'
       }{\Gamma \der \hideq{e} s \Er s' : s''}
+    \qquad
+    \ru{\Gamma \der e : \Id s\ T\ T'
+      }{\Gamma \der \hideq{\squash{e}} \squash{T} \Er \squash{T'} : s'}
   \)
   \end{center}
 
@@ -648,13 +651,6 @@
         \Gamma \der \hideq{r} v \hEr (p\inv)_*\ v' : T
       }{\Gamma \der \hideq{\id\ p\ q\ r} \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
-
-  \begin{center}
-  \(
-    \ru{\Gamma \der e : \Id s\ T\ T'
-      }{\Gamma \der \hideq{\squash{e}} \squash{T} \Er \squash{T'} : s'}
-  \)
-  \end{center}
 
   \begin{center}
   \(
