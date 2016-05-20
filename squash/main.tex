@@ -572,12 +572,34 @@
   %
   We will write $p \cons q$ for $\trans A\ x\ y\ z\ p\ q$.
 
+  \[
+    \transdom : \Pi (A\ A' : \Type)\ (p : \Id A\ A')\ (B' : A' \to \Type).
+                (A \to \Type)
+  \]
+  \[
+    \transdom p\ B'\ a := B'\ (p_* a)
+  \]
+  As in the definition, we will omit $A$ and $A'$.
+
+  \[
+  \begin{array}{l@{\quad}l}
+    \transfun :~& \Pi (A\ A' : \Type)\ (B : A \to \Type)\ (B' : A' \to \Type) \\
+                & (p : \Id A\ A').\ \Id B\ (\transdom p\ B') \to \\
+                & \Id (\Pi (x:A).B) (\Pi (x:A').B') \\
+    \transfun :=& ...
+  \end{array}
+  \]
+  It is done in agda, let's not write it.
+  We will write $\pi\ p\ q$ for $\transfun A\ A'\ B\ B'\ p\ q$.
+  We will admit we have a similar $\sigma\ p\ q$ for $\Sigma$-types,
+  $\id\ p\ q\ r$ for identity types and $\squash{p}$ for squashes.
+
   \paradot{A Kripke Logical Relation}
 
   By induction on $A \in s$, we define two Kripke relations:
   \begin{center}
   \(
-    \Gamma \der A \Er A' : s
+    \Gamma \der \hideq{p} A \Er A' : s
     \qquad
     \Gamma \der \hideq{p} a \Er a' : A
   \)
@@ -595,46 +617,42 @@
   \begin{center}
   \(
     \ru{\Gamma \der e : \Id s\ N\ N'
-      }{\Gamma \der N \Er N' : s}
+      }{\Gamma \der \hideq{e} N \Er N' : s}
     \qquad
-    \rux{\der \Gamma
-       }{\Gamma \der s \Er s : s'
-       }{(s,s')}
+    \ru{\Gamma \der e : \Id s''\ s\ s'
+      }{\Gamma \der \hideq{e} s \Er s' : s''}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \drux{\Gamma \der U \hEr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
-          % \Delta \der \hideq{\ap (\lambda x.V)\ p ???} V[u/x] \hEr V'[u'/x] : s'
-          \Delta \der \hideq{q} V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der \Pi x:U.V \Er \Pi x:U'.V' : s''
+    \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
+          \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : U \to s'
+        }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
   \end{center}
 
   \begin{center}
   \(
-    \drux{\Gamma \der U \hEr U' : s
-        }{\forall \Delta \le \Gamma,\ \Delta \der \hideq{p} u \hEr u' : U \gives
-          \Delta \der \hideq{q} V[u/x] \hEr V'[u'/x] : s'
-        }{\Gamma \der \Sigma x:U.V \Er \Sigma x:U'.V' : s''
-        }{(s,s',s'')}
+    \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
+         \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : U \to s'
+       }{\Gamma \der \hideq{\sigma\ p\ q} \Sigma x:U.V \Er \Sigma x:U'.V' : s''
+       }{(s,s',s'')}
   \)
   \end{center}
 
   \begin{mathc}
     \ru{\Gamma \der \hideq{p} T \hEr T' : s \qquad
-        \Gamma \der u \hEr (p\inv)_*\ u' : T \qquad
-        \Gamma \der v \hEr (p\inv)_*\ v' : T
-      }{\Gamma \der \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
+        \Gamma \der \hideq{q} u \hEr (p\inv)_*\ u' : T \qquad
+        \Gamma \der \hideq{r} v \hEr (p\inv)_*\ v' : T
+      }{\Gamma \der \hideq{\id\ p\ q\ r} \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
 
   \begin{center}
   \(
     \ru{\Gamma \der e : \Id s\ T\ T'
-      }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
+      }{\Gamma \der \hideq{\squash{e}} \squash{T} \Er \squash{T'} : s'}
   \)
   \end{center}
 
@@ -646,7 +664,7 @@
          \Gamma \der t = a : A \qquad
          \Gamma \der t' = a' : A \qquad
          t' \rew a'
-       }{\Gamma \der a \Er a' : A
+       }{\Gamma \der \hideq{p} a \Er a' : A
        }{\Gamma \der e : \Id T\ t\ t' : T
        }{\Gamma \der \hideq{e} t \hEr t' : T}
   \)
@@ -665,15 +683,11 @@
     By induction on $A \in s$ and $T \in s$.
   \end{proof}
 
-  Before stating conversion, we should remark that the relation $\Er$ on
-  weak-head normal types also contains a proof of equality.
-  We will, as for $\hEr$ write $\Gamma \der \hideq{p} A \Er A' : s$.
-
   \begin{lemma}[Type Conversion]
     \label{lem:s-conv}
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der \hideq{p} A \Er A' : s$ and
+      \item If $\Gamma \der A \Er A' : s$ and
       $\Gamma \der a \Er a' : A$ then $\Gamma \der p_*\ a \Er p_*\ a' : A'$.
       \item If $\Gamma \der \hideq{p} T \hEr T' : s$ and
       $\Gamma \der t \hEr t : T$ then $\Gamma \der p_*\ t \Er p_*\ t' : T'$.
