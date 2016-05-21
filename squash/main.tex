@@ -779,6 +779,7 @@
   \)
   \end{center}
   This relation inherits weakening from $\hEr$ for terms.
+  \meta{Who is the underlying equality here?}
 
   We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
   term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
@@ -810,6 +811,9 @@
       }{\Gamma \Der t : T}
   \end{mathc}
 
+  \meta{We should label the equality here to show some action of the
+  substitution perhaps.}
+
   \begin{lemma}[Substitution Relation is a PER]
     If $\Der \Gamma$, then $\Delta \der \_ \hEr \_ : \Gamma$ is symmetric and
     transitive.
@@ -823,14 +827,15 @@
   Again, this doesn't look at the terms in detail as long as they verify
   lemmata~\ref{lem:s-conv} and \ref{lem:s-per}.
 
-  % \begin{lemma}[Function type injectivity is valid]
-  %   \label{lem:fun-inj-valid}
-  %   If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
-  %   $\Gamma, x:U \Der T = T'$.
-  % \end{lemma}
-  % This doesn't talk about the squash.
-  %
-  % \meta{Perhaps we would need similar lemmata for sigma, equality and squash.}
+  \begin{lemma}[Function type injectivity is valid]
+    \label{lem:fun-inj-valid}
+    If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
+    $\Gamma, x:U \Der T = T'$.
+  \end{lemma}
+  The previous proof scales easily since the relation is pretty much the same
+  on types.
+
+  \meta{Perhaps we would need similar lemmata for sigma, equality and squash.}
 
   \begin{lemma}[Context Satisfiable]
     If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hEr \id : \Gamma$.
@@ -856,7 +861,8 @@
         }{\Gamma \Der (\lambda x:U.t)\ u = t[u/x] : T[u/x]}
     \end{mathc}
   \end{lemma}
-  All ok.
+  I believe this is simpler than before as we basically only deal with identity
+  proofs.
 
   \begin{lemma}[Validity of $\eta$]
     \leavevmode
@@ -865,7 +871,7 @@
         }{\Gamma \Der t = \lambda x:U.t\ x : \Pi x:U.T}
     \end{mathc}
   \end{lemma}
-  No problem.
+  Same here.
 
   \begin{lemma}[Validity of function equality]
     \leavevmode
@@ -878,7 +884,7 @@
   Ok.
 
   \meta{We need something similar as the three previous lemmata for sigmas and
-  equality. We only treat the case of squash for now.}
+  identity. We only treat the case of squash for now.}
 
   \begin{lemma}[Validity of $\elim$ reduction]
     \leavevmode
@@ -907,7 +913,9 @@
     and the last to get
     $\Delta \der t \sigma \hEr t \sigma' : U \sigma$.
     We then get
-    $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$.
+    $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$
+    (\meta{how? I actually need to be able to derive that the application
+    whr to something})
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
     $[t \sigma] \rew [t \sigma]$, we deduce
     $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
