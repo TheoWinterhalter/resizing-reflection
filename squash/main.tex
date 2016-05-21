@@ -779,7 +779,6 @@
   \)
   \end{center}
   This relation inherits weakening from $\hEr$ for terms.
-  \meta{Who is the underlying equality here?}
 
   We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
   term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
@@ -810,9 +809,6 @@
     \ru{\Gamma \Der t = t : T
       }{\Gamma \Der t : T}
   \end{mathc}
-
-  \meta{We should label the equality here to show some action of the
-  substitution perhaps.}
 
   \begin{lemma}[Substitution Relation is a PER]
     If $\Der \Gamma$, then $\Delta \der \_ \hEr \_ : \Gamma$ is symmetric and
@@ -903,19 +899,21 @@
     %
     Now assume $\Delta, \sigma, \sigma'$ such that
     $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
-    show
-    \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
+    show (for some $p$)
+    \[\Delta \der \hideq{p}
+    \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
     f \sigma'\ t \sigma' : T \sigma.\]
     Since $\Gamma \Der T$, there exists $A$ in whnf such that $T \sigma \rew A$
     and $\Delta \der T \sigma = A$.
     We instantiate the first hypothesis to get
-    $\Delta \der f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
+    $\Delta \der \hideq{q} f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
     and the last to get
-    $\Delta \der t \sigma \hEr t \sigma' : U \sigma$.
+    $\Delta \der \hideq{r} t \sigma \hEr t \sigma' : U \sigma$
+    for some $q,r$.
     We then get
     $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$
     (\meta{how? I actually need to be able to derive that the application
-    whr to something})
+    whr to something, this is why the relation used to be instantiable...})
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
     $[t \sigma] \rew [t \sigma]$, we deduce
     $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
