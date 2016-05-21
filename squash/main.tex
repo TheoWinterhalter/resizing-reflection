@@ -757,13 +757,11 @@
 
   \begin{lemma}[Into the logical relation]
     Let $T \in s$.
-    If $\Gamma \der n :=: n' : T$ then $\Gamma \der n \hEr n' : T$.
+    If $\Gamma \der e : \Id T\ n\ n'$ then $\Gamma \der n \hEr n' : T$.
   \end{lemma}
 
   \begin{proof}
-    By induction on $T \in s$. We treat the case of the squash.
-    $\squash{T} \in s$ and $\Gamma \der n :=: n' : \squash{T}$.
-    By well-typing, we have $\Gamma \der n \Er n' : \squash{T}$.
+    This holds directly by definition of $\hEr$.
   \end{proof}
 
   \paradot{Validity in the Model}
