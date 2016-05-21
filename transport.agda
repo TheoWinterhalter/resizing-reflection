@@ -19,8 +19,8 @@ transport = λ A A' x p → J Set (λ T T' eq → T → T') (λ T → λ x → x
 _* : ∀ {A A' : Set} (p : Id A A') → A → A'
 _* {A} {A'} p x = transport A A' x p
 
-ap : ∀ A B (f : A → B) (u u' : A) → (Id u u') → Id (f u) (f u')
-ap A B f u u' p = J A (λ x y p → Id (f x) (f y)) (λ x → Refl) u u' p
+ap : ∀ {A} {B} (f : A → B) {u u' : A} → (Id u u') → Id (f u) (f u')
+ap {A} {B} f {u} {u'} p = J A (λ x y p → Id (f x) (f y)) (λ x → Refl) u u' p
 
 sym : ∀ A (x y : A) → Id x y → Id y x
 sym A x y p = J A (λ u v e → Id v u) (λ u → Refl) x y p
@@ -55,3 +55,8 @@ transfun A A' B B' p q = J Set (λ x y e → ∀ (X : x → Set) (Y : y → Set)
 --           Id u (((p ⁻¹) *) u') → Id v (((p ⁻¹) *) v') →
 --           Id (Id u v) (Id u' v')
 -- transid T T' u v u' v' p q r = J Set {! λ T T' p → ∀ (u v : T) (u' v' : T') → Id (Id u v) (Id u' v')  !} {!   !} {!   !} {!   !} {!   !}
+
+app : ∀ A (B : A → Set) (f f' : Π A B) (u u' : A) →
+      (p : Id f f') → (q : Id u u') →
+      Id (f u) (((ap B (q ⁻¹)) *) (f' u'))
+app A B f f' u u' p q = ap (λ g → g u) p · {!   !}

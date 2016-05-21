@@ -912,8 +912,7 @@
     for some $q,r$.
     We then get
     $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$
-    (\meta{how? I actually need to be able to derive that the application
-    whr to something, this is why the relation used to be instantiable...})
+    (assuming our system to be normalizing \meta{a transport is needed}).
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
     $[t \sigma] \rew [t \sigma]$, we deduce
     $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
@@ -1191,18 +1190,19 @@
 
   \paradot{Normalization and subject reduction}
 
-  An immediate consequence of the model construction is that each term has a
-  weak head normal form and that typing and equality is preserved by weak head
-  normalization.
-
-  \begin{theorem}[Normalization and subject reduction]
-    If $\Gamma \der t : T$ then $t \rew a$ and $\Gamma \der t = a : T$.
-  \end{theorem}
-
-  \begin{proof}
-    By the fundamental theorem, $\Gamma \der t \hEr t : T$ which by definition
-    contains a derivation of $\Gamma \der t = \red t : T$.
-  \end{proof}
+  % An immediate consequence of the model construction is that each term has a
+  % weak head normal form and that typing and equality is preserved by weak head
+  % normalization.
+  %
+  % \begin{theorem}[Normalization and subject reduction]
+  %   If $\Gamma \der t : T$ then $t \rew a$ and $\Gamma \der t = a : T$.
+  % \end{theorem}
+  %
+  % \begin{proof}
+  %   By the fundamental theorem, $\Gamma \der t \hEr t : T$ which by definition
+  %   contains a derivation of $\Gamma \der t = \red t : T$.
+  % \end{proof}
+  We assume our system to be normalizing with the subject reduction property.
 
   \paradot{Consistency}
 
