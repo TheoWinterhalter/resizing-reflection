@@ -594,6 +594,14 @@
   We will admit we have a similar $\sigma\ p\ q$ for $\Sigma$-types,
   $\id\ p\ q\ r$ for identity types and $\squash{p}$ for squashes.
 
+  \[
+  \begin{array}{l@{\quad}l}
+    \app :~& \Pi (A : \Type)\ (B : A \to \Type)\ (f\ f' : \Pi x:A.B) \\
+           & (u\ u' : A)\ (p : \Id f\ f')\ (q : \Id u\ u') \to \\
+           & \Id (f\ u)\ (((\ap (\lambda x.B)\ (q\inv))_* (f'\ u')))
+  \end{array}
+  \]
+
   \paradot{A Kripke Logical Relation}
 
   By induction on $A \in s$, we define two Kripke relations:
@@ -911,8 +919,9 @@
     $\Delta \der \hideq{r} t \sigma \hEr t \sigma' : U \sigma$
     for some $q,r$.
     We then get
-    $\Delta \der f \sigma\ t \sigma \hEr f \sigma'\ t \sigma' : T \sigma$
-    (assuming our system to be normalizing \meta{a transport is needed}).
+    $\Delta \der \hideq{\app q\ r} f \sigma\ t \sigma \hEr
+    (\ap (\lambda x.T \sigma)\ (r\inv)_*) f \sigma'\ t \sigma' : T \sigma$
+    (assuming our system to be normalizing).
     With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
     $[t \sigma] \rew [t \sigma]$, we deduce
     $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.

@@ -59,4 +59,4 @@ transfun A A' B B' p q = J Set (λ x y e → ∀ (X : x → Set) (Y : y → Set)
 app : ∀ A (B : A → Set) (f f' : Π A B) (u u' : A) →
       (p : Id f f') → (q : Id u u') →
       Id (f u) (((ap B (q ⁻¹)) *) (f' u'))
-app A B f f' u u' p q = ap (λ g → g u) p · {!   !}
+app A B f f' u u' p q = ap (λ g → g u) p · J A (λ x y e → Id (f' x) (((ap B (e ⁻¹)) *) (f' y))) (λ x → Refl) u u' q
