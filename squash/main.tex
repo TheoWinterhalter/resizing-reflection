@@ -720,38 +720,38 @@
 
   \begin{lemma}[Symmetry and Transitivity]
     \label{lem:s-per}
-    Let $\Gamma \der T \hEr T : s$.
+    Let $\Gamma \der \hideq{p} T \hEr T : s$.
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der t \hEr t' : T$ then $\Gamma \der t' \hEr t : T$.
-      \item If $\Gamma \der t_1 \hEr t_2 : T$ and $\Gamma \der t_2 \hEr t_3 : T$
-      then $\Gamma \der t_1 \hEr t_3 : T$.
+      \item If $\Gamma \der \hideq{q} t \hEr t' : T$ then
+      $\Gamma \der \hideq{q\inv} t' \hEr t : T$.
+      \item If $\Gamma \der \hideq{q_1} t_1 \hEr t_2 : T$ and
+      $\Gamma \der \hideq{q_2} t_2 \hEr t_3 : T$
+      then $\Gamma \der \hideq{q_1 \cons q_2} t_1 \hEr t_3 : T$.
     \end{itemize}
   \end{lemma}
 
   \begin{proof}
-    We generalize the two statements to whnfs $\Gamma \der A \Er A : s$ and
+    We generalize the two statements to whnfs
+    $\Gamma \der \hideq{p} A \Er A : s$ and
     prove all four statements simultaneously by induction.
 
     \begin{center}
     \(
-      \ru{\Gamma \der T :=: T' : s
-        }{\Gamma \der \squash{T} \Er \squash{T'} : s'}
+      \ru{\Gamma \der p : \Id s\ T\ T
+        }{\Gamma \der \hideq{\squash{p}} \squash{T} \Er \squash{T} : s'}
     \)
     \end{center}
 
     \begin{caselist}
       \nextcase Symmetry.
-      \begin{center}
-      \(
-        \ru{\Gamma \der f : \squash{T} \qquad
-            \Gamma \der f' : \squash{T}
-          }{\Gamma \der f \Er f' : \squash{T}}
-      \)
-      \end{center}
-      Symmetry holds directly.
+      \begin{mathc}
+        \ru{\Gamma \der e : \Id \squash{T}\ f\ f'
+          }{\Gamma \der \hideq{e} f \Er f' : \squash{T}}
+      \end{mathc}
+      Symmetry holds directly with $e\inv$.
 
-      \nextcase Transitivity also holds immediately.
+      \nextcase Transitivity also holds immediately with $e_1 \cons e_2$.
     \end{caselist}
   \end{proof}
 
