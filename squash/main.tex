@@ -961,22 +961,19 @@
     We have three possible cases (by symmetry):
     \begin{caselist}
       \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
-      We instantiate $\Gamma \Der f = f' : U \to T$ to
-      $\Delta \der f \sigma \hEr f' \sigma' : U \sigma \to T \sigma$.
-      Here, we don't have any hypothesis to conclude
-      $\Delta \der u \hEr u' : U \sigma$ but we still wish to conclude that
-      $f \sigma\ u$ and $f' \sigma'\ u'$ reduce to related terms thanks to
-      the proven irrelevance of $T \sigma$.
-      \meta{TODO, this is where we get smart, the proof lies here!}
-      \meta{How do we turn a proof of equality into an equality in the model?
-      Is it even true? In an incosistent context we could prove any equality
-      otherwise, woudln't we?}
+      We consider $f \sigma\ u$ and $f' \sigma'\ u'$, they have
+      respective whnfs $b$ and $b'$, both of type $A$,
+      thus $h \sigma$ (by instantiation of the hypothesis) is a proof
+      of their equality, so
+      $\Gamma \der \hideq{h \sigma\ b\ b'} b \Er b' : A$ holds.
+      This concludes our goal.
 
       \nextcase $a \equiv n$ and $a' \equiv [u']$.
-      \meta{TODO / To say likewise}
+      For similar reasons, this holds (we can still instantiate $h$ on the
+      whnfs).
 
       \nextcase $a \equiv n$ and $a' \equiv n'$.
-      \meta{TODO / To say likewise}
+      Likewise.
     \end{caselist}
   \end{proof}
 
