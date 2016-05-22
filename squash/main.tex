@@ -1227,7 +1227,7 @@
       \item $\Gamma \der N \neq \Sigma x:U.T$.
       \item $\Gamma \der N \neq \Id T\ u\ v$.
       \item $\Gamma \der N \neq \squash{T}$.
-      \item $\Gamma \der s = s'$ implies $s \equiv s'$.
+      \item $\Gamma \der s = s'$ implies $\Id s s'$ is inhabited in $\Gamma$.
       \item $\Gamma \der s \neq \Pi x:U.T$.
       \item $\Gamma \der s \neq \Sigma x:U.T$.
       \item $\Gamma \der s \neq \Id T\ u\ v$.
@@ -1243,6 +1243,10 @@
 
   \begin{proof}
     By the fundamental theorem applied to the identity substitution.
+    For instance, assume $\Gamma \der N = s$, by fundamental theorem,
+    $\Gamma \Der N = s$, so, $\Gamma \der \hideq{p} N \Er s$, since this is
+    comparision of types, there is no rule to derive it, hence the
+    contradiction.
   \end{proof}
 
   \begin{theorem}[Consistency]
