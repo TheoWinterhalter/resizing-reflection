@@ -70,3 +70,8 @@ elim-beta : ∀ A B (f g : A → B) (u v : A) →
             ∀ (p : Id f g) (q : Id u v) →
             Id (f u) (g v)
 elim-beta A B f g u v p q = J A (λ x y e → Id (f x) (g y)) (λ x → J (A → B) (λ f g e → Id (f x) (g x)) (λ f → Refl) f g p) u v q
+
+elim-eq : ∀ A B (f g : A → B) (u v : A) →
+          Id f g → (∀ (x y : B) → Id x y) →
+          Id (f u) (g v)
+elim-eq A B f g u v p h = h (f u) (g v)
