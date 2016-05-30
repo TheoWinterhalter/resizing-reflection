@@ -812,8 +812,6 @@
     $\Gamma \Der T[u/x]$.
   \end{proof}
 
-  \meta{TODO after this line}
-
   \begin{lemma}[Validity of $\eta$]
     \leavevmode
     \begin{mathc}
@@ -821,7 +819,7 @@
         }{\Gamma \Der t = \lambda x:U.t\ x : \Pi x:U.T}
     \end{mathc}
   \end{lemma}
-  Same here.
+  Similar.
 
   \begin{lemma}[Validity of function equality]
     \leavevmode
@@ -832,9 +830,6 @@
     \end{mathc}
   \end{lemma}
   Ok.
-
-  \meta{We need something similar as the three previous lemmata for sigmas and
-  identity. We only treat the case of squash for now.}
 
   \begin{lemma}[Validity of $\elim$ reduction]
     \leavevmode
@@ -857,28 +852,23 @@
     \[\Delta \der \hideq{p}
     \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
     f \sigma'\ t \sigma' : T \sigma.\]
-    Since $\Gamma \Der T$, there exists $A$ in whnf such that $T \sigma \rew A$
-    and $\Delta \der T \sigma = A$.
+    This reduces (by weak-head conversion) to showing
+    $\Delta \der \hideq{p}
+    f \sigma\ t \sigma \hEr
+    f \sigma'\ t \sigma' : T \sigma$.
+
     We instantiate the first hypothesis to get
     $\Delta \der \hideq{q} f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
     and the last to get
     $\Delta \der \hideq{r} t \sigma \hEr t \sigma' : U \sigma$
     for some $q,r$.
     We then get
-    $\Delta \der \hideq{\app q\ r} f \sigma\ t \sigma \hEr
-    (\ap (\lambda x.T \sigma)\ (r\inv)_*) f \sigma'\ t \sigma' : T \sigma$
-    (assuming our system to be normalizing).
-    With that we have $f \sigma\ t \sigma \rew a$ for some $a$ and since
-    $[t \sigma] \rew [t \sigma]$, we deduce
-    $\elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \rew a$.
-
-    \noindent %
-    $\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) = a : A$
-    is deduced form transitivity.
-    We also have $f \sigma'\ t \sigma' \rew a'$ for some $a'$ and
-    $\Delta \der f \sigma'\ t \sigma' = a' : A$
-    and $\Delta \der a \Er a' : A$ which concludes our proof.
+    $\Delta \der \hideq{p} f \sigma\ t \sigma \hEr
+    f \sigma'\ t \sigma' : T \sigma$
+    where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
   \end{proof}
+
+  \meta{TODO below}
 
   \begin{lemma}[Validity of $\elim$ equality]
     \leavevmode

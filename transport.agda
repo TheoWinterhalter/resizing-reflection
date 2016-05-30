@@ -60,3 +60,13 @@ app : ∀ A (B : A → Set) (f f' : Π A B) (u u' : A) →
       (p : Id f f') → (q : Id u u') →
       Id (f u) (((ap B (q ⁻¹)) *) (f' u'))
 app A B f f' u u' p q = ap (λ g → g u) p · J A (λ x y e → Id (f' x) (((ap B (e ⁻¹)) *) (f' y))) (λ x → Refl) u u' q
+
+-- elim-beta : ∀ A B (f g : A → B) (u v : A) →
+--             ∀ (p : Id f g) (q : Id u v) →
+--             Id (f u) (g v)
+-- elim-beta A B f g u v p q = app A (λ _ → B) f g u v p {!   !}
+
+elim-beta : ∀ A B (f g : A → B) (u v : A) →
+            ∀ (p : Id f g) (q : Id u v) →
+            Id (f u) (g v)
+elim-beta A B f g u v p q = J A (λ x y e → Id (f x) (g y)) (λ x → J (A → B) (λ f g e → Id (f x) (g x)) (λ f → Refl) f g p) u v q
