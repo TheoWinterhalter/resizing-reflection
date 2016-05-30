@@ -1,5 +1,6 @@
 New version:
-  ☐ Add the guard to elim rules (T not a sort)
+  ✔ Add the guard to elim rules (T not a sort) @done(2016-05-30 11:45) @project(New version)
+  ☐ Remove Sigma from logical relation
   ☐ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality)
 
 Ideas to Assess:
