@@ -570,6 +570,9 @@
     \ru{\Gamma \der e : \Id A\ a\ a' \qquad
         A \nequiv s
       }{\Gamma \der \hideq{e} a \Er a' : A}
+    \qquad
+    \ru{\Gamma \der \hideq{p} \red t \Er \red t' : \red T
+      }{\Gamma \der \hideq{p} t \hEr t' : T}
   \end{mathc}
 
   \begin{center}
@@ -594,35 +597,12 @@
   \)
   \end{center}
 
-  \begin{center}
-  \(
-    \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
-         \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : s'
-       }{\Gamma \der \hideq{\sigma\ p\ q} \Sigma x:U.V \Er \Sigma x:U'.V' : s''
-       }{(s,s',s'')}
-  \)
-  \end{center}
-
   \begin{mathc}
     \ru{\Gamma \der \hideq{p} T \hEr T' : s \qquad
         \Gamma \der \hideq{q} u \hEr (p\inv)_*\ u' : T \qquad
         \Gamma \der \hideq{r} v \hEr (p\inv)_*\ v' : T
       }{\Gamma \der \hideq{\id\ p\ q\ r} \Id T\ u\ v \Er \Id T'\ u'\ v' : s}
   \end{mathc}
-
-  \begin{center}
-  \(
-    \qru{T \rew A \qquad
-         \Gamma \der T = A
-       }{t \rew a \qquad
-         \Gamma \der t = a : A \qquad
-         \Gamma \der t' = a' : A \qquad
-         t' \rew a'
-       }{\Gamma \der \hideq{p} a \Er a' : A
-       }{\Gamma \der e : \Id T\ t\ t' : T
-       }{\Gamma \der \hideq{e} t \hEr t' : T}
-  \)
-  \end{center}
 
   \begin{lemma}[Weakening]
     \leavevmode
