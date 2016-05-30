@@ -636,7 +636,7 @@
     Simultaneously by induction on $A \in s$ and $T \in s$.
     We only show the ``if'' direction.
 
-    We show the case of functions first, all the others are similar.
+    We show the case of functions, all the others are similar.
 
     \begin{caselist}
       \nextcase
@@ -769,8 +769,6 @@
   The previous proof scales easily since the relation is pretty much the same
   on types.
 
-  \meta{Perhaps we would need similar lemmata for sigma, equality and squash.}
-
   \begin{lemma}[Context Satisfiable]
     If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hEr \id : \Gamma$.
   \end{lemma}
@@ -795,8 +793,26 @@
         }{\Gamma \Der (\lambda x:U.t)\ u = t[u/x] : T[u/x]}
     \end{mathc}
   \end{lemma}
-  I believe this is simpler than before as we basically only deal with identity
-  proofs.
+
+  \begin{proof}
+    $\Der \Gamma$ is contained in $\Gamma \Der u : U$.
+    Now, given $\Delta \der \rho \hEr \rho' : \Gamma$, we need to show
+    $\Delta \der (\lambda x:U.t)\rho\ u\rho \hEr (t[u/x])\rho : (T[u/x])\rho$
+    and $\Delta \der (T[u/x])\rho \hEr (T[u/x])\rho' : s$ for some $s$
+    (to get $\Gamma \Der T[u/x]$)
+
+    Let $\sigma = (\rho, u \rho/x)$ and $\sigma' = (\rho', u \rho'/x)$.
+    From the second hypothesis, we have
+    $\Delta \der u \rho \hEr u \rho' : U \rho$
+    so $\Delta \der \sigma \hEr \sigma' : \Gamma, x:U$.
+    Thus, $\Delta \der t \sigma \hEr t' \sigma' : T\sigma$
+    \ie $\Delta \der (t[u/x])\rho \hEr (t[u/x])\rho' : (T[u/x])\rho$
+    which is weak-head convertible to our first goal.
+    The first hypothesis, instantiated with $\sigma, \sigma'$ also gives
+    $\Gamma \Der T[u/x]$.
+  \end{proof}
+
+  \meta{TODO after this line}
 
   \begin{lemma}[Validity of $\eta$]
     \leavevmode
