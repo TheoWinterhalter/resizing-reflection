@@ -1,3 +1,7 @@
+New version:
+  ☐ Add the guard to elim rules (T not a sort)
+  ☐ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality)
+
 Ideas to Assess:
   ☐ Use irrelevance to treat both squash cases for (S) without recursive call
   ☐ Only accept ||A|| as whnf, that is, reduction goes under squash
