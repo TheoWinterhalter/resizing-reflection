@@ -598,7 +598,7 @@
   \begin{center}
   \(
     \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
-          \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : s'
+          \Gamma, x:U \der \hideq{q} V \hEr V'[p_*\ x / x] : s'
         }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
@@ -647,14 +647,12 @@
 
     \begin{caselist}
       \nextcase
-      \begin{center}
-      \(
+      \begin{mathc}
         \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
-              \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : s'
+              \Gamma, x:U \der \hideq{q} V \hEr V'[p_*\ x / x] : s'
             }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
             }{(s,s',s'')}
-      \)
-      \end{center}
+      \end{mathc}
       \begin{mathc}
         \ru{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
           }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.V}
@@ -778,15 +776,28 @@
     \end{caselist}
   \end{proof}
 
-  \meta{OLD BELOW}
-
   \begin{lemma}[Function type injectivity is valid]
     \label{lem:fun-inj-valid}
     If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
-    $\Gamma, x:U \Der T = T'$.
+    $\Gamma, x:U \Der T = T'$. \meta{We need a substitution for $T'$!}
   \end{lemma}
-  The previous proof scales easily since the relation is pretty much the same
-  on types.
+
+  \begin{proof}
+    Assume arbitrary $\Delta \der \sigma : \Gamma$.
+    We have
+    $\Delta \der \Pi x:U \sigma. T\sigma \hEr \Pi x:U'\sigma. T' \sigma : s_3$
+    for some $s_3$. Thus, by definition,
+    $\Delta \der \hideq{p} U \sigma \hEr U' \sigma : s_1$ for some $s_1$ and
+    $p$. So, $\Gamma \Der U = U'$.
+
+    We also have
+    $\Delta, x:U\sigma \der T \sigma \hEr
+    \lambda (x:U\sigma). T'\sigma[p_*\ x/x] : s_2$
+    for some $s_2$.
+    \meta{To be continued}
+  \end{proof}
+
+  \meta{OLD BELOW}
 
   \begin{lemma}[Context Satisfiable]
     If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hEr \id : \Gamma$.
