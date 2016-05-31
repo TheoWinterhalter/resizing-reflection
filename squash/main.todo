@@ -1,27 +1,22 @@
 New version:
+  ☐ Find a way to prove compatibility of seq (with Id and not conversion)
+  ☐ Maybe some transport in validity (eg. elim-eq)
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
   ✔ Add the guard to elim rules (T not a sort) @done(2016-05-30 11:45) @project(New version)
   ✔ Remove Sigma from logical relation @done(2016-05-30 12:09) @project(New version)
   ✔ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality) @done(2016-05-31 10:10) @project(New version)
   ✔ Remove definitional equality for squash (it doesn't work with application) @done(2016-05-31 11:09) @project(New version)
   ✔ Add an operator to state said equality @done(2016-05-31 10:14) @project(New version)
-  ☐ Find a way to prove compatibility of seq (with Id and not conversion)
-  ☐ Maybe some transport in validity (eg. elim-eq)
-
-Ideas to Assess:
   ✔ Use irrelevance to treat both squash cases for (S) without recursive call @done(2016-05-31 11:35) @project(Ideas to Assess)
   ✘ Only accept ||A|| as whnf, that is, reduction goes under squash @cancelled(2016-05-31 11:35) @project(Ideas to Assess)
   ✘ This previous idea would have probably been better with ||N|| only, perhaps it would be ideal to fonctorize the squash? @cancelled(2016-05-31 11:35) @project(Ideas to Assess)
-
-Things to Check:
   ✔ Is the definition of Squash space ok? @done(2016-05-31 11:35) @project(Things to Check)
   ✔ The fundamental theorem really holds without need for a proof @done(2016-05-31 11:35) @project(Things to Check)
   ✔ Type constructor discrimination @done(2016-05-31 11:35) @project(Things to Check)
   ✔ Is our definiton of (S) for equality suitable? @done(2016-05-31 11:35) @project(Things to Check)
-
-Things to Add (Maybe):
   ✘ Lemmata for constructor injectivity (sigma, equality, squash) @cancelled(2016-05-31 11:33) @project(Things to Add (Maybe))
-
-Things to Do:
   ✘ Validity of beta/eta/constructor equality for sigma and identity @cancelled(2016-05-31 11:33) @project(Things to Do)
   ✔ Validity of elim reduction @done(2016-05-15 12:28) @project(Things to Do)
   ✔ Validity of squash irrelevance @done(2016-05-15 12:36) @project(Things to Do)
@@ -31,7 +26,5 @@ Things to Do:
   ✔ Complete box/wne case of elim equality validity @done(2016-05-31 11:34) @project(Things to Do)
   ✔ Complete wne/wne case of elim equality validity @done(2016-05-31 11:34) @project(Things to Do)
   ✔ Treat equality in (S) @done(2016-05-16 10:14) @project(Things to Do)
-
-Concerns:
   ✘ Validity proof for elim didn't use the h to ensure everything went fine @cancelled(2016-05-15 20:31) @project(Concerns) @why(Validity of elim equality lifts that concern)
   ✘ It doesn't seem possible to turn a proof of equality into an actual one in the model @cancelled(2016-05-31 11:34) @project(Concerns)
