@@ -1,4 +1,6 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --sized-types #-}
+
+open import Size
 
 data ℕ : Set where
   zero : ℕ
@@ -17,58 +19,58 @@ data Ctx : Set where
 -- data Sort : Set where
 --   Type : ℕ → Sort
 
-data Exp : Set where
-  Type : ℕ → Exp
-  Π    : Exp → Exp → Exp
-  Id   : Exp → Exp → Exp → Exp
-  ∥_∥   : Exp → Exp
-  var  : Var → Exp
-  lλ   : Exp → Exp
-  _∘_  : Exp → Exp → Exp
-  refl : Exp → Exp
-  J    : Exp → Exp → Exp → Exp → Exp → Exp → Exp
-  [_]  : Exp → Exp
-  elim : Exp → Exp → Exp → Exp → Exp → Exp
-  seq  : Exp → Exp → Exp → Exp
+data Exp : {i : Size} → Set where
+  Type : {i : Size} → ℕ → Exp {i}
+  Π    : {i : Size} → Exp {i} → Exp {i} → Exp {↑ i}
+  Id   : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {↑ i}
+  ∥_∥   : {i : Size} → Exp {i} → Exp {↑ i}
+  var  : {i : Size} → Var → Exp {i}
+  lλ   : {i : Size} → Exp {i} → Exp {↑ i}
+  _∘_  : {i : Size} → Exp {i} → Exp {i} → Exp {↑ i}
+  refl : {i : Size} → Exp {i} → Exp {↑ i}
+  J    : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {↑ i}
+  [_]  : {i : Size} → Exp {i} → Exp {↑ i}
+  elim : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {↑ i}
+  seq  : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {↑ i}
 
-data Wne : Set where
-  nvar  : Var → Wne
-  na_∘_ : Wne → Exp → Wne
-  nelim : Exp → Exp → Exp → Exp → Wne → Wne
-  nJ    : Exp → Exp → Exp → Exp → Exp → Wne → Wne
+data Wne : {i : Size} → Set where
+  nvar  : {i : Size} → Var → Wne {i}
+  na_∘_ : {i : Size} → Wne {i} → Exp {i} → Wne {↑ i}
+  nelim : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Wne {i} → Wne {↑ i}
+  nJ    : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Exp {i} → Wne {i} → Wne {↑ i}
 
-data Whnf : Set where
-  nType : ℕ → Whnf
-  nΠ    : Exp → Exp → Whnf
-  nId   : Exp → Exp → Exp → Whnf
-  n∥_∥   : Exp → Whnf
-  ne    : Wne → Whnf
-  nλ    : Exp → Whnf
-  nrefl : Exp → Whnf
-  n[_]  : Exp → Whnf
-  nseq  : Exp → Exp → Exp → Whnf
+data Whnf : {i : Size} → Set where
+  nType : {i : Size} → ℕ → Whnf {i}
+  nΠ    : {i : Size} → Exp {i} → Exp {i} → Whnf {↑ i}
+  nId   : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Whnf {↑ i}
+  n∥_∥   : {i : Size} → Exp {i} → Whnf {↑ i}
+  ne    : {i : Size} → Wne {i} → Whnf {↑ i}
+  nλ    : {i : Size} → Exp {i} → Whnf {↑ i}
+  nrefl : {i : Size} → Exp {i} → Whnf {↑ i}
+  n[_]  : {i : Size} → Exp {i} → Whnf {↑ i}
+  nseq  : {i : Size} → Exp {i} → Exp {i} → Exp {i} → Whnf {↑ i}
 
 data _⊢_∷_ : Ctx → Exp → Exp → Set where
   triv : ∀ Γ t T → Γ ⊢ t ∷ T
 
-postulate ↓_ : Exp → Whnf
+postulate ↓_ : {i : Size} → Exp {i} → Whnf {i}
 
-↑ne_ : Wne → Exp
-↑ne nvar x = var x
-↑ne (na n ∘ t) = (↑ne n) ∘ t
-↑ne nelim T U t u n = elim T U t u (↑ne n)
-↑ne nJ T U b u v n = J T U b u v (↑ne n)
+injne_ : Wne → Exp
+injne nvar x = var x
+injne (na n ∘ t) = (injne n) ∘ t
+injne nelim T U t u n = elim T U t u (injne n)
+injne nJ T U b u v n = J T U b u v (injne n)
 
-↑_ : Whnf → Exp
-↑ nType i = Type i
-↑ nΠ A B = Π A B
-↑ nId T u v = Id T u v
-↑ n∥ T ∥ = ∥ T ∥
-↑ ne x = ↑ne x
-↑ nλ t = lλ t
-↑ nrefl t = refl t
-↑ n[ t ] = [ t ]
-↑ nseq T u v = seq T u v
+inj_ : Whnf → Exp
+inj nType i = Type i
+inj nΠ A B = Π A B
+inj nId T u v = Id T u v
+inj n∥ T ∥ = ∥ T ∥
+inj ne x = injne x
+inj nλ t = lλ t
+inj nrefl t = refl t
+inj n[ t ] = [ t ]
+inj nseq T u v = seq T u v
 
 data _⊢_≡_∷_ : Ctx → Exp → Exp → Exp → Set where
   eq : ∀ e Γ t u T → Γ ⊢ e ∷ Id T t u → Γ ⊢ t ≡ u ∷ T
@@ -96,6 +98,6 @@ mutual
   Γ ⊢ nΠ A B    ⋈ nΠ A' B'     ∷ nType i = Σ λ j → Σ λ k → (Γ ⊢ {!   !} ⋈̂ {!   !} ∷ {!   !}) × {!   !}
   Γ ⊢ nId T u v ⋈ nId T' u' v' ∷ nType i = Γ ⊢ Id T u v ≡ Id T' u' v' ∷ Type i
   Γ ⊢ n∥ T ∥     ⋈ n∥ T' ∥       ∷ nType i = Γ ⊢ ∥ T ∥     ≡ ∥ T' ∥      ∷ Type i
-  Γ ⊢ ne N      ⋈ ne N'        ∷ nType i = Γ ⊢ ↑ne N    ≡ ↑ne N'      ∷ Type i
+  Γ ⊢ ne N      ⋈ ne N'        ∷ nType i = Γ ⊢ injne N    ≡ injne N'      ∷ Type i
   Γ ⊢ A         ⋈ A'           ∷ nType i = ⊥
-  Γ ⊢ a₁        ⋈ a₂           ∷ A       = Γ ⊢ (↑ a₁)   ≡ (↑ a₂)      ∷ (↑ A)
+  Γ ⊢ a₁        ⋈ a₂           ∷ A       = Γ ⊢ (inj a₁)   ≡ (inj a₂)      ∷ (inj A)
