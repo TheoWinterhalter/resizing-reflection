@@ -711,21 +711,18 @@
 
   \paradot{Validity in the Model}
 
-  We now extend our logical relation $\hEr$ to substitutions by
-  induction on the destination context.
+  We define a ``typing'' judgement for substitutions by induction on the
+  destination context.
   %
   \begin{center}
   \(
-    \ru{}{\Delta \der \sigma \hEr \sigma' : \cdot}
+    \ru{}{\Delta \der \sigma : \cdot}
     \qquad
-    \ru{\Delta \der \sigma \hEr \sigma' : \Gamma \qquad
-        \Delta \der \sigma(x) \hEr \sigma'(x) : U \sigma
-      }{\Delta \der \sigma \hEr \sigma' : \Gamma, x:U}
+    \ru{\Delta \der \sigma : \Gamma \qquad
+        \Delta \der \sigma(x) : U \sigma
+      }{\Delta \der \sigma : \Gamma, x:U}
   \)
   \end{center}
-  This relation inherits weakening from $\hEr$ for terms.
-  \meta{We need to be able to transport $t \sigma'$ from $T \sigma'$ to
-  $T \sigma$ afterwards.}
 
   We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
   term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
@@ -748,21 +745,16 @@
   \begin{mathc}
     \dru{\Der \Gamma \qquad
          (\Gamma \Der T \text{ unless } T = s)
-       }{\forall \Delta, \sigma, \sigma',
-         \Delta \der \sigma \hEr \sigma' : \Gamma \gives
-         \Delta \der t \sigma \hEr t' \sigma' : T \sigma
+       }{\forall \Delta, \sigma,\ %
+         \Delta \der \sigma : \Gamma \gives
+         \Delta \der t \sigma \hEr t' \sigma : T \sigma
        }{\Gamma \Der t = t' : T}
     \qquad
     \ru{\Gamma \Der t = t : T
       }{\Gamma \Der t : T}
   \end{mathc}
 
-  \begin{lemma}[Substitution Relation is a PER]
-    If $\Der \Gamma$, then $\Delta \der \_ \hEr \_ : \Gamma$ is symmetric and
-    transitive.
-  \end{lemma}
-  %
-  The proof is identical.
+  \meta{OLD BELOW}
 
   \begin{lemma}[Validity is a PER]
     The relation $\Gamma \Der \_ = \_ : T$ is symmetric and transitive.
