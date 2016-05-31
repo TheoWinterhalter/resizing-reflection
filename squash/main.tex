@@ -754,13 +754,31 @@
       }{\Gamma \Der t : T}
   \end{mathc}
 
-  \meta{OLD BELOW}
-
   \begin{lemma}[Validity is a PER]
     The relation $\Gamma \Der \_ = \_ : T$ is symmetric and transitive.
   \end{lemma}
-  Again, this doesn't look at the terms in detail as long as they verify
-  lemmata~\ref{lem:s-conv} and \ref{lem:s-per}.
+
+  \begin{proof}
+    \leavevmode
+    \begin{caselist}
+      \nextcase Symmetry.\\
+      Assume $\Gamma \Der t = t' : T$ and show $\Gamma \Der t' = t : T$.
+      Now assume $\Delta \der \sigma : \Gamma$ and show
+      $\Gamma \der t' \sigma \hEr t \sigma : T \sigma$ (the other goals are
+      already assumed). This holds because of lemma~\ref{lem:s-per} by
+      instantiating the hypothesis with $\sigma$.
+
+      \nextcase Transitivity.\\
+      Assume $\Gamma \Der t_1 = t_2 : T$ and $\Gamma \Der t_2 = t_3 : T$ and
+      show $\Gamma \Der t_1 = t_3 : T$.
+      Now assume $\Delta \der \sigma : \Gamma$ and show
+      $\Gamma \der t_1 \sigma \hEr t_3 \sigma : T \sigma$.
+      We instantiate the hypotheses with $\sigma$ and conclude by transitivity
+      of $\hEr$ (lemma~\ref{lem:s-per}).
+    \end{caselist}
+  \end{proof}
+
+  \meta{OLD BELOW}
 
   \begin{lemma}[Function type injectivity is valid]
     \label{lem:fun-inj-valid}
