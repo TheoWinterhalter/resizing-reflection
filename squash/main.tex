@@ -390,7 +390,7 @@
 
   \begin{align*}
     \Whnf &\ni a,f,A,B,F &::=~& \Pi x:U.T \mid \Id T\ t\ u \mid \squash{T} \\
-        &&\mid~& n \mid \lambda x:U.t \mid \refl_t \mid [t] \\
+        &&\mid~& n \mid \lambda x:U.t \mid \refl_t \mid [t] \mid \seq(T,t,u) \\
     \Wne  &\ni n,N &::=~& x \mid n~u \mid \elim(T,U,t,u,n) \mid \J (T,U,b,u,v,n)
   \end{align*}
   %
