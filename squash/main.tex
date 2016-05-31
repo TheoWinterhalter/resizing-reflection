@@ -964,8 +964,6 @@
     (if we refer to our original hypotheses, and not the induction ones).
   \end{proof}
 
-  \meta{OLD BELOW}
-
   \begin{theorem}[Fundamental theorem of logical relations]
     \leavevmode
     \begin{itemize}
@@ -990,105 +988,6 @@
   Alright.
 
   \section{Meta-Theoretic Consequences of the Model Construction}
-
-  % \paradot{Admissibility of Substitutions}
-  %
-  % To show that the judgements are closed under substitution we introduce
-  % relations $\Gamma \der \sigma : \Gamma'$ for substitution typing and
-  % $\Gamma \der \sigma = \sigma' : \Gamma'$ for substitution equality
-  % which are given inductively by the following rules:
-  %
-  % \begin{mathc}
-  %   \ru{\der \Gamma
-  %     }{\Gamma \der \sigma : \cdot}
-  %   \qquad
-  %   \ru{\Gamma \der \sigma : \Gamma' \qquad
-  %       \Gamma' \der U \qquad
-  %       \Gamma \der \sigma(x) : U \sigma
-  %     }{\Gamma \der \sigma : \Gamma', x:U}
-  % \end{mathc}
-  %
-  % \begin{mathc}
-  %   \ru{\der \Gamma
-  %     }{\Gamma \der \sigma = \sigma' : \cdot}
-  %   \qquad
-  %   \ru{\Gamma \der \sigma = \sigma' : \Gamma' \qquad
-  %       \Gamma' \der U \qquad
-  %       \Gamma \der \sigma(x) = \sigma'(x) : U \sigma
-  %     }{\Gamma \der \sigma = \sigma' : \Gamma', x:U}
-  % \end{mathc}
-  % Substitution typing and equality are closed under weakening.
-  %
-  % We define substitutions validity as follows, in rule form but not inductively:
-  % \begin{mathc}
-  %   \ru{\Gamma \Der \sigma = \sigma : \Gamma'
-  %     }{\Gamma \Der \sigma : \Gamma'}
-  %   \qquad
-  %   \dru{\Der \Gamma \qquad
-  %        \Der \Gamma'
-  %      }{\forall \Delta \der \rho \hEr \rho' : \Gamma'.\ %
-  %        \Delta \der \sigma \rho \hEr \sigma' \rho' : \Gamma'
-  %      }{\Gamma \Der \sigma = \sigma' : \Gamma'}
-  % \end{mathc}
-  %
-  % \begin{lemma}[Fundamental lemma for substitutions]
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der \sigma : \Gamma'$ then
-  %     $\Gamma \Der \sigma : \Gamma'$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ then
-  %     $\Gamma \Der \sigma = \sigma' : \Gamma'$.
-  %   \end{itemize}
-  % \end{lemma}
-  % Still fine.
-  %
-  % \begin{lemma}[Substitutions and functionality]
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t : T$
-  %     then $\Gamma \der t \sigma : T \sigma$.
-  %     \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t = t' : T$
-  %     then $\Gamma \der t \sigma = t' \sigma : T \sigma$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and $\Gamma \der t : T$
-  %     then $\Gamma \der t \sigma = t \sigma' : T \sigma$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and
-  %     $\Gamma \der t = t' : T$ then
-  %     $\Gamma \der t \sigma = t' \sigma' : T \sigma$.
-  %   \end{itemize}
-  % \end{lemma}
-  % Same here.
-  %
-  % \paradot{Context Conversion}
-  %
-  % Context equality $\der \Gamma = \Gamma'$ is defined inductively by the rules:
-  % \begin{mathc}
-  %   \ru{}{\der \cdot = \cdot}
-  %   \qquad
-  %   \ru{\der \Gamma = \Gamma' \qquad
-  %       \Gamma \der U = U'
-  %     }{\der \Gamma, x:U = \Gamma', x:U'}
-  % \end{mathc}
-  % All declarative judgements are closed under context conversion.
-  % This fact is easy to prove by induction over derivations, but we get it as a
-  % special case of substitution.
-  %
-  % \begin{lemma}[Identity substitution]
-  %   If $\der \Gamma = \Gamma'$ then $\Gamma \der \id = \id : \Gamma'$.
-  % \end{lemma}
-  % No problem.
-  %
-  % \begin{theorem}[Context conversion]
-  %   Let $\der \Gamma' = \Gamma$.
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der t : T$ then $\Gamma' \der t : T$.
-  %     \item If $\Gamma \der t = t' : T$ then $\Gamma' \der t = t' : T$.
-  %   \end{itemize}
-  % \end{theorem}
-  % Ok.
-  %
-  % As a consequence, context equality is symmetric and transitive, thus we can
-  % apply context conversion in the other direction as well.
 
   \paradot{Inversion}
 
@@ -1141,38 +1040,8 @@
     By induction on the typing derivation.
   \end{proof}
 
-  % \begin{lemma}[Function type injectivity]
-  %   If $\Gamma \der \Pi x:U.T = \Pi x:U'.T' : s$ then $\Gamma \der U = U'$
-  %   and $\Gamma \der T = T'$.
-  % \end{lemma}
-  % Ok.
-  %
-  % \meta{Same for sigma and indentity.}
-  %
-  % \begin{lemma}[Type unicity (up to cumulativity)]
-  %   If $\Gamma \der t : T$ and $\Gamma \der t : T'$ then either
-  %   $\Gamma \der T \le T'$ or $\Gamma \der T' \le T$.
-  % \end{lemma}
-  %
-  % \begin{proof}
-  %   By inversion on t, using inversion and remarking that when two types
-  %   have a principle type, they are ordered by subtyping.
-  % \end{proof}
-
   \paradot{Normalization and subject reduction}
 
-  % An immediate consequence of the model construction is that each term has a
-  % weak head normal form and that typing and equality is preserved by weak head
-  % normalization.
-  %
-  % \begin{theorem}[Normalization and subject reduction]
-  %   If $\Gamma \der t : T$ then $t \rew a$ and $\Gamma \der t = a : T$.
-  % \end{theorem}
-  %
-  % \begin{proof}
-  %   By the fundamental theorem, $\Gamma \der t \hEr t : T$ which by definition
-  %   contains a derivation of $\Gamma \der t = \red t : T$.
-  % \end{proof}
   We assume our system to be normalizing with the subject reduction property.
 
   \paradot{Consistency}
@@ -1183,25 +1052,20 @@
 
   \begin{lemma}[Type constructor discrimination]
     \label{lem:cons-discr}
-    Neutral types, sorts, $\Pi$-types, $\Sigma$-types, identity types and
+    Neutral types, sorts, $\Pi$-types, identity types and
     squash types are mutually unequal.
     \leavevmode
     \begin{itemize}
       \item $\Gamma \der N \neq s$.
       \item $\Gamma \der N \neq \Pi x:U.T$.
-      \item $\Gamma \der N \neq \Sigma x:U.T$.
       \item $\Gamma \der N \neq \Id T\ u\ v$.
       \item $\Gamma \der N \neq \squash{T}$.
       \item $\Gamma \der s = s'$ implies $\Id s s'$ is inhabited in $\Gamma$.
       \item $\Gamma \der s \neq \Pi x:U.T$.
-      \item $\Gamma \der s \neq \Sigma x:U.T$.
       \item $\Gamma \der s \neq \Id T\ u\ v$.
       \item $\Gamma \der s \neq \squash{T}$.
-      \item $\Gamma \der \Pi x:U.T \neq \Sigma x:U'.T'$.
       \item $\Gamma \der \Pi x:U.T \neq \Id T'\ u\ v$.
       \item $\Gamma \der \Pi x:U.T \neq \squash{T'}$.
-      \item $\Gamma \der \Sigma x:U.T \neq \Id T'\ u\ v$.
-      \item $\Gamma \der \Sigma x:U.T \neq \squash{T'}$.
       \item $\Gamma \der \Id T\ u\ v \neq \squash{T'}$.
     \end{itemize}
   \end{lemma}
@@ -1223,16 +1087,15 @@
     Assuming $\Gamma \der t : X$, we have $\Gamma \der a : X$ for $a$ the whnf
     of $t$. We invert on the typing of $a$.
     By lemma~\ref{lem:cons-discr}, $X$ cannot be equal (or in a subtype
-    relation since it preserves the shape) to a sort, a $\Pi$-type, a
-    $\Sigma$-type, an indentity type or a squash type.
-    Thus, $a$ can neither be a $\lambda$, nor a pair, nor a $\refl$,
-    nor a $[\_]$ nor a $\Pi$-type, a $\Sigma$-type, an indentity type or
+    relation since it preserves the shape) to a sort, a $\Pi$-type,
+    an indentity type or a squash type.
+    Thus, $a$ can neither be a $\lambda$, nor a $\refl$,
+    nor a $[\_]$ nor a $\Pi$-type, an indentity type or
     a squash type, nor a sort, it can only be neutral.
 
     $X$ being the only variable, it is the only reason for the term to be
     blocked.
     Since $X$ is not of $\Pi$-type, it cannot be applied.
-    Since $X$ is not of $\Sigma$-type, it cannot be projected.
     Since $X$ is not of identity type, it cannot be eliminated with $\J$.
     Since $X$ is not of squash type, it cannot be eliminated through $\elim$.
     So $a \equiv X$ and then $\Gamma \der X : X$, implying
