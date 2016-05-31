@@ -4,6 +4,8 @@ New version:
   ✔ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality) @done(2016-05-31 10:10) @project(New version)
   ✔ Remove definitional equality for squash (it doesn't work with application) @done(2016-05-31 11:09) @project(New version)
   ✔ Add an operator to state said equality @done(2016-05-31 10:14) @project(New version)
+  ☐ Find a way to prove compatibility of seq (with Id and not conversion)
+  ☐ Maybe some transport in validity (eg. elim-eq)
 
 Ideas to Assess:
   ☐ Use irrelevance to treat both squash cases for (S) without recursive call

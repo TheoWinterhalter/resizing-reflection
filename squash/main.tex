@@ -890,6 +890,7 @@
   \end{lemma}
 
   \begin{proof}
+    \meta{The statement is not well-typed as it is...}
     $\Der \Gamma$ is contained in any of the hypotheses.
     $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
     is a PER.
@@ -917,30 +918,29 @@
     \end{caselist}
   \end{proof}
 
-  \meta{Change below with a proof of equality}
-
-  \begin{lemma}[Validity of squash irrelevance]
+  \begin{lemma}[Validity of $\seq$]
     \leavevmode
     \begin{mathc}
-      \ru{\Gamma \Der t : \squash{T} \qquad
-          \Gamma \Der t' : \squash{T}
-        }{\Gamma \Der t = t' : \squash{T}}
+      \ru{\Gamma \Der T = T' : s \qquad
+          \Gamma \Der t = t' : \squash{T} \qquad
+          \Gamma \Der u = u' : \squash{T}
+        }{\Gamma \Der \seq(T,t,u) = \seq(T',t',u') : \Id \squash{T}\ t\ u}
     \end{mathc}
   \end{lemma}
 
   \begin{proof}
-    $\Der \Gamma$ is trivial again, same as $\Gamma \Der \squash{T}$.
+    \meta{The statement is not well-typed as it is...}
+    $\Der \Gamma$ is trivial again.
+    $\Der \Id \squash{T}\ t\ u$ is deduced from all the hypotheses combined
+    with the fact that validity is a PER.
+    %
     Now assume $\Delta, \sigma, \sigma'$ such that
     $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
-    show $\Delta \der t \sigma \hEr t' \sigma' : \squash{T \sigma}$.
-    By instantiating the hypotheses, we have $a,a',b,b'$ in whnf such that
-    $t \sigma \rew a$ and $t \sigma' \rew a'$ and $t' \sigma \rew b$
-    and $t' \sigma' \rew b'$ with the corresponding equalities under the type
-    $\squash{T \sigma}$.
+    show
+    $\Delta \der \seq(T\sigma,t\sigma,u\sigma) \hEr
+    \seq(T'\sigma,t'\sigma,u'\sigma) : \Id \squash{T\sigma}\ t\sigma\ u\sigma$.
 
-    We have to show $\Delta \der t \sigma :=: t' \sigma' : \squash{T \sigma}$
-    and $\Delta \der a \Er b' : \squash{T \sigma}$. They both hold by
-    well-typing and irrelevance on squashes.
+    \meta{We need to be able to prove compatibility.}
   \end{proof}
 
   \begin{theorem}[Fundamental theorem of logical relations]
@@ -953,7 +953,7 @@
   \end{theorem}
 
   \begin{proof}
-    By induction on the derivation (and by using $\refl$ in the third case).
+    By induction on the derivation.
   \end{proof}
 
   \begin{corollary}[Syntactic validity]
