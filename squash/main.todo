@@ -1,8 +1,10 @@
 New version:
-  ☐ Find a way to prove compatibility of seq (with Id and not conversion)
+  ✔ Find a way to prove compatibility of seq (with Id and not conversion) @done(2016-05-31 16:21) @project(New version)
   ✔ Maybe some transport in validity (eg. elim-eq) @done(2016-05-31 14:25) @project(New version)
-  ☐ Transports may still be needed as we are using substitutions
-    ☐ We could remove the substitution relation and only instantiate (couldn't we?)
+  ✔ Transports may still be needed as we are using substitutions @done(2016-05-31 16:16) @project(New version)
+    ✔ We could remove the substitution relation and only instantiate (couldn't we?) @done(2016-05-31 15:17) @project(New version)
+  ✘ Function injectivity requires a substitution for T' @cancelled(2016-05-31 16:27) @project(New version)
+  ☐ Or we could remove dependecy in injectivity
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:

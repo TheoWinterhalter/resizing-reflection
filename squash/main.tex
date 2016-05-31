@@ -598,7 +598,7 @@
   \begin{center}
   \(
     \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
-          \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : s'
+          \Gamma, x:U \der \hideq{q} V \hEr V'[p_*\ x / x] : s'
         }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
   \)
@@ -647,14 +647,12 @@
 
     \begin{caselist}
       \nextcase
-      \begin{center}
-      \(
+      \begin{mathc}
         \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
-              \Gamma \der \hideq{q} V \hEr \lambda (x:U). V'\ (p_*\ x) : s'
+              \Gamma, x:U \der \hideq{q} V \hEr V'[p_*\ x / x] : s'
             }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
             }{(s,s',s'')}
-      \)
-      \end{center}
+      \end{mathc}
       \begin{mathc}
         \ru{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
           }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.V}
@@ -711,21 +709,18 @@
 
   \paradot{Validity in the Model}
 
-  We now extend our logical relation $\hEr$ to substitutions by
-  induction on the destination context.
+  We define a ``typing'' judgement for substitutions by induction on the
+  destination context.
   %
   \begin{center}
   \(
-    \ru{}{\Delta \der \sigma \hEr \sigma' : \cdot}
+    \ru{}{\Delta \der \sigma : \cdot}
     \qquad
-    \ru{\Delta \der \sigma \hEr \sigma' : \Gamma \qquad
-        \Delta \der \sigma(x) \hEr \sigma'(x) : U \sigma
-      }{\Delta \der \sigma \hEr \sigma' : \Gamma, x:U}
+    \ru{\Delta \der \sigma : \Gamma \qquad
+        \Delta \der \sigma(x) : U \sigma
+      }{\Delta \der \sigma : \Gamma, x:U}
   \)
   \end{center}
-  This relation inherits weakening from $\hEr$ for terms.
-  \meta{We need to be able to transport $t \sigma'$ from $T \sigma'$ to
-  $T \sigma$ afterwards.}
 
   We then define the context ($\Der \Gamma$), type ($\Gamma \Der T = T'$) and
   term ($\Gamma \Der t = t' : T$) validity relations by induction on the length
@@ -748,47 +743,67 @@
   \begin{mathc}
     \dru{\Der \Gamma \qquad
          (\Gamma \Der T \text{ unless } T = s)
-       }{\forall \Delta, \sigma, \sigma',
-         \Delta \der \sigma \hEr \sigma' : \Gamma \gives
-         \Delta \der t \sigma \hEr t' \sigma' : T \sigma
+       }{\forall \Delta, \sigma,\ %
+         \Delta \der \sigma : \Gamma \gives
+         \Delta \der t \sigma \hEr t' \sigma : T \sigma
        }{\Gamma \Der t = t' : T}
     \qquad
     \ru{\Gamma \Der t = t : T
       }{\Gamma \Der t : T}
   \end{mathc}
 
-  \begin{lemma}[Substitution Relation is a PER]
-    If $\Der \Gamma$, then $\Delta \der \_ \hEr \_ : \Gamma$ is symmetric and
-    transitive.
-  \end{lemma}
-  %
-  The proof is identical.
-
   \begin{lemma}[Validity is a PER]
     The relation $\Gamma \Der \_ = \_ : T$ is symmetric and transitive.
   \end{lemma}
-  Again, this doesn't look at the terms in detail as long as they verify
-  lemmata~\ref{lem:s-conv} and \ref{lem:s-per}.
+
+  \begin{proof}
+    \leavevmode
+    \begin{caselist}
+      \nextcase Symmetry.\\
+      Assume $\Gamma \Der t = t' : T$ and show $\Gamma \Der t' = t : T$.
+      Now assume $\Delta \der \sigma : \Gamma$ and show
+      $\Gamma \der t' \sigma \hEr t \sigma : T \sigma$ (the other goals are
+      already assumed). This holds because of lemma~\ref{lem:s-per} by
+      instantiating the hypothesis with $\sigma$.
+
+      \nextcase Transitivity.\\
+      Assume $\Gamma \Der t_1 = t_2 : T$ and $\Gamma \Der t_2 = t_3 : T$ and
+      show $\Gamma \Der t_1 = t_3 : T$.
+      Now assume $\Delta \der \sigma : \Gamma$ and show
+      $\Gamma \der t_1 \sigma \hEr t_3 \sigma : T \sigma$.
+      We instantiate the hypotheses with $\sigma$ and conclude by transitivity
+      of $\hEr$ (lemma~\ref{lem:s-per}).
+    \end{caselist}
+  \end{proof}
 
   \begin{lemma}[Function type injectivity is valid]
     \label{lem:fun-inj-valid}
-    If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
+    If $\Gamma \Der U \to T = U' \to T'$ then $\Gamma \Der U = U'$ and
     $\Gamma, x:U \Der T = T'$.
   \end{lemma}
-  The previous proof scales easily since the relation is pretty much the same
-  on types.
+
+  \begin{proof}
+    Assume arbitrary $\Delta \der \sigma : \Gamma$.
+    We have
+    $\Delta \der U \sigma \to T\sigma \hEr U'\sigma \to T' \sigma : s_3$
+    for some $s_3$. Thus, by definition,
+    $\Delta \der \hideq{p} U \sigma \hEr U' \sigma : s_1$ for some $s_1$ and
+    $p$. So, $\Gamma \Der U = U'$.
+
+    We also have
+    $\Delta, x:U\sigma \der T \sigma \hEr T'\sigma : s_2$ for some $s_2$
+    (as $T'$ doesn't depend on $x$).
+    Thus, for any $\rho$ that extends $\sigma$ on $x$, we have the result,
+    enough to conclude $\Gamma, x:U \Der T = T'$.
+  \end{proof}
 
   \begin{lemma}[Context Satisfiable]
-    If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id \hEr \id : \Gamma$.
+    If $\Der \Gamma$ then $\der \Gamma$ and $\Gamma \der \id : \Gamma$.
   \end{lemma}
-  Nothing new.
 
-  % We can show that every equation valid in the model is derivable.
-  % \begin{lemma}[Completeness of rules]
-  %   If $\Gamma \Der t = t' : T$ then $\Gamma \der t : T$ and
-  %   $\Gamma \der t' : T$ and $\Gamma \der t = t' : T$ and $\Gamma \der T$.
-  % \end{lemma}
-  % Again, everything's fine.
+  \begin{proof}
+    By induction on $\Gamma$.
+  \end{proof}
 
   \paradot{Fundamental Theorem}
   We prove a series of lemmata which constitute parts of the fundamental theorem
@@ -797,7 +812,8 @@
   Although, we state them with $\Gamma \Der \mathcal{J}$ as hypothesis,
   it is only to explicit the induction hypothesis we have from
   $\Gamma \der \mathcal{J}$, thus any hypothesis consisting of a conversion
-  is preserved, meaning the expressions are still well-typed.
+  is preserved (because we use the same substitution on both sides),
+  meaning the expressions are still well-typed.
 
   \begin{lemma}[Validity of $\beta$-reduction]
     \leavevmode
@@ -810,19 +826,17 @@
 
   \begin{proof}
     $\Der \Gamma$ is contained in $\Gamma \Der u : U$.
-    Now, given $\Delta \der \rho \hEr \rho' : \Gamma$, we need to show
+    Now, given $\Delta \der \rho : \Gamma$, we need to show
     $\Delta \der (\lambda x:U.t)\rho\ u\rho \hEr (t[u/x])\rho : (T[u/x])\rho$
-    and $\Delta \der (T[u/x])\rho \hEr (T[u/x])\rho' : s$ for some $s$
+    and $\Delta \der (T[u/x])\rho \hEr (T[u/x])\rho : s$ for some $s$
     (to get $\Gamma \Der T[u/x]$)
 
-    Let $\sigma = (\rho, u \rho/x)$ and $\sigma' = (\rho', u \rho'/x)$.
-    From the second hypothesis, we have
-    $\Delta \der u \rho \hEr u \rho' : U \rho$
-    so $\Delta \der \sigma \hEr \sigma' : \Gamma, x:U$.
-    Thus, $\Delta \der t \sigma \hEr t' \sigma' : T\sigma$
-    \ie $\Delta \der (t[u/x])\rho \hEr (t[u/x])\rho' : (T[u/x])\rho$
+    Let $\sigma = (\rho, u \rho/x)$.
+    So $\Delta \der \sigma : \Gamma, x:U$.
+    Thus, $\Delta \der t \sigma \hEr t' \sigma : T\sigma$
+    \ie $\Delta \der (t[u/x])\rho \hEr (t[u/x])\rho : (T[u/x])\rho$
     which is weak-head convertible to our first goal.
-    The first hypothesis, instantiated with $\sigma, \sigma'$ also gives
+    The first hypothesis, instantiated with $\sigma$ also gives
     $\Gamma \Der T[u/x]$.
   \end{proof}
 
@@ -861,25 +875,26 @@
     $\Gamma \Der T$ is implied by $\Gamma \Der f : U \to T$ and
     lemma~\ref{lem:fun-inj-valid}.
     %
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and
     show (for some $p$)
     \[\Delta \der \hideq{p}
     \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
-    f \sigma'\ t \sigma' : T \sigma.\]
+    f \sigma\ t \sigma : T \sigma.\]
     This reduces (by weak-head conversion) to showing
     $\Delta \der \hideq{p}
     f \sigma\ t \sigma \hEr
-    f \sigma'\ t \sigma' : T \sigma$.
+    f \sigma\ t \sigma : T \sigma$.
+    (We cannot conclude yet, because $T \sigma$ might be a sort).
 
     We instantiate the first hypothesis to get
-    $\Delta \der \hideq{q} f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
+    $\Delta \der \hideq{q} f \sigma \hEr f \sigma : U \sigma \to T \sigma$
     and the last to get
-    $\Delta \der \hideq{r} t \sigma \hEr t \sigma' : U \sigma$
+    $\Delta \der \hideq{r} t \sigma \hEr t \sigma : U \sigma$
     for some $q,r$.
     We then get
     $\Delta \der \hideq{p} f \sigma\ t \sigma \hEr
-    f \sigma'\ t \sigma' : T \sigma$
+    f \sigma\ t \sigma : T \sigma$
     where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
   \end{proof}
 
@@ -897,23 +912,22 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{The statement might not be well-typed as it is...}
     $\Der \Gamma$ is contained in any of the hypotheses.
     $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
     is a PER.
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and
     show
     \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hEr
-    \elim(U' \sigma',T' \sigma',f' \sigma',h' \sigma',t' \sigma') : T \sigma.\]
+    \elim(U' \sigma,T' \sigma,f' \sigma,h' \sigma,t' \sigma) : T \sigma.\]
     %
-    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma'$.
+    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma$.
     We have three possible cases (by symmetry):
     \begin{caselist}
       \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
       Thus, our goal becomes
-      $\Delta \der f \sigma\ u \hEr f' \sigma'\ u' : T \sigma$.
-      Since $T \nequiv s$ is stated positively and thus $T \sigma$ is not a
+      $\Delta \der f \sigma\ u \hEr f' \sigma\ u' : T \sigma$.
+      Since $T \nequiv s$ is stated positively, $T \sigma$ is not a
       sort. So we only need a proof of equality which is deduced from $h$.
 
       \nextcase $a \equiv n$ and $a' \equiv [u']$.
@@ -936,18 +950,18 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{The statement might not be well-typed as it is...}
     $\Der \Gamma$ is trivial again.
     $\Der \Id \squash{T}\ t\ u$ is deduced from all the hypotheses combined
     with the fact that validity is a PER.
     %
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
-    show
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and show
     $\Delta \der \seq(T\sigma,t\sigma,u\sigma) \hEr
     \seq(T'\sigma,t'\sigma,u'\sigma) : \Id \squash{T\sigma}\ t\sigma\ u\sigma$.
 
-    \meta{We need to be able to prove compatibility.}
+    Since, $\Id \squash{T\sigma}\ t\sigma\ u\sigma$ is positively not a sort,
+    we only need to prove the equality in the system, and $\refl$ works
+    (if we refer to our original hypotheses, and not the induction ones).
   \end{proof}
 
   \begin{theorem}[Fundamental theorem of logical relations]
@@ -974,105 +988,6 @@
   Alright.
 
   \section{Meta-Theoretic Consequences of the Model Construction}
-
-  % \paradot{Admissibility of Substitutions}
-  %
-  % To show that the judgements are closed under substitution we introduce
-  % relations $\Gamma \der \sigma : \Gamma'$ for substitution typing and
-  % $\Gamma \der \sigma = \sigma' : \Gamma'$ for substitution equality
-  % which are given inductively by the following rules:
-  %
-  % \begin{mathc}
-  %   \ru{\der \Gamma
-  %     }{\Gamma \der \sigma : \cdot}
-  %   \qquad
-  %   \ru{\Gamma \der \sigma : \Gamma' \qquad
-  %       \Gamma' \der U \qquad
-  %       \Gamma \der \sigma(x) : U \sigma
-  %     }{\Gamma \der \sigma : \Gamma', x:U}
-  % \end{mathc}
-  %
-  % \begin{mathc}
-  %   \ru{\der \Gamma
-  %     }{\Gamma \der \sigma = \sigma' : \cdot}
-  %   \qquad
-  %   \ru{\Gamma \der \sigma = \sigma' : \Gamma' \qquad
-  %       \Gamma' \der U \qquad
-  %       \Gamma \der \sigma(x) = \sigma'(x) : U \sigma
-  %     }{\Gamma \der \sigma = \sigma' : \Gamma', x:U}
-  % \end{mathc}
-  % Substitution typing and equality are closed under weakening.
-  %
-  % We define substitutions validity as follows, in rule form but not inductively:
-  % \begin{mathc}
-  %   \ru{\Gamma \Der \sigma = \sigma : \Gamma'
-  %     }{\Gamma \Der \sigma : \Gamma'}
-  %   \qquad
-  %   \dru{\Der \Gamma \qquad
-  %        \Der \Gamma'
-  %      }{\forall \Delta \der \rho \hEr \rho' : \Gamma'.\ %
-  %        \Delta \der \sigma \rho \hEr \sigma' \rho' : \Gamma'
-  %      }{\Gamma \Der \sigma = \sigma' : \Gamma'}
-  % \end{mathc}
-  %
-  % \begin{lemma}[Fundamental lemma for substitutions]
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der \sigma : \Gamma'$ then
-  %     $\Gamma \Der \sigma : \Gamma'$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ then
-  %     $\Gamma \Der \sigma = \sigma' : \Gamma'$.
-  %   \end{itemize}
-  % \end{lemma}
-  % Still fine.
-  %
-  % \begin{lemma}[Substitutions and functionality]
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t : T$
-  %     then $\Gamma \der t \sigma : T \sigma$.
-  %     \item If $\Gamma \der \sigma : \Gamma'$ and $\Gamma' \der t = t' : T$
-  %     then $\Gamma \der t \sigma = t' \sigma : T \sigma$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and $\Gamma \der t : T$
-  %     then $\Gamma \der t \sigma = t \sigma' : T \sigma$.
-  %     \item If $\Gamma \der \sigma = \sigma' : \Gamma'$ and
-  %     $\Gamma \der t = t' : T$ then
-  %     $\Gamma \der t \sigma = t' \sigma' : T \sigma$.
-  %   \end{itemize}
-  % \end{lemma}
-  % Same here.
-  %
-  % \paradot{Context Conversion}
-  %
-  % Context equality $\der \Gamma = \Gamma'$ is defined inductively by the rules:
-  % \begin{mathc}
-  %   \ru{}{\der \cdot = \cdot}
-  %   \qquad
-  %   \ru{\der \Gamma = \Gamma' \qquad
-  %       \Gamma \der U = U'
-  %     }{\der \Gamma, x:U = \Gamma', x:U'}
-  % \end{mathc}
-  % All declarative judgements are closed under context conversion.
-  % This fact is easy to prove by induction over derivations, but we get it as a
-  % special case of substitution.
-  %
-  % \begin{lemma}[Identity substitution]
-  %   If $\der \Gamma = \Gamma'$ then $\Gamma \der \id = \id : \Gamma'$.
-  % \end{lemma}
-  % No problem.
-  %
-  % \begin{theorem}[Context conversion]
-  %   Let $\der \Gamma' = \Gamma$.
-  %   \leavevmode
-  %   \begin{itemize}
-  %     \item If $\Gamma \der t : T$ then $\Gamma' \der t : T$.
-  %     \item If $\Gamma \der t = t' : T$ then $\Gamma' \der t = t' : T$.
-  %   \end{itemize}
-  % \end{theorem}
-  % Ok.
-  %
-  % As a consequence, context equality is symmetric and transitive, thus we can
-  % apply context conversion in the other direction as well.
 
   \paradot{Inversion}
 
@@ -1125,38 +1040,8 @@
     By induction on the typing derivation.
   \end{proof}
 
-  % \begin{lemma}[Function type injectivity]
-  %   If $\Gamma \der \Pi x:U.T = \Pi x:U'.T' : s$ then $\Gamma \der U = U'$
-  %   and $\Gamma \der T = T'$.
-  % \end{lemma}
-  % Ok.
-  %
-  % \meta{Same for sigma and indentity.}
-  %
-  % \begin{lemma}[Type unicity (up to cumulativity)]
-  %   If $\Gamma \der t : T$ and $\Gamma \der t : T'$ then either
-  %   $\Gamma \der T \le T'$ or $\Gamma \der T' \le T$.
-  % \end{lemma}
-  %
-  % \begin{proof}
-  %   By inversion on t, using inversion and remarking that when two types
-  %   have a principle type, they are ordered by subtyping.
-  % \end{proof}
-
   \paradot{Normalization and subject reduction}
 
-  % An immediate consequence of the model construction is that each term has a
-  % weak head normal form and that typing and equality is preserved by weak head
-  % normalization.
-  %
-  % \begin{theorem}[Normalization and subject reduction]
-  %   If $\Gamma \der t : T$ then $t \rew a$ and $\Gamma \der t = a : T$.
-  % \end{theorem}
-  %
-  % \begin{proof}
-  %   By the fundamental theorem, $\Gamma \der t \hEr t : T$ which by definition
-  %   contains a derivation of $\Gamma \der t = \red t : T$.
-  % \end{proof}
   We assume our system to be normalizing with the subject reduction property.
 
   \paradot{Consistency}
@@ -1167,25 +1052,20 @@
 
   \begin{lemma}[Type constructor discrimination]
     \label{lem:cons-discr}
-    Neutral types, sorts, $\Pi$-types, $\Sigma$-types, identity types and
+    Neutral types, sorts, $\Pi$-types, identity types and
     squash types are mutually unequal.
     \leavevmode
     \begin{itemize}
       \item $\Gamma \der N \neq s$.
       \item $\Gamma \der N \neq \Pi x:U.T$.
-      \item $\Gamma \der N \neq \Sigma x:U.T$.
       \item $\Gamma \der N \neq \Id T\ u\ v$.
       \item $\Gamma \der N \neq \squash{T}$.
       \item $\Gamma \der s = s'$ implies $\Id s s'$ is inhabited in $\Gamma$.
       \item $\Gamma \der s \neq \Pi x:U.T$.
-      \item $\Gamma \der s \neq \Sigma x:U.T$.
       \item $\Gamma \der s \neq \Id T\ u\ v$.
       \item $\Gamma \der s \neq \squash{T}$.
-      \item $\Gamma \der \Pi x:U.T \neq \Sigma x:U'.T'$.
       \item $\Gamma \der \Pi x:U.T \neq \Id T'\ u\ v$.
       \item $\Gamma \der \Pi x:U.T \neq \squash{T'}$.
-      \item $\Gamma \der \Sigma x:U.T \neq \Id T'\ u\ v$.
-      \item $\Gamma \der \Sigma x:U.T \neq \squash{T'}$.
       \item $\Gamma \der \Id T\ u\ v \neq \squash{T'}$.
     \end{itemize}
   \end{lemma}
@@ -1207,16 +1087,15 @@
     Assuming $\Gamma \der t : X$, we have $\Gamma \der a : X$ for $a$ the whnf
     of $t$. We invert on the typing of $a$.
     By lemma~\ref{lem:cons-discr}, $X$ cannot be equal (or in a subtype
-    relation since it preserves the shape) to a sort, a $\Pi$-type, a
-    $\Sigma$-type, an indentity type or a squash type.
-    Thus, $a$ can neither be a $\lambda$, nor a pair, nor a $\refl$,
-    nor a $[\_]$ nor a $\Pi$-type, a $\Sigma$-type, an indentity type or
+    relation since it preserves the shape) to a sort, a $\Pi$-type,
+    an indentity type or a squash type.
+    Thus, $a$ can neither be a $\lambda$, nor a $\refl$,
+    nor a $[\_]$ nor a $\Pi$-type, an indentity type or
     a squash type, nor a sort, it can only be neutral.
 
     $X$ being the only variable, it is the only reason for the term to be
     blocked.
     Since $X$ is not of $\Pi$-type, it cannot be applied.
-    Since $X$ is not of $\Sigma$-type, it cannot be projected.
     Since $X$ is not of identity type, it cannot be eliminated with $\J$.
     Since $X$ is not of squash type, it cannot be eliminated through $\elim$.
     So $a \equiv X$ and then $\Gamma \der X : X$, implying
