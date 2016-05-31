@@ -839,8 +839,6 @@
     $\Gamma \Der T[u/x]$.
   \end{proof}
 
-  \meta{OLD BELOW}
-
   \begin{lemma}[Validity of $\eta$]
     \leavevmode
     \begin{mathc}
@@ -876,27 +874,30 @@
     $\Gamma \Der T$ is implied by $\Gamma \Der f : U \to T$ and
     lemma~\ref{lem:fun-inj-valid}.
     %
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and
     show (for some $p$)
     \[\Delta \der \hideq{p}
     \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
-    f \sigma'\ t \sigma' : T \sigma.\]
+    f \sigma\ t \sigma : T \sigma.\]
     This reduces (by weak-head conversion) to showing
     $\Delta \der \hideq{p}
     f \sigma\ t \sigma \hEr
-    f \sigma'\ t \sigma' : T \sigma$.
+    f \sigma\ t \sigma : T \sigma$.
+    (We cannot conclude yet, because $T \sigma$ might be a sort).
 
     We instantiate the first hypothesis to get
-    $\Delta \der \hideq{q} f \sigma \hEr f \sigma' : U \sigma \to T \sigma$
+    $\Delta \der \hideq{q} f \sigma \hEr f \sigma : U \sigma \to T \sigma$
     and the last to get
-    $\Delta \der \hideq{r} t \sigma \hEr t \sigma' : U \sigma$
+    $\Delta \der \hideq{r} t \sigma \hEr t \sigma : U \sigma$
     for some $q,r$.
     We then get
     $\Delta \der \hideq{p} f \sigma\ t \sigma \hEr
-    f \sigma'\ t \sigma' : T \sigma$
+    f \sigma\ t \sigma : T \sigma$
     where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
   \end{proof}
+
+  \meta{OLD BELOW}
 
   \begin{lemma}[Validity of $\elim$ equality]
     \leavevmode
