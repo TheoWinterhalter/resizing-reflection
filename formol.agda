@@ -73,13 +73,18 @@ postulate ↓_ : Exp → Whnf
 data _⊢_≡_∷_ : Ctx → Exp → Exp → Exp → Set where
   eq : ∀ e Γ t u T → Γ ⊢ e ∷ Id T t u → Γ ⊢ t ≡ u ∷ T
 
--- data Σ {X : Set} (A : X → Set) : Set where
---   _&&_ : (x₀ : X) → A x₀ → Σ \(x : X) → A x
---
--- _×_ : Set → Set → Set
--- X × Y = Σ \(x : X) → Y
+data Σ {X : Set} (A : X → Set) : Set where
+  _&&_ : (x₀ : X) → A x₀ → Σ \(x : X) → A x
+
+_×_ : Set → Set → Set
+X × Y = Σ \(x : X) → Y
 
 data ⊥ : Set where
+
+-- Note: We need the recursive call in the Pi case to get validity of function
+-- type injectivity.
+
+-- Now termination checking fails because it doesn't know anything about ↓
 
 mutual
   _⊢_⋈̂_∷_ : Ctx → Exp → Exp → Exp → Set
@@ -88,7 +93,7 @@ mutual
   Γ ⊢ t₁ ⋈̂ t₂ ∷ T = Γ ⊢ ↓ t₁ ⋈ ↓ t₂ ∷ (↓ T)
 
   Γ ⊢ nType j   ⋈ nType k      ∷ nType i = Γ ⊢ Type j   ≡ Type k      ∷ Type i
-  Γ ⊢ nΠ A B    ⋈ nΠ A' B'     ∷ nType i = Γ ⊢ Π A B    ≡ Π A' B'     ∷ Type i
+  Γ ⊢ nΠ A B    ⋈ nΠ A' B'     ∷ nType i = Σ λ j → Σ λ k → (Γ ⊢ {!   !} ⋈̂ {!   !} ∷ {!   !}) × {!   !}
   Γ ⊢ nId T u v ⋈ nId T' u' v' ∷ nType i = Γ ⊢ Id T u v ≡ Id T' u' v' ∷ Type i
   Γ ⊢ n∥ T ∥     ⋈ n∥ T' ∥       ∷ nType i = Γ ⊢ ∥ T ∥     ≡ ∥ T' ∥      ∷ Type i
   Γ ⊢ ne N      ⋈ ne N'        ∷ nType i = Γ ⊢ ↑ne N    ≡ ↑ne N'      ∷ Type i
