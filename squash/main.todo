@@ -1,7 +1,7 @@
 New version:
   ✔ Add the guard to elim rules (T not a sort) @done(2016-05-30 11:45) @project(New version)
   ✔ Remove Sigma from logical relation @done(2016-05-30 12:09) @project(New version)
-  ☐ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality)
+  ✔ Fix the proof accordingly (just say that since T is not a sort, we only need a proof of equality) @done(2016-05-31 10:10) @project(New version)
   ☐ Remove definitional equality for squash (it doesn't work with application)
 
 Ideas to Assess:
