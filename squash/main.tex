@@ -812,7 +812,8 @@
   Although, we state them with $\Gamma \Der \mathcal{J}$ as hypothesis,
   it is only to explicit the induction hypothesis we have from
   $\Gamma \der \mathcal{J}$, thus any hypothesis consisting of a conversion
-  is preserved, meaning the expressions are still well-typed.
+  is preserved (because we use the same substitution on both sides),
+  meaning the expressions are still well-typed.
 
   \begin{lemma}[Validity of $\beta$-reduction]
     \leavevmode
@@ -897,8 +898,6 @@
     where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
   \end{proof}
 
-  \meta{OLD BELOW}
-
   \begin{lemma}[Validity of $\elim$ equality]
     \leavevmode
     \begin{mathc}
@@ -913,23 +912,22 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{The statement might not be well-typed as it is...}
     $\Der \Gamma$ is contained in any of the hypotheses.
     $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
     is a PER.
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and
     show
     \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hEr
-    \elim(U' \sigma',T' \sigma',f' \sigma',h' \sigma',t' \sigma') : T \sigma.\]
+    \elim(U' \sigma,T' \sigma,f' \sigma,h' \sigma,t' \sigma) : T \sigma.\]
     %
-    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma'$.
+    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma$.
     We have three possible cases (by symmetry):
     \begin{caselist}
       \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
       Thus, our goal becomes
-      $\Delta \der f \sigma\ u \hEr f' \sigma'\ u' : T \sigma$.
-      Since $T \nequiv s$ is stated positively and thus $T \sigma$ is not a
+      $\Delta \der f \sigma\ u \hEr f' \sigma\ u' : T \sigma$.
+      Since $T \nequiv s$ is stated positively, $T \sigma$ is not a
       sort. So we only need a proof of equality which is deduced from $h$.
 
       \nextcase $a \equiv n$ and $a' \equiv [u']$.
@@ -940,6 +938,8 @@
       Likewise.
     \end{caselist}
   \end{proof}
+
+  \meta{OLD BELOW}
 
   \begin{lemma}[Validity of $\seq$]
     \leavevmode
