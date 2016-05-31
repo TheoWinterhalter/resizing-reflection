@@ -52,7 +52,8 @@
                          &&& \mid & x \mid \lambda x:U.t \mid t~u
                                \mid \refl_t \mid
                                \J (T,U,t_{refl},u_1,u_2,t_{eq}) \\
-                         &&& \mid & [t] \mid \elim(T,U,f,h,t) \\
+                         &&& \mid & [t] \mid \elim(T,U,f,h,t)
+                             \mid \seq(T,t,u) \\
       \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
     \end{array}
   \]
@@ -149,6 +150,10 @@
     \qquad
     \ru{\Gamma \der t : A
       }{\Gamma \der [t] : \squash{A}}
+    \qquad
+    \ru{\Gamma \der T : s \qquad
+        \Gamma \der u,v : \squash{T}
+      }{\Gamma \der \seq(T,u,v) : \Id \squash{T}\ u\ v}
   \)
   \end{center}
 
@@ -321,8 +326,10 @@
     \ru{\Gamma \der A = A' : s
       }{\Gamma \der \squash{A} = \squash{A'} : \Type_0}
     \qquad
-    \ru{\Gamma \der t, t' : \squash{A}
-      }{\Gamma \der t = t' : \squash{A}}
+    \ru{\Gamma \der T = T' : s \qquad
+        \Gamma \der t = t' : \squash{T} \qquad
+        \Gamma \der u = u' : \squash{T}
+      }{\Gamma \der \seq(T,t,u) = \seq(T',t',u') : \Id \squash{T}\ t\ u}
   \)
   \end{center}
 
