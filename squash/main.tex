@@ -778,23 +778,23 @@
 
   \begin{lemma}[Function type injectivity is valid]
     \label{lem:fun-inj-valid}
-    If $\Gamma \Der \Pi x:U.T = \Pi x:U'.T'$ then $\Gamma \Der U = U'$ and
-    $\Gamma, x:U \Der T = T'$. \meta{We need a substitution for $T'$!}
+    If $\Gamma \Der U \to T = U' \to T'$ then $\Gamma \Der U = U'$ and
+    $\Gamma, x:U \Der T = T'$.
   \end{lemma}
 
   \begin{proof}
     Assume arbitrary $\Delta \der \sigma : \Gamma$.
     We have
-    $\Delta \der \Pi x:U \sigma. T\sigma \hEr \Pi x:U'\sigma. T' \sigma : s_3$
+    $\Delta \der U \sigma \to T\sigma \hEr U'\sigma \to T' \sigma : s_3$
     for some $s_3$. Thus, by definition,
     $\Delta \der \hideq{p} U \sigma \hEr U' \sigma : s_1$ for some $s_1$ and
     $p$. So, $\Gamma \Der U = U'$.
 
     We also have
-    $\Delta, x:U\sigma \der T \sigma \hEr
-    \lambda (x:U\sigma). T'\sigma[p_*\ x/x] : s_2$
-    for some $s_2$.
-    \meta{To be continued}
+    $\Delta, x:U\sigma \der T \sigma \hEr T'\sigma : s_2$ for some $s_2$
+    (as $T'$ doesn't depend on $x$).
+    Thus, for any $\rho$ that extends $\sigma$ on $x$, we have the result,
+    enough to conclude $\Gamma, x:U \Der T = T'$.
   \end{proof}
 
   \begin{lemma}[Context Satisfiable]
