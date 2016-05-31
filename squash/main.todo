@@ -2,6 +2,7 @@ New version:
   ☐ Find a way to prove compatibility of seq (with Id and not conversion)
   ✔ Maybe some transport in validity (eg. elim-eq) @done(2016-05-31 14:25) @project(New version)
   ☐ Transports may still be needed as we are using substitutions
+    ☐ We could remove the substitution relation and only instantiate (couldn't we?)
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
