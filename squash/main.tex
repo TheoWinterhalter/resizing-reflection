@@ -939,8 +939,6 @@
     \end{caselist}
   \end{proof}
 
-  \meta{OLD BELOW}
-
   \begin{lemma}[Validity of $\seq$]
     \leavevmode
     \begin{mathc}
@@ -952,19 +950,21 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{The statement might not be well-typed as it is...}
     $\Der \Gamma$ is trivial again.
     $\Der \Id \squash{T}\ t\ u$ is deduced from all the hypotheses combined
     with the fact that validity is a PER.
     %
-    Now assume $\Delta, \sigma, \sigma'$ such that
-    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
-    show
+    Now assume $\Delta, \sigma$ such that
+    $\Delta \der \sigma : \Gamma$ and show
     $\Delta \der \seq(T\sigma,t\sigma,u\sigma) \hEr
     \seq(T'\sigma,t'\sigma,u'\sigma) : \Id \squash{T\sigma}\ t\sigma\ u\sigma$.
 
-    \meta{We need to be able to prove compatibility.}
+    Since, $\Id \squash{T\sigma}\ t\sigma\ u\sigma$ is positively not a sort,
+    we only need to prove the equality in the system, and $\refl$ works
+    (if we refer to our original hypotheses, and not the induction ones).
   \end{proof}
+
+  \meta{OLD BELOW}
 
   \begin{theorem}[Fundamental theorem of logical relations]
     \leavevmode
