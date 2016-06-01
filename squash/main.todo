@@ -27,7 +27,7 @@ New constraint for |><| for Pi:
   ✔ Remove the transport now that convertible @done(2016-06-01 17:33) @project(New constraint for |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 17:35) @project(New constraint for |><| for Pi)
   ✔ Adapt lambda equality @done(2016-06-01 17:39) @project(New constraint for |><| for Pi)
-  ☐ Fix valiidty of application
+  ✔ Fix valiidty of application @done(2016-06-01 17:41) @project(New constraint for |><| for Pi)
 
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
@@ -40,7 +40,7 @@ New substitution judgement:
   ✔ Complete validity of lambda @done(2016-06-01 16:52) @project(New substitution judgement)
   ✔ Adapt elim reduction @done(2016-06-01 16:57) @project(New substitution judgement)
   ✔ Adapt elim equality @done(2016-06-01 17:01) @project(New substitution judgement)
-  ☐ Complete validity of application
+  ✔ Complete validity of application @done(2016-06-01 17:41) @project(New substitution judgement)
   ☐ Complete J equality
   ☐ Adapt J reduction
 
@@ -55,7 +55,7 @@ New definiton of |><| for Pi:
 Fundamental theorem:
   ☐ J compatibility
   ✔ J beta @done(2016-06-01 13:15) @project(Fundamental theorem)
-  ☐ application compatibility
+  ✔ application compatibility @done(2016-06-01 17:41) @project(Fundamental theorem)
   ☐ check validity of the type in application compatibility
   ✔ conversion rule @done(2016-06-01 13:34) @project(Fundamental theorem)
 
