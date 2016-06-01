@@ -7,8 +7,14 @@ New version:
   ✔ Or we could remove dependecy in injectivity @done(2016-06-01 10:49) @project(New version)
   ✔ Fix inversion @done(2016-06-01 10:49) @project(New version)
   ☐ We can probably remove the first line of validity (and then remove injectivity of function type)
-  ☐ Fundamental theorem doesn't need proof when return type is definite (in most cases)
+  ✔ Fundamental theorem doesn't need proof when return type is definite (in most cases) @done(2016-06-01 11:29) @project(New version)
   ☐ Are substitutions needed?
+
+Fundamental theorem:
+  ☐ J compatibility
+  ☐ J beta
+  ☐ application compatibility
+  ☐ conversion rule
 
 Embedding:
   ☐ Can the proof be adapted to handle the resizing for embedding?

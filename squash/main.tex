@@ -862,30 +862,8 @@
     \end{caselist}
   \end{proof}
 
-  \begin{lemma}[Validity of $\seq$]
-    \leavevmode
-    \begin{mathc}
-      \ru{\Gamma \Der T = T' : s \qquad
-          \Gamma \Der t = t' : \squash{T} \qquad
-          \Gamma \Der u = u' : \squash{T}
-        }{\Gamma \Der \seq(T,t,u) = \seq(T',t',u') : \Id \squash{T}\ t\ u}
-    \end{mathc}
-  \end{lemma}
-
-  \begin{proof}
-    $\Der \Gamma$ is trivial again.
-    $\Der \Id \squash{T}\ t\ u$ is deduced from all the hypotheses combined
-    with the fact that validity is a PER.
-    %
-    Now assume $\Delta, \sigma$ such that
-    $\Delta \der \sigma : \Gamma$ and show
-    $\Delta \der \seq(T\sigma,t\sigma,u\sigma) \hEr
-    \seq(T'\sigma,t'\sigma,u'\sigma) : \Id \squash{T\sigma}\ t\sigma\ u\sigma$.
-
-    Since, $\Id \squash{T\sigma}\ t\sigma\ u\sigma$ is positively not a sort,
-    we only need to prove the equality in the system, and $\refl$ works
-    (if we refer to our original hypotheses, and not the induction ones).
-  \end{proof}
+  \meta{Remaining: $\J$ compatibility, application compatibility, $\J$ beta,
+  conversion rule}
 
   \begin{theorem}[Fundamental theorem of logical relations]
     \leavevmode
@@ -898,6 +876,11 @@
 
   \begin{proof}
     By induction on the derivation.
+    All the compatibility rules with a type $T \nequiv s$ are handled by
+    $\refl$, compatibility for types is also direct.
+    Equivalence rules are also direct (by lemma~\ref{lem:s-per} and by
+    definition of typing validity as the diagonal).
+    Typing validity also follows easily.
   \end{proof}
 
   \begin{corollary}[Syntactic validity]
