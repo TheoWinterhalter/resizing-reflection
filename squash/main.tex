@@ -896,18 +896,18 @@
     $\Der \Gamma$ is contained in any of the hypotheses.
     $\Gamma \Der T$ follows from $\Gamma \Der T = T'$ and the fact that validity
     is a PER.
-    Now assume $\Delta, \sigma$ such that
-    $\Delta \der \sigma : \Gamma$ and
+    Now assume $\Delta, \sigma, \sigma'$ such that
+    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
     show
     \[\Delta \der \elim(U \sigma,T \sigma,f \sigma,h \sigma,t \sigma) \hEr
-    \elim(U' \sigma,T' \sigma,f' \sigma,h' \sigma,t' \sigma) : T \sigma.\]
+    \elim(U' \sigma',T' \sigma',f' \sigma',h' \sigma',t' \sigma') : T \sigma.\]
     %
-    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma$.
+    We look at $a$ and $a'$ the whnfs of $t \sigma$ and $t' \sigma'$.
     We have three possible cases (by symmetry):
     \begin{caselist}
       \nextcase $a \equiv [u]$ and $a' \equiv [u']$.
       Thus, our goal becomes
-      $\Delta \der f \sigma\ u \hEr f' \sigma\ u' : T \sigma$.
+      $\Delta \der f \sigma\ u \hEr f' \sigma'\ u' : T \sigma$.
       Since $T \nequiv s$ is stated positively, $T \sigma$ is not a
       sort. So we only need a proof of equality which is deduced from $h$.
 
