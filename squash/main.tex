@@ -1006,16 +1006,6 @@
       \item If $\Gamma \der \Pi x:U.T' : T$ then $\Gamma \der U : s$
       and $\Gamma, x:U \der T : s'$ and for some $s''$ we have
       $\Gamma \der s'' = T$ and $(s,s',s'') \in \R$.
-      \item If $\Gamma \der (t ; t') : T$ then $\Gamma \der t : U$ and
-      $\Gamma \der t' : T'[t/x]$ for some $U,T'$ such that
-      $\Gamma \der \Sigma x:U.T' \le T$.
-      \item If $\Gamma \der t.1 : T$ then $\Gamma \der t : \Sigma x:U.T'$
-      for some $U,T'$ with $\Gamma \der U \le T$.
-      \item If $\Gamma \der t.2 : T$ then $\Gamma \der t : \Sigma x:U.T'$
-      for some $U,T'$ with $\Gamma \der T'[t.1/x] \le T$.
-      \item If $\Gamma \der \Sigma x:U.T' : T$ then $\Gamma \der U : s$
-      and $\Gamma, x:U \der T : s'$ and for some $s''$ we have
-      $\Gamma \der s'' = T$ and $(s,s',s'') \in \R$.
       \item If $\Gamma \der \refl_t : T$ then $\Gamma \der t : U$
       for some $U$ with $\Gamma \der \Id U\ t\ t = T$.
       \item If $\Gamma \der \J(A,C,b,u,v,p) : T$ then $\Gamma \der A : s$
@@ -1031,6 +1021,9 @@
       $\Gamma \der f : A \to B$ and
       $\Gamma \der h : \Pi_{x:A} \Pi_{y:A} \Id A\ x\ y$
       and $\Gamma \der a : \squash{A}$ and $\Gamma \der B \le T$.
+      \item If $\Gamma \der \seq(T',u,v) : T$ then $\Gamma \der T' : s$ for
+      some $s$ and $\Gamma \der u, v : \squash{T'}$ and
+      $\Gamma \der T = \Id \squash{T'}\ u\ v$.
       \item If $\Gamma \der \squash{T'} : T$ then $\Gamma \der T' : s$ for
       some $s$ and $\Gamma \der s' = T'$ for some $s'$.
     \end{itemize}
