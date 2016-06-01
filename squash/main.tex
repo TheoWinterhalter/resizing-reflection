@@ -852,6 +852,23 @@
     \end{caselist}
   \end{proof}
 
+  \begin{lemma}[Validity of application]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der t = t' : \Pi x:U.V \qquad
+          \Gamma \Der u = u' : U
+        }{\Gamma \Der t~u = t'~u' : V[u/x]}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{Check $\Gamma \Der V[u/x]$.}
+    Assume arbitrary $\Delta \der \sigma : \Gamma$ and show
+    $\Delta \der t\sigma\ u\sigma \hEr t'\sigma\ u'\sigma : (V[u/x])\sigma$.
+    If $(V[u/x])\sigma$ is not a sort, it works directly.
+    Otherwise, \meta{We can't conclude it would seem...}
+  \end{proof}
+
   \begin{lemma}[Validity of $\J$ equality]
     \leavevmode
     \begin{mathc}
@@ -903,8 +920,7 @@
     \end{caselist}
   \end{proof}
 
-  \meta{Remaining: application compatibility, $\J$ beta,
-  conversion rule}
+  \meta{Remaining: $\J$ beta, conversion rule}
 
   \begin{theorem}[Fundamental theorem of logical relations]
     \leavevmode
