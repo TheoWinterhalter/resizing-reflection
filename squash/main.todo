@@ -11,6 +11,15 @@ New version:
   ✔ Are substitutions needed? @done(2016-06-01 14:55) @project(New version)
   ☐ Shouldn't seq be neutral?
 
+Problem with the substitution judgement:
+  ☐ Change it again to ask conversion and |><| seperately
+  ☐ Adapt PER
+  ☐ Adapt validity PER
+  ☐ Adapt function type injectivity
+  ☐ Adapt context satisfiable
+  ☐ Adapt beta validity
+  ☐ Adapt eta validity
+
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
   ✔ Prove it is a PER @done(2016-06-01 15:10) @project(New substitution judgement)
