@@ -882,7 +882,7 @@
     $C\ u\ v\ p$ is well-typed and obviously has the same as itself).
 
     Now assume arbitrary $\Delta \der \sigma : \Gamma$ and show
-    \[\Gamma \der \J(A \sigma, C \sigma, b \sigma, u \sigma, v \sigma, p \sigma)
+    \[\Delta \der \J(A \sigma, C \sigma, b \sigma, u \sigma, v \sigma, p \sigma)
     \hEr \J(A' \sigma, C' \sigma, b' \sigma, u' \sigma, v' \sigma, p' \sigma) :
     C \sigma\ u \sigma\ v \sigma\ p \sigma.\]
     %
@@ -890,10 +890,14 @@
     $p' \sigma$:
     \begin{caselist}
       \nextcase $a \equiv \refl$ and $a' \equiv \refl$.
-      \meta{TODO}
+      In which case we have to show
+      $\Delta \der b \sigma\ u\sigma \hEr b'\sigma\ u'\sigma :
+      C \sigma\ u \sigma\ u \sigma\ \refl$.
+      \meta{I need the ability to instantiate when the instantiated $C$ is a
+      sort.}
 
       \nextcase $a \equiv \refl$ and $a' \equiv \seq(B,u'',v'')$.
-      \meta{TODO}
+      \meta{Perhaps we should treat it in the case of neutrals...}
 
       \nextcase $a \equiv \seq(B,t,w)$ and $a' \equiv \seq(B',t',w')$.
       \meta{TODO}
