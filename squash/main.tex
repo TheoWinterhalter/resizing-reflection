@@ -687,6 +687,7 @@
   \end{mathc}
 
   \begin{lemma}[Substitution relation is a PER]
+    \label{lem:subst-rel-per}
     The relation $\Delta \der \_ \hEr \_ : \Gamma$ for substitutions
     is symmetric and transitive.
   \end{lemma}
@@ -704,18 +705,19 @@
     \begin{caselist}
       \nextcase Symmetry.\\
       Assume $\Gamma \Der t = t' : T$ and show $\Gamma \Der t' = t : T$.
-      Now assume $\Delta \der \sigma : \Gamma$ and show
-      $\Gamma \der t' \sigma \hEr t \sigma : T \sigma$ (the other goals are
+      Now assume $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
+      $\Gamma \der t' \sigma \hEr t \sigma' : T \sigma$ (the other goals are
       already assumed). This holds because of lemma~\ref{lem:s-per} by
-      instantiating the hypothesis with $\sigma$.
+      instantiating the hypothesis with $\sigma'$, $\sigma$ (that are in
+      relation by lemma~\ref{lem:subst-rel-per}).
 
       \nextcase Transitivity.\\
       Assume $\Gamma \Der t_1 = t_2 : T$ and $\Gamma \Der t_2 = t_3 : T$ and
       show $\Gamma \Der t_1 = t_3 : T$.
-      Now assume $\Delta \der \sigma : \Gamma$ and show
-      $\Gamma \der t_1 \sigma \hEr t_3 \sigma : T \sigma$.
-      We instantiate the hypotheses with $\sigma$ and conclude by transitivity
-      of $\hEr$ (lemma~\ref{lem:s-per}).
+      Now assume $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
+      $\Gamma \der t_1 \sigma \hEr t_3 \sigma' : T \sigma$.
+      We instantiate the hypotheses with $\sigma,\sigma$ and $\sigma,\sigma'$
+      and conclude by transitivity of $\hEr$ (lemma~\ref{lem:s-per}).
     \end{caselist}
   \end{proof}
 
