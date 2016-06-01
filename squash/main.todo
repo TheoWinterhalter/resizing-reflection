@@ -26,7 +26,7 @@ New constraint for |><| for Pi:
   ✔ Adapt validity of eta @done(2016-06-01 16:49) @project(New constraint for |><| for Pi)
   ✔ Remove the transport now that convertible @done(2016-06-01 17:33) @project(New constraint for |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 17:35) @project(New constraint for |><| for Pi)
-  ☐ Adapt lambda equality
+  ✔ Adapt lambda equality @done(2016-06-01 17:39) @project(New constraint for |><| for Pi)
   ☐ Fix valiidty of application
 
 New substitution judgement:

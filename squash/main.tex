@@ -834,11 +834,10 @@
     $\Delta' \der u = u' : U \sigma$
     and show $\Delta' \der \hideq{\app \refl\ p}
     (\lambda x:U\sigma.t\sigma)\ u \hEr
-    (\ap (\lambda x.V\sigma)\ p\inv)_* ((\lambda x:U'\sigma'.t'\sigma')\ u') :
-    \Pi x:U\sigma.V\sigma$ which reduces to proving
+    (\lambda x:U'\sigma'.t'\sigma')\ u' :
+    V\sigma[u/x]$ which reduces to proving
     $\Delta' \der \hideq{\app \refl\ p}
-    (t\sigma)[u/x] \hEr (\ap (\lambda x.V\sigma)\ p\inv)_* ((t'\sigma')[u'/x]) :
-    \Pi x:U\sigma.V\sigma$.
+    (t\sigma)[u/x] \hEr (t'\sigma')[u'/x] : V\sigma[u/x]$.
 
     Let $\rho = (\sigma, u\sigma / x)$ and $\rho' = (\sigma', u'\sigma' / x)$.
     Thus, $\Delta' \der \rho \hEr \rho' : \Gamma, x:U$.
