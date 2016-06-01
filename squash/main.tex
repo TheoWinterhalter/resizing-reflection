@@ -506,9 +506,10 @@
   \end{mathc}
 
   \begin{mathc}
-    \dru{\Gamma \der e : \Id (\Pi x:U.T)\ f\ f'
+    \tru{\Gamma \der e : \Id (\Pi x:U.T)\ f\ f'
        }{\forall \Delta \le \Gamma, \Delta \der \hideq{p} u \hEr u' : U \gives
-         \Delta \der \hideq{\app e\ p} f\ u \hEr
+         \Delta \der u = u' : U \gives
+       }{\Delta \der \hideq{\app e\ p} f\ u \hEr
          (\ap (\lambda x.T)\ p\inv)_* (f'\ u') : T[u/x]
        }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.T}
   \end{mathc}
