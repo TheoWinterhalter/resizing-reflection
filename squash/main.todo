@@ -23,6 +23,7 @@ Problem with the substitution judgement:
 New constraint for |><| for Pi:
   ✔ Add that u and u' are also convertible @done(2016-06-01 16:47) @project(New constraint for |><| for Pi)
   ☐ Adapt type conversion
+  ✔ Adapt validity of eta @done(2016-06-01 16:49) @project(New constraint for |><| for Pi)
 
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
