@@ -33,7 +33,7 @@ New substitution judgement:
   ✔ Adapt context satisfiable @done(2016-06-01 15:19) @project(New substitution judgement)
   ✔ Adapt beta validity @done(2016-06-01 15:23) @project(New substitution judgement)
   ✔ Adapt eta validity @done(2016-06-01 15:44) @project(New substitution judgement)
-  ☐ Complete validity of lambda
+  ✔ Complete validity of lambda @done(2016-06-01 16:52) @project(New substitution judgement)
   ☐ Adapt elim reduction
   ☐ Adapt elim equality
   ☐ Complete validity of application
@@ -43,7 +43,7 @@ New substitution judgement:
 New definiton of |><| for Pi:
   ✔ New definition @done(2016-06-01 14:17) @project(New definiton of |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 14:37) @project(New definiton of |><| for Pi)
-  ☐ lambda compatibility
+  ✔ lambda compatibility @done(2016-06-01 16:52) @project(New definiton of |><| for Pi)
   ✔ ⇒ We need to handle convertible substitutions for validity @done(2016-06-01 15:16) @project(New definiton of |><| for Pi)
   ☐ Deduce J and application compatibility
   ☐ Adapt type conversion
