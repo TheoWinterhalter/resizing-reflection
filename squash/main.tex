@@ -920,7 +920,33 @@
     \end{caselist}
   \end{proof}
 
-  \meta{Remaining: $\J$ beta, conversion rule}
+  \begin{lemma}[Validity of $\J$ reduction]
+    \leavevmode
+    \begin{mathc}
+      \dru{\Gamma \Der A : s \qquad
+           \Gamma \Der C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
+         }{\Gamma \Der b : \Pi x:A. C\ x\ x\ \refl_x \qquad
+           \Gamma \Der u : A
+         }{\Gamma \Der \J (A,C,b,u,u,\refl_u) = b\ u : C\ u\ u\ \refl_u}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
+  \begin{lemma}[Validity of conversion]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der t = t' : T \quad
+          \Gamma \Der T \le T'
+        }{\Gamma \Der t = t' : T'}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
 
   \begin{theorem}[Fundamental theorem of logical relations]
     \leavevmode
