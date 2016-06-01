@@ -12,7 +12,7 @@ New version:
   ☐ Shouldn't seq be neutral?
 
 New substitution judgement:
-  ☐ Define it
+  ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
   ☐ Prove it is a PER
   ☐ Adapt validity is a PER proof
   ☐ Adapt function type injectivity

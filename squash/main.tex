@@ -641,16 +641,18 @@
 
   \paradot{Validity in the Model}
 
-  We define a ``typing'' judgement for substitutions by induction on the
-  destination context.
+  We define an equality judgement for substitutions by induction on the
+  destination context (it captures that they are convertible in particular,
+  which means that any judgement is stable under the application of
+  ``equal'' substitutions).
   %
   \begin{center}
   \(
-    \ru{}{\Delta \der \sigma : \cdot}
+    \ru{}{\Delta \der \sigma \hEr \sigma' : \cdot}
     \qquad
-    \ru{\Delta \der \sigma : \Gamma \qquad
-        \Delta \der \sigma(x) : U \sigma
-      }{\Delta \der \sigma : \Gamma, x:U}
+    \ru{\Delta \der \sigma \hEr \sigma' : \Gamma \qquad
+        \Delta \der \hideq{\refl} \sigma(x) \hEr \sigma'(x) : U \sigma
+      }{\Delta \der \sigma \hEr \sigma' : \Gamma, x:U}
   \)
   \end{center}
 
@@ -675,9 +677,9 @@
   \begin{mathc}
     \dru{\Der \Gamma \qquad
          (\Gamma \Der T \text{ unless } T = s)
-       }{\forall \Delta, \sigma,\ %
-         \Delta \der \sigma : \Gamma \gives
-         \Delta \der t \sigma \hEr t' \sigma : T \sigma
+       }{\forall \Delta, \sigma, \sigma',\ %
+         \Delta \der \sigma \hEr \sigma' : \Gamma \gives
+         \Delta \der t \sigma \hEr t' \sigma' : T \sigma
        }{\Gamma \Der t = t' : T}
     \qquad
     \ru{\Gamma \Der t = t : T
