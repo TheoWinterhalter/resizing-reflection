@@ -806,14 +806,11 @@
     and $\Delta' \der u = u' : U \sigma$
     and show
     $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
-    (\ap (\lambda x.T\sigma)\ p\inv)_* ((\lambda x:U\sigma'. t\sigma'\ x)\ u') :
-    \Pi x:U\sigma.T\sigma$.
+    (\lambda x:U\sigma'. t\sigma'\ x)\ u' : T\sigma[u/x]$.
 
     This reduces to proving
-    $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
-    (\ap (\lambda x.T\sigma)\ p\inv)_* (t \sigma'\ u') :
-    \Pi x:U\sigma.T\sigma$ which corresponds to an instantiation of
-    the hypothesis.
+    $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr t \sigma'\ u' :
+    T\sigma[u/x]$ which corresponds to an instantiation of the hypothesis.
   \end{proof}
 
   \begin{lemma}[Validity of $\lambda$ equality]
