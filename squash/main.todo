@@ -11,6 +11,12 @@ New version:
   ☐ Are substitutions needed?
   ☐ Shouldn't seq be neutral?
 
+New definiton of |><| for Pi:
+  ✔ New definition @done(2016-06-01 14:17) @project(New definiton of |><| for Pi)
+  ☐ Adapt eta
+  ☐ lambda compatibility
+  ☐ Deduce J and application compatibility
+
 Fundamental theorem:
   ☐ J compatibility
   ✔ J beta @done(2016-06-01 13:15) @project(Fundamental theorem)

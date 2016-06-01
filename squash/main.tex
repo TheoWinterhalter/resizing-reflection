@@ -498,11 +498,19 @@
 
   \begin{mathc}
     \ru{\Gamma \der e : \Id A\ a\ a' \qquad
-        A \nequiv s
+        A \nequiv s, \Pi \_
       }{\Gamma \der \hideq{e} a \Er a' : A}
     \qquad
     \ru{\Gamma \der \hideq{p} \red t \Er \red t' : \red T
       }{\Gamma \der \hideq{p} t \hEr t' : T}
+  \end{mathc}
+
+  \begin{mathc}
+    \dru{\Gamma \der e : \Id (\Pi x:U.T)\ f\ f'
+       }{\forall \Delta \le \Gamma, \Delta \der \hideq{p} u \hEr u' : U \gives
+         \Delta \der \hideq{\app e\ p} f\ u \hEr
+         (\ap (\lambda x.T)\ p\inv)_* (f'\ u') : T[u/x]
+       }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.T}
   \end{mathc}
 
   \begin{center}
@@ -770,7 +778,24 @@
         }{\Gamma \Der t = \lambda x:U.t\ x : \Pi x:U.T}
     \end{mathc}
   \end{lemma}
-  Similar.
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
+  \begin{lemma}[Validity of $\lambda$ equality]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \der U = U' : s \qquad
+          \Gamma, x:U \der V : s' \qquad
+          \Gamma, x:U \der t = t' : V
+        }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
 
   \begin{lemma}[Validity of function equality]
     \leavevmode
