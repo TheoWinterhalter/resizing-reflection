@@ -11,6 +11,21 @@ New version:
   ✔ Are substitutions needed? @done(2016-06-01 14:55) @project(New version)
   ☐ Shouldn't seq be neutral?
 
+New substitution judgement:
+  ☐ Define it
+  ☐ Prove it is a PER
+  ☐ Adapt validity is a PER proof
+  ☐ Adapt function type injectivity
+  ☐ Adapt context satisfiable
+  ☐ Adapt beta validity
+  ☐ Adapt eta validity
+  ☐ Complete validity of lambda
+  ☐ Adapt elim reduction
+  ☐ Adapt elim equality
+  ☐ Complete validity of application
+  ☐ Complete J equality
+  ☐ Adapt J reduction
+
 New definiton of |><| for Pi:
   ✔ New definition @done(2016-06-01 14:17) @project(New definiton of |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 14:37) @project(New definiton of |><| for Pi)
