@@ -808,19 +808,7 @@
     $\Delta \der \hideq{p}
     f \sigma\ t \sigma \hEr
     f \sigma\ t \sigma : T \sigma$.
-    (We cannot conclude yet, because $T \sigma$ might be a sort).
-
-    We instantiate the first hypothesis to get
-    $\Delta \der \hideq{q} f \sigma \hEr f \sigma : U \sigma \to T \sigma$
-    and the last to get
-    $\Delta \der \hideq{r} t \sigma \hEr t \sigma : U \sigma$
-    for some $q,r$.
-    We then get
-    $\Delta \der \hideq{p} f \sigma\ t \sigma \hEr
-    f \sigma\ t \sigma : T \sigma$
-    where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
-    \meta{Here as well, we instantiate maybe a bit too fast, maybe we should
-    try and do the case of application before.}
+    This is done by reflexivity, knowing that $T \sigma$ is not a sort.
   \end{proof}
 
   \begin{lemma}[Validity of $\elim$ equality]
