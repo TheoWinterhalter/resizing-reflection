@@ -796,18 +796,18 @@
   \end{lemma}
 
   \begin{proof}
-    Assume arbitrary $\Delta \der \sigma : \Gamma$ and show
-    $\Delta \der t \sigma \hEr \lambda x:U\sigma. t\sigma\ x :
+    Assume arbitrary $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
+    $\Delta \der t \sigma \hEr \lambda x:U\sigma'. t\sigma'\ x :
     \Pi x:U\sigma.T\sigma$.
     The equality is proved by $\refl$, now assume $\Delta' \le \Delta$
     and $\Delta' \der \hideq{p} u \hEr u' : U\sigma$ and show
     $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
-    (\ap (\lambda x.T)\ p\inv)_* ((\lambda x:U\sigma. t\sigma\ x)\ u') :
+    (\ap (\lambda x.T\sigma)\ p\inv)_* ((\lambda x:U\sigma'. t\sigma'\ x)\ u') :
     \Pi x:U\sigma.T\sigma$.
 
     This reduces to proving
     $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
-    (\ap (\lambda x.T)\ p\inv)_* (t \sigma\ u') :
+    (\ap (\lambda x.T\sigma)\ p\inv)_* (t \sigma'\ u') :
     \Pi x:U\sigma.T\sigma$ which corresponds to an instantiation of
     the hypothesis.
   \end{proof}
