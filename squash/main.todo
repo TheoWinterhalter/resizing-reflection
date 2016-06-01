@@ -15,7 +15,7 @@ New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
   ✔ Prove it is a PER @done(2016-06-01 15:10) @project(New substitution judgement)
   ✔ Adapt validity is a PER proof @done(2016-06-01 15:14) @project(New substitution judgement)
-  ☐ Adapt function type injectivity
+  ✔ Adapt function type injectivity @done(2016-06-01 15:18) @project(New substitution judgement)
   ☐ Adapt context satisfiable
   ☐ Adapt beta validity
   ☐ Adapt eta validity
@@ -30,7 +30,7 @@ New definiton of |><| for Pi:
   ✔ New definition @done(2016-06-01 14:17) @project(New definiton of |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 14:37) @project(New definiton of |><| for Pi)
   ☐ lambda compatibility
-  ☐ ⇒ We need to handle convertible substitutions for validity
+  ✔ ⇒ We need to handle convertible substitutions for validity @done(2016-06-01 15:16) @project(New definiton of |><| for Pi)
   ☐ Deduce J and application compatibility
   ☐ Adapt type conversion
 

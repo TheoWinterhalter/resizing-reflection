@@ -728,17 +728,18 @@
   \end{lemma}
 
   \begin{proof}
-    Assume arbitrary $\Delta \der \sigma : \Gamma$.
+    Assume arbitrary $\Delta \der \sigma \hEr \sigma' : \Gamma$.
     We have
-    $\Delta \der U \sigma \to T\sigma \hEr U'\sigma \to T' \sigma : s_3$
+    $\Delta \der U \sigma \to T\sigma \hEr U'\sigma' \to T' \sigma' : s_3$
     for some $s_3$. Thus, by definition,
-    $\Delta \der \hideq{p} U \sigma \hEr U' \sigma : s_1$ for some $s_1$ and
+    $\Delta \der \hideq{p} U \sigma \hEr U' \sigma' : s_1$ for some $s_1$ and
     $p$. So, $\Gamma \Der U = U'$.
 
     We also have
-    $\Delta, x:U\sigma \der T \sigma \hEr T'\sigma : s_2$ for some $s_2$
+    $\Delta, x:U\sigma \der T \sigma \hEr T'\sigma' : s_2$ for some $s_2$
     (as $T'$ doesn't depend on $x$).
-    Thus, for any $\rho$ that extends $\sigma$ on $x$, we have the result,
+    Thus, for any $\rho$ that extends $\sigma$ on $x$ (and $\rho'$ being the
+    same extension but for $\sigma'$), we have the result,
     enough to conclude $\Gamma, x:U \Der T = T'$.
   \end{proof}
 
