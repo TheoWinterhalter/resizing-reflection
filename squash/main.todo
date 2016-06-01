@@ -17,7 +17,7 @@ New substitution judgement:
   ✔ Adapt validity is a PER proof @done(2016-06-01 15:14) @project(New substitution judgement)
   ✔ Adapt function type injectivity @done(2016-06-01 15:18) @project(New substitution judgement)
   ✔ Adapt context satisfiable @done(2016-06-01 15:19) @project(New substitution judgement)
-  ☐ Adapt beta validity
+  ✔ Adapt beta validity @done(2016-06-01 15:23) @project(New substitution judgement)
   ☐ Adapt eta validity
   ☐ Complete validity of lambda
   ☐ Adapt elim reduction

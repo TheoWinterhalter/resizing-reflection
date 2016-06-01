@@ -772,17 +772,18 @@
 
   \begin{proof}
     $\Der \Gamma$ is contained in $\Gamma \Der u : U$.
-    Now, given $\Delta \der \rho : \Gamma$, we need to show
-    $\Delta \der (\lambda x:U.t)\rho\ u\rho \hEr (t[u/x])\rho : (T[u/x])\rho$
-    and $\Delta \der (T[u/x])\rho \hEr (T[u/x])\rho : s$ for some $s$
+    Now, given $\Delta \der \rho \hEr \rho' : \Gamma$, we need to show
+    $\Delta \der (\lambda x:U.t)\rho\ u\rho \hEr (t[u/x])\rho' : (T[u/x])\rho'$
+    and $\Delta \der (T[u/x])\rho \hEr (T[u/x])\rho' : s$ for some $s$
     (to get $\Gamma \Der T[u/x]$)
 
-    Let $\sigma = (\rho, u \rho/x)$.
-    So $\Delta \der \sigma : \Gamma, x:U$.
-    Thus, $\Delta \der t \sigma \hEr t' \sigma : T\sigma$
-    \ie $\Delta \der (t[u/x])\rho \hEr (t[u/x])\rho : (T[u/x])\rho$
+    Let $\sigma = (\rho, u \rho/x)$ and $\sigma' = (\rho', u \rho'/x)$.
+    So $\Delta \der \sigma \hEr \sigma' : \Gamma, x:U$ (by instantiation of the
+    second hypothesis).
+    Thus, $\Delta \der t \sigma \hEr t' \sigma' : T\sigma$
+    \ie $\Delta \der (t[u/x])\rho \hEr (t[u/x])\rho' : (T[u/x])\rho$
     which is weak-head convertible to our first goal.
-    The first hypothesis, instantiated with $\sigma$ also gives
+    The first hypothesis, instantiated with $\sigma$,$\sigma'$ also gives
     $\Gamma \Der T[u/x]$.
   \end{proof}
 
