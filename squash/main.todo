@@ -13,9 +13,10 @@ New version:
 
 New definiton of |><| for Pi:
   ✔ New definition @done(2016-06-01 14:17) @project(New definiton of |><| for Pi)
-  ☐ Adapt eta
+  ✔ Adapt eta @done(2016-06-01 14:37) @project(New definiton of |><| for Pi)
   ☐ lambda compatibility
   ☐ Deduce J and application compatibility
+  ☐ Adapt type conversion
 
 Fundamental theorem:
   ☐ J compatibility

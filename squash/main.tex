@@ -575,6 +575,7 @@
     We only show the ``if'' direction.
 
     We show the case of functions, all the others are similar.
+    \meta{TODO: Update with new definition}
 
     \begin{caselist}
       \nextcase
@@ -780,16 +781,29 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{TODO}
+    Assume arbitrary $\Delta \der \sigma : \Gamma$ and show
+    $\Delta \der t \sigma \hEr \lambda x:U\sigma. t\sigma\ x :
+    \Pi x:U\sigma.T\sigma$.
+    The equality is proved by $\refl$, now assume $\Delta' \le \Delta$
+    and $\Delta' \der \hideq{p} u \hEr u' : U\sigma$ and show
+    $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
+    (\ap (\lambda x.T)\ p\inv)_* ((\lambda x:U\sigma. t\sigma\ x)\ u') :
+    \Pi x:U\sigma.T\sigma$.
+
+    This reduces to proving
+    $\Delta' \der \hideq{\app \refl\ p} t\sigma\ u \hEr
+    (\ap (\lambda x.T)\ p\inv)_* (t \sigma\ u') :
+    \Pi x:U\sigma.T\sigma$ which corresponds to an instantiation of
+    the hypothesis.
   \end{proof}
 
   \begin{lemma}[Validity of $\lambda$ equality]
     \leavevmode
     \begin{mathc}
-      \ru{\Gamma \der U = U' : s \qquad
-          \Gamma, x:U \der V : s' \qquad
-          \Gamma, x:U \der t = t' : V
-        }{\Gamma \der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
+      \ru{\Gamma \Der U = U' : s \qquad
+          \Gamma, x:U \Der V : s' \qquad
+          \Gamma, x:U \Der t = t' : V
+        }{\Gamma \Der \lambda x:U.t = \lambda x:U'.t' : \Pi x:U.V}
     \end{mathc}
   \end{lemma}
 
