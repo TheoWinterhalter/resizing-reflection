@@ -955,20 +955,21 @@
     so does $\Gamma \Der C\ u\ v\ p : s'$ (it follows from the fact that
     $C\ u\ v\ p$ is well-typed and obviously has the same as itself).
 
-    Now assume arbitrary $\Delta \der \sigma : \Gamma$ and show
+    Now assume arbitrary $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
     \[\Delta \der \J(A \sigma, C \sigma, b \sigma, u \sigma, v \sigma, p \sigma)
-    \hEr \J(A' \sigma, C' \sigma, b' \sigma, u' \sigma, v' \sigma, p' \sigma) :
-    C \sigma\ u \sigma\ v \sigma\ p \sigma.\]
+    \hEr \J(A' \sigma', C' \sigma', b' \sigma', u' \sigma', v' \sigma', p'
+    \sigma') : C \sigma\ u \sigma\ v \sigma\ p \sigma.\]
     %
     We look at the normal forms (respectively $a$ and $a'$) of $p \sigma$ and
-    $p' \sigma$:
+    $p' \sigma'$:
     \begin{caselist}
       \nextcase $a \equiv \refl$ and $a' \equiv \refl$.
       In which case we have to show
-      $\Delta \der b \sigma\ u\sigma \hEr b'\sigma\ u'\sigma :
+      $\Delta \der b \sigma\ u\sigma \hEr b'\sigma'\ u'\sigma' :
       C \sigma\ u \sigma\ u \sigma\ \refl$.
-      \meta{I need the ability to instantiate when the instantiated $C$ is a
-      sort.}
+      Since $u\sigma$ and $u'\sigma'$ are in relation and convertible
+      (by instantiation of the corresponding hypothesis), we can deduce the
+      goal by instantiating the hypothesis on $b,b'$.
 
       \nextcase $a \equiv \refl$ and $a' \equiv \seq(B,u'',v'')$.
       \meta{Perhaps we should treat it in the case of neutrals...}
