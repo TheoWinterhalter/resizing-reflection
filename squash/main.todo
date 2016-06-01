@@ -9,7 +9,7 @@ New version:
   ☐ We can probably remove the first line of validity (and then remove injectivity of function type)
   ✔ Fundamental theorem doesn't need proof when return type is definite (in most cases) @done(2016-06-01 11:29) @project(New version)
   ✔ Are substitutions needed? @done(2016-06-01 14:55) @project(New version)
-  ☐ Shouldn't seq be neutral?
+  ☐ Shouldn't seq be neutral? (or handle it in the elim whr)
 
 Problem with the substitution judgement:
   ✔ Change it again to ask conversion and |><| seperately @done(2016-06-01 16:25) @project(Problem with the substitution judgement)
@@ -24,6 +24,10 @@ New constraint for |><| for Pi:
   ✔ Add that u and u' are also convertible @done(2016-06-01 16:47) @project(New constraint for |><| for Pi)
   ☐ Adapt type conversion
   ✔ Adapt validity of eta @done(2016-06-01 16:49) @project(New constraint for |><| for Pi)
+  ☐ Remove the transport now that convertible
+  ☐ Adapt eta
+  ☐ Adapt lambda equality
+  ☐ Fix valiidty of application
 
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
@@ -52,6 +56,7 @@ Fundamental theorem:
   ☐ J compatibility
   ✔ J beta @done(2016-06-01 13:15) @project(Fundamental theorem)
   ☐ application compatibility
+  ☐ check validity of the type in application compatibility
   ✔ conversion rule @done(2016-06-01 13:34) @project(Fundamental theorem)
 
 Embedding:

@@ -931,10 +931,15 @@
 
   \begin{proof}
     \meta{Check $\Gamma \Der V[u/x]$.}
-    Assume arbitrary $\Delta \der \sigma : \Gamma$ and show
-    $\Delta \der t\sigma\ u\sigma \hEr t'\sigma\ u'\sigma : (V[u/x])\sigma$.
-    If $(V[u/x])\sigma$ is not a sort, it works directly.
-    Otherwise, \meta{We can't conclude it would seem...}
+    Assume arbitrary $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
+    $\Delta \der t\sigma\ u\sigma \hEr t'\sigma'\ u'\sigma' : (V[u/x])\sigma$.
+    We can instantiate the second hypothesis so
+    $\Delta \der u \sigma \hEr u' \sigma' : U \sigma$
+    (and $\Delta \der u \sigma = u' \sigma' : U \sigma$).
+    Thus, we can instantiate the first hypothesis to get
+    $\Delta \der t \sigma\ u \sigma \hEr (transport not needed) t' \sigma'\ u' \sigma' :
+    V\sigma[u\sigma/x]$.
+    \meta{The transport can be removed from the conclusion in $\Er$.}
   \end{proof}
 
   \begin{lemma}[Validity of $\J$ equality]
