@@ -865,17 +865,18 @@
     $\Gamma \Der T$ is implied by $\Gamma \Der f : U \to T$ and
     lemma~\ref{lem:fun-inj-valid}.
     %
-    Now assume $\Delta, \sigma$ such that
-    $\Delta \der \sigma : \Gamma$ and
+    Now assume $\Delta, \sigma, \sigma'$ such that
+    $\Delta \der \sigma \hEr \sigma' : \Gamma$ and
     show (for some $p$)
     \[\Delta \der \hideq{p}
     \elim(U \sigma,T \sigma,f \sigma,h \sigma,[t \sigma]) \hEr
-    f \sigma\ t \sigma : T \sigma.\]
+    f \sigma'\ t \sigma' : T \sigma.\]
     This reduces (by weak-head conversion) to showing
     $\Delta \der \hideq{p}
     f \sigma\ t \sigma \hEr
-    f \sigma\ t \sigma : T \sigma$.
-    This is done by reflexivity, knowing that $T \sigma$ is not a sort.
+    f \sigma'\ t \sigma' : T \sigma$.
+    This is done by reflexivity, knowing that $T \sigma$ is not a sort
+    and that the substitutions are indeed convertible.
   \end{proof}
 
   \begin{lemma}[Validity of $\elim$ equality]
