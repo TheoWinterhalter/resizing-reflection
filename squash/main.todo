@@ -20,6 +20,10 @@ Problem with the substitution judgement:
   ✔ Adapt beta validity @done(2016-06-01 16:32) @project(Problem with the substitution judgement)
   ✔ Adapt eta validity @done(2016-06-01 16:36) @project(Problem with the substitution judgement)
 
+New constraint for |><| for Pi:
+  ☐ Add that u and u' are also convertible
+  ☐ Adapt type conversion
+
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
   ✔ Prove it is a PER @done(2016-06-01 15:10) @project(New substitution judgement)
