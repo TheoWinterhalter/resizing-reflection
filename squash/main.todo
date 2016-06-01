@@ -17,7 +17,7 @@ Problem with the substitution judgement:
   ✔ Adapt validity PER @done(2016-06-01 16:28) @project(Problem with the substitution judgement)
   ✔ Adapt function type injectivity @done(2016-06-01 16:29) @project(Problem with the substitution judgement)
   ✔ Adapt context satisfiable @done(2016-06-01 16:29) @project(Problem with the substitution judgement)
-  ☐ Adapt beta validity
+  ✔ Adapt beta validity @done(2016-06-01 16:32) @project(Problem with the substitution judgement)
   ☐ Adapt eta validity
 
 New substitution judgement:
