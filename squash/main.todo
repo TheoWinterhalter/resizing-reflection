@@ -15,7 +15,7 @@ Fundamental theorem:
   ☐ J compatibility
   ✔ J beta @done(2016-06-01 13:15) @project(Fundamental theorem)
   ☐ application compatibility
-  ☐ conversion rule
+  ✔ conversion rule @done(2016-06-01 13:34) @project(Fundamental theorem)
 
 Embedding:
   ☐ Can the proof be adapted to handle the resizing for embedding?
