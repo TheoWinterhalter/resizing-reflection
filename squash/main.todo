@@ -4,7 +4,14 @@ New version:
   ✔ Transports may still be needed as we are using substitutions @done(2016-05-31 16:16) @project(New version)
     ✔ We could remove the substitution relation and only instantiate (couldn't we?) @done(2016-05-31 15:17) @project(New version)
   ✘ Function injectivity requires a substitution for T' @cancelled(2016-05-31 16:27) @project(New version)
-  ☐ Or we could remove dependecy in injectivity
+  ✔ Or we could remove dependecy in injectivity @done(2016-06-01 10:49) @project(New version)
+  ✔ Fix inversion @done(2016-06-01 10:49) @project(New version)
+  ☐ We can probably remove the first line of validity (and then remove injectivity of function type)
+  ☐ Fundamental theorem doesn't need proof when return type is definite (in most cases)
+
+Concerns:
+  ☐ Is recursive call necessary on bowtie?
+  ☐ Why doesn't it work with Type in Type?
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
