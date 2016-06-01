@@ -12,7 +12,7 @@ New version:
   ☐ Shouldn't seq be neutral?
 
 Problem with the substitution judgement:
-  ☐ Change it again to ask conversion and |><| seperately
+  ✔ Change it again to ask conversion and |><| seperately @done(2016-06-01 16:25) @project(Problem with the substitution judgement)
   ☐ Adapt PER
   ☐ Adapt validity PER
   ☐ Adapt function type injectivity
