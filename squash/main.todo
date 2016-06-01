@@ -9,6 +9,7 @@ New version:
   ☐ We can probably remove the first line of validity (and then remove injectivity of function type)
   ✔ Fundamental theorem doesn't need proof when return type is definite (in most cases) @done(2016-06-01 11:29) @project(New version)
   ☐ Are substitutions needed?
+  ☐ Shouldn't seq be neutral?
 
 Fundamental theorem:
   ☐ J compatibility

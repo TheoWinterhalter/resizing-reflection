@@ -862,7 +862,54 @@
     \end{caselist}
   \end{proof}
 
-  \meta{Remaining: $\J$ compatibility, application compatibility, $\J$ beta,
+  \begin{lemma}[Validity of $\J$ equality]
+    \leavevmode
+    \begin{mathc}
+      \tru{\Gamma \Der A = A' : s \qquad
+           \Gamma \Der C = C' : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
+         }{\Gamma \Der b = b' : \Pi x:A. C\ x\ x\ \refl_x
+         }{\Gamma \Der u = u' : A \qquad
+           \Gamma \Der v = v' : A \qquad
+           \Gamma \Der p = p' : \Id A\ u\ v
+         }{\Gamma \Der \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') : C\ u\ v\ p}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    $\Der \Gamma$ holds, as well as
+    $\Gamma \Der C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'$,
+    so does $\Gamma \Der C\ u\ v\ p : s'$ (it follows from the fact that
+    $C\ u\ v\ p$ is well-typed and obviously has the same as itself).
+
+    Now assume arbitrary $\Delta \der \sigma : \Gamma$ and show
+    \[\Gamma \der \J(A \sigma, C \sigma, b \sigma, u \sigma, v \sigma, p \sigma)
+    \hEr \J(A' \sigma, C' \sigma, b' \sigma, u' \sigma, v' \sigma, p' \sigma) :
+    C \sigma\ u \sigma\ v \sigma\ p \sigma.\]
+    %
+    We look at the normal forms (respectively $a$ and $a'$) of $p \sigma$ and
+    $p' \sigma$:
+    \begin{caselist}
+      \nextcase $a \equiv \refl$ and $a' \equiv \refl$.
+      \meta{TODO}
+
+      \nextcase $a \equiv \refl$ and $a' \equiv \seq(B,u'',v'')$.
+      \meta{TODO}
+
+      \nextcase $a \equiv \seq(B,t,w)$ and $a' \equiv \seq(B',t',w')$.
+      \meta{TODO}
+
+      \nextcase $a \equiv \refl$ and $a' \equiv n'$.
+      \meta{TODO}
+
+      \nextcase $a \equiv \seq(B,t,w)$ and $a' \equiv n'$.
+      \meta{TODO}
+
+      \nextcase $a \equiv n$ and $a' \equiv n'$.
+      \meta{TODO}
+    \end{caselist}
+  \end{proof}
+
+  \meta{Remaining: application compatibility, $\J$ beta,
   conversion rule}
 
   \begin{theorem}[Fundamental theorem of logical relations]
