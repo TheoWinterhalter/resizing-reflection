@@ -819,6 +819,8 @@
     $\Delta \der \hideq{p} f \sigma\ t \sigma \hEr
     f \sigma\ t \sigma : T \sigma$
     where $p$ is described from $q$ and $r$ in the agda file ($elim-beta$).
+    \meta{Here as well, we instantiate maybe a bit too fast, maybe we should
+    try and do the case of application before.}
   \end{proof}
 
   \begin{lemma}[Validity of $\elim$ equality]
@@ -1010,7 +1012,7 @@
       \item $\Gamma \der N \neq \Pi x:U.T$.
       \item $\Gamma \der N \neq \Id T\ u\ v$.
       \item $\Gamma \der N \neq \squash{T}$.
-      \item $\Gamma \der s = s'$ implies $\Id s s'$ is inhabited in $\Gamma$.
+      \item $\Gamma \der s = s'$ implies $\Id s\ s'$ is inhabited in $\Gamma$.
       \item $\Gamma \der s \neq \Pi x:U.T$.
       \item $\Gamma \der s \neq \Id T\ u\ v$.
       \item $\Gamma \der s \neq \squash{T}$.
