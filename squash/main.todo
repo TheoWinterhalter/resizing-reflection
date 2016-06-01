@@ -13,7 +13,7 @@ New version:
 
 Problem with the substitution judgement:
   ✔ Change it again to ask conversion and |><| seperately @done(2016-06-01 16:25) @project(Problem with the substitution judgement)
-  ☐ Adapt PER
+  ✔ Adapt PER @done(2016-06-01 16:26) @project(Problem with the substitution judgement)
   ☐ Adapt validity PER
   ☐ Adapt function type injectivity
   ☐ Adapt context satisfiable
