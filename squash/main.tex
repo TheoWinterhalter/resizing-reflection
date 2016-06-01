@@ -808,7 +808,22 @@
   \end{lemma}
 
   \begin{proof}
-    \meta{TODO}
+    Assume $\Delta \der \sigma : \Gamma$ and show
+    $\Delta \der \lambda x:U\sigma.t\sigma = \lambda x:U'\sigma.t'\sigma :
+    \Pi x:U\sigma.V\sigma$.
+    The basic equality is $\refl$.
+
+    Now assume $\Delta' \le \Delta$ and
+    $\Delta' \der \hideq{p} u \hEr u' : U\sigma$
+    and show $\Delta' \der \hideq{\app \refl\ p}
+    (\lambda x:U\sigma.t\sigma)\ u \hEr
+    (\ap (\lambda x.V\sigma)\ p\inv)_* ((\lambda x:U'\sigma.t'\sigma)\ u') :
+    \Pi x:U\sigma.V\sigma$ which reduces to proving
+    $\Delta' \der \hideq{\app \refl\ p}
+    (t\sigma)[u/x] \hEr (\ap (\lambda x.V\sigma)\ p\inv)_* ((t'\sigma)[u'/x]) :
+    \Pi x:U\sigma.V\sigma$.
+    \meta{This doesn't work as it is because we need to have different
+    substitutions on the left and the right (even though convertible).}
   \end{proof}
 
   \begin{lemma}[Validity of function equality]
