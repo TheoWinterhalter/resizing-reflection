@@ -8,6 +8,10 @@ New version:
   ✔ Fix inversion @done(2016-06-01 10:49) @project(New version)
   ☐ We can probably remove the first line of validity (and then remove injectivity of function type)
   ☐ Fundamental theorem doesn't need proof when return type is definite (in most cases)
+  ☐ Are substitutions needed?
+
+Embedding:
+  ☐ Can the proof be adapted to handle the resizing for embedding?
 
 Concerns:
   ☐ Is recursive call necessary on bowtie?
