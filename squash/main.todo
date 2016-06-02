@@ -15,6 +15,10 @@ New definition of |><| for Id:
   ☐ We need something that will allow J equality to be deduced
   ☐ Handle refl equality
   ☐ Handle seq equality
+  ☐ Complete J equality
+  ☐ Adapt J reduction
+  ☐ Adapt elim equality
+  ☐ Adapt elim reduction
 
 Problem with the substitution judgement:
   ✔ Change it again to ask conversion and |><| seperately @done(2016-06-01 16:25) @project(Problem with the substitution judgement)
@@ -32,7 +36,9 @@ New constraint for |><| for Pi:
   ✔ Remove the transport now that convertible @done(2016-06-01 17:33) @project(New constraint for |><| for Pi)
   ✔ Adapt eta @done(2016-06-01 17:35) @project(New constraint for |><| for Pi)
   ✔ Adapt lambda equality @done(2016-06-01 17:39) @project(New constraint for |><| for Pi)
-  ✔ Fix valiidty of application @done(2016-06-01 17:41) @project(New constraint for |><| for Pi)
+  ✔ Fix validity of application @done(2016-06-01 17:41) @project(New constraint for |><| for Pi)
+  ☐ Adapt elim equality
+  ☐ Adapt elim reduction
 
 New substitution judgement:
   ✔ Define it @done(2016-06-01 15:07) @project(New substitution judgement)
