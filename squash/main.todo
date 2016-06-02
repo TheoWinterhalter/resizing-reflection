@@ -11,6 +11,9 @@ New version:
   ✔ Are substitutions needed? @done(2016-06-01 14:55) @project(New version)
   ✔ Shouldn't seq be neutral? (or handle it in the elim whr) @done(2016-06-02 10:15) @project(New version)
 
+Into the logical relation is important:
+  ☐ Prove it!
+
 New definition of |><| for types:
   ☐ Add convertibility conditions to allow type conversion to work (at least for Id and Pi)
   ☐ Prove type conversion
