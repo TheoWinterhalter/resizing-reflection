@@ -997,13 +997,13 @@
   \end{lemma}
 
   \begin{proof}
-    Assume arbitrary $\Delta \der \sigma : \Gamma$ and show
+    Assume arbitrary $\Delta \der \sigma \hEr \sigma' : \Gamma$ and show
     $\Delta \der \J (A\sigma,C\sigma,b\sigma,u\sigma,u\sigma,\refl_{u\sigma})
-    \hEr b\sigma\ u\sigma : C\sigma\ u\sigma\ u\sigma\ \refl_{u\sigma}$.
+    \hEr b\sigma'\ u\sigma' : C\sigma\ u\sigma\ u\sigma\ \refl_{u\sigma}$.
     This reduces to showing
     $\Delta \der b\sigma\ u\sigma
-    \hEr b\sigma\ u\sigma : C\sigma\ u\sigma\ u\sigma\ \refl_{u\sigma}$
-    which holds in any case.
+    \hEr b\sigma'\ u\sigma' : C\sigma\ u\sigma\ u\sigma\ \refl_{u\sigma}$
+    which holds by instantiating the hypotheses on $b$ and $u$.
   \end{proof}
 
   \begin{lemma}[Validity of conversion]
