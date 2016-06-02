@@ -11,6 +11,11 @@ New version:
   ✔ Are substitutions needed? @done(2016-06-01 14:55) @project(New version)
   ✔ Shouldn't seq be neutral? (or handle it in the elim whr) @done(2016-06-02 10:15) @project(New version)
 
+New definition of |><| for Id:
+  ☐ We need something that will allow J equality to be deduced
+  ☐ Handle refl equality
+  ☐ Handle seq equality
+
 Problem with the substitution judgement:
   ✔ Change it again to ask conversion and |><| seperately @done(2016-06-01 16:25) @project(Problem with the substitution judgement)
   ✔ Adapt PER @done(2016-06-01 16:26) @project(Problem with the substitution judgement)

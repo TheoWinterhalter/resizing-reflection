@@ -972,20 +972,16 @@
       (by instantiation of the corresponding hypothesis), we can deduce the
       goal by instantiating the hypothesis on $b,b'$.
 
-      \nextcase $a \equiv \refl$ and $a' \equiv \seq(B,u'',v'')$.
-      \meta{Perhaps we should treat it in the case of neutrals...}
-
-      \nextcase $a \equiv \seq(B,t,w)$ and $a' \equiv \seq(B',t',w')$.
-      \meta{TODO}
-
       \nextcase $a \equiv \refl$ and $a' \equiv n'$.
-      \meta{TODO}
-
-      \nextcase $a \equiv \seq(B,t,w)$ and $a' \equiv n'$.
-      \meta{TODO}
+      This time, we have to show
+      \[\Delta \der b \sigma\ u\sigma
+      \hEr \J(A' \sigma', C' \sigma', b' \sigma', u' \sigma', v' \sigma', p'
+      \sigma') : C \sigma\ u \sigma\ v \sigma\ p \sigma.\]
+      \meta{We might need to add something in the definition of $\Er$ for $\J$
+      because there is no way to say they will reduce to the same...}
 
       \nextcase $a \equiv n$ and $a' \equiv n'$.
-      \meta{TODO}
+      \meta{Likewise}
     \end{caselist}
   \end{proof}
 
