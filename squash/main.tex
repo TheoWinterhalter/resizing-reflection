@@ -561,14 +561,16 @@
     \label{lem:s-conv}
     \leavevmode
     \begin{itemize}
-      \item If $\Gamma \der \hideq{p} A \Er A' : s$ and
+      \item If $\Gamma \der A = A' : s$ and
+      $\Gamma \der \hideq{p} A \Er A' : s$ and
       $\Gamma \der \hideq{q} a \Er a' : A$ then
-      $\Gamma \der \hideq{\ap p_*\ q} p_*\ a \Er p_*\ a' : A'$.
-      \item If $\Gamma \der \hideq{p} T \hEr T' : s$ and
+      $\Gamma \der \hideq{q} a \Er a' : A'$.
+      \item If $\Gamma \der T = T' : s$ and
+      $\Gamma \der \hideq{p} T \hEr T' : s$ and
       $\Gamma \der \hideq{q} t \hEr t : T$ then
-      $\Gamma \der \hideq{\ap p_*\ q} p_*\ t \Er p_*\ t' : T'$.
+      $\Gamma \der \hideq{q} t \Er t' : T'$.
     \end{itemize}
-    And in both cases, we have to converse using $p\inv$.
+    And in both cases, we have the converse.
   \end{lemma}
 
   \begin{proof}
@@ -576,7 +578,6 @@
     We only show the ``if'' direction.
 
     We show the case of functions, all the others are similar.
-    \meta{TODO: Update with new definition}
 
     \begin{caselist}
       \nextcase
@@ -587,10 +588,16 @@
             }{(s,s',s'')}
       \end{mathc}
       \begin{mathc}
-        \ru{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
-          }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.V}
+        \tru{\Gamma \der e : \Id (\Pi x:U.V)\ f\ f'
+           }{\forall \Delta \le \Gamma, \Delta \der \hideq{r} u \hEr u' : U
+             \gives
+             \Delta \der u = u' : U \gives
+           }{\Delta \der \hideq{\app e\ r} f\ u \hEr f'\ u' : V[u/x]
+           }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.V}
       \end{mathc}
-      Using $\ap (\pi\ p\ q)_*\ e$ we have the solution directly.
+      \meta{For this version to work, we need to add conversion conditions in
+      the definition of $\Er$ for types, otherwise we can't use the induction
+      hypothesis.}
     \end{caselist}
   \end{proof}
 
