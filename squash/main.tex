@@ -856,6 +856,32 @@
     We can then instantiate our third hypothesis to conclude.
   \end{proof}
 
+  \begin{lemma}[Validity of $\refl$ equality]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der t = t' : T \qquad
+        }{\Gamma \Der \refl_t = \refl_{t'} : \Id T\ t\ t}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
+  \begin{lemma}[Validity of $\seq$ equality]
+    \leavevmode
+    \begin{mathc}
+      \ru{\Gamma \Der T = T' : s \qquad
+          \Gamma \Der t = t' : \squash{T} \qquad
+          \Gamma \Der u = u' : \squash{T}
+        }{\Gamma \Der \seq(T,t,u) = \seq(T',t',u') : \Id \squash{T}\ t\ u}
+    \end{mathc}
+  \end{lemma}
+
+  \begin{proof}
+    \meta{TODO}
+  \end{proof}
+
   \begin{lemma}[Validity of $\elim$ reduction]
     \leavevmode
     \begin{mathc}
@@ -1042,8 +1068,8 @@
 
   \begin{proof}
     By induction on the derivation.
-    All the compatibility rules with a type $T \nequiv s$ are handled by
-    $\refl$, compatibility for types is also direct.
+    All the compatibility rules with a type $T \nequiv s, \Pi \_, \Id \_$ are
+    handled by $\refl$, compatibility for types is also direct.
     Equivalence rules are also direct (by lemma~\ref{lem:s-per} and by
     definition of typing validity as the diagonal).
     Typing validity also follows easily.
