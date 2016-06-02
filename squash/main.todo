@@ -14,6 +14,14 @@ New version:
 Into the logical relation is important:
   ☐ Prove it!
 
+|><|Id a subrelation of |><|:
+  ☐ This is needed to replace what we tried to do with J inside (which is bad)
+  ☐ Handle refl equality
+  ☐ Handle seq equality
+  ☐ Complete J equality
+  ☐ Adapt J reduction
+  ☐ Adapt elim equality
+
 New definition of |><| for types:
   ☐ Add convertibility conditions to allow type conversion to work (at least for Id and Pi)
   ☐ Prove type conversion
@@ -22,11 +30,11 @@ New definition of |><| for types:
 
 New definition of |><| for Id:
   ✔ We need something that will allow J equality to be deduced @done(2016-06-02 12:07) @project(New definition of |><| for Id)
-  ☐ Handle refl equality
-  ☐ Handle seq equality
-  ☐ Complete J equality
-  ☐ Adapt J reduction
-  ☐ Adapt elim equality
+  ✘ Handle refl equality @cancelled(2016-06-02 16:37) @project(New definition of |><| for Id)
+  ✘ Handle seq equality @cancelled(2016-06-02 16:37) @project(New definition of |><| for Id)
+  ✘ Complete J equality @cancelled(2016-06-02 16:37) @project(New definition of |><| for Id)
+  ✘ Adapt J reduction @cancelled(2016-06-02 16:37) @project(New definition of |><| for Id)
+  ✘ Adapt elim equality @cancelled(2016-06-02 16:37) @project(New definition of |><| for Id)
   ✔ Adapt elim reduction @done(2016-06-02 12:16) @project(New definition of |><| for Id)
 
 Problem with the substitution judgement:
