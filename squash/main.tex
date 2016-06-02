@@ -499,7 +499,7 @@
 
   \begin{mathc}
     \ru{\Gamma \der e : \Id A\ a\ a' \qquad
-        A \nequiv s, \Pi \_
+        A \nequiv s, \Pi \_, \Id \_
       }{\Gamma \der \hideq{e} a \Er a' : A}
     \qquad
     \ru{\Gamma \der \hideq{p} \red t \Er \red t' : \red T
@@ -514,8 +514,15 @@
        }{\Gamma \der \hideq{e} f \Er f' : \Pi x:U.T}
   \end{mathc}
 
-  \begin{center}
-  \(
+  \begin{mathc}
+    \tru{\Gamma \der e : \Id (\Id T\ u\ v)\ f\ f'
+       }{\forall T,T',U,U',b,b',u',v' \text{ with the expected conversions }
+         \gives
+       }{\Gamma \der \J(T,U,b,u,v,f) \hEr \J(T',U',b',u',v',f')
+       }{\Gamma \der \hideq{e} f \Er f' : \Id T\ u\ v}
+  \end{mathc}
+
+  \begin{mathc}
     \ru{\Gamma \der e : \Id s\ N\ N'
       }{\Gamma \der \hideq{e} N \Er N' : s}
     \qquad
@@ -524,17 +531,14 @@
     \qquad
     \ru{\Gamma \der e : \Id s\ T\ T'
       }{\Gamma \der \hideq{\squash{e}} \squash{T} \Er \squash{T'} : s'}
-  \)
-  \end{center}
+  \end{mathc}
 
-  \begin{center}
-  \(
+  \begin{mathc}
     \rux{\Gamma \der \hideq{p} U \hEr U' : s \qquad
           \Gamma, x:U \der \hideq{q} V \hEr V'[p_*\ x / x] : s'
         }{\Gamma \der \hideq{\pi\ p\ q} \Pi x:U.V \Er \Pi x:U'.V' : s''
         }{(s,s',s'')}
-  \)
-  \end{center}
+  \end{mathc}
 
   \begin{mathc}
     \ru{\Gamma \der \hideq{p} T \hEr T' : s \qquad

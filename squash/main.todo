@@ -18,7 +18,7 @@ New definition of |><| for types:
   ☐ Adapt function injectivity (it should become trivial)
 
 New definition of |><| for Id:
-  ☐ We need something that will allow J equality to be deduced
+  ✔ We need something that will allow J equality to be deduced @done(2016-06-02 12:07) @project(New definition of |><| for Id)
   ☐ Handle refl equality
   ☐ Handle seq equality
   ☐ Complete J equality
