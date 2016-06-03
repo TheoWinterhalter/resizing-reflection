@@ -19,6 +19,13 @@ Definition isInImg {A} {B} (f : emb A B) (b : B) : Prop :=
 Definition im@{i j k l} {A : Type@{i}} {B : Type@{j}} (f : emb@{i j k l} A B) : Type@{j} :=
   { b : B & isInImg f b }.
 
+Definition fib {A} {B} (f : A -> B) (y : B) :=
+  { x : A | f x = y }.
+
+Record contr A : Prop := Buildcontr
+  { point : A ;
+    ptctr : forall x : A, point = x }.
+
 Section Equiv.
 
   Universes i j k l.
@@ -31,12 +38,11 @@ Section Equiv.
     exists a. reflexivity.
   Defined.
 
-  Definition proj : im f -> A.
-    intros b. destruct b.
-    (* The problem is here, we can't destruct on the proof to get A in Type. *)
-
-  Definition injEquiv : isEquiv inj.
-    
+  Definition injEquiv : forall b : im f, contr (fib inj b).
+    intro b. destruct b as [b [a h]].
+    simple refine (Buildcontr _ (exist _ a _) _).
+    - simpl. unfold inj. now destruct h.
+    - intro x. destruct h. destruct x. unfold inj in e.
 
     
 End Equiv.
