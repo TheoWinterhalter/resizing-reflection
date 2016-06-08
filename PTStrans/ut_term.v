@@ -13,12 +13,15 @@ Require Import base.
 Module Type ut_term_mod (X: term_sig).
   Import X.
 (** Term syntax:*)
-Inductive Term : Set:=
+Inductive Term : Set :=
  | Var : Vars -> Term
  | Sort : Sorts -> Term
  | App : Term -> Term -> Term
  | Pi : Term -> Term -> Term
- | La :Term -> Term -> Term
+ | La : Term -> Term -> Term
+ | Id : Term -> Term -> Term -> Term
+ | refl : Term -> Term -> Term
+ | J : Term -> Term -> Term -> Term -> Term -> Term -> Term
 .
 
 Notation "x · y" := (App x y) (at level 15, left associativity) : UT_scope.
@@ -45,7 +48,10 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T} := match T with
    | ! s => Sort s
    | M · N =>  App (M ↑ n # k) (N ↑ n # k)
    | Π ( A ), B => Π (A ↑ n # k), (B ↑ n # (S k))
-   | λ [ A ], M => λ [A ↑ n # k], (M ↑ n # (S k)) 
+   | λ [ A ], M => λ [A ↑ n # k], (M ↑ n # (S k))
+   | Id A u v => Id (A ↑ n # k) (u ↑ n # k) (v ↑ n # k)
+   | refl A t => refl (A ↑ n # k) (t ↑ n # k)
+   | J A C b u v p => J (A ↑ n # k) (C ↑ n # k) (b ↑ n # k) (u ↑ n # k) (v ↑ n # k) (p ↑ n # k)
  end  
    where "t ↑ n # k" := (lift_rec n k t) : UT_scope.
 
@@ -57,22 +63,33 @@ ever need to handle de Bruijn indexes *)
 Lemma inv_lift : forall M N n m , M ↑ n # m = N ↑ n # m -> M = N.
 intros M; induction M; destruct N; intros;
 simpl in *; try (discriminate || intuition); (try (destruct (le_gt_dec m v) ; discriminate)).
-destruct (le_gt_dec m v); destruct (le_gt_dec m v0) ; injection H; intros; subst; intuition.
-apply plus_reg_l in H0; rewrite H0; trivial. 
-elim (lt_irrefl m). apply le_lt_trans with v. trivial. induction n; intuition.
-elim (lt_irrefl v0). apply lt_le_trans with m. induction n; intuition. trivial.
-injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n m H0); reflexivity.
-injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); reflexivity.
-injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); reflexivity.
+- destruct (le_gt_dec m v); destruct (le_gt_dec m v0) ; injection H; intros; subst; intuition.
+  + apply plus_reg_l in H0; rewrite H0; trivial.
+  + elim (lt_irrefl m). apply le_lt_trans with v.
+    * trivial.
+    * induction n; intuition.
+  + elim (lt_irrefl v0). apply lt_le_trans with m.
+    * induction n; intuition.
+    * trivial.
+- injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n m H0); reflexivity.
+- injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); reflexivity.
+- injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); reflexivity.
+- injection H ; intros ; rewrite (IHM1 N1 n m H2) ; rewrite (IHM2 N2 n m H1) ; rewrite (IHM3 N3 n m H0) ; reflexivity.
+- injection H; intros ; rewrite (IHM1 N1 n m H1) ; rewrite (IHM2 N2 n m H0) ; reflexivity.
+- injection H ; intros ; rewrite (IHM1 N1 n m H5) ; rewrite (IHM2 N2 n m H4) ; rewrite (IHM3 N3 n m H3) ;
+  rewrite (IHM4 N4 n m H2) ; rewrite (IHM5 N5 n m H1) ; rewrite (IHM6 N6 n m H0) ; reflexivity.
 Qed.
 
 Lemma lift_rec0 : forall M n, M ↑ 0 # n = M.
 induction M; intros; simpl.
-destruct (le_gt_dec n v); reflexivity.
-reflexivity.
-rewrite IHM1; rewrite IHM2; reflexivity.
-rewrite IHM1; rewrite IHM2; reflexivity.
-rewrite IHM1; rewrite IHM2; reflexivity. 
+- destruct (le_gt_dec n v); reflexivity.
+- reflexivity.
+- rewrite IHM1; rewrite IHM2; reflexivity.
+- rewrite IHM1; rewrite IHM2; reflexivity.
+- rewrite IHM1; rewrite IHM2; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; rewrite IHM4 ; rewrite IHM5 ; rewrite IHM6 ; reflexivity.
 Qed.
 
 Lemma lift0 : forall M, M ↑ 0 = M .
@@ -80,50 +97,59 @@ intros; apply lift_rec0.
 Qed.
 
 Lemma liftP1 : forall M i j  k, (M ↑ j # i) ↑ k # (j+i) = M ↑ (j+k) # i.
-intros M; induction M; intros;simpl.
-destruct (le_gt_dec i v); simpl.
-destruct (le_gt_dec (j+i) (j+v)); simpl. 
-rewrite plus_assoc. replace (k+j) with (j+k) by (apply plus_comm).  trivial. 
-apply plus_gt_reg_l in g. elim (lt_irrefl v).
-apply lt_le_trans with i; intuition.
-simpl; destruct (le_gt_dec (j+i)); intuition.
-elim (lt_irrefl v).
-apply lt_le_trans with i; intuition. induction j; intuition.
-reflexivity.
-rewrite IHM1;rewrite IHM2;reflexivity.
-rewrite IHM1; rewrite <-IHM2 ;replace (j+S i) with (S(j+i)) by intuition; reflexivity.
-rewrite IHM1; rewrite <- IHM2 ;replace (j+S i) with (S(j+i)) by intuition; reflexivity.
+intros M ; induction M ; intros ; simpl.
+- destruct (le_gt_dec i v) ; simpl.
+  + destruct (le_gt_dec (j+i) (j+v)) ; simpl.
+    * rewrite plus_assoc. replace (k+j) with (j+k) by (apply plus_comm).  trivial. 
+    * apply plus_gt_reg_l in g. elim (lt_irrefl v).
+      apply lt_le_trans with i; intuition.
+  + simpl; destruct (le_gt_dec (j+i)); intuition.
+    elim (lt_irrefl v).
+    apply lt_le_trans with i; intuition. induction j; intuition.
+- reflexivity.
+- rewrite IHM1;rewrite IHM2;reflexivity.
+- rewrite IHM1; rewrite <-IHM2 ;replace (j+S i) with (S(j+i)) by intuition; reflexivity.
+- rewrite IHM1; rewrite <- IHM2 ;replace (j+S i) with (S(j+i)) by intuition; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; reflexivity.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; rewrite IHM4 ; rewrite IHM5 ; rewrite IHM6 ; reflexivity.
 Qed.
 
 Lemma liftP2: forall M i j k n, i <= n ->
   (M ↑ j # i) ↑ k # (j+n) = (M ↑ k # n) ↑ j # i.
-intro M; induction M; intros; simpl.
-destruct (le_gt_dec i v); destruct (le_gt_dec n v).
-simpl.
-destruct le_gt_dec. destruct le_gt_dec.
-rewrite 2! plus_assoc. replace (k+j) with (j+k) by (apply plus_comm).  trivial. 
-elim (lt_irrefl v). apply lt_le_trans with i. induction k; intuition. trivial.
-apply plus_gt_reg_l in g. elim (lt_irrefl v).
-apply lt_le_trans with n; intuition.
-simpl.
-destruct le_gt_dec. apply plus_le_reg_l in l0. elim (lt_irrefl v).
-apply lt_le_trans with n; intuition. destruct le_gt_dec. trivial.
-elim (lt_irrefl v). apply lt_le_trans with i; intuition.
-simpl. destruct le_gt_dec. elim (lt_irrefl n). apply lt_le_trans with i.
-apply le_lt_trans with v; intuition. trivial. elim (lt_irrefl v).
-apply lt_le_trans with n. apply lt_le_trans with i; intuition. trivial.
-simpl. destruct le_gt_dec. elim (lt_irrefl v). apply lt_le_trans with n.
-intuition. induction j; intuition. destruct le_gt_dec. elim (lt_irrefl i).
-apply le_lt_trans with v; intuition. trivial.
+intro M; induction M; intros; simpl. 
+destruct (le_gt_dec i v); destruct (le_gt_dec n v). 
+simpl. 
+destruct le_gt_dec. destruct le_gt_dec. 
+rewrite 2! plus_assoc. replace (k+j) with (j+k) by (apply plus_comm). trivial. 
+elim (lt_irrefl v). apply lt_le_trans with i. induction k; intuition. trivial. 
+apply plus_gt_reg_l in g. elim (lt_irrefl v). 
+apply lt_le_trans with n; intuition. 
+simpl. 
+destruct le_gt_dec. apply plus_le_reg_l in l0. elim (lt_irrefl v). 
+apply lt_le_trans with n; intuition. destruct le_gt_dec. trivial. 
+elim (lt_irrefl v). apply lt_le_trans with i; intuition. 
+simpl. destruct le_gt_dec. elim (lt_irrefl n). apply lt_le_trans with i. 
+apply le_lt_trans with v; intuition. trivial. elim (lt_irrefl v). 
+apply lt_le_trans with n. apply lt_le_trans with i; intuition. trivial. 
+simpl. destruct le_gt_dec. elim (lt_irrefl v). apply lt_le_trans with n. 
+intuition. induction j; intuition. destruct le_gt_dec. elim (lt_irrefl i). 
+apply le_lt_trans with v; intuition. trivial. 
 trivial.
 
-rewrite IHM1; intuition;  rewrite IHM2; intuition;  reflexivity.
-rewrite IHM1; intuition.
-replace (S(j+n)) with (j+S n) by intuition.
-rewrite (IHM2 (S i) j k (S n)); intuition.
-rewrite IHM1; intuition.
-replace (S(j+n)) with (j+S n) by intuition.
-rewrite (IHM2 (S i) j k (S n) ); intuition.
+- rewrite IHM1; intuition;  rewrite IHM2; intuition;  reflexivity.
+- rewrite IHM1; intuition.
+  replace (S(j+n)) with (j+S n) by intuition.
+  rewrite (IHM2 (S i) j k (S n)); intuition.
+- rewrite IHM1; intuition.
+  replace (S(j+n)) with (j+S n) by intuition.
+  rewrite (IHM2 (S i) j k (S n) ); intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ;
+  rewrite IHM3 ; intuition ; reflexivity.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; reflexivity.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ;
+  rewrite IHM3 ; intuition ; rewrite IHM4 ; intuition ;
+  rewrite IHM5 ; intuition ; rewrite IHM6 ; intuition ; reflexivity.
 Qed.
 
 Lemma liftP3 : forall M i k j n , i <= k -> k <= (i+n) ->
@@ -136,9 +162,13 @@ apply le_lt_trans with (n+v). rewrite plus_comm. intuition. intuition. trivial.
 destruct (le_gt_dec k v); intuition. elim (lt_irrefl k).
 apply lt_le_trans with i.  apply le_lt_trans with v. trivial. intuition. trivial.
 reflexivity.
-rewrite IHM1; intuition;rewrite IHM2; intuition.
-rewrite IHM1; intuition;rewrite IHM2; intuition. change (S i + n) with (S (i+n)). intuition.
-rewrite IHM1; intuition; rewrite IHM2; intuition. change (S i + n) with (S (i+n)). intuition.
+- rewrite IHM1; intuition;rewrite IHM2; intuition.
+- rewrite IHM1; intuition;rewrite IHM2; intuition. change (S i + n) with (S (i+n)). intuition.
+- rewrite IHM1; intuition; rewrite IHM2; intuition. change (S i + n) with (S (i+n)). intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition ;
+  rewrite IHM4 ; intuition ; rewrite IHM5 ; intuition ; rewrite IHM6 ; intuition.
 Qed.
 
 
@@ -164,7 +194,10 @@ Fixpoint subst_rec U T n {struct T} :=
   | ! s => ! s
   | M · N => (M [ n ← U ]) · ( N [ n ← U ]) 
   | Π ( A ), B => Π ( A [ n ← U ] ), (B [ S n ← U ]) 
-  | λ [ A ], M => λ [ A [ n ← U ] ], (M [ S n ← U ]) 
+  | λ [ A ], M => λ [ A [ n ← U ] ], (M [ S n ← U ])
+  | Id A u v => Id (A [n ← U]) (u [n ← U]) (v [n ← U])
+  | refl A u => refl (A [n ← U]) (u [n ← U])
+  | J A C b u v p => J (A [n ← U]) (C [n ← U]) (b [n ← U]) (u [n ← U]) (v [n ← U]) (p [n ← U])
 end
     where " t [ n ← w ] " := (subst_rec w t n) : UT_scope.
 
@@ -214,12 +247,17 @@ destruct (lt_eq_lt_dec) as [[] | ]. elim (lt_irrefl j); apply lt_trans with v; t
 subst. elim (lt_irrefl j); trivial. trivial.
 simpl; trivial.
 simpl; rewrite IHM1; intuition; rewrite IHM2; intuition.
-simpl; rewrite IHM1; intuition.
-replace (S(S(j+i))) with (S((S j)+i)) by intuition.
-rewrite <- (IHM2 N i (S j)  k ); intuition.
-simpl; rewrite IHM1; intuition.
-replace (S(S(j+i))) with ((S ((S j)+i))) by intuition.
-rewrite <- (IHM2 N i (S j)  k ); intuition.
+- simpl; rewrite IHM1; intuition.
+  replace (S(S(j+i))) with (S((S j)+i)) by intuition.
+  rewrite <- (IHM2 N i (S j)  k ); intuition.
+- simpl; rewrite IHM1; intuition.
+  replace (S(S(j+i))) with ((S ((S j)+i))) by intuition.
+  rewrite <- (IHM2 N i (S j)  k ); intuition.
+- simpl ; rewrite IHM1 ; intuition.
+  rewrite IHM2 ; intuition.
+  rewrite IHM3 ; intuition.
+- simpl ; rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition.
+- simpl ; rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; rewrite IHM4 ; rewrite IHM5 ; rewrite IHM6 ; intuition.
 Qed.
 
 Lemma substP2: forall M N i j n, i <= n ->
@@ -258,15 +296,19 @@ simpl. elim (lt_irrefl n). apply lt_le_trans with v; intuition.
 apply le_trans with i; intuition.
 trivial.
 
-rewrite IHM1; intuition;rewrite IHM2; intuition.
-rewrite IHM1; intuition;
-rewrite <- (IHM2 N (S i) j (S n)); intuition.
-replace (S(j+n)) with (j+(S n)) by intuition.
-reflexivity.
-rewrite IHM1; intuition;
-rewrite <- (IHM2 N (S i) j (S n)); intuition.
-replace (S(j+n)) with (j+(S n)) by intuition.
-reflexivity.
+- rewrite IHM1; intuition;rewrite IHM2; intuition.
+- rewrite IHM1; intuition;
+  rewrite <- (IHM2 N (S i) j (S n)); intuition.
+  replace (S(j+n)) with (j+(S n)) by intuition.
+  reflexivity.
+- rewrite IHM1; intuition;
+  rewrite <- (IHM2 N (S i) j (S n)); intuition.
+  replace (S(j+n)) with (j+(S n)) by intuition.
+  reflexivity.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition ;
+  rewrite IHM4 ; intuition ; rewrite IHM5 ; intuition ; rewrite IHM6 ; intuition.
 Qed.
 
 
@@ -285,12 +327,16 @@ simpl. destruct (lt_eq_lt_dec v k) as [[] | ].
 reflexivity. subst. elim (lt_irrefl i). apply le_lt_trans with k; intuition.
 elim (lt_irrefl k). apply lt_trans with v; trivial. apply lt_le_trans with i; intuition.
 
-reflexivity.
-rewrite IHM1; intuition;rewrite IHM2; intuition.
-rewrite IHM1; intuition; rewrite <- (IHM2 N (S i) (S k) n); intuition.
-change (S i + n) with (S (i+n)). intuition.
-rewrite IHM1; intuition; rewrite <- (IHM2 N (S i) (S k) n); intuition.
-change (S i + n) with (S (i+n)). intuition.
+- reflexivity.
+- rewrite IHM1; intuition;rewrite IHM2; intuition.
+- rewrite IHM1; intuition; rewrite <- (IHM2 N (S i) (S k) n); intuition.
+  change (S i + n) with (S (i+n)). intuition.
+- rewrite IHM1; intuition; rewrite <- (IHM2 N (S i) (S k) n); intuition.
+  change (S i + n) with (S (i+n)). intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition.
+- rewrite IHM1 ; intuition ; rewrite IHM2 ; intuition ; rewrite IHM3 ; intuition ;
+  rewrite IHM4 ; intuition ; rewrite IHM5 ; intuition ; rewrite IHM6 ; intuition.
 Qed.
 
 Lemma substP4: forall M N P i j, 
@@ -341,7 +387,11 @@ rewrite IHM1; rewrite IHM2; intuition.
 rewrite IHM1; replace (S(S(i+j))) with (S((S i)+ j)) by intuition;
   rewrite <- (IHM2 N P (S i)); replace (S(i+j)) with ((S i)+ j) by intuition; intuition.
 rewrite IHM1; replace (S(S(i+j))) with (S((S i)+j)) by intuition;
-  rewrite <- (IHM2 N P (S i)); replace (S(i+j)) with ((S i)+ j) by intuition; intuition.
+rewrite <- (IHM2 N P (S i)); replace (S(i+j)) with ((S i)+ j) by intuition; intuition.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; intuition.
+- rewrite IHM1 ; rewrite IHM2 ; intuition.
+- rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ;
+  rewrite IHM4 ; rewrite IHM5 ; rewrite IHM6 ; intuition.
 Qed.
 
 Lemma subst_travers : 
@@ -370,6 +420,10 @@ simpl; trivial.
 simpl. rewrite IHM1. rewrite IHM2. reflexivity.
 simpl. rewrite IHM1. rewrite IHM2. reflexivity.
 simpl. rewrite IHM1. rewrite IHM2. reflexivity.
+- simpl. rewrite IHM1. rewrite IHM2. rewrite IHM3. reflexivity.
+- simpl. rewrite IHM1. rewrite IHM2. reflexivity.
+- simpl. rewrite IHM1. rewrite IHM2. rewrite IHM3.
+  rewrite IHM4. rewrite IHM5. rewrite IHM6. reflexivity.
 Qed.
 
 End ut_term_mod.
