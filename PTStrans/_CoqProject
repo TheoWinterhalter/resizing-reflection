@@ -1,0 +1,23 @@
+-R . ""
+COQC = /usr/local/bin/coqc
+COQTOP = /usr/local/bin/coqtop
+
+base.v
+env.v
+f_end.v
+f_equivalence.v
+f_term.v
+f_typ.v
+f_typ2.v
+final_result.v
+glue.v
+red.v
+strip.v
+term.v
+typ_annot.v
+ut_env.v
+ut_red.v
+ut_sr.v
+ut_term.v
+ut_typ_eq.v
+ut_typ.v
