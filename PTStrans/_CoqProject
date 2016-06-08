@@ -1,6 +1,4 @@
 -R . ""
-COQC = /usr/local/bin/coqc
-COQTOP = /usr/local/bin/coqtop
 
 base.v
 env.v
