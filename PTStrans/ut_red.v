@@ -16,13 +16,25 @@ Module Type ut_red_mod (X:term_sig)  (TM : ut_term_mod X).
 Reserved Notation " A → B " (at level 80).
 
 Inductive Beta : Term -> Term -> Prop :=
- | Beta_head : forall A M  N , (λ[A], M)· N → M [← N]
- | Beta_red1 : forall M M' N , M → M' -> M · N  → M'· N
- | Beta_red2 : forall M N  N', N → N' -> M · N  → M · N'
- | Beta_lam  : forall A M  M', M → M' -> λ[A],M → λ[A ],M'
- | Beta_lam2 : forall A A' M , A → A' -> λ[A],M → λ[A'],M
- | Beta_pi   : forall A B  B', B → B' -> Π(A),B → Π(A ),B'
- | Beta_pi2  : forall A A' B , A → A' -> Π(A),B → Π(A'),B
+| Beta_head  : forall A M  N             , (λ[A], M)· N → M [← N]
+| Beta_red1  : forall M M' N             , M → M' -> M · N         → M'· N
+| Beta_red2  : forall M N  N'            , N → N' -> M · N         → M · N'
+| Beta_lam   : forall A M  M'            , M → M' -> λ[A],M        → λ[A ],M'
+| Beta_lam2  : forall A A' M             , A → A' -> λ[A],M        → λ[A'],M
+| Beta_pi    : forall A B  B'            , B → B' -> Π(A),B        → Π(A ),B'
+| Beta_pi2   : forall A A' B             , A → A' -> Π(A),B        → Π(A'),B
+| Beta_id    : forall A A' u  v          , A → A' -> Id A u v      → Id A' u  v
+| Beta_id2   : forall A u  u' v          , u → u' -> Id A u v      → Id A  u' v
+| Beta_id3   : forall A u  v  v'         , v → v' -> Id A u v      → Id A  u  v'
+| Beta_refl  : forall A A' u             , A → A' -> refl A u      → refl A' u
+| Beta_refl2 : forall A u  u'            , u → u' -> refl A u      → refl A  u'
+| Beta_j     : forall A A' C  b  u  v  p , A → A' -> J A C b u v p → J A' C  b  u  v  p
+| Beta_j2    : forall A C  C' b  u  v  p , C → C' -> J A C b u v p → J A  C' b  u  v  p
+| Beta_j3    : forall A C  b  b' u  v  p , b → b' -> J A C b u v p → J A  C  b' u  v  p
+| Beta_j4    : forall A C  b  u  u' v  p , u → u' -> J A C b u v p → J A  C  b  u' v  p
+| Beta_j5    : forall A C  b  u  v  v' p , v → v' -> J A C b u v p → J A  C  b  u  v' p
+| Beta_j6    : forall A C  b  u  v  p  p', p → p' -> J A C b u v p → J A  C  b  u  v  p'
+| Beta_jred  : forall A C  b  u          , J A C b u u (refl A u) → b · u
 where "M → N" := (Beta M N) : UT_scope.
 
 Reserved Notation " A →→ B " (at level 80).
@@ -38,7 +50,7 @@ Reserved Notation " A ≡ B " (at level 80).
 Inductive Betac : Term -> Term -> Prop :=
  | Betac_Betas : forall M N  , M →→ N -> M ≡ N
  | Betac_sym   : forall M N  , M ≡ N  -> N ≡ M
- | Betac_trans : forall M N P, M ≡ N   -> N ≡ P -> M ≡ P
+ | Betac_trans : forall M N P, M ≡ N  -> N ≡ P -> M ≡ P
 where " A ≡ B " := (Betac A B)  : UT_scope.
 
 Hint Constructors Beta.
@@ -113,6 +125,109 @@ Qed.
 
 Hint Resolve Betac_Pi.
 
+Lemma Betas_Id : forall A A' u u' v v', A →→ A' -> u →→ u' -> v →→ v' -> Id A u v →→ Id A' u' v'.
+  assert (forall a b c d, a →→ b -> Id c d a →→ Id c d b).
+  { induction 1 ; eauto. }
+  assert (forall a b c d, a →→ b -> Id c a d →→ Id c b d).
+  { induction 1 ; eauto. }
+  assert (forall a b c d, a →→ b -> Id a c d →→ Id b c d).
+  { induction 1 ; eauto. }
+  assert (forall A A' u u' v, A →→ A' -> u →→ u' -> Id A u v →→ Id A' u' v).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betas_Id.
+
+Lemma Betac_Id : forall A A' u u' v v', A ≡ A' -> u ≡ u' -> v ≡ v' -> Id A u v ≡ Id A' u' v'.
+  assert (forall a b c d, a ≡ b -> Id c d a ≡ Id c d b).
+  { induction 1 ; eauto. }
+  assert (forall a b c d, a ≡ b -> Id c a d ≡ Id c b d).
+  { induction 1 ; eauto. }
+  assert (forall a b c d, a ≡ b -> Id a c d ≡ Id b c d).
+  { induction 1 ; eauto. }
+  assert (forall A A' u u' v, A ≡ A' -> u ≡ u' -> Id A u v ≡ Id A' u' v).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betac_Id.
+
+Lemma Betas_refls : forall A A' u u', A →→ A' -> u →→ u' -> refl A u →→ refl A' u'.
+  assert (forall a b c, a →→ b -> refl c a →→ refl c b).
+  { induction 1 ; eauto. }
+  assert (forall a b c, a →→ b -> refl a c →→ refl b c).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betas_refls.
+
+Lemma Betac_refls : forall A A' u u', A ≡ A' -> u ≡ u' -> refl A u ≡ refl A' u'.
+  assert (forall a b c, a ≡ b -> refl c a ≡ refl c b).
+  { induction 1 ; eauto. }
+  assert (forall a b c, a ≡ b -> refl a c ≡ refl b c).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betac_refls.
+
+Lemma Betas_J : forall A A' C C' b b' u u' v v' p p',
+                  A →→ A' -> C →→ C' -> b →→ b' -> u →→ u' -> v →→ v' -> p →→ p' ->
+                  J A C b u v p →→ J A' C' b' u' v' p'.
+  assert (forall a b c d e f g, a →→ b -> J c d e f g a →→ J c d e f g b).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a →→ b -> J c d e f a g →→ J c d e f b g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a →→ b -> J c d e a f g →→ J c d e b f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a →→ b -> J c d a e f g →→ J c d b e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a →→ b -> J c a d e f g →→ J c b d e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a →→ b -> J a c d e f g →→ J b c d e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h, a →→ b -> c →→ d -> J a c e f g h →→ J b d e f g h).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i, a →→ b -> c →→ d -> e →→ f -> J a c e g h i →→ J b d f g h i).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i j, a →→ b -> c →→ d -> e →→ f -> g →→ h -> J a c e g i j →→ J b d f h i j).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i j k, a →→ b -> c →→ d -> e →→ f -> g →→ h -> i →→ j -> J a c e g i k →→ J b d f h j k).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betas_J.
+
+Lemma Betac_J : forall A A' C C' b b' u u' v v' p p',
+                  A ≡ A' -> C ≡ C' -> b ≡ b' -> u ≡ u' -> v ≡ v' -> p ≡ p' ->
+                  J A C b u v p ≡ J A' C' b' u' v' p'.
+  assert (forall a b c d e f g, a ≡ b -> J c d e f g a ≡ J c d e f g b).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a ≡ b -> J c d e f a g ≡ J c d e f b g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a ≡ b -> J c d e a f g ≡ J c d e b f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a ≡ b -> J c d a e f g ≡ J c d b e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a ≡ b -> J c a d e f g ≡ J c b d e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g, a ≡ b -> J a c d e f g ≡ J b c d e f g).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h, a ≡ b -> c ≡ d -> J a c e f g h ≡ J b d e f g h).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i, a ≡ b -> c ≡ d -> e ≡ f -> J a c e g h i ≡ J b d f g h i).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i j, a ≡ b -> c ≡ d -> e ≡ f -> g ≡ h -> J a c e g i j ≡ J b d f h i j).
+  { induction 1 ; eauto. }
+  assert (forall a b c d e f g h i j k, a ≡ b -> c ≡ d -> e ≡ f -> g ≡ h -> i ≡ j -> J a c e g i k ≡ J b d f h j k).
+  { induction 1 ; eauto. }
+  eauto.
+Qed.
+
+Hint Resolve Betac_J.
 
 Lemma Beta_beta : forall M N P n,  M → N ->  M[n←P] → N[n←P] .
 intros.
@@ -155,7 +270,24 @@ destruct (IHBetas2 C' D') as (C'' & D'' &?); intuition.
 exists C''; exists D''; eauto.
 Qed.
 
-
+Lemma Betas_Id_inv : forall A u v N, Id A u v →→ N ->
+                                exists B, exists w, exists z, N = Id B w z /\ A →→ B /\ u →→ w /\ v →→ z.
+  intros A u v N h.
+  remember (Id A u v) as P. revert A u v HeqP ; induction h ; intros ; subst ; eauto.
+  - exists A ; exists u ; exists v ; intuition.
+  - inversion H ; subst ; clear H.
+    + exists A' ; exists u  ; exists v  ; intuition.
+    + exists A  ; exists u' ; exists v  ; intuition.
+    + exists A  ; exists u  ; exists v' ; intuition.
+  - destruct (IHh1 A u v) as (B' & u' & v' & ?).
+    + reflexivity.
+    + destruct (IHh2 B' u' v') as (B'' & u'' & v'' & ?).
+      * apply H.
+      * exists B'' ; exists u'' ; exists v''.
+        repeat split ; try apply H0 ;
+        (eapply Betas_trans ; try apply H ; try apply H0).
+Qed.
+        
 (** Lift properties.*)
 Lemma Beta_lift: forall M N  n m, M → N -> M ↑ n # m → N ↑ n # m .
 intros.
@@ -192,7 +324,8 @@ Hint Resolve Beta_lift Betas_lift Betac_lift.
 (** Subst properties.*)
 Lemma Betas_subst : forall M P P' n, P →→ P' -> M [n←P] →→ M[n← P']. 
 induction M; intros; simpl; eauto.
-destruct (lt_eq_lt_dec v n); intuition.
+- destruct (lt_eq_lt_dec v n); intuition.
+- apply Betas_J ; eauto.
 Qed.
 
 Hint Resolve Betas_subst.
@@ -224,12 +357,18 @@ Reserved Notation "M →' N" (at level 80).
 
 (** Beta parallel definition. *)
 Inductive Betap : Term -> Term -> Prop :=
- | Betap_sort : forall s          , !s →' !s
- | Betap_var  : forall x          , #x →' #x
- | Betap_lam  : forall A A' M M'  , A →' A' -> M →' M' -> λ[A],M →' λ[A'],M'
- | Betap_pi   : forall A A' B B'  , A →' A' -> B →' B' -> Π(A),B →' Π(A'),B'
- | Betap_app  : forall M M' N N'  , M →' M' -> N →' N' -> M · N  →' M' · N'
- | Betap_head : forall A M M' N N', M →' M' -> N →' N' -> (λ[A],M)· N →' M'[← N']
+ | Betap_sort : forall s                              , !s →' !s
+ | Betap_var  : forall x                              , #x →' #x
+ | Betap_lam  : forall A A' M  M'                     , A →' A' -> M →' M' -> λ[A],M →' λ[A'],M'
+ | Betap_pi   : forall A A' B  B'                     , A →' A' -> B →' B' -> Π(A),B →' Π(A'),B'
+ | Betap_app  : forall M M' N  N'                     , M →' M' -> N →' N' -> M · N  →' M' · N'
+ | Betap_head : forall A M  M' N  N'                  , M →' M' -> N →' N' -> (λ[A],M)· N →' M'[← N']
+ | Betap_id   : forall A A' M  M' N  N'               , A →' A' -> M →' M' -> N →' N' -> Id A M N →' Id A' M' N'
+ | Betap_rfl  : forall A A' M  M'                     , A →' A' -> M →' M' -> refl A M →' refl A' M'
+ | Betap_j    : forall A A' C  C' b  b' u u' v v' p p', A →' A' -> C →' C' -> b →' b' -> u →' u' -> v →' v' -> p →' p' ->
+                                                   J A C b u v p →' J A' C' b' u' v' p'
+ | Betap_jred : forall A C  b  b' u  u'               , b →' b' -> u →' u' ->
+                                                   J A C b u u (refl A u) →' b' · u'
 where "M →' N" := (Betap M N) : UT_scope.
 
 
@@ -303,6 +442,26 @@ exists (M''[← N'']); intuition.
 destruct (IHBetap2 N'0 H7) as (N'' & ?& ?).
 destruct (IHBetap1 M'0 H6) as (M'' & ?& ?).
 exists (M''[← N'']); intuition.
+(**)
+- inversion H2 ; subst ; clear H2.
+  destruct (IHBetap3 N'0 H9) as (N'' & ? & ?).
+  destruct (IHBetap2 M'0 H8) as (M'' & ? & ?).
+  destruct (IHBetap1 A'0 H6) as (A'' & ? & ?).
+  exists (Id A'' M'' N''). intuition.
+- inversion H1 ; subst ; clear H1.
+  destruct (IHBetap1 A'0 H4) as (A'' & ? & ?).
+  destruct (IHBetap2 M'0 H6) as (M'' & ? & ?).
+  exists (refl A'' M'') ; intuition.
+- inversion H5 ; subst ; clear H5.
+  + destruct (IHBetap1 A'0 H12) as (A'' & ? & ?).
+    destruct (IHBetap2 C'0 H14) as (C'' & ? & ?).
+    destruct (IHBetap3 b'0 H15) as (b'' & ? & ?).
+    destruct (IHBetap4 u'0 H16) as (u'' & ? & ?).
+    destruct (IHBetap5 v'0 H17) as (v'' & ? & ?).
+    destruct (IHBetap6 p'0 H18) as (p'' & ? & ?).
+    exists (J A'' C'' b'' u'' v'' p'') ; intuition.
+  + inversion H4 ; subst ; clear H4.
+    (*** TODO Maybe bad reduction rule for J (A and A' or something?) *)
 Qed.
 
 
