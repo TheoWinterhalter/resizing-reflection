@@ -7,6 +7,7 @@ Require Import List.
 Require Import Peano_dec.
 Require Import Compare_dec.
 Require Import Lt Le Gt Plus Minus.
+Require Import Omega.
 
 Module ut_typ_mod (X:term_sig) (Y:pts_sig X) (TM: ut_term_mod X) (EM: ut_env_mod X TM) (RM: ut_red_mod X TM).
   Import X Y TM EM RM.
@@ -28,7 +29,7 @@ with typ : Env -> Term -> Term -> Prop :=
    A::Γ ⊢ B : !s2 -> A::Γ ⊢ M : B -> Γ ⊢ λ[A], M : Π(A), B
  | cApp  : forall Γ M N A B, Γ ⊢ M : Π(A), B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[←N]
  | cId   : forall Γ A u v s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ Id A u v : !s
- | cRefl : forall Γ A u, Γ ⊢ u : A -> Γ ⊢ refl A u : Id A u u
+ | cRefl : forall Γ A u s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ refl A u : Id A u u
  | cJ    : forall Γ A C b u v p s t, Γ ⊢ A : !s -> Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
                                 Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
                                 Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ p : Id A u v ->
@@ -109,13 +110,13 @@ Lemma gen_id : forall Γ A u v T, Γ ⊢ Id A u v : T -> exists s,
     + exists t ; intuition. eauto.
 Qed.
 
-Lemma gen_refl : forall Γ A u T, Γ ⊢ refl A u : T -> Γ ⊢ u : A /\ T ≡ Id A u u.
+Lemma gen_refl : forall Γ A u T, Γ ⊢ refl A u : T -> exists s, Γ ⊢ A : !s /\ Γ ⊢ u : A /\ T ≡ Id A u u.
   intros Γ A u T h. remember (refl A u) as P. revert A u HeqP.
   induction h ; intros ; subst ; try discriminate.
-  - injection HeqP ; intros ; subst ; clear HeqP ; intuition.
-  - destruct (IHh1 A0 u).
+  - exists s ; injection HeqP ; intros ; subst ; clear HeqP ; intuition.
+  - destruct (IHh1 A0 u) as (t & hA & hu & hi).
     + reflexivity.
-    + intuition. eauto.
+    + exists t ; intuition. eauto.
 Qed.
 
 Lemma gen_j : forall Γ A C b u v p T, Γ ⊢ J A C b u v p : T -> exists s t, T ≡ C · u · v · p /\
@@ -295,7 +296,7 @@ Qed.
   untyped sorts (also called top-sorts).*)
 Theorem TypeCorrect : forall Γ M T, Γ ⊢ M : T  ->
  (exists s, T = !s) \/ (exists s, Γ ⊢ T : !s).
-intros; induction H.
+intros Γ M T H ; induction H.
 (*1*)
 - left; exists t; reflexivity.
 (*2*)
@@ -312,8 +313,12 @@ intros; induction H.
   eauto.
 (*NaN*)
 - left ; exists s ; trivial.
-- right. destruct IHtyp as [[s h] | [s h]].
-  + (* We need to add a typing condition for A in Id A u v *)
+- right. exists s. apply cId ; eauto.
+  (* - clear IHtyp1 IHtyp2 IHtyp4 IHtyp5 IHtyp6 ; destruct IHtyp3 as [[s' h] | [s' h]] ; try discriminate. *)
+- right ; exists t.
+  apply (cApp _ C u) in H0 ; try (apply H2) ; simpl in H0. rewrite 2!substP3 in H0 ; try omega. rewrite lift0 in H0.
+  apply (cApp _ (C · u) v) in H0 ; try (apply H3) ; simpl in H0. rewrite 2!substP3 in H0 ; try easy. rewrite 3!lift0 in H0.
+  now apply (cApp _ (C · u · v) p) in H0 ; try (apply H4) ; simpl in H0.
 (*8*)
 - right; exists s; trivial.
 Qed.
