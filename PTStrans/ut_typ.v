@@ -408,11 +408,11 @@ Lemma wf_ltyp : forall Γ M T, Γ ⊢' M : T -> Γ ⊣'.
 Proof.
 induction 1; intros; trivial.
 (**)
-now constructor.
+- now constructor.
 (**)
-now apply lwf_cons with (s:=s).
+- now apply lwf_cons with (s:=s).
 (**)
-now apply lwf_cons with (s:=s).
+- now apply lwf_cons with (s:=s).
 Qed.
 
 Lemma legacy_extend : forall Γ M T, Γ ⊣' -> nil ⊢' M : T ->
@@ -420,35 +420,35 @@ Lemma legacy_extend : forall Γ M T, Γ ⊣' -> nil ⊢' M : T ->
 Proof.
 intros Γ; induction Γ; intros; simpl.
 (**)
-rewrite !lift0.
-assumption.
+- rewrite !lift0.
+  assumption.
 (**)
-replace (M ↑ (S (length Γ))) with (M ↑ (length Γ)) ↑ 1 by apply lift_lift.
-replace (T ↑ (S (length Γ))) with (T ↑ (length Γ)) ↑ 1 by apply lift_lift.
-inversion H; subst; clear H.
-apply lcWeak with (s:=s); trivial.
-apply IHΓ; trivial.
-now apply wf_ltyp in H2.
+- replace (M ↑ (S (length Γ))) with (M ↑ (length Γ)) ↑ 1 by apply lift_lift.
+  replace (T ↑ (S (length Γ))) with (T ↑ (length Γ)) ↑ 1 by apply lift_lift.
+  inversion H; subst; clear H.
+  apply lcWeak with (s:=s); trivial.
+  apply IHΓ; trivial.
+  now apply wf_ltyp in H2.
 Qed.
 
 Lemma legacy_var : forall Γ A v, Γ ⊣' -> A ↓ v ⊂ Γ -> Γ ⊢' #v : A.
 Proof.
 intros Γ; induction Γ; intros; simpl.
 (**)
-destruct H0 as ( x & ? & ?).
-now inversion H1.
+- destruct H0 as ( x & ? & ?).
+  now inversion H1.
 (**)
-inversion H; subst; clear H.
-destruct H0 as (x & ? & ?).
-inversion H0; subst; clear H0.
-  subst.
-  now apply lcVar with (s:=s).
-replace (x ↑ (S (S n))) with (x ↑ (S n)) ↑ 1 by apply lift_lift.
-change (#(S n)) with (#n)↑1.
-apply lcWeak with (s := s); trivial.
-apply IHΓ.
-  now apply wf_ltyp in H2.
-now exists x; split.
+- inversion H; subst; clear H.
+  destruct H0 as (x & ? & ?).
+  inversion H0; subst; clear H0.
+  + subst.
+    now apply lcVar with (s:=s).
+  + replace (x ↑ (S (S n))) with (x ↑ (S n)) ↑ 1 by apply lift_lift.
+    change (#(S n)) with (#n)↑1.
+    apply lcWeak with (s := s); trivial.
+    apply IHΓ.
+    now apply wf_ltyp in H2.
+    now exists x; split.
 Qed.
 
 Lemma typ2legacy : (forall Γ M T, Γ ⊢ M : T -> Γ ⊢' M : T ) /\
@@ -456,23 +456,27 @@ Lemma typ2legacy : (forall Γ M T, Γ ⊢ M : T -> Γ ⊢' M : T ) /\
 Proof.
 apply typ_induc; intros.
 (**)
-change !s with (!s ↑ (length Γ)); change !t with (!t ↑ (length Γ)).
-apply legacy_extend; trivial.
-now constructor.
+- change !s with (!s ↑ (length Γ)); change !t with (!t ↑ (length Γ)).
+  apply legacy_extend; trivial.
+  now constructor.
 (**)
-now apply legacy_var.
+- now apply legacy_var.
 (**)
-now apply lcPi with (s:=s) (t:=t) (u:=u).
+- now apply lcPi with (s:=s) (t:=t) (u:=u).
 (**)
-now apply lcLa with (s:=s1) (t:=s2) (u:=s3).
+- now apply lcLa with (s:=s1) (t:=s2) (u:=s3).
 (**)
-now apply lcApp with (A:=A).
+- now apply lcApp with (A:=A).
 (**)
-now apply lCnv with (A:=A) (s:=s).
+- now apply lcId.
+- now apply lcRefl with (s:=s).
+- now apply lcJ with (s:=s) (t:=t).
 (**)
-now constructor.
+- now apply lCnv with (A:=A) (s:=s).
 (**)
-now apply lwf_cons with (s:=s).
+- now constructor.
+(**)
+- now apply lwf_cons with (s:=s).
 Qed.
 
 End ut_typ_mod.
