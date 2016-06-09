@@ -241,12 +241,26 @@ econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
 rewrite subst_travers. econstructor.
 replace (n+1) with (S n) by (rewrite plus_comm; trivial). eapply H; eauto.
 replace (n+1) with (S n) by (rewrite plus_comm; trivial). eapply H0; eauto.
+(*NaN*)
+- econstructor ; eauto.
+- econstructor ; eauto.
+- econstructor.
+  + eapply H ; eauto.
+  + rewrite <- (substP2 A P 0 1 n) ; intuition.
+    rewrite <- (substP2 A P 0 2 n) ; intuition.
+    simpl. eapply H0 ; eauto.
+  + rewrite <- (substP2 C) ; intuition.
+    rewrite <- (substP2 A) ; intuition.
+    simpl. eapply H1 ; eauto.
+  + eauto.
+  + eauto.
+  + eauto.
 (*7*)
-econstructor.  apply Betac_subst2. apply b. eapply H; eauto. eapply H0; eauto.
+- econstructor.  apply Betac_subst2. apply b. eapply H; eauto. eapply H0; eauto.
 (* wf *)
-inversion H0.
-inversion H1; subst; clear H1. eauto.
-econstructor. eapply H. apply H0. trivial. eauto.
+- inversion H0.
+- inversion H1; subst; clear H1. eauto.
+  econstructor. eapply H. apply H0. trivial. eauto.
 Qed.
 
 (** Well-formation of contexts: if a context is valid, every term inside
