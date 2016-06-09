@@ -563,10 +563,12 @@ exists Q''; eauto.
 Qed.
 
 (** Some consequences:
- - convertible sorts are equals
- - converitble vars are equals
+ - convertible sorts are equal
+ - converitble vars are equal
  - Pi-types are Injective
  - Pi and sorts are not convertible
+ - Id-types are injective
+ - Id and sorts are not convertible
  *)
 Lemma conv_sort : forall s t, !s ≡ !t -> s = t.
 intros.
@@ -621,5 +623,19 @@ intros; intro. apply Betac_sym in H. apply conv_to_sort in H.
 apply Betas_Pi_inv in H as (C & D & ? & ? & ?). discriminate.
 Qed.
 
+
+(* Id is injective *)
+Theorem IdInj : forall A B u v x y, Id A u v ≡ Id B x y -> A ≡ B /\ u ≡ x /\ v ≡ y.
+  intros A B u v x y h.
+  apply Betac_confl in h. destruct h as [T [hA hB]].
+  apply Betas_Id_inv in hA. destruct hA as [A1 [u1 [v1 [hT1 [hA1 [hu1 hv1]]]]]].
+  apply Betas_Id_inv in hB. destruct hB as [A2 [u2 [v2 [hT2 [hA2 [hu2 hv2]]]]]].
+  rewrite hT2 in hT1. injection hT1. intros eqv equ eqA. subst. repeat split ; eauto.
+Qed.
+
+Lemma Betac_not_Id_sort : forall A u v s, ~ (Id A u v ≡ !s).
+  intros A u v s bot. apply Betac_sym in bot. apply conv_to_sort in bot.
+  apply Betas_Id_inv in bot as (B & w & z & bot & ?). discriminate.
+Qed.
 
 End ut_red_mod.
