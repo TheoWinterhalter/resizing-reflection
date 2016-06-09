@@ -26,7 +26,13 @@ with typ : Env -> Term -> Term -> Prop :=
    Γ ⊢  Π(A), B : !u
  | cLa   : forall Γ A B M s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢ A : !s1 ->
    A::Γ ⊢ B : !s2 -> A::Γ ⊢ M : B -> Γ ⊢ λ[A], M : Π(A), B
- | cApp  : forall Γ M N A B , Γ ⊢ M : Π(A), B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[←N]
+ | cApp  : forall Γ M N A B, Γ ⊢ M : Π(A), B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[←N]
+ | cId   : forall Γ A u v s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ Id A u v : !s
+ | cRefl : forall Γ A u, Γ ⊢ u : A -> Γ ⊢ refl A u : Id A u u
+ | cJ    : forall Γ A C b u v p s t, Γ ⊢ A : !s -> Γ ⊢ C : Π(A), Π(A), Π(Id A #1 #0), !t ->
+                                Γ ⊢ b : Π(A), C · #0 · #0 · (refl A #0) ->
+                                Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ p : Id A u v ->
+                                Γ ⊢ J A C b u v p : C · u · v · p
  | Cnv   : forall Γ M A B s, A ≡ B  -> Γ ⊢ M : A -> Γ ⊢ B : !s -> Γ ⊢ M : B
 where "Γ ⊢ t : T" := (typ Γ t T) : UT_scope.
 
@@ -93,6 +99,37 @@ destruct (IHtyp1 M0 N) as (K & L & ? & ?& ?); trivial. exists K; exists L; split
 eauto. intuition.
 Qed.
 
+Lemma gen_id : forall Γ A u v T, Γ ⊢ Id A u v : T -> exists s,
+                            T ≡ !s /\ Γ ⊢ A : !s /\ Γ ⊢ u : A /\ Γ ⊢ v : A.
+  intros Γ A u v T h. remember (Id A u v) as P. revert A u v HeqP.
+  induction h ; intros ; subst ; try discriminate.
+  - exists s ; injection HeqP ; intros ; subst ; clear HeqP ; intuition.
+  - destruct (IHh1 A0 u v) as (t & hs & hA & hu & hv).
+    + reflexivity.
+    + exists t ; intuition. eauto.
+Qed.
+
+Lemma gen_refl : forall Γ A u T, Γ ⊢ refl A u : T -> Γ ⊢ u : A /\ T ≡ Id A u u.
+  intros Γ A u T h. remember (refl A u) as P. revert A u HeqP.
+  induction h ; intros ; subst ; try discriminate.
+  - injection HeqP ; intros ; subst ; clear HeqP ; intuition.
+  - destruct (IHh1 A0 u).
+    + reflexivity.
+    + intuition. eauto.
+Qed.
+
+Lemma gen_j : forall Γ A C b u v p T, Γ ⊢ J A C b u v p : T -> exists s t, T ≡ C · u · v · p /\
+                                 Γ ⊢ A : !s /\ Γ ⊢ C : Π(A), Π(A), Π(Id A #1 #0), !t /\
+                                 Γ ⊢ b : Π(A), C · #0 · #0 · (refl A #0) /\
+                                 Γ ⊢ u : A /\ Γ ⊢ v : A /\ Γ ⊢ p : Id A u v.
+  intros Γ A C b u v p T h. remember (J A C b u v p) as P. revert A C b u v p HeqP.
+  induction h ; intros ; subst ; try discriminate.
+  - exists s, t ; injection HeqP ; intros ; subst ; intuition.
+  - destruct (IHh1 A0 C b u v p) as (s' & t' & ?).
+    + reflexivity.
+    + exists s', t'. intuition. eauto.
+Qed.
+                                                                 
 (** Weakening Property: if a judgement is valid, we can insert a well-typed term
   in the context, it will remain valid. This is where the type checking for
   inserting items in a context is done.*)
@@ -114,17 +151,23 @@ econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
 (*5*)
 change n with (0+n). rewrite substP1. simpl.
 econstructor. eapply H; eauto. eapply H0; eauto.
+(*I won't number them*)
+- econstructor ; eauto.
+- econstructor ; eauto.
+- econstructor.
+  + eauto.
+  + (*** I might have made a mistake in the indices *)
 (*6*)
-apply Cnv with (A↑ 1 # n) s; intuition.
-eapply H; eauto. eapply H0; eauto.
+- apply Cnv with (A↑ 1 # n) s; intuition.
+  eapply H; eauto. eapply H0; eauto.
 (* wf *)
-inversion H; subst; clear H.
-apply wf_cons with s; trivial.
+- inversion H; subst; clear H.
+  apply wf_cons with s; trivial.
 (**)
-inversion  H0; subst; clear H0.
-apply wf_cons with s0; trivial.
-apply wf_cons with s; trivial. change !s with !s ↑ 1 # n0.
-eapply H.  apply H6. apply H1.
+- inversion  H0; subst; clear H0.
+  apply wf_cons with s0; trivial.
+  apply wf_cons with s; trivial. change !s with !s ↑ 1 # n0.
+  eapply H.  apply H6. apply H1.
 Qed.
 
 
