@@ -297,21 +297,25 @@ Theorem TypeCorrect : forall Γ M T, Γ ⊢ M : T  ->
  (exists s, T = !s) \/ (exists s, Γ ⊢ T : !s).
 intros; induction H.
 (*1*)
-left; exists t; reflexivity.
+- left; exists t; reflexivity.
 (*2*)
-apply wf_item_lift in H0. right; trivial. trivial.
+- apply wf_item_lift in H0. right; trivial. trivial.
 (*4*)
-left; exists u; trivial.
+- left; exists u; trivial.
 (*5*)
-right; exists s3; apply cPi with s1 s2; trivial.
+- right; exists s3; apply cPi with s1 s2; trivial.
 (*6*)
-destruct IHtyp1. destruct H1; discriminate. destruct H1 as (u & ?).
-apply gen_pi in H1 as (s1 & s2 & s3 & h); decompose [and] h; clear h.
-right; exists s2.
-change (!s2) with (!s2 [← N]). eapply substitution. apply H5. apply H0. constructor.
-eauto.
+- destruct IHtyp1. destruct H1; discriminate. destruct H1 as (u & ?).
+  apply gen_pi in H1 as (s1 & s2 & s3 & h); decompose [and] h; clear h.
+  right; exists s2.
+  change (!s2) with (!s2 [← N]). eapply substitution. apply H5. apply H0. constructor.
+  eauto.
+(*NaN*)
+- left ; exists s ; trivial.
+- right. destruct IHtyp as [[s h] | [s h]].
+  + (* We need to add a typing condition for A in Id A u v *)
 (*8*)
-right; exists s; trivial.
+- right; exists s; trivial.
 Qed.
 
 (** Equivalence with traditional presentation of PTS *)
