@@ -34,7 +34,7 @@ Inductive Beta : Term -> Term -> Prop :=
 | Beta_j4    : forall A C  b  u  u' v  p , u → u' -> J A C b u v p → J A  C  b  u' v  p
 | Beta_j5    : forall A C  b  u  v  v' p , v → v' -> J A C b u v p → J A  C  b  u  v' p
 | Beta_j6    : forall A C  b  u  v  p  p', p → p' -> J A C b u v p → J A  C  b  u  v  p'
-| Beta_jred  : forall A C  b  u          , J A C b u u (refl A u) → b · u
+| Beta_jred  : forall A B  C  b  u  v  w , J A C b u v (refl B w) → b · u
 where "M → N" := (Beta M N) : UT_scope.
 
 Reserved Notation " A →→ B " (at level 80).
@@ -357,18 +357,18 @@ Reserved Notation "M →' N" (at level 80).
 
 (** Beta parallel definition. *)
 Inductive Betap : Term -> Term -> Prop :=
- | Betap_sort : forall s                              , !s →' !s
- | Betap_var  : forall x                              , #x →' #x
- | Betap_lam  : forall A A' M  M'                     , A →' A' -> M →' M' -> λ[A],M →' λ[A'],M'
- | Betap_pi   : forall A A' B  B'                     , A →' A' -> B →' B' -> Π(A),B →' Π(A'),B'
- | Betap_app  : forall M M' N  N'                     , M →' M' -> N →' N' -> M · N  →' M' · N'
- | Betap_head : forall A M  M' N  N'                  , M →' M' -> N →' N' -> (λ[A],M)· N →' M'[← N']
- | Betap_id   : forall A A' M  M' N  N'               , A →' A' -> M →' M' -> N →' N' -> Id A M N →' Id A' M' N'
- | Betap_rfl  : forall A A' M  M'                     , A →' A' -> M →' M' -> refl A M →' refl A' M'
- | Betap_j    : forall A A' C  C' b  b' u u' v v' p p', A →' A' -> C →' C' -> b →' b' -> u →' u' -> v →' v' -> p →' p' ->
-                                                   J A C b u v p →' J A' C' b' u' v' p'
- | Betap_jred : forall A C  b  b' u  u'               , b →' b' -> u →' u' ->
-                                                   J A C b u u (refl A u) →' b' · u'
+ | Betap_sort : forall s                               , !s →' !s
+ | Betap_var  : forall x                               , #x →' #x
+ | Betap_lam  : forall A A' M  M'                      , A →' A' -> M →' M' -> λ[A],M →' λ[A'],M'
+ | Betap_pi   : forall A A' B  B'                      , A →' A' -> B →' B' -> Π(A),B →' Π(A'),B'
+ | Betap_app  : forall M M' N  N'                      , M →' M' -> N →' N' -> M · N  →' M' · N'
+ | Betap_head : forall A M  M' N  N'                   , M →' M' -> N →' N' -> (λ[A],M)· N →' M'[← N']
+ | Betap_id   : forall A A' M  M' N  N'                , A →' A' -> M →' M' -> N →' N' -> Id A M N →' Id A' M' N'
+ | Betap_rfl  : forall A A' M  M'                      , A →' A' -> M →' M' -> refl A M →' refl A' M'
+ | Betap_j    : forall A A' C  C' b  b' u  u' v v' p p', A →' A' -> C →' C' -> b →' b' -> u →' u' -> v →' v' -> p →' p' ->
+                                                    J A C b u v p →' J A' C' b' u' v' p'
+ | Betap_jred : forall A B  C  b  b' u  u' v  w        , b →' b' -> u →' u' ->
+                                                    J A C b u v (refl B w) →' b' · u'
 where "M →' N" := (Betap M N) : UT_scope.
 
 
@@ -461,7 +461,17 @@ exists (M''[← N'']); intuition.
     destruct (IHBetap6 p'0 H18) as (p'' & ? & ?).
     exists (J A'' C'' b'' u'' v'' p'') ; intuition.
   + inversion H4 ; subst ; clear H4.
-    (*** TODO Maybe bad reduction rule for J (A and A' or something?) *)
+    destruct (IHBetap3 b'0 H13) as (b'' & ? & ?).
+    destruct (IHBetap4 u'0 H14) as (u'' & ? & ?).
+    exists (b'' · u'') ; intuition.
+- inversion H1 ; subst ; clear H1.
+  + inversion H14 ; subst ; clear H14.
+    destruct (IHBetap1 b'0 H11) as (b'' & ? & ?).
+    destruct (IHBetap2 u'0 H12) as (u'' & ? & ?).
+    exists (b'' · u'') ; intuition.
+  + destruct (IHBetap1 b'0 H10) as (b'' & ? & ?).
+    destruct (IHBetap2 u'0 H11) as (u'' & ? & ?).
+    exists (b'' · u'') ; intuition.
 Qed.
 
 
