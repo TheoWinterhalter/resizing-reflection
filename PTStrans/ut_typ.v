@@ -29,8 +29,8 @@ with typ : Env -> Term -> Term -> Prop :=
  | cApp  : forall Γ M N A B, Γ ⊢ M : Π(A), B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[←N]
  | cId   : forall Γ A u v s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ Id A u v : !s
  | cRefl : forall Γ A u, Γ ⊢ u : A -> Γ ⊢ refl A u : Id A u u
- | cJ    : forall Γ A C b u v p s t, Γ ⊢ A : !s -> Γ ⊢ C : Π(A), Π(A), Π(Id A #1 #0), !t ->
-                                Γ ⊢ b : Π(A), C · #0 · #0 · (refl A #0) ->
+ | cJ    : forall Γ A C b u v p s t, Γ ⊢ A : !s -> Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
                                 Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ p : Id A u v ->
                                 Γ ⊢ J A C b u v p : C · u · v · p
  | Cnv   : forall Γ M A B s, A ≡ B  -> Γ ⊢ M : A -> Γ ⊢ B : !s -> Γ ⊢ M : B
@@ -119,8 +119,8 @@ Lemma gen_refl : forall Γ A u T, Γ ⊢ refl A u : T -> Γ ⊢ u : A /\ T ≡ I
 Qed.
 
 Lemma gen_j : forall Γ A C b u v p T, Γ ⊢ J A C b u v p : T -> exists s t, T ≡ C · u · v · p /\
-                                 Γ ⊢ A : !s /\ Γ ⊢ C : Π(A), Π(A), Π(Id A #1 #0), !t /\
-                                 Γ ⊢ b : Π(A), C · #0 · #0 · (refl A #0) /\
+                                 Γ ⊢ A : !s /\ Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t /\
+                                 Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) /\
                                  Γ ⊢ u : A /\ Γ ⊢ v : A /\ Γ ⊢ p : Id A u v.
   intros Γ A C b u v p T h. remember (J A C b u v p) as P. revert A C b u v p HeqP.
   induction h ; intros ; subst ; try discriminate.
@@ -136,7 +136,7 @@ Qed.
 Theorem weakening: (forall Δ M T, Δ ⊢ M : T -> forall Γ A s n Δ', ins_in_env Γ A n Δ Δ' ->   Γ ⊢ A : !s ->
                  Δ' ⊢ M ↑ 1 # n : T ↑ 1 # n ) /\
 (forall Γ, Γ ⊣ -> forall Δ Γ' n A , ins_in_env Δ A n Γ Γ' -> forall s, Δ ⊢ A : !s -> Γ' ⊣).
-apply typ_induc; simpl in *; intros.
+apply typ_induc ; simpl in * ; intros.
 (*1*)
 eauto.
 (*2*)
@@ -155,8 +155,16 @@ econstructor. eapply H; eauto. eapply H0; eauto.
 - econstructor ; eauto.
 - econstructor ; eauto.
 - econstructor.
+  + eapply H ; eauto.
+  + rewrite <- liftP2 ; intuition ; simpl.
+    rewrite <- (liftP2 A 0 2 1 n) ; intuition ; simpl.
+    eapply H0 ; eauto.
+  + rewrite <- liftP2 ; intuition ; simpl.
+    rewrite <- (liftP2 A) ; intuition ; simpl.
+    eapply H1 ; eauto.
   + eauto.
-  + (*** I might have made a mistake in the indices *)
+  + eauto.
+  + eauto. 
 (*6*)
 - apply Cnv with (A↑ 1 # n) s; intuition.
   eapply H; eauto. eapply H0; eauto.
