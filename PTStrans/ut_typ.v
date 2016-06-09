@@ -338,6 +338,12 @@ Inductive legacy_typ : Env -> Term -> Term -> Prop :=
    A :: Γ ⊢' B : !t -> A :: Γ ⊢' M : B -> Γ ⊢' λ[A],M : Π(A),B
  | lcApp : forall Γ A B M N, Γ ⊢' M : Π(A),B -> Γ ⊢' N : A ->
    Γ ⊢' M · N : B [ ← N]
+ | lcId : forall Γ A u v s, Γ ⊢' A : !s -> Γ ⊢' u : A -> Γ ⊢' v : A -> Γ ⊢' Id A u v : !s
+ | lcRefl : forall Γ A u s, Γ ⊢' A : !s -> Γ ⊢' u : A -> Γ ⊢' refl A u : Id A u u
+ | lcJ : forall Γ A C b u v p s t, Γ ⊢' A : !s -> Γ ⊢' C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                              Γ ⊢' b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                              Γ ⊢' u : A -> Γ ⊢' v : A -> Γ ⊢' p : Id A u v ->
+                              Γ ⊢' J A C b u v p : C · u · v · p
  | lCnv : forall Γ M A B s, Γ ⊢' M : A -> Γ ⊢' B : !s ->
    A ≡ B -> Γ ⊢' M : B
 where "Γ ⊢' M : T" := (legacy_typ Γ M T) : UT_scope.
@@ -346,38 +352,48 @@ Lemma legacy2typ : forall Γ M T, Γ ⊢' M : T -> (Γ ⊢ M : T /\ Γ ⊣).
 Proof.
 induction 1; intros.
 (**)
-split; now constructor.
+- split; now constructor.
 (**)
-destruct IHlegacy_typ.
-split.
-  constructor.
-  econstructor; now apply H0.
-  now exists A; split.
-econstructor; now apply H0.
+- destruct IHlegacy_typ.
+  split.
+  + constructor.
+    econstructor; now apply H0.
+    now exists A; split.
+  + econstructor; now apply H0.
 (**)
-destruct IHlegacy_typ1, IHlegacy_typ2.
-split.
-  eapply weakening.
-  now apply H1.
-  now constructor.
-  now apply H3.
-econstructor; now apply H3.
+- destruct IHlegacy_typ1, IHlegacy_typ2.
+  split.
+  + eapply weakening.
+    * now apply H1.
+    * now constructor.
+    * now apply H3.
+  + econstructor; now apply H3.
 (**)
-destruct IHlegacy_typ1, IHlegacy_typ2.
-split; trivial.
-now apply cPi with (s:=s) (t:=t).
+- destruct IHlegacy_typ1, IHlegacy_typ2.
+  split; trivial.
+  now apply cPi with (s:=s) (t:=t).
 (**)
-destruct IHlegacy_typ1, IHlegacy_typ2, IHlegacy_typ3.
-split; trivial.
-now apply cLa with (s1:=s) (s2:=t) (s3:=u).
+- destruct IHlegacy_typ1, IHlegacy_typ2, IHlegacy_typ3.
+  split; trivial.
+  now apply cLa with (s1:=s) (s2:=t) (s3:=u).
 (**)
-destruct IHlegacy_typ1, IHlegacy_typ2.
-split; trivial.
-now apply cApp with (A := A).
+- destruct IHlegacy_typ1, IHlegacy_typ2.
+  split; trivial.
+  now apply cApp with (A := A).
 (**)
-destruct IHlegacy_typ1, IHlegacy_typ2.
-split; trivial.
-now apply Cnv with (A := A) (s:= s).
+- destruct IHlegacy_typ1, IHlegacy_typ2, IHlegacy_typ3.
+  split ; trivial.
+  now apply cId.
+- destruct IHlegacy_typ1, IHlegacy_typ2.
+  split ; trivial.
+  now apply cRefl with (s := s).
+- destruct IHlegacy_typ1, IHlegacy_typ2, IHlegacy_typ3, IHlegacy_typ4, IHlegacy_typ5, IHlegacy_typ6.
+  split ; trivial.
+  now apply cJ with (s := s) (t := t).
+(**)
+- destruct IHlegacy_typ1, IHlegacy_typ2.
+  split; trivial.
+  now apply Cnv with (A := A) (s:= s).
 Qed.
 
 Reserved Notation "Γ ⊣' " (at level 80, no associativity).
