@@ -89,9 +89,9 @@ apply Betas_env_cons; trivial.
 apply Betas_env_hd; trivial.
 Qed.
 
-(** There is two ways to prove SR: either we prove that reduction inside the
+(** There are two ways to prove SR: either we prove that reduction inside the
 context and inside the term "at the same time" is valid, or we first do this
-for the context only at first, but we need to weaken a little the hypothesis.
+for the context only, but we need to weaken a little the hypothesis.
   Here we choose the second solution.*)
 (** First step toward full SR: if we do reductions inside the context
   of a valid judgment, and if the resulting context is well-formed, 
@@ -99,101 +99,177 @@ for the context only at first, but we need to weaken a little the hypothesis.
 Lemma Beta_env_sound :   forall Γ M T, Γ ⊢ M : T -> forall Γ', Γ' ⊣ -> Γ →e Γ' -> Γ' ⊢ M : T .
 induction 1; intros.
 (**)
-constructor; trivial.
+- constructor; trivial.
 (**)
-revert A v H0 H H1. 
-induction H2; intros. destruct H0 as (AA&  ? & ?). inversion H3; subst; clear H3.
-inversion H1; subst; clear H1. inversion H2; subst; clear H2.
-apply Cnv with ( B  ↑ 1 ) s. intuition.
-constructor. econstructor;apply H1. exists B; intuition.
-change !s with !s ↑ 1. apply thinning with s0 ;trivial.
-constructor. trivial. exists AA; intuition.
-destruct H0 as (AA&  ? & ?).  inversion H3; subst; clear H3.
-constructor. trivial. exists A; intuition.
-change (S(S n)) with (1+S n). change #(S n) with (#n  ↑ 1).
-rewrite <- lift_lift.
-inversion H1; subst; clear H1.
-apply thinning with s; trivial. apply IHBeta_env. eauto. inversion H; subst; clear H. eauto. 
-eauto. 
+- revert A v H0 H H1.
+  induction H2; intros. destruct H0 as (AA&  ? & ?). inversion H3; subst; clear H3.
+  + inversion H1; subst; clear H1. inversion H2; subst; clear H2.
+    apply Cnv with ( B  ↑ 1 ) s.
+    * intuition.
+    * constructor. econstructor;apply H1. exists B; intuition.
+    * change !s with !s ↑ 1. apply thinning with s0 ;trivial.
+  + constructor. trivial. exists AA; intuition.
+  + destruct H0 as (AA&  ? & ?).  inversion H3; subst; clear H3.
+    constructor. trivial. exists A; intuition.
+    change (S(S n)) with (1+S n). change #(S n) with (#n  ↑ 1).
+    rewrite <- lift_lift.
+    inversion H1; subst; clear H1.
+    apply thinning with s; trivial. apply IHBeta_env. eauto. inversion H; subst; clear H. eauto. 
+    eauto.
 (**)
-econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto.
 (**)
-econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto. apply IHtyp3; eauto.
+- econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto. apply IHtyp3; eauto.
 (**)
-econstructor.  apply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor.  apply IHtyp1; eauto. apply IHtyp2; eauto.
 (**)
-econstructor. apply H. eapply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+  + apply IHtyp3 ; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+  + apply IHtyp3 ; eauto.
+  + apply IHtyp4 ; eauto.
+  + apply IHtyp5 ; eauto.
+  + apply IHtyp6 ; eauto.
+(**)
+- econstructor. apply H. eapply IHtyp1; eauto. apply IHtyp2; eauto.
 Qed.
 
 (** Same with expansion in the context.*)
 Lemma Beta_env_sound_up :   forall Γ M T, Γ ⊢ M : T -> forall Γ', Γ' ⊣ -> Γ' →e Γ -> Γ' ⊢ M : T  .
 induction 1; intros.
 (**)
-constructor; trivial.
+- constructor; trivial.
 (**)
-revert A v H0 H H1. induction H2; intros. destruct H0 as (AA&  ? & ?). inversion H3; subst; clear H3.
-inversion H1; subst; clear H1. inversion H2; subst; clear H2.
-apply Cnv with ( A  ↑ 1 ) s. intuition.
-constructor. econstructor; apply H1.  exists A; intuition.
-change !s with !s ↑ 1. apply thinning with s0 ;trivial.
-constructor. trivial. exists AA; intuition.
-destruct H0 as (AA&  ? & ?).  inversion H3; subst; clear H3.
-constructor. trivial. exists A; intuition.
-change (S(S n)) with (1+S n). change #(S n) with (#n  ↑ 1).
-rewrite <- lift_lift.
-inversion H1; subst; clear H1.
-apply thinning with s; trivial. apply IHBeta_env. exists AA; intuition. inversion H; subst; clear H. eauto. 
-eauto.
+- revert A v H0 H H1. induction H2; intros. destruct H0 as (AA&  ? & ?). inversion H3; subst; clear H3.
+  inversion H1; subst; clear H1. inversion H2; subst; clear H2.
+  apply Cnv with ( A  ↑ 1 ) s. intuition.
+  constructor. econstructor; apply H1.  exists A; intuition.
+  change !s with !s ↑ 1. apply thinning with s0 ;trivial.
+  constructor. trivial. exists AA; intuition.
+  destruct H0 as (AA&  ? & ?).  inversion H3; subst; clear H3.
+  constructor. trivial. exists A; intuition.
+  change (S(S n)) with (1+S n). change #(S n) with (#n  ↑ 1).
+  rewrite <- lift_lift.
+  inversion H1; subst; clear H1.
+  apply thinning with s; trivial. apply IHBeta_env. exists AA; intuition. inversion H; subst; clear H. eauto. 
+  eauto.
 (**)
-econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto.
 (**)
-econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto. apply IHtyp3; eauto.
+- econstructor. apply H. apply IHtyp1; eauto. apply IHtyp2; eauto. apply IHtyp3; eauto.
 (**)
-econstructor.  apply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor.  apply IHtyp1; eauto. apply IHtyp2; eauto.
 (**)
-econstructor. apply H. eapply IHtyp1; eauto. apply IHtyp2; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+  + apply IHtyp3 ; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+- econstructor.
+  + apply IHtyp1 ; eauto.
+  + apply IHtyp2 ; eauto.
+  + apply IHtyp3 ; eauto.
+  + apply IHtyp4 ; eauto.
+  + apply IHtyp5 ; eauto.
+  + apply IHtyp6 ; eauto.
+(**)
+- econstructor. apply H. eapply IHtyp1; eauto. apply IHtyp2; eauto.
 Qed.
 
 (** Second Step: reduction in the term.*)
 Lemma Beta_sound : forall Γ M T, Γ ⊢ M : T -> forall N, M → N ->  Γ ⊢ N : T.
 induction 1; intros.
 (*1*)
-inversion H1.
+- inversion H1.
 (*2*)
-inversion H1.
+- inversion H1.
 (*3*)
-inversion H2; subst; clear H2. econstructor; eauto. econstructor. apply H. intuition.
-eapply Beta_env_sound. apply H1. eauto. intuition.
+- inversion H2; subst; clear H2. econstructor; eauto. econstructor. apply H. intuition.
+  eapply Beta_env_sound. apply H1. eauto. intuition.
 (*4*)
-inversion H3; subst; clear H3. eauto.
-apply Cnv with ( Π (A'), B) s3. eauto.
-econstructor. apply H. eauto.
-eapply Beta_env_sound. apply H1. econstructor. eauto. intuition.
-eapply Beta_env_sound. apply H2. econstructor. eauto. intuition.
-econstructor; eauto.
+- inversion H3; subst; clear H3. eauto.
+  apply Cnv with ( Π (A'), B) s3. eauto.
+  econstructor. apply H. eauto.
+  eapply Beta_env_sound. apply H1. econstructor. eauto. intuition.
+  eapply Beta_env_sound. apply H2. econstructor. eauto. intuition.
+  econstructor; eauto.
 (*5*)
-inversion H1; subst; clear H1.
-assert (exists u, Γ ⊢ Π(A),B : !u). apply TypeCorrect in H.
-destruct H. destruct H; discriminate. trivial.
-destruct H1. apply gen_pi in H1 as (s & t & u & h); decompose [and] h; clear h.
-apply gen_la in H  as (u1 & u2 & u3 & D & ? & ? & ? & ? & ?).
-apply PiInj in H as (? & ?).
-eapply Cnv with (s := t). eapply Betac_subst2. apply Betac_sym. apply H9.
-eapply substitution. apply H7. eapply Cnv. apply H. apply H0. apply H6. constructor.
-eauto. change !t with (!t  [ ← N] ). eapply substitution. apply H5. apply H0. constructor.
-eauto.
+- inversion H1; subst; clear H1.
+  assert (exists u, Γ ⊢ Π(A),B : !u). apply TypeCorrect in H.
+  destruct H. destruct H; discriminate. trivial.
+  destruct H1. apply gen_pi in H1 as (s & t & u & h); decompose [and] h; clear h.
+  apply gen_la in H  as (u1 & u2 & u3 & D & ? & ? & ? & ? & ?).
+  apply PiInj in H as (? & ?).
+  eapply Cnv with (s := t). eapply Betac_subst2. apply Betac_sym. apply H9.
+  eapply substitution. apply H7. eapply Cnv. apply H. apply H0. apply H6. constructor.
+  eauto. change !t with (!t  [ ← N] ). eapply substitution. apply H5. apply H0. constructor.
+  eauto.
 
-econstructor.  eauto. trivial.
-assert (exists u, Γ ⊢ Π(A),B : !u). apply TypeCorrect in H.
-destruct H. destruct H; discriminate. trivial.
-destruct H1. apply gen_pi in H1 as (s & t & u & h); decompose [and] h; clear h.
-apply Cnv with (B [← N']) t. apply Betac_subst. auto.
-econstructor. apply H. eauto.
-change !t with (!t  [ ← N] ). eapply substitution. apply H6. apply H0. constructor.
-eauto.
+  econstructor.  eauto. trivial.
+  assert (exists u, Γ ⊢ Π(A),B : !u). apply TypeCorrect in H.
+  destruct H. destruct H; discriminate. trivial.
+  destruct H1. apply gen_pi in H1 as (s & t & u & h); decompose [and] h; clear h.
+  apply Cnv with (B [← N']) t. apply Betac_subst. auto.
+  econstructor. apply H. eauto.
+  change !t with (!t  [ ← N] ). eapply substitution. apply H6. apply H0. constructor.
+  eauto.
+(*NaN*)
+- inversion H2 ; subst ; clear H2.
+  + econstructor ; eauto.
+  + econstructor.
+    * apply H.
+    * intuition.
+    * intuition.
+  + econstructor.
+    * apply H.
+    * intuition.
+    * intuition.
+- inversion H1 ; subst ; clear H1.
+  + apply Cnv with (Id A' u u) s.
+    * eauto.
+    * econstructor ; eauto.
+    * econstructor ; eauto.
+  + apply Cnv with (Id A u' u') s. (* ; try (now eauto) ; econstructor ; eauto. *)
+    * apply Betac_sym. eauto.
+    * econstructor ; eauto.
+    * econstructor ; eauto.
+- inversion H5 ; subst ; clear H5.
+  + econstructor.
+    * eauto.
+    * admit. (*! ADMIT, use of Betac_Pi and such? + who is the sort? *)
+    * admit.
+    * eauto.
+    * eauto.
+    * { apply Cnv with (Id A u v) s.
+        - apply Betac_Id ; eauto.
+        - eauto.
+        - econstructor ; eauto.
+      }
+  + apply Cnv with (C' · u · v · p) t.
+    * apply Betac_sym. repeat apply Betac_App ; eauto.
+    * admit.
+    * apply cApp with Γ C u A _ in H0 ; try easy. 
+      admit. (*! We need to simplify and apply again and so on...*)
+  + admit.
+  + apply Cnv with (C · u' · v · p) t.
+    * apply Betac_sym. repeat apply Betac_App ; eauto.
+    * admit.
+    * admit.
+  + admit.
+  + admit.
+  + admit.
 (**)
-eauto.
-Qed.
+- eauto.
+Admitted.
 
 (** With both lemmas, we can now prove the full SR.*)
 Lemma SubjectRed : forall Γ M T, Γ ⊢ M : T-> 

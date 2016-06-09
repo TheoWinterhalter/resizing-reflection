@@ -4,6 +4,7 @@ base.v
 ut_term.v
 ut_env.v
 ut_typ.v
+ut_sr.v
 env.v
 f_end.v
 f_equivalence.v
@@ -17,5 +18,4 @@ strip.v
 term.v
 typ_annot.v
 ut_red.v
-ut_sr.v
 ut_typ_eq.v
