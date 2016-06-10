@@ -143,15 +143,13 @@ Theorem weakening: (forall Δ t t' T, Δ ⊢ t ▹ t' : T -> forall Γ d d' s n 
     change !s with (!s ↑ 1 # n0); eauto.
 Admitted.
 
-(*** Continue below ***)
-
 Theorem thinning :
    forall Γ M N T A A' s,
       Γ ⊢ M ▹ N : T ->
    Γ ⊢ A ▹ A' : !s ->
    A::Γ ⊢ M ↑ 1 ▹ N ↑ 1 : T ↑ 1.
-intros.
-eapply weakening. apply H. constructor. apply H0.
+  intros.
+  eapply weakening. apply H. constructor. apply H0.
 Qed.
 
 
@@ -160,8 +158,8 @@ Theorem thinning_reds :
       Γ ⊢ M ▹▹ N : T ->
    Γ ⊢ A ▹ A' : !s ->
    A::Γ ⊢ M ↑ 1 ▹▹ N ↑ 1 : T ↑ 1.
-intros.
-eapply weakening. apply H. constructor. apply H0.
+  intros.
+  eapply weakening. apply H. constructor. apply H0.
 Qed.
 
 Lemma wf_from_typ : forall  Γ M N T,  Γ ⊢ M ▹ N : T -> Γ ⊣.
@@ -218,7 +216,7 @@ supposed to be welltyped. As soon as we will have the substitution property, we
 will be able to prove that it's in fact always the case.*)
 (** Reduction in context definition .*)
 Inductive env_red1 : Env -> Env -> Prop :=
- | red1_intro : forall Γ  A B s , Γ ⊢ A ▹  B : !s  ->  env_red1 (A::Γ) (B::Γ)
+ | red1_intro : forall Γ A B s, Γ ⊢ A ▹  B : !s  ->  env_red1 (A::Γ) (B::Γ)
  | red1_next : forall A Γ Γ', env_red1 Γ Γ' -> env_red1 (A::Γ) (A::Γ')
 .
 
@@ -258,39 +256,43 @@ Lemma red1_in_env : (forall Γ M N T, Γ ⊢ M ▹ N : T -> forall Γ',  Γ' ⊣
  (forall Γ, Γ ⊣ -> True).
 apply typ_induc; intros; simpl; trivial.
 (**)
-destruct (red_item x A Γ Γ' i H1 H0). intuition. destruct H2. destruct H3 as (A' & s & ? & ?).
-apply typ_exp with A' s; trivial.  intuition.
+- destruct (red_item x A Γ Γ' i H1 H0). intuition. destruct H2. destruct H3 as (A' & s & ? & ?).
+  apply typ_exp with A' s; trivial.  intuition.
 (**)
-intuition.
+- intuition.
 (**)
-apply typ_pi with s1 s2; intuition. eapply H0. econstructor. apply H; trivial. intuition.
+- apply typ_pi with s1 s2; intuition. eapply H0. econstructor. apply H; trivial. intuition.
 (**)
-apply typ_la with s1 s2 s3; intuition.
-eapply H0. econstructor. apply H; trivial. intuition.
-eapply H1. econstructor. apply H; trivial. intuition.
+- apply typ_la with s1 s2 s3; intuition.
+  eapply H0. econstructor. apply H; trivial. intuition.
+  eapply H1. econstructor. apply H; trivial. intuition.
 (**)
-eapply typ_app. apply r. intuition.
-eapply H0. econstructor. apply H; trivial. intuition.
-intuition. intuition.
+- eapply typ_app. apply r. intuition.
+  eapply H0. econstructor. apply H; trivial. intuition.
+  intuition. intuition.
+(***)
+- eapply typ_id ; eauto.
+- eapply typ_refl ; eauto.
+- eapply typ_j ; eauto.
 (**)
-eapply typ_beta. apply r. apply H; intuition. apply H0; intuition. apply H1; intuition. intuition.
-eapply H3. econstructor. apply H; trivial. intuition.
-eapply H4. econstructor. apply H; trivial. intuition.
-intuition.
+- eapply typ_beta. apply r. apply H; intuition. apply H0; intuition. apply H1; intuition. intuition.
+  eapply H3. econstructor. apply H; trivial. intuition.
+  eapply H4. econstructor. apply H; trivial. intuition.
+  intuition.
 (**)
-apply typ_red with A s;intuition.
+- apply typ_red with A s;intuition.
 (**)
-apply typ_exp with B s;intuition.
+- apply typ_exp with B s;intuition.
 (**)
-eauto.
-eauto.
+- eauto.
+- eauto.
 Qed.
 
 (** Reflexive, Transitive, Symetric closure of PTS_{atr}. Since we are not
 functional, we can't inforce the fact that every step is typed by the same type.
   But we only need the equality at the type level, so we will check that every
   step is welltyped, by a sort, but we will forget about this sort.*)
-Reserved Notation "Γ ⊢ s ≡' t " (at level 80, s, t, T at level 30, no associativity) .
+Reserved Notation "Γ ⊢ s ≡' t " (at level 80, s, t at level 30, no associativity) .
 
 Inductive typ_peq : Env -> Term -> Term  -> Prop :=
  | typ_peq_intro : forall Γ A B s, Γ ⊢ A ▹ B : !s -> Γ ⊢ A ≡' B
@@ -301,7 +303,7 @@ where "Γ ⊢ s ≡' t " := (typ_peq Γ s t) : Typ_scope.
 Hint Constructors typ_peq.
 
 Lemma typ_peq_sym : forall Γ A B  , Γ  ⊢ A ≡' B  -> Γ  ⊢ B ≡' A .
-induction 1; eauto.
+  induction 1; eauto.
 Qed.
 
 Hint Resolve typ_peq_sym.
@@ -309,8 +311,8 @@ Hint Resolve typ_peq_sym.
 
 
 Lemma reds_to_conv : forall Γ M N s, Γ ⊢ M ▹▹ N : !s -> Γ ⊢ M ≡' N.
-intros. remember !s as S. revert s HeqS. induction H; intros; subst.
-eauto. eauto.
+  intros. remember !s as S. revert s HeqS. induction H; intros; subst.
+  eauto. eauto.
 Qed.
 
 Hint Resolve reds_to_conv.
@@ -332,26 +334,26 @@ Hint Constructors env_conv.
 
 
 Lemma c1_sym : forall Γ Γ', env_conv1 Γ Γ' -> env_conv1 Γ' Γ.
-induction 1; intros; intuition.
+  induction 1; intros; intuition.
 Qed.
 
 Lemma c_sym : forall Γ Γ', env_conv Γ Γ' -> env_conv Γ' Γ.
-induction 1; intros.
-apply c1_sym in H; intuition. trivial. eauto.
+  induction 1; intros.
+  apply c1_sym in H; intuition. trivial. eauto.
 Qed.
 
 Hint Resolve c_sym.
 
 
 Lemma env_red1_to_conv1 : forall Γ Γ', env_red1 Γ Γ' -> env_conv1 Γ Γ'.
-induction 1; intuition.
-eauto.
+  induction 1; intuition.
+  eauto.
 Qed.
 
 Lemma env_red_to_conv : forall Γ Γ', env_red Γ Γ' -> env_conv Γ Γ'.
-induction 1; intuition.
-apply env_red1_to_conv1 in H; intuition.
-eauto.
+  induction 1; intuition.
+  apply env_red1_to_conv1 in H; intuition.
+  eauto.
 Qed.
 
 Hint Resolve env_red_to_conv.
@@ -359,9 +361,9 @@ Hint Resolve env_red_to_conv.
 
 Lemma peq_thinning : forall  Γ A B, Γ ⊢ A ≡' B  -> forall C C' s, Γ ⊢ C ▹ C' : !s
  -> C::Γ ⊢ A ↑ 1 ≡' B ↑ 1.
-induction 1; intros. apply typ_peq_intro with s. change !s with (!s ↑ 1).
-apply thinning with C' s0; trivial. apply typ_peq_intro2 with s. change !s with (!s ↑ 1).
-apply thinning with C' s0; trivial. eauto.
+  induction 1; intros. apply typ_peq_intro with s. change !s with (!s ↑ 1).
+  apply thinning with C' s0; trivial. apply typ_peq_intro2 with s. change !s with (!s ↑ 1).
+  apply thinning with C' s0; trivial. eauto.
 Qed.
 
 Lemma peq_thinning_n : forall n Δ Δ',
@@ -399,7 +401,7 @@ intros. remember !s as S. revert M N H s HeqS. induction H0; intros; subst; eaut
 Qed.
 
 
-  Lemma conv_item :
+Lemma conv_item :
    forall n A Γ Γ',  A ↓ n ⊂ Γ -> env_conv1 Γ Γ' -> Γ' ⊣ -> A ↓ n ⊂  Γ' \/
      (forall Γ'', trunc (S n) Γ Γ'' -> trunc (S n) Γ' Γ'') /\ (exists B,  Γ' ⊢ A ≡' B /\   B ↓ n ⊂  Γ').
 induction n; intros. destruct H as (u & ?& ?).
@@ -423,43 +425,51 @@ Qed.
 Lemma   conv1_in_env : (forall Γ M N T, Γ ⊢ M ▹ N : T -> forall Γ', env_conv1 Γ Γ' -> Γ'  ⊣ ->  Γ' ⊢ M ▹ N : T) /\
   (forall Γ M N T, Γ ⊢ M ▹▹ N : T -> forall Γ', env_conv1 Γ Γ' -> Γ'  ⊣ ->  Γ' ⊢ M ▹▹ N : T) /\
   (forall Γ, Γ ⊣ -> True).
-apply typ_induc;intros; simpl; trivial.
-destruct (conv_item x A Γ  Γ' i H0 H1). intuition.
-destruct H2. destruct H3 as (B & ?). apply typ_pcompat with B; intuition.
-(**)
-intuition.
-(**)
-apply typ_pi with s1 s2; eauto.
-(**)
-apply typ_la with s1 s2 s3; eauto.
-(**)
-eapply typ_app; eauto.
-(**)
-eapply typ_beta.
-  apply r.
-  apply H; assumption.
-  apply H0; assumption.
-  apply H1; assumption.
-  apply H2; assumption.
-  apply H3. constructor; assumption.
-            econstructor; apply H; assumption.
-  apply H4. constructor; assumption.
-            econstructor; apply H; assumption.
-  apply H5; assumption.
-(**)
-eauto.
-(**)
-eauto.
-(**)
-eauto.
-eauto.
+  apply typ_induc;intros; simpl; trivial.
+  - destruct (conv_item x A Γ  Γ' i H0 H1). intuition.
+    destruct H2. destruct H3 as (B & ?). apply typ_pcompat with B; intuition.
+  (**)
+  - intuition.
+  (**)
+  - apply typ_pi with s1 s2; eauto.
+  (**)
+  - apply typ_la with s1 s2 s3; eauto.
+  (**)
+  - eapply typ_app; eauto.
+  (***)
+  - eapply typ_id ; eauto.
+  - eapply typ_refl ; eauto.
+  - eapply typ_j ; eauto.
+  (**)
+  - eapply typ_beta.
+    + apply r.
+    + apply H; assumption.
+    + apply H0; assumption.
+    + apply H1; assumption.
+    + apply H2; assumption.
+    + apply H3.
+      * constructor; assumption.
+      * econstructor; apply H; assumption.
+    + apply H4.
+      * constructor; assumption.
+      * econstructor; apply H; assumption.
+    + apply H5; assumption.
+  (**)
+  - eauto.
+  (**)
+  - eauto.
+  (**)
+  - eauto.
+  - eauto.
 Qed.
 
 Lemma sub_trunc : forall Γ0 a A n Γ Δ, sub_in_env Γ0 a A n Γ Δ -> trunc n Δ Γ0.
-induction 1.
-apply trunc_O.
-apply trunc_S. trivial.
+  induction 1.
+  apply trunc_O.
+  apply trunc_S. trivial.
 Qed.
+
+(*** Continue BELOW ***)
 
 Lemma sub_in_env_item : forall Δ P A n Γ Γ', sub_in_env Δ P A n Γ Γ' -> A ↓ n ∈ Γ.
 induction 1; eauto.
