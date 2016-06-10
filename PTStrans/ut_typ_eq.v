@@ -26,19 +26,24 @@ Reserved Notation "Γ ⊢e M = N : T" (at level 80, M, N , T at level 30, no ass
 Reserved Notation "Γ ⊣e " (at level 80, no associativity).
 
 Inductive wf : Env -> Prop :=
- | wfe_nil : nil ⊣e
+ | wfe_nil  : nil ⊣e
  | wfe_cons : forall Γ A s, Γ ⊢e A : !s -> A::Γ ⊣e
 where "Γ ⊣e" := (wf Γ) : UT_scope
 with typ : Env -> Term -> Term -> Prop :=
  | cSort : forall Γ s t, Ax s t -> Γ ⊣e -> Γ  ⊢e !s : !t
- | cVar : forall  Γ A v, Γ ⊣e -> A ↓ v  ⊂ Γ -> Γ ⊢e #v : A
- | cPi : forall Γ A B s t u,
+ | cVar  : forall  Γ A v, Γ ⊣e -> A ↓ v  ⊂ Γ -> Γ ⊢e #v : A
+ | cPi   : forall Γ A B s t u,
      Rel s t u -> Γ ⊢e A : !s -> A::Γ ⊢e B : !t -> Γ ⊢e  Π(A), B : !u
- | cLa : forall Γ A b B s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢e  A : !s1 -> A::Γ ⊢e B : !s2 ->
+ | cLa   : forall Γ A b B s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢e  A : !s1 -> A::Γ ⊢e B : !s2 ->
      A::Γ ⊢e b : B -> Γ ⊢e λ[A], b: Π(A), B
- | cApp : forall Γ a b A B , Γ ⊢e a : Π(A), B -> Γ ⊢e b :  A -> Γ ⊢e a·b : B[←b]
- | Cnv : forall Γ a A B s,
-      Γ ⊢e A = B  : !s -> Γ ⊢e a : A -> Γ ⊢e a : B
+ | cApp  : forall Γ a b A B , Γ ⊢e a : Π(A), B -> Γ ⊢e b :  A -> Γ ⊢e a·b : B[←b]
+ | cId   : forall Γ A u v s, Γ ⊢e A : !s -> Γ ⊢e u : A -> Γ ⊢e v : A -> Γ ⊢e Id A u v : !s
+ | cRefl : forall Γ A u s, Γ ⊢e A : !s -> Γ ⊢e u : A -> Γ ⊢e refl A u : Id A u u
+ | cJ    : forall Γ A C b u v p s t, Γ ⊢e A : !s -> Γ ⊢e C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                Γ ⊢e b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                                Γ ⊢e u : A -> Γ ⊢e v : A -> Γ ⊢e p : Id A u v ->
+                                Γ ⊢e J A C b u v p : C · u · v · p
+ | Cnv   : forall Γ a A B s, Γ ⊢e A = B : !s -> Γ ⊢e a : A -> Γ ⊢e a : B
 where "Γ ⊢e t : T" := (typ Γ t T) : UT_scope
 with typ_eq : Env -> Term -> Term -> Term -> Prop :=
  | cSort_eq : forall Γ s t, Ax s t -> Γ ⊣e -> Γ ⊢e !s = !s : !t
@@ -49,12 +54,27 @@ with typ_eq : Env -> Term -> Term -> Term -> Prop :=
    (A::Γ) ⊢e B : !t -> Γ ⊢e λ[A],M = λ[A'],M' : Π(A),B
  | cApp_eq : forall Γ M M' N N' A B, Γ ⊢e M = M' : Π(A),B -> Γ⊢e N = N' : A ->
      Γ ⊢e M·N = M'·N' : B [← N]
+ | cId_eq : forall Γ A A' u u' v v' s, Γ ⊢e A = A' : !s -> Γ ⊢e u = u' : A -> Γ ⊢e v = v' : A ->
+                                Γ ⊢e Id A u v = Id A' u' v' : !s
+ | cRefl_eq : forall Γ A A' u u' s, Γ ⊢e A = A' : !s -> Γ ⊢e u = u' : A -> Γ ⊢e refl A u = refl A' u' : Id A u u
+ | cJ_eq : forall Γ A A' C C' b b' u u' v v' p p' s t, Γ ⊢e A = A' : !s ->
+                                                  Γ ⊢e C = C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                                  Γ ⊢e b = b' : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                                                  Γ ⊢e u = u' : A ->
+                                                  Γ ⊢e v = v' : A ->
+                                                  Γ ⊢e p = p' : Id A u v ->
+                                                  Γ ⊢e J A C b u v p = J A' C' b' u' v' p' : C · u · v · p
  | cSym : forall Γ M N A , Γ ⊢e M = N : A -> Γ ⊢e N = M : A
  | cTrans : forall Γ M N P A, Γ ⊢e M = N : A -> Γ ⊢e N = P : A -> Γ ⊢e M = P : A
  | Cnv_eq : forall Γ M N A B s, Γ ⊢e A = B : !s -> Γ ⊢e M = N : A -> Γ ⊢e M = N : B
  | cBeta : forall Γ A B M N s t u, Rel s t u -> Γ ⊢e A : !s -> (A::Γ) ⊢e B : !t ->
     (A::Γ) ⊢e M : B -> Γ ⊢e N : A -> Γ ⊢e (λ[A],M)·N = M[← N] : B[← N]
-where "Γ ⊢e M = N : T":= (typ_eq Γ M N T) : UT_scope.
+ | cJred : forall Γ A C b u s t, Γ ⊢e A : !s ->
+                            Γ ⊢e C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                            Γ ⊢e b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                            Γ ⊢e u : A ->
+                            Γ ⊢e J A C b u u (refl A u) = b · u : C · u · u · (refl A u)
+ where "Γ ⊢e M = N : T":= (typ_eq Γ M N T) : UT_scope.
 
 Hint Constructors wf typ typ_eq.
 
