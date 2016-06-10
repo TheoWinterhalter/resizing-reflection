@@ -4,6 +4,9 @@ annotations to applications. If the head of an application is a function from
 [A] to [B], we add both informations in the application, in order to keep
 track of the conversion during the typing that would be impossible to rebuild
 after.
+
+Theo: Therefore we need to add the sort typing C in J to be able to write its
+reduction scheme.
 *)
 Require Import Peano_dec.
 Require Import Compare_dec.
@@ -27,7 +30,7 @@ Inductive Term : Set :=
  | La   : Term -> Term -> Term
  | Id   : Term -> Term -> Term -> Term
  | refl : Term -> Term -> Term
- | J    : Term -> Term -> Term -> Term -> Term -> Term -> Term
+ | J    : Sorts -> Term -> Term -> Term -> Term -> Term -> Term -> Term
 .
 
 (** this notation means that the product x y is annotated by the function space
@@ -57,7 +60,7 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T} := match T with
    | λ [ A ], M    => λ [A ↑ n # k], (M ↑ n # (S k))
    | Id A u v      => Id (A ↑ n # k) (u ↑ n # k) (v ↑ n # k)
    | refl A t      => refl (A ↑ n # k) (t ↑ n # k)
-   | J A C b u v p => J (A ↑ n # k) (C ↑ n # k) (b ↑ n # k) (u ↑ n # k) (v ↑ n # k) (p ↑ n # k)
+   | J t A C b u v p => J t (A ↑ n # k) (C ↑ n # k) (b ↑ n # k) (u ↑ n # k) (v ↑ n # k) (p ↑ n # k)
  end  
    where "t ↑ n # k" := (lift_rec n k t) : Typ_scope.
 
@@ -77,8 +80,9 @@ injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); ref
 injection H; intros; rewrite (IHM1 N1 n m H1); rewrite (IHM2 N2 n (S m) H0); reflexivity.
 - injection H ; intros ; rewrite (IHM1 N1 n m H2) ; rewrite (IHM2 N2 n m H1) ; rewrite (IHM3 N3 n m H0) ; reflexivity.
 - injection H; intros ; rewrite (IHM1 N1 n m H1) ; rewrite (IHM2 N2 n m H0) ; reflexivity.
-- injection H ; intros ; rewrite (IHM1 N1 n m H5) ; rewrite (IHM2 N2 n m H4) ; rewrite (IHM3 N3 n m H3) ;
-  rewrite (IHM4 N4 n m H2) ; rewrite (IHM5 N5 n m H1) ; rewrite (IHM6 N6 n m H0) ; reflexivity.
+- injection H. intros. rewrite (IHM1 N1 n m H5). rewrite (IHM2 N2 n m H4). rewrite (IHM3 N3 n m H3).
+  rewrite (IHM4 N4 n m H2). rewrite (IHM5 N5 n m H1). rewrite (IHM6 N6 n m H0). rewrite H6.
+  reflexivity.
 Qed.
 
 Lemma lift_rec0 : forall M n, M ↑ 0 # n = M.
@@ -202,7 +206,7 @@ Fixpoint subst_rec U T n {struct T} :=
   | λ [ A ], M => λ [ A [ n ← U ] ], (M [ S n ← U ])
   | Id A u v => Id (A [n ← U]) (u [n ← U]) (v [n ← U])
   | refl A u => refl (A [n ← U]) (u [n ← U])
-  | J A C b u v p => J (A [n ← U]) (C [n ← U]) (b [n ← U]) (u [n ← U]) (v [n ← U]) (p [n ← U])
+  | J s A C b u v p => J s (A [n ← U]) (C [n ← U]) (b [n ← U]) (u [n ← U]) (v [n ← U]) (p [n ← U])
 end
     where " t [ n ← w ] " := (subst_rec w t n) : Typ_scope.
 

@@ -17,7 +17,6 @@ Module Type red_mod (X:term_sig) (TM:term_mod X).
 Import TM.
 Reserved Notation " A → B " (at level 80).
 
-(* Warning! We need to add the sort (at least t) to J *)
 Inductive Beta : Term -> Term -> Prop :=
  | Beta_head : forall A M N K L , (λ[ A ], M)·(K,L) N → M [← N]
  | Beta_red1 : forall M M' N A B, M → M' -> M·(A,B) N  → M'·(A,B) N
@@ -33,14 +32,14 @@ Inductive Beta : Term -> Term -> Prop :=
  | Beta_id3   : forall A u  v  v'         , v → v' -> Id A u v      → Id A  u  v'
  | Beta_refl  : forall A A' u             , A → A' -> refl A u      → refl A' u
  | Beta_refl2 : forall A u  u'            , u → u' -> refl A u      → refl A  u'
- | Beta_j     : forall A A' C  b  u  v  p , A → A' -> J A C b u v p → J A' C  b  u  v  p
- | Beta_j2    : forall A C  C' b  u  v  p , C → C' -> J A C b u v p → J A  C' b  u  v  p
- | Beta_j3    : forall A C  b  b' u  v  p , b → b' -> J A C b u v p → J A  C  b' u  v  p
- | Beta_j4    : forall A C  b  u  u' v  p , u → u' -> J A C b u v p → J A  C  b  u' v  p
- | Beta_j5    : forall A C  b  u  v  v' p , v → v' -> J A C b u v p → J A  C  b  u  v' p
- | Beta_j6    : forall A C  b  u  v  p  p', p → p' -> J A C b u v p → J A  C  b  u  v  p'
- | Beta_jred  : forall A B  C  b  u  v  w t,
-                  J A C b u v (refl B w) →
+ | Beta_j     : forall A A' C  b  u  v  p  t, A → A' -> J t A C b u v p → J t A' C  b  u  v  p
+ | Beta_j2    : forall A C  C' b  u  v  p  t, C → C' -> J t A C b u v p → J t A  C' b  u  v  p
+ | Beta_j3    : forall A C  b  b' u  v  p  t, b → b' -> J t A C b u v p → J t A  C  b' u  v  p
+ | Beta_j4    : forall A C  b  u  u' v  p  t, u → u' -> J t A C b u v p → J t A  C  b  u' v  p
+ | Beta_j5    : forall A C  b  u  v  v' p  t, v → v' -> J t A C b u v p → J t A  C  b  u  v' p
+ | Beta_j6    : forall A C  b  u  v  p  p' t, p → p' -> J t A C b u v p → J t A  C  b  u  v  p'
+ | Beta_jred  : forall A B  C  b  u  v  w  t,
+                  J t A C b u v (refl B w) →
                   b ·(A,(C ↑ 1) ·(A,Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 ·(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0)) u
 where "M → N" := (Beta M N) : Typ_scope.
 
