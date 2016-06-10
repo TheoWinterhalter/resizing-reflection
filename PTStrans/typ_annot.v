@@ -46,11 +46,11 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
  | typ_refl : forall Γ A A' u u' s, Γ ⊢ A ▹ A' : !s -> Γ ⊢ u ▹ u' : A -> Γ ⊢ refl A u ▹ refl A' u' : Id A u u
  | typ_j : forall Γ A A' C C' b b' u u' v v' p p' s t,                                                                                          Γ ⊢ A ▹ A' : !s ->
            Γ ⊢ C ▹ C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
-           Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 .(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0) ->
+           Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 ·(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0) ->
            Γ ⊢ u ▹ u' : A ->
            Γ ⊢ v ▹ v' : A ->
            Γ ⊢ p ▹ p' : Id A u v ->
-           Γ ⊢ J t A C b u v p ▹ J t A' C' b' u' v' p' : C (*** TODO the rela type***)
+           Γ ⊢ J t A C b u v p ▹ J t A' C' b' u' v' p' : C ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) u ·(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) v ·(Id (A ↑ 2) #1 #0, !t) p
  | typ_beta : forall Γ M M' N N' A A' A0 B s1 s2 s3, Rel s1 s2 s3 ->
    Γ ⊢ A ▹ A : !s1 -> Γ ⊢ A' ▹ A' : !s1  -> Γ ⊢ A0 ▹▹ A : !s1 -> Γ ⊢ A0 ▹▹ A' : !s1 ->
    A::Γ ⊢ B ▹ B : !s2 -> A::Γ ⊢ M ▹ M' : B -> Γ ⊢ N ▹ N' : A ->
