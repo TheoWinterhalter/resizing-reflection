@@ -3,7 +3,7 @@ In order to prove the equivalence between PTS and PTSe, Adams built a system
 called Typed Parallel One Step Reduction that mimics the usual parallel reduction
 to prove that a typed equality judgement is confluent. He emphasises the use of
 an additionnal annotation (the co-domain [(x)B]) in order to be able to track
-typing information, and prove that PTS_{atr} enjoys the diamon property.*)
+typing information, and prove that PTS_{atr} enjoys the diamond property.*)
 (** His result is restricted to "functional" PTS. To extend it to all PTS, we
 added a second annotation (the domain [A]) and prove that every PTS is
 equivalent to its PTSe counterpart.*)
@@ -23,7 +23,7 @@ Module PTS_ATR_mod (X:term_sig) (Y:pts_sig X) (TM:term_mod X) (EM: env_mod X TM)
 (** PTS_{atr} typind definition: we define at the same time the
  one step and the multistep in order to keep track of some well-typed path
  between two possible domains in the typ_beta case.*)
-Reserved Notation "Γ ⊢ s ▹ t : A" (at level 80, s, t, T at level 30, no associativity) .
+Reserved Notation "Γ ⊢ s ▹ t : A" (at level 80, s, t, A at level 30, no associativity) .
 Reserved Notation "Γ ⊣ " (at level 80, no associativity).
 Reserved Notation "Γ ⊢ s ▹▹ t : T " (at level 80, s, t, T at level 30, no associativity) .
 
@@ -42,6 +42,15 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
  | typ_app : forall Γ M M' N N' A A' B B' s1 s2 s3, Rel s1 s2 s3 ->
    Γ ⊢ A ▹ A' : !s1 -> A::Γ ⊢ B ▹ B' : !s2 -> Γ ⊢ M ▹ M' : Π(A),B -> Γ ⊢ N ▹ N' : A ->
     Γ ⊢ (M ·(A,B) N) ▹ (M'·(A',B') N') : B[ ←N]
+ | typ_id : forall Γ A A' u u' v v' s, Γ ⊢ A ▹ A' : !s -> Γ ⊢ u ▹ u' : A -> Γ ⊢ v ▹ v' : A -> Γ ⊢ Id A u v ▹ Id A' u' v' : !s
+ | typ_refl : forall Γ A A' u u' s, Γ ⊢ A ▹ A' : !s -> Γ ⊢ u ▹ u' : A -> Γ ⊢ refl A u ▹ refl A' u' : Id A u u
+ | typ_j : forall Γ A A' C C' b b' u u' v v' p p' s t,                                                                                          Γ ⊢ A ▹ A' : !s ->
+           Γ ⊢ C ▹ C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+           Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 .(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0) ->
+           Γ ⊢ u ▹ u' : A ->
+           Γ ⊢ v ▹ v' : A ->
+           Γ ⊢ p ▹ p' : Id A u v ->
+           Γ ⊢ J t A C b u v p ▹ J t A' C' b' u' v' p' : C (*** TODO the rela type***)
  | typ_beta : forall Γ M M' N N' A A' A0 B s1 s2 s3, Rel s1 s2 s3 ->
    Γ ⊢ A ▹ A : !s1 -> Γ ⊢ A' ▹ A' : !s1  -> Γ ⊢ A0 ▹▹ A : !s1 -> Γ ⊢ A0 ▹▹ A' : !s1 ->
    A::Γ ⊢ B ▹ B : !s2 -> A::Γ ⊢ M ▹ M' : B -> Γ ⊢ N ▹ N' : A ->
