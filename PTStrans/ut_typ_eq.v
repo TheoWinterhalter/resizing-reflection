@@ -945,7 +945,17 @@ with typ_eqm : Env -> Term -> Term -> Term -> Prop :=
              (A::Γ) ⊢m B = B' : !t -> Γ ⊢m λ[A],M = λ[A'],M' : Π(A),B
  | cApp_eqm : forall Γ M M' N N' A B,
           Γ ⊢m M = M' : Π(A),B -> Γ⊢m N = N' : A ->
-              Γ ⊢m M·N = M'·N' : B [← N]
+          Γ ⊢m M·N = M'·N' : B [← N]
+ | cId_eqm : forall Γ A A' u u' v v' s, Γ ⊢m A = A' : !s -> Γ ⊢m u = u' : A -> Γ ⊢m v = v' : A ->
+                                   Γ ⊢m Id A u v = Id A' u' v' : !s
+ | cRfl_eqm : forall Γ A A' u u' s, Γ ⊢m A = A' : !s -> Γ ⊢m u = u' : A -> Γ ⊢m refl A u = refl A' u' : Id A u u
+ | cJ_eqm : forall Γ A A' C C' b b' u u' v v' p p' s t, Γ ⊢m A = A' : !s ->
+                                                   Γ ⊢m C = C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                                   Γ ⊢m b = b' : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                                                   Γ ⊢m u = u' : A ->
+                                                   Γ ⊢m v = v' : A ->
+                                                   Γ ⊢m p = p' : Id A u v ->
+                                                   Γ ⊢m J A C b u v p = J A' C' b' u' v' p' : C · u · v · p
  | Cnvm : forall Γ a b A B s,
           Γ ⊢m A = B : !s -> Γ ⊢m a = b : A -> Γ ⊢m a = b : B
  | cSymm : forall Γ M N A , Γ ⊢m M = N : A -> Γ ⊢m N = M : A
@@ -954,7 +964,12 @@ with typ_eqm : Env -> Term -> Term -> Term -> Prop :=
  | cBetam : forall Γ A A' B B' M M' N N' s t u,
         Rel s t u -> Γ ⊢m A = A' : !s -> (A::Γ) ⊢m B = B' : !t ->
            (A::Γ) ⊢m M = M' : B -> Γ ⊢m N = N' : A ->
-               Γ ⊢m (λ[A],M)·N = M[← N] : B[← N]
+           Γ ⊢m (λ[A],M)·N = M[← N] : B[← N]
+ | cJredm : forall Γ A A' C C' b b' u u' s t, Γ ⊢m A = A' : !s ->
+                                         Γ ⊢m C = C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                         Γ ⊢m b = b' : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
+                                         Γ ⊢m u = u' : A ->
+                                         Γ ⊢m J A C b u u (refl A u) = b · u : C · u · u · (refl A u)
 where "Γ ⊢m M = N : T":= (typ_eqm Γ M N T) : UT_scope.
 
 Hint Constructors wfm typ_eqm.
@@ -971,62 +986,92 @@ Lemma etyp_mtyp:
   (forall Δ M T, Δ ⊢e M : T ->  Δ ⊢m M = M : T) /\
   (forall Δ M M' T, Δ ⊢e M = M' : T ->  Δ ⊢m M = M' : T) /\
   (forall Γ, Γ ⊣e -> Γ ⊣m).
-apply typ_induc. eauto. eauto.
+  apply typ_induc.
+  - eauto.
+  - eauto.
 
-intros. apply (cPi_eqm _ _ _ _ _ _ _ _ r H H0).
+  - intros. apply (cPi_eqm _ _ _ _ _ _ _ _ r H H0).
 
-intros. eapply (cLa_eqm _ _ _ _ _ _ _ _ _ _ r H H1 H0).
+  - intros. eapply (cLa_eqm _ _ _ _ _ _ _ _ _ _ r H H1 H0).
 
-intros. eapply (cApp_eqm _ _ _ _ _ _ _ H H0).
+  - intros. eapply (cApp_eqm _ _ _ _ _ _ _ H H0).
 
-intros. eapply (Cnvm _ _ _ _ _ _ H H0).
+  - intros Γ A u v s t H t0 H0 t1 H1. eapply cId_eqm ; trivial.
 
-eauto. eauto.
+  - intros Γ A u s t H t0 H0. eapply cRfl_eqm ; trivial. apply H.
 
-intros. eapply (cPi_eqm _ _ _ _ _ _ _ _ r H H0).
+  - intros Γ A C b u v p s t t0 H t1 H0 t2 H1 t3 H2 t4 H3 t5 H4. eapply cJ_eqm ; trivial.
+    + apply H.
+    + apply H0.
 
-intros. eapply (cLa_eqm _ _ _ _ _ _ _ _ _ _ r H H0 H1).
+  - intros. eapply (Cnvm _ _ _ _ _ _ H H0).
 
-intros. eapply (cApp_eqm _ _ _ _ _ _ _ H H0).
+  - eauto.
+  - eauto.
 
-intros. eapply (cSymm _ _ _ _ H).
+  - intros. eapply (cPi_eqm _ _ _ _ _ _ _ _ r H H0).
 
-intros. eapply (cTransm _ _ _ _ _ H H0).
+  - intros. eapply (cLa_eqm _ _ _ _ _ _ _ _ _ _ r H H0 H1).
 
-intros. eapply (Cnvm _ _ _ _ _ _ H H0).
+  - intros. eapply (cApp_eqm _ _ _ _ _ _ _ H H0).
 
-intros. eapply (cBetam _ _ _ _ _ _ _ _ _ _ _ _ r H H0 H1 H2).
+  - intros. eapply cId_eqm ; trivial.
 
-apply wfm_nil.
+  - intros Γ A A' u u' s t H t0 H0. eapply cRfl_eqm ; trivial. apply H.
 
-intros. eapply (wfm_cons _ _ _ H).
+  - intros Γ A A' C C' b b' u u' v v' p p' s t t0 H t1 H0 t2 H1 t3 H2 t4 H3 t5 H4.
+    eapply cJ_eqm ; trivial.
+    + apply H.
+    + apply H0.
+
+  - intros. eapply (cSymm _ _ _ _ H).
+
+  - intros. eapply (cTransm _ _ _ _ _ H H0).
+
+  - intros. eapply (Cnvm _ _ _ _ _ _ H H0).
+
+  - intros. eapply (cBetam _ _ _ _ _ _ _ _ _ _ _ _ r H H0 H1 H2).
+
+  - intros Γ A C b u s t t0 H t1 H0 t2 H1 t3 H2.
+    eapply cJredm ; trivial.
+    + apply H.
+    + apply H0.
+    + apply H1.
+    + apply H2.
+
+  - apply wfm_nil.
+
+  - intros. eapply (wfm_cons _ _ _ H).
 Qed.
 
 Lemma mtyp_etyp:
   (forall Δ M N T, Δ ⊢m M = N : T ->  Δ ⊢e M = N : T) /\
   (forall Γ, Γ ⊣m -> Γ ⊣e).
-apply typm_induc. eauto. eauto.
-
-intros. eapply (cPi_eq _ _ _ _ _ _ _ _ r H H0).
-
-intros. eapply (cLa_eq _ _ _ _ _ _ _ _ _ r H H0 (left_reflexivity _ _ _ _ H1)).
-
-intros. eapply (cApp_eq _ _ _ _ _ _ _ H H0).
-
-intros. eapply (Cnv_eq _ _ _ _ _ _ H H0).
-
-intros. eapply (cSym _ _ _ _ H).
-
-intros. eapply (cTrans _ _ _ _ _ H H0).
-
-intros. eapply (cBeta _ _ _ _ _ _ _ _ r (left_reflexivity _ _ _ _ H)
-                                        (left_reflexivity _ _ _ _ H0)
-                                        (left_reflexivity _ _ _ _ H1)
-                                        (left_reflexivity _ _ _ _ H2)).
-
-apply wfe_nil.
-
-intros. eapply (wfe_cons _ _ _  (left_reflexivity _ _ _ _ H)).
+  apply typm_induc.
+  - eauto.
+  - eauto.
+  - intros. eapply (cPi_eq _ _ _ _ _ _ _ _ r H H0).
+  - intros. eapply (cLa_eq _ _ _ _ _ _ _ _ _ r H H0 (left_reflexivity _ _ _ _ H1)).
+  - intros. eapply (cApp_eq _ _ _ _ _ _ _ H H0).
+  - intros. eapply cId_eq ; trivial.
+  - intros. eapply cRfl_eq ; trivial. apply H.
+  - intros. eapply cJ_eq ; trivial.
+    + apply H.
+    + apply H0.
+  - intros. eapply (Cnv_eq _ _ _ _ _ _ H H0).
+  - intros. eapply (cSym _ _ _ _ H).
+  - intros. eapply (cTrans _ _ _ _ _ H H0).
+  - intros. eapply (cBeta _ _ _ _ _ _ _ _ r (left_reflexivity _ _ _ _ H)
+                                            (left_reflexivity _ _ _ _ H0)
+                                            (left_reflexivity _ _ _ _ H1)
+                                            (left_reflexivity _ _ _ _ H2)).
+  - intros. eapply cJred ; trivial.
+    + apply (left_reflexivity _ _ _ _ H).
+    + apply (left_reflexivity _ _ _ _ H0).
+    + apply (left_reflexivity _ _ _ _ H1).
+    + apply (left_reflexivity _ _ _ _ H2).
+  - apply wfe_nil.
+  - intros. eapply (wfe_cons _ _ _  (left_reflexivity _ _ _ _ H)).
 Qed.
 
 
