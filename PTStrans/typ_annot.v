@@ -469,49 +469,50 @@ Lemma sub_trunc : forall Γ0 a A n Γ Δ, sub_in_env Γ0 a A n Γ Δ -> trunc n 
   apply trunc_S. trivial.
 Qed.
 
-(*** Continue BELOW ***)
-
 Lemma sub_in_env_item : forall Δ P A n Γ Γ', sub_in_env Δ P A n Γ Γ' -> A ↓ n ∈ Γ.
-induction 1; eauto.
+  induction 1; eauto.
 Qed.
 
 Lemma typ_reds_to_red_ : forall Γ M N T, Γ ⊢ M ▹▹ N : T -> exists M', Γ ⊢ M ▹ M' : T.
-induction 1. exists t; trivial.
-trivial.
+  induction 1. exists t; trivial.
+  trivial.
 Qed.
 
 
 Lemma reds_Pi_ : forall Γ A A' s, Γ ⊢ A  ▹▹ A' : !s -> forall B t u, A::Γ ⊢ B  ▹ B :!t ->
   Rel s t u ->  Γ ⊢ Π (A), B ▹▹ Π (A'), B : !u.
-intros until 1. remember !s as S. revert s HeqS. induction H; intros; subst.
-constructor. eapply typ_pi; eauto.
-apply typ_reds_trans with (Pi t B). eapply IHtyp_reds1. reflexivity. apply H1. trivial.
-eapply IHtyp_reds2. reflexivity. eapply conv1_in_env. apply H1. econstructor. eauto.
-apply typ_reds_to_red_ in H0. destruct H0 as (? & ? ). econstructor. apply H0. trivial.
+  intros until 1. remember !s as S. revert s HeqS. induction H; intros; subst.
+  constructor. eapply typ_pi; eauto.
+  apply typ_reds_trans with (Pi t B). eapply IHtyp_reds1. reflexivity. apply H1. trivial.
+  eapply IHtyp_reds2. reflexivity. eapply conv1_in_env. apply H1. econstructor. eauto.
+  apply typ_reds_to_red_ in H0. destruct H0 as (? & ? ). econstructor. apply H0. trivial.
 Qed.
 
 (** Left-Hand reflexivity: this ensure that a valid derivation starts from a well
 typed term.*)
 Theorem red_refl_lt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ M ▹ M :T.
-induction 1; intros.
-constructor; trivial.
-constructor; trivial.
-apply typ_pi with s1 s2; trivial.
-apply typ_la with s1 s2 s3; trivial.
-eapply typ_app;trivial. apply H. trivial. trivial.
-(**)
-eapply typ_app;trivial. apply H. trivial. eapply conv1_in_env.
-apply IHtyp3. econstructor. apply typ_peq_trans with A0. eauto. eauto.
-eauto. eapply typ_pcompat. eapply typ_la. apply H.
-trivial. apply IHtyp3. trivial. apply typ_peq_trans with (Π(A0),B).
-apply typ_peq_sym. apply reds_to_conv with s3. eapply reds_Pi_; eauto.
-eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
-apply reds_to_conv with s3. eapply reds_Pi_; eauto.
-eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
-apply typ_pcompat with A. trivial. eauto.
-(**)
-apply typ_red with A s; trivial.
-apply typ_exp with B s; trivial.
+  induction 1; intros.
+  - constructor; trivial.
+  - constructor; trivial.
+  - apply typ_pi with s1 s2; trivial.
+  - apply typ_la with s1 s2 s3; trivial.
+  - eapply typ_app;trivial. apply H. trivial. trivial.
+  (***)
+  - constructor ; trivial.
+  - eapply typ_refl ; trivial. (* Problem in typing? *)
+  (**)
+  eapply typ_app;trivial. apply H. trivial. eapply conv1_in_env.
+  apply IHtyp3. econstructor. apply typ_peq_trans with A0. eauto. eauto.
+  eauto. eapply typ_pcompat. eapply typ_la. apply H.
+  trivial. apply IHtyp3. trivial. apply typ_peq_trans with (Π(A0),B).
+  apply typ_peq_sym. apply reds_to_conv with s3. eapply reds_Pi_; eauto.
+  eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
+  apply reds_to_conv with s3. eapply reds_Pi_; eauto.
+  eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
+  apply typ_pcompat with A. trivial. eauto.
+  (**)
+  apply typ_red with A s; trivial.
+  apply typ_exp with B s; trivial.
 Qed.
 
 Lemma reds_refl_lt : forall Γ M N T, Γ ⊢ M ▹▹ N : T -> Γ ⊢ M ▹ M :T.
