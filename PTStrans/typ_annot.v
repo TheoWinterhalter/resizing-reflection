@@ -499,25 +499,26 @@ Theorem red_refl_lt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ M ▹ M :T.
   - eapply typ_app;trivial. apply H. trivial. trivial.
   (***)
   - constructor ; trivial.
-  - eapply typ_refl ; trivial. (* Problem in typing? *)
+  - eapply typ_refl ; trivial. apply IHtyp1.
+  - eapply typ_j ; trivial. apply IHtyp1.
   (**)
-  eapply typ_app;trivial. apply H. trivial. eapply conv1_in_env.
-  apply IHtyp3. econstructor. apply typ_peq_trans with A0. eauto. eauto.
-  eauto. eapply typ_pcompat. eapply typ_la. apply H.
-  trivial. apply IHtyp3. trivial. apply typ_peq_trans with (Π(A0),B).
-  apply typ_peq_sym. apply reds_to_conv with s3. eapply reds_Pi_; eauto.
-  eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
-  apply reds_to_conv with s3. eapply reds_Pi_; eauto.
-  eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
-  apply typ_pcompat with A. trivial. eauto.
+  - eapply typ_app;trivial. apply H. trivial. eapply conv1_in_env.
+    apply IHtyp3. econstructor. apply typ_peq_trans with A0. eauto. eauto.
+    eauto. eapply typ_pcompat. eapply typ_la. apply H.
+    trivial. apply IHtyp3. trivial. apply typ_peq_trans with (Π(A0),B).
+    apply typ_peq_sym. apply reds_to_conv with s3. eapply reds_Pi_; eauto.
+    eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
+    apply reds_to_conv with s3. eapply reds_Pi_; eauto.
+    eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
+    apply typ_pcompat with A. trivial. eauto.
   (**)
-  apply typ_red with A s; trivial.
-  apply typ_exp with B s; trivial.
+  - apply typ_red with A s; trivial.
+  - apply typ_exp with B s; trivial.
 Qed.
 
 Lemma reds_refl_lt : forall Γ M N T, Γ ⊢ M ▹▹ N : T -> Γ ⊢ M ▹ M :T.
-induction 1. apply red_refl_lt in H; trivial.
-trivial.
+  induction 1. apply red_refl_lt in H; trivial.
+  trivial.
 Qed.
 
 (** Substitution Lemma *)
@@ -531,71 +532,91 @@ Theorem subst_gen : (forall Γ M N T, Γ ⊢ M ▹ N : T ->
   Γ' ⊢ M [ n ← u] ▹▹ N [ n ← u'] : T [ n ← u])/\
  (forall Γ, Γ ⊣ -> forall Δ P P' A n Γ', Δ ⊢ P ▹ P' : A ->
     sub_in_env  Δ P A n Γ Γ' ->     Γ' ⊣ ).
-apply typ_induc; intros.
-(* 1 / 8 *)
-simpl. destruct lt_eq_lt_dec as [ []| ].
-constructor. eapply H. apply H1. apply H0.
-eapply nth_sub_item_inf. apply H0. intuition. trivial.
-destruct i as (a & ?& ?).
-subst. rewrite substP3; intuition.
-apply thinning_n with Δ. eapply sub_trunc. apply H0.
-replace a with U. trivial. eapply fun_item. eapply sub_in_env_item. apply H0.  trivial.
-eapply H. apply H1. apply H0.
-destruct i as (a & ? &?).
-constructor. eapply H. apply H1. apply H0.
-subst. rewrite substP3; intuition.
-exists a. split. replace (S (x -1)) with x. trivial.
-rewrite minus_Sn_m. rewrite <- pred_of_minus. simpl; trivial. destruct x. apply lt_n_O in l; elim l.
-intuition. eapply nth_sub_sup. apply H0. destruct x. apply lt_n_O in l; elim l. rewrite <- pred_of_minus.
-simpl; intuition. replace (S (x -1)) with x. trivial. rewrite minus_Sn_m. rewrite <- pred_of_minus.
-simpl; trivial. destruct x. apply lt_n_O in l; elim l. intuition.
-(* 1 / 7 *)
-simpl; constructor; trivial.
-eapply H. apply H1. apply H0.
-(* 1 / 6 *)
-simpl.
-apply typ_pi with s1 s2; trivial.
-eapply H. apply H1. trivial. eapply H0. constructor; apply H1. trivial.
-(* 1 / 5 *)
-simpl.
-apply typ_la with s1 s2 s3; trivial.
-eapply H. apply H2. trivial. eapply H0. constructor; apply H2.
-apply red_refl_lt in H3; trivial.
-eapply H1. constructor; apply H2. trivial.
-(* 1 / 4 *)
-simpl.
-rewrite subst_travers.
-replace (n+1) with (S n) by (rewrite plus_comm; trivial).
-eapply typ_app. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto. eapply H2; eauto.
-(* 1 / 3 *)
-simpl. rewrite 2! subst_travers.
-replace (n+1) with (S n) by (rewrite plus_comm; trivial).
-eapply typ_beta. apply r.
-eapply H; eauto.  apply red_refl_lt in H7; trivial.
-eapply H0; eauto. apply red_refl_lt in H7; trivial.
-eapply H1; eauto.
-apply red_refl_lt in H7; trivial.
-eapply H2; eauto. apply red_refl_lt in H7; trivial. eapply H3; eauto.
-apply red_refl_lt in H7; trivial.
-eapply H4; eauto. eapply H5; eauto.
-(* 1 / 2 *)
-apply typ_red with (A[n ←u]) s. eapply H. apply H1. trivial.
-change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2; trivial.
-(* 1 / 1 *)
-apply typ_exp with (B[n ←u]) s. eapply H. apply H1. trivial.
-change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2. trivial.
-(* reds *)
-eauto.
-(**)
-eapply typ_reds_trans. eapply H. apply H1. apply red_refl_lt in H2. apply H2.
-eapply H0; eauto.
-(* wf *)
-inversion H0.
-(**)
-inversion H1; subst; clear H1.
-apply wf_from_typ in t; trivial.
+  apply typ_induc; intros.
+  (* 1 / 8 *)
+  simpl. destruct lt_eq_lt_dec as [ []| ].
+  constructor. eapply H. apply H1. apply H0.
+  eapply nth_sub_item_inf. apply H0. intuition. trivial.
+  destruct i as (a & ?& ?).
+  subst. rewrite substP3; intuition.
+  apply thinning_n with Δ. eapply sub_trunc. apply H0.
+  replace a with U. trivial. eapply fun_item. eapply sub_in_env_item. apply H0.  trivial.
+  eapply H. apply H1. apply H0.
+  destruct i as (a & ? &?).
+  constructor. eapply H. apply H1. apply H0.
+  subst. rewrite substP3; intuition.
+  exists a. split. replace (S (x -1)) with x. trivial.
+  rewrite minus_Sn_m. rewrite <- pred_of_minus. simpl; trivial. destruct x. apply lt_n_O in l; elim l.
+  intuition. eapply nth_sub_sup. apply H0. destruct x. apply lt_n_O in l; elim l. rewrite <- pred_of_minus.
+  simpl; intuition. replace (S (x -1)) with x. trivial. rewrite minus_Sn_m. rewrite <- pred_of_minus.
+  simpl; trivial. destruct x. apply lt_n_O in l; elim l. intuition.
+  (* 1 / 7 *)
+  simpl; constructor; trivial.
+  eapply H. apply H1. apply H0.
+  (* 1 / 6 *)
+  simpl.
+  apply typ_pi with s1 s2; trivial.
+  eapply H. apply H1. trivial. eapply H0. constructor; apply H1. trivial.
+  (* 1 / 5 *)
+  simpl.
+  apply typ_la with s1 s2 s3; trivial.
+  eapply H. apply H2. trivial. eapply H0. constructor; apply H2.
+  apply red_refl_lt in H3; trivial.
+  eapply H1. constructor; apply H2. trivial.
+  (* 1 / 4 *)
+  simpl.
+  rewrite subst_travers.
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial).
+  eapply typ_app. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto. eapply H2; eauto.
+  (* 1 / NaN *)
+  - simpl.
+    apply typ_id ; trivial.
+    + eapply H.
+      * apply H2.
+      * apply H3.
+    + eapply H0.
+      * apply H2.
+      * apply H3.
+    + eapply H1.
+      * apply H2.
+      * apply H3.
+  - simpl. apply typ_refl with s ; trivial.
+    + eapply H.
+      * apply H1.
+      * apply H2.
+    + eapply H0.
+      * apply H1.
+      * apply H2.
+  - (*! What to do? *)
+  (* 1 / 3 *)
+  simpl. rewrite 2! subst_travers.
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial).
+  eapply typ_beta. apply r.
+  eapply H; eauto.  apply red_refl_lt in H7; trivial.
+  eapply H0; eauto. apply red_refl_lt in H7; trivial.
+  eapply H1; eauto.
+  apply red_refl_lt in H7; trivial.
+  eapply H2; eauto. apply red_refl_lt in H7; trivial. eapply H3; eauto.
+  apply red_refl_lt in H7; trivial.
+  eapply H4; eauto. eapply H5; eauto.
+  (* 1 / 2 *)
+  apply typ_red with (A[n ←u]) s. eapply H. apply H1. trivial.
+  change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2; trivial.
+  (* 1 / 1 *)
+  apply typ_exp with (B[n ←u]) s. eapply H. apply H1. trivial.
+  change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2. trivial.
+  (* reds *)
+  eauto.
+  (**)
+  eapply typ_reds_trans. eapply H. apply H1. apply red_refl_lt in H2. apply H2.
+  eapply H0; eauto.
+  (* wf *)
+  inversion H0.
+  (**)
+  inversion H1; subst; clear H1.
+  apply wf_from_typ in t; trivial.
 
-eapply wf_cons. eapply H. apply H6. apply H0.
+  eapply wf_cons. eapply H. apply H6. apply H0.
 Qed.
 
 
