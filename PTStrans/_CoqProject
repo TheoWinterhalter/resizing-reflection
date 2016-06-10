@@ -7,8 +7,9 @@ ut_typ.v
 ut_sr.v
 ut_typ_eq.v
 term.v
-# Updating the last one above
 env.v
+red.v
+# LIMIT
 f_end.v
 f_equivalence.v
 f_term.v
@@ -16,7 +17,6 @@ f_typ.v
 f_typ2.v
 final_result.v
 glue.v
-red.v
 strip.v
 typ_annot.v
 ut_red.v

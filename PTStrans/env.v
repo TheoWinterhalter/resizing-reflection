@@ -19,9 +19,9 @@ Definition Env := list Term.
 
 Set Implicit Arguments.
 (* General list manipulation, thanks to Bruno Barras *)
-Inductive item (A:Type) (x:A): list A ->nat->Prop :=
-  | item_hd: forall l:list A, (item x (cons x l) O)
-  | item_tl: forall (l:list A)(n:nat)(y:A), item x l n -> item x (cons y l) (S n).
+Inductive item (A:Type) (x:A): list A -> nat -> Prop :=
+  | item_hd : forall l:list A, (item x (cons x l) O)
+  | item_tl : forall (l:list A) (n:nat) (y:A), item x l n -> item x (cons y l) (S n).
 
 Hint Constructors item.
 
