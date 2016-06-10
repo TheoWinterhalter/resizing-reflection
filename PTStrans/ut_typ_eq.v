@@ -15,6 +15,7 @@ Require Import Lt Le Gt.
 Require Import Plus Minus.
 Require Import ut_typ.
 Require Import ut_sr.
+Require Import Omega.
 
 Module Type ut_typ_eq_mod (X:term_sig) (Y:pts_sig X) (TM:ut_term_mod X) (EM:ut_env_mod X TM) (RM: ut_red_mod X TM)
  (SRM: ut_sr_mod X Y TM EM RM).
@@ -38,7 +39,7 @@ with typ : Env -> Term -> Term -> Prop :=
      A::Γ ⊢e b : B -> Γ ⊢e λ[A], b: Π(A), B
  | cApp  : forall Γ a b A B , Γ ⊢e a : Π(A), B -> Γ ⊢e b :  A -> Γ ⊢e a·b : B[←b]
  | cId   : forall Γ A u v s, Γ ⊢e A : !s -> Γ ⊢e u : A -> Γ ⊢e v : A -> Γ ⊢e Id A u v : !s
- | cRefl : forall Γ A u s, Γ ⊢e A : !s -> Γ ⊢e u : A -> Γ ⊢e refl A u : Id A u u
+ | cRfl : forall Γ A u s, Γ ⊢e A : !s -> Γ ⊢e u : A -> Γ ⊢e refl A u : Id A u u
  | cJ    : forall Γ A C b u v p s t, Γ ⊢e A : !s -> Γ ⊢e C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
                                 Γ ⊢e b : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
                                 Γ ⊢e u : A -> Γ ⊢e v : A -> Γ ⊢e p : Id A u v ->
@@ -56,7 +57,7 @@ with typ_eq : Env -> Term -> Term -> Term -> Prop :=
      Γ ⊢e M·N = M'·N' : B [← N]
  | cId_eq : forall Γ A A' u u' v v' s, Γ ⊢e A = A' : !s -> Γ ⊢e u = u' : A -> Γ ⊢e v = v' : A ->
                                 Γ ⊢e Id A u v = Id A' u' v' : !s
- | cRefl_eq : forall Γ A A' u u' s, Γ ⊢e A = A' : !s -> Γ ⊢e u = u' : A -> Γ ⊢e refl A u = refl A' u' : Id A u u
+ | cRfl_eq : forall Γ A A' u u' s, Γ ⊢e A = A' : !s -> Γ ⊢e u = u' : A -> Γ ⊢e refl A u = refl A' u' : Id A u u
  | cJ_eq : forall Γ A A' C C' b b' u u' v v' p p' s t, Γ ⊢e A = A' : !s ->
                                                   Γ ⊢e C = C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
                                                   Γ ⊢e b = b' : Π(A), (C ↑ 1) · #0 · #0 · (refl (A ↑ 1) #0) ->
@@ -90,13 +91,16 @@ Lemma cRefl : forall Γ M T, Γ ⊢e M : T -> Γ ⊢e M = M : T.
 Proof.
 induction 1; intros; try now constructor.
 (**)
-now apply cPi_eq with (s:=s) (t:=t).
+- now apply cPi_eq with (s:=s) (t:=t).
 (**)
-now apply cLa_eq with (s:=s1) (t:=s2) (u:=s3).
+- now apply cLa_eq with (s:=s1) (t:=s2) (u:=s3).
 (**)
-now apply cApp_eq with (A:=A).
+- now apply cApp_eq with (A:=A).
 (**)
-now apply Cnv_eq with (A:=A) (s:=s).
+- now apply cRfl_eq with (s:=s).
+- now apply cJ_eq with (s:=s) (t:=t).
+(**)
+- now apply Cnv_eq with (A:=A) (s:=s).
 Qed.
 
 (** These lemmas are almost the same as for declarative PTS:
@@ -111,8 +115,8 @@ induction 1; intros; intuition.
 Qed.
 
 Lemma wf_typ_eq : forall Γ M N T, Γ ⊢e M = N : T -> Γ ⊣e.
-induction 1;  intuition.
-apply wf_typ in H0; trivial.
+induction 1;  intuition ;
+(apply wf_typ in H0; trivial).
 Qed.
 
 Hint Resolve wf_typ wf_typ_eq.
@@ -124,52 +128,87 @@ Theorem weakening: (forall Δ M T, Δ ⊢e M : T -> forall Γ A s n Δ', ins_in_
 (forall Γ, Γ ⊣e -> forall Δ Γ' n A , ins_in_env Δ A n Γ Γ' -> forall s, Δ ⊢e A : !s -> Γ' ⊣e).
 apply typ_induc; simpl in *; intros.
 (*1*)
-eauto.
+- eauto.
 (*2*)
-destruct le_gt_dec.
-constructor. eapply H;  eauto. destruct i as (AA & ?& ?). exists AA; split. rewrite H2.
-change (S (S v)) with (1+ S v). rewrite liftP3; trivial. intuition. simpl; constructor; trivial. eapply ins_item_ge.
-apply H0. trivial. trivial. constructor. eapply H; eauto.  eapply ins_item_lift_lt. apply H0. trivial. trivial.
+- destruct le_gt_dec.
+  constructor. eapply H;  eauto. destruct i as (AA & ?& ?). exists AA; split. rewrite H2.
+  change (S (S v)) with (1+ S v). rewrite liftP3; trivial. intuition. simpl; constructor; trivial. eapply ins_item_ge.
+  apply H0. trivial. trivial. constructor. eapply H; eauto.  eapply ins_item_lift_lt. apply H0. trivial. trivial.
 (*3*)
-econstructor. apply r. eapply H; eauto. eapply H0. constructor; apply H1. apply H2.
+- econstructor. apply r. eapply H; eauto. eapply H0. constructor; apply H1. apply H2.
 (*4*)
-econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
+- econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
 (*5*)
-change n with (0+n). rewrite substP1. simpl.
-econstructor. eapply H; eauto. eapply H0; eauto.
+- change n with (0+n). rewrite substP1. simpl.
+  econstructor. eapply H; eauto. eapply H0; eauto.
+(*NaN*)
+- econstructor.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+  + eapply H1 ; eauto.
+- econstructor.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+- econstructor.
+  + eapply H ; eauto.
+  + admit. (* Just the usual rewriting to exchange ↑s *)
+  + admit.
+  + eapply H2 ; eauto.
+  + eapply H3 ; eauto.
+  + eapply H4 ; eauto.
 (*6*)
-apply Cnv with (A↑ 1 # n) s; intuition.
-eapply H; eauto. eapply H0; eauto.
+- apply Cnv with (A↑ 1 # n) s; intuition.
+  eapply H; eauto. eapply H0; eauto.
 (**)
-eauto.
+- eauto.
 (**)
-destruct le_gt_dec.
-constructor. eapply H;  eauto. destruct i as (AA & ?& ?).
-exists AA; split. rewrite H2.
-change (S (S v)) with (1+ S v). rewrite liftP3; trivial.
-intuition. simpl; constructor; trivial. eapply ins_item_ge.
-apply H0. trivial. trivial. constructor. eapply H; eauto.
-eapply ins_item_lift_lt. apply H0. trivial. trivial.
+- destruct le_gt_dec.
+  constructor. eapply H;  eauto. destruct i as (AA & ?& ?).
+  exists AA; split. rewrite H2.
+  change (S (S v)) with (1+ S v). rewrite liftP3; trivial.
+  intuition. simpl; constructor; trivial. eapply ins_item_ge.
+  apply H0. trivial. trivial. constructor. eapply H; eauto.
+  eapply ins_item_lift_lt. apply H0. trivial. trivial.
 (**)
-apply cPi_eq with s t. trivial. eapply H; eauto. eapply H0; eauto.
+- apply cPi_eq with s t. trivial. eapply H; eauto. eapply H0; eauto.
 (**)
-apply cLa_eq with s t u; trivial. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
+- apply cLa_eq with s t u; trivial. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
 (**)
-change n with (0+n). rewrite substP1. simpl.
-apply cApp_eq with (A↑ 1 # n). eapply H; eauto. eapply H0; eauto.
-(**) econstructor; eauto.
-(**) econstructor; eauto. (**) econstructor; eauto.
+- change n with (0+n). rewrite substP1. simpl.
+  apply cApp_eq with (A↑ 1 # n). eapply H; eauto. eapply H0; eauto.
+(***)
+- econstructor; eauto.
+- econstructor; eauto.
+- econstructor.
+  + eauto.
+  + admit.
+  + admit.
+  + eauto.
+  + eauto.
+  + eauto. 
 (**)
-change n with (0+n). rewrite 2! substP1. simpl.
-apply cBeta with s t u; eauto.
+- econstructor; eauto.
+(**)
+- econstructor; eauto.
+(**)
+- econstructor; eauto.
+(**)
+- change n with (0+n). rewrite 2! substP1. simpl.
+  apply cBeta with s t u; eauto.
+(***)
+- apply cJred with s t.
+  + eauto.
+  + admit. (* Rewriting and stuff to get H0 *)
+  + admit.
+  + eauto.
 (* wf *)
-inversion H; subst; clear H. eauto.
+- inversion H; subst; clear H. eauto.
 (**)
-inversion  H0; subst; clear H0.
-eauto.
-apply wfe_cons with s; trivial. change !s with !s ↑ 1 # n0.
-eapply H.  apply H6. apply H1.
-Qed.
+- inversion  H0; subst; clear H0.
+  eauto.
+  apply wfe_cons with s; trivial. change !s with !s ↑ 1 # n0.
+  eapply H.  apply H6. apply H1. 
+Admitted.
 
 
 Theorem thinning :
@@ -311,72 +350,108 @@ Theorem conv_in_env : (forall Γ M T, Γ ⊢e  M : T-> forall Γ1 Γ2 A B s, Γ 
  (forall Γ, Γ ⊣e -> forall Γ1 Γ2 A B s, Γ = Γ1++(A::Γ2) -> Γ2 ⊢e A = B : !s -> Γ2 ⊢e B : !s -> Γ1++(B::Γ2) ⊣e).
 apply typ_induc; intros; simpl in *.
 (**)
-constructor. trivial. apply H with A s0; trivial.
+- constructor. trivial. apply H with A s0; trivial.
 (**)
-destruct (lt_eq_lt_dec v (List.length Γ1)) as [ [] | ].
-econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift. apply i. apply H0. apply H1. trivial.
-subst. destruct i as (a & ?& ?). subst. replace a with A0 in *. apply Cnv with (B↑ (S (length Γ1))) s.
-change !s with (!s↑ (S (length Γ1))). apply thinning_eq_n with Γ2. apply conv_in_env_aux_trunc. intuition.
-apply H with A0 s; trivial.  constructor. apply H with A0 s; trivial. exists B; intuition.
-clear. induction Γ1; simpl in *. constructor. constructor; intuition.
-generalize H3; clear. revert Γ2 A0 a. induction Γ1; intros; simpl in *. inversion H3;subst; clear H3. trivial.
-inversion H3; subst; clear H3. eapply IHΓ1. apply H0.
-econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift2. apply i. apply H0. apply H1. trivial.
+- destruct (lt_eq_lt_dec v (List.length Γ1)) as [ [] | ].
+  econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift. apply i. apply H0. apply H1. trivial.
+  subst. destruct i as (a & ?& ?). subst. replace a with A0 in *. apply Cnv with (B↑ (S (length Γ1))) s.
+  change !s with (!s↑ (S (length Γ1))). apply thinning_eq_n with Γ2. apply conv_in_env_aux_trunc. intuition.
+  apply H with A0 s; trivial.  constructor. apply H with A0 s; trivial. exists B; intuition.
+  clear. induction Γ1; simpl in *. constructor. constructor; intuition.
+  generalize H3; clear. revert Γ2 A0 a. induction Γ1; intros; simpl in *. inversion H3;subst; clear H3. trivial.
+  inversion H3; subst; clear H3. eapply IHΓ1. apply H0.
+  econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift2. apply i. apply H0. apply H1. trivial.
 (**)
-apply cPi with s t;trivial. apply H with A0 s0; trivial.
-rewrite app_comm_cons. eapply H0. rewrite H1; simpl; reflexivity. apply H2. trivial.
+- apply cPi with s t;trivial. apply H with A0 s0; trivial.
+  rewrite app_comm_cons. eapply H0. rewrite H1; simpl; reflexivity. apply H2. trivial.
 (**)
-apply cLa with s1 s2 s3;trivial. apply H with A0 s; trivial.
-rewrite app_comm_cons. eapply H0. rewrite H2; simpl; reflexivity. apply H3. trivial.
-rewrite app_comm_cons. eapply H1. rewrite H2; simpl; reflexivity. apply H3. trivial.
+- apply cLa with s1 s2 s3;trivial. apply H with A0 s; trivial.
+  rewrite app_comm_cons. eapply H0. rewrite H2; simpl; reflexivity. apply H3. trivial.
+  rewrite app_comm_cons. eapply H1. rewrite H2; simpl; reflexivity. apply H3. trivial.
 (**)
-apply cApp with A. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
+- apply cApp with A. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
 (**)
-apply Cnv with A s; trivial. apply H with A0 s0; trivial. apply H0 with A0 s0; trivial.
+- apply cId.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+  + apply H1 with A0 s0 ; trivial.
+- apply cRfl with s.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+- apply cJ with s t.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+  + apply H1 with A0 s0 ; trivial.
+  + apply H2 with A0 s0 ; trivial.
+  + apply H3 with A0 s0 ; trivial.
+  + apply H4 with A0 s0 ; trivial.
 (**)
-constructor. trivial. apply H with A s0; trivial.
+- apply Cnv with A s; trivial. apply H with A0 s0; trivial. apply H0 with A0 s0; trivial.
 (**)
-destruct (lt_eq_lt_dec v (List.length Γ1)) as [ [] | ].
-econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift.
-apply i. apply H0. apply H1. trivial.
-subst. destruct i as (a & ?& ?). subst.
-replace a with A0 in *. apply Cnv_eq with (B↑ (S (length Γ1))) s.
-change !s with (!s↑ (S (length Γ1))). apply thinning_eq_n with Γ2.
-apply conv_in_env_aux_trunc. intuition.
-apply H with A0 s; trivial.  constructor. apply H with A0 s; trivial.
-exists B; intuition.
-clear. induction Γ1; simpl in *. constructor. constructor; intuition.
-generalize H3; clear. revert Γ2 A0 a. induction Γ1; intros; simpl in *.
-inversion H3;subst; clear H3. trivial.
-inversion H3; subst; clear H3. eapply IHΓ1. apply H0.
-econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift2.
-apply i. apply H0. apply H1. trivial.
+- constructor. trivial. apply H with A s0; trivial.
 (**)
-apply cPi_eq with s t;trivial. apply H with A0 s0; trivial.
-rewrite app_comm_cons. eapply H0. rewrite H1; simpl; reflexivity. apply H2. trivial.
+- destruct (lt_eq_lt_dec v (List.length Γ1)) as [ [] | ].
+  econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift.
+  apply i. apply H0. apply H1. trivial.
+  subst. destruct i as (a & ?& ?). subst.
+  replace a with A0 in *. apply Cnv_eq with (B↑ (S (length Γ1))) s.
+  change !s with (!s↑ (S (length Γ1))). apply thinning_eq_n with Γ2.
+  apply conv_in_env_aux_trunc. intuition.
+  apply H with A0 s; trivial.  constructor. apply H with A0 s; trivial.
+  exists B; intuition.
+  clear. induction Γ1; simpl in *. constructor. constructor; intuition.
+  generalize H3; clear. revert Γ2 A0 a. induction Γ1; intros; simpl in *.
+  inversion H3;subst; clear H3. trivial.
+  inversion H3; subst; clear H3. eapply IHΓ1. apply H0.
+  econstructor. apply H with A0 s; trivial. eapply conv_in_env_var_lift2.
+  apply i. apply H0. apply H1. trivial.
 (**)
-apply cLa_eq with s t u;trivial. apply H with A0 s0; trivial.
-rewrite app_comm_cons. eapply H0. rewrite H2; simpl; reflexivity. apply H3. trivial.
-rewrite app_comm_cons. eapply H1. rewrite H2; simpl; reflexivity. apply H3. trivial.
+- apply cPi_eq with s t;trivial. apply H with A0 s0; trivial.
+  rewrite app_comm_cons. eapply H0. rewrite H1; simpl; reflexivity. apply H2. trivial.
 (**)
-apply cApp_eq with A. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
+- apply cLa_eq with s t u;trivial. apply H with A0 s0; trivial.
+  rewrite app_comm_cons. eapply H0. rewrite H2; simpl; reflexivity. apply H3. trivial.
+  rewrite app_comm_cons. eapply H1. rewrite H2; simpl; reflexivity. apply H3. trivial.
 (**)
-apply cSym. apply H with A0 s; trivial.
+- apply cApp_eq with A. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
+(***)
+- apply cId_eq.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+  + apply H1 with A0 s0 ; trivial.
+- apply cRfl_eq with s.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+- apply cJ_eq with s t.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+  + apply H1 with A0 s0 ; trivial.
+  + apply H2 with A0 s0 ; trivial.
+  + apply H3 with A0 s0 ; trivial.
+  + apply H4 with A0 s0 ; trivial.
 (**)
-apply cTrans with N. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
+- apply cSym. apply H with A0 s; trivial.
 (**)
-apply Cnv_eq with A s; trivial. apply H with A0 s0; trivial. apply H0 with A0 s0; trivial.
+- apply cTrans with N. apply H with A0 s; trivial. apply H0 with A0 s; trivial.
 (**)
-apply cBeta with s t u; trivial. apply H with A0 s0; trivial.
-rewrite app_comm_cons. eapply H0. rewrite H3; simpl; reflexivity. apply H4. trivial.
-rewrite app_comm_cons. eapply H1. rewrite H3; simpl; reflexivity. apply H4. trivial.
-apply H2 with A0 s0; trivial.
+- apply Cnv_eq with A s; trivial. apply H with A0 s0; trivial. apply H0 with A0 s0; trivial.
 (**)
-destruct Γ1; simpl in *; discriminate.
+- apply cBeta with s t u; trivial. apply H with A0 s0; trivial.
+  rewrite app_comm_cons. eapply H0. rewrite H3; simpl; reflexivity. apply H4. trivial.
+  rewrite app_comm_cons. eapply H1. rewrite H3; simpl; reflexivity. apply H4. trivial.
+  apply H2 with A0 s0; trivial.
+(***)
+- apply cJred with s t.
+  + apply H with A0 s0 ; trivial.
+  + apply H0 with A0 s0 ; trivial.
+  + apply H1 with A0 s0 ; trivial.
+  + apply H2 with A0 s0 ; trivial.
 (**)
-destruct Γ1; simpl in *. injection H0;intros;  subst; clear H0. eauto.
-injection H0; intros; subst; clear H0.
-econstructor. apply H with A0 s0; trivial.
+- destruct Γ1; simpl in *; discriminate.
+(**)
+- destruct Γ1; simpl in *. injection H0;intros;  subst; clear H0. eauto.
+  injection H0; intros; subst; clear H0.
+  econstructor. apply H with A0 s0; trivial.
 Qed.
 
 (* The Substitution Lemma: we need to do it in several step because of the sym rule
@@ -389,71 +464,107 @@ Lemma substitution : (forall Γ t T , Γ  ⊢e t  : T  -> forall Δ P A, Δ  ⊢
   sub_in_env  Δ P A n Γ Γ' ->     Γ' ⊣e) .
 apply typ_induc; simpl; intros.
 (*1*)
-constructor. trivial. eapply H. apply H0. apply H1.
+- constructor. trivial. eapply H. apply H0. apply H1.
 (*2*)
-destruct lt_eq_lt_dec  as [ [] | ].
-constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1. intuition. trivial.
-destruct i as (AA & ?& ?). subst. rewrite substP3; trivial.
-rewrite <- (nth_sub_eq H1 H3).
-eapply thinning_n. eapply sub_trunc. apply H1. trivial. eapply H;  eauto. intuition.
-constructor. eapply H; eauto. destruct i as (AA & ? &?). subst.  rewrite substP3; trivial.
-exists AA; split. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
-eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l. replace (S v - 1 ) with v. intuition.
-rewrite <- pred_of_minus. simpl.  trivial. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
-intuition.  simpl; intuition.
+- destruct lt_eq_lt_dec  as [ [] | ].
+  constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1. intuition. trivial.
+  destruct i as (AA & ?& ?). subst. rewrite substP3; trivial.
+  rewrite <- (nth_sub_eq H1 H3).
+  eapply thinning_n. eapply sub_trunc. apply H1. trivial. eapply H;  eauto. intuition.
+  constructor. eapply H; eauto. destruct i as (AA & ? &?). subst.  rewrite substP3; trivial.
+  exists AA; split. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
+  eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l. replace (S v - 1 ) with v. intuition.
+  rewrite <- pred_of_minus. simpl.  trivial. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
+  intuition.  simpl; intuition.
 (*4*)
-econstructor. apply r. eapply H; eauto. eapply H0. apply H1. constructor; apply H2. eauto.
+- econstructor. apply r. eapply H; eauto. eapply H0. apply H1. constructor; apply H2.
 (*5*)
-econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
+- econstructor. apply r. eapply H; eauto. eapply H0; eauto. eapply H1; eauto.
 (*6*)
-rewrite subst_travers. econstructor.
-replace (n+1) with (S n) by (rewrite plus_comm; trivial). eapply H; eauto.
-replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply H0; eauto.
+- rewrite subst_travers. econstructor.
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial). eapply H; eauto.
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply H0; eauto.
+(*NaN*)
+- econstructor.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+  + eapply H1 ; eauto.
+- econstructor.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+- econstructor.
+  + eapply H ; eauto.
+  + admit.
+  + admit.
+  + eapply H2 ; eauto.
+  + eapply H3 ; eauto.
+  + eapply H4 ; eauto.
 (*7*)
-econstructor. eapply H. apply H1. trivial. eapply H0. apply H1. trivial.
+- econstructor. eapply H. apply H1. trivial. eapply H0. apply H1. trivial.
 (**)
-constructor. trivial. eapply H. apply H0. apply H1.
+- constructor. trivial. eapply H. apply H0. apply H1.
 (*2*)
-destruct lt_eq_lt_dec  as [ [] | ].
-constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1.
-intuition. trivial.
-destruct i as (AA & ?& ?). subst. rewrite substP3; trivial.
-rewrite <- (nth_sub_eq H1 H3).
-eapply thinning_eq_n. eapply sub_trunc. apply H1. apply cRefl; trivial.
-eapply H;  eauto. intuition.
-constructor. eapply H; eauto. destruct i as (AA & ? &?). subst.
-rewrite substP3; trivial.
-exists AA; split. replace (S (v-1)) with v. trivial.
-rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
-eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l.
-replace (S v - 1 ) with v. intuition.
-rewrite <- pred_of_minus. simpl.  trivial. replace (S (v-1)) with v.
-trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
-intuition.  simpl; intuition.
+- destruct lt_eq_lt_dec  as [ [] | ].
+  constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1.
+  intuition. trivial.
+  destruct i as (AA & ?& ?). subst. rewrite substP3; trivial.
+  rewrite <- (nth_sub_eq H1 H3).
+  eapply thinning_eq_n. eapply sub_trunc. apply H1. apply cRefl; trivial.
+  eapply H;  eauto. intuition.
+  constructor. eapply H; eauto. destruct i as (AA & ? &?). subst.
+  rewrite substP3; trivial.
+  exists AA; split. replace (S (v-1)) with v. trivial.
+  rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
+  eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l.
+  replace (S v - 1 ) with v. intuition.
+  rewrite <- pred_of_minus. simpl.  trivial. replace (S (v-1)) with v.
+  trivial. rewrite <- pred_of_minus. rewrite <- (S_pred v n l); trivial.
+  intuition.  simpl; intuition.
 (**)
-apply cPi_eq with s t. trivial. eapply H. apply H1. trivial. eapply H0. apply H1. constructor; trivial.
+- apply cPi_eq with s t. trivial. eapply H. apply H1. trivial. eapply H0. apply H1. constructor; trivial.
 (**)
-apply cLa_eq with s t u. trivial. eapply H. apply H2. trivial. eapply H0. apply H2. constructor; trivial.
-eapply H1. apply H2. constructor; trivial.
+- apply cLa_eq with s t u. trivial. eapply H. apply H2. trivial. eapply H0. apply H2. constructor; trivial.
+  eapply H1. apply H2. constructor; trivial.
 (**)
-rewrite subst_travers. apply cApp_eq with (A[n ← P]). replace (Π (A [n ← P]), B [(n + 1) ← P]) with (Π(A),B)[n← P].
-eapply H. apply H1. trivial. simpl; replace (n+1) with (S n). trivial. rewrite plus_comm; trivial.
-eapply H0. apply H1. trivial.
+- rewrite subst_travers. apply cApp_eq with (A[n ← P]). replace (Π (A [n ← P]), B [(n + 1) ← P]) with (Π(A),B)[n← P].
+  eapply H. apply H1. trivial. simpl; replace (n+1) with (S n). trivial. rewrite plus_comm; trivial.
+  eapply H0. apply H1. trivial.
+(***)
+- apply cId_eq.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+  + eapply H1 ; eauto.
+- apply cRfl_eq with s.
+  + eapply H ; eauto.
+  + eapply H0 ; eauto.
+- apply cJ_eq with s t.
+  + eapply H ; eauto.
+  + admit.
+  + admit.
+  + eapply H2 ; eauto.
+  + eapply H3 ; eauto.
+  + eapply H4 ; eauto.
 (**)
-constructor.  eapply H. apply H0. trivial.
+- constructor.  eapply H. apply H0. trivial.
 (**)
-apply cTrans with (N[n← P0]). eauto. eauto.
+- apply cTrans with (N[n← P0]). eauto. eauto.
 (**)
-apply Cnv_eq with (A[n ← P]) s. eapply H. apply H1.  trivial. eapply H0. apply H1. trivial.
+- apply Cnv_eq with (A[n ← P]) s. eapply H. apply H1.  trivial. eapply H0. apply H1. trivial.
 (**)
-rewrite 2! subst_travers. simpl in *. replace (n+1) with (S n) by (rewrite plus_comm; trivial). apply cBeta with s t u. trivial.
-eapply H. apply H3. trivial. eapply H0. apply H3. constructor;  trivial. eapply H1. apply H3. constructor; trivial.
-eapply H2. apply H3. trivial.
+- rewrite 2! subst_travers. simpl in *. replace (n+1) with (S n) by (rewrite plus_comm; trivial). apply cBeta with s t u. trivial.
+  eapply H. apply H3. trivial. eapply H0. apply H3. constructor;  trivial. eapply H1. apply H3. constructor; trivial.
+  eapply H2. apply H3. trivial.
+(***)
+- apply cJred with s t.
+  + eauto.
+  + admit.
+  + admit.
+  + eauto. 
 (* wf *)
-inversion H0.
-inversion H1; subst; clear H1. apply wf_typ in H0; trivial.
-econstructor. eapply H. apply H0. trivial.
-Qed.
+- inversion H0.
+- inversion H1; subst; clear H1. apply wf_typ in H0; trivial.
+  econstructor. eapply H. apply H0. trivial.
+Admitted.
 
 
 (** Here is the generalization of the substitution **)
@@ -462,37 +573,52 @@ Lemma substitution2 : forall Γ t T , Γ  ⊢e t  : T  -> forall Δ P P' A,
    sub_in_env Δ P A n Γ Γ' ->  Γ' ⊢e t [ n ←P ]  = t [ n ← P'] : T [ n ←P ].
 induction 1; intros; simpl in *.
 (*1*)
-constructor. trivial. eapply substitution.  apply H0. apply H2. apply H3.
+- constructor. trivial. eapply substitution.  apply H0. apply H2. apply H3.
 (*2*)
-destruct lt_eq_lt_dec as [ [] | ].
-constructor. eapply substitution. apply H. apply H2. apply H3.
-eapply nth_sub_item_inf. apply H3. intuition. trivial.
-destruct H0 as (AA & ?& ?).
-subst. rewrite substP3; intuition.
-rewrite <- (nth_sub_eq H3 H4).
-eapply thinning_eq_n. eapply sub_trunc. apply H3. trivial.
-eapply substitution. apply H. apply H2. apply H3.
-constructor. eapply substitution. apply H. apply H2.  apply H3.
-destruct H0 as (AA & ? &?). subst.  rewrite substP3; intuition.
-exists AA; split. replace (S (v-1)) with v. trivial.
-rewrite <- pred_of_minus. rewrite <- (S_pred v n l). trivial.
-eapply nth_sub_sup. apply H3. intuition. destruct v.
-apply lt_n_O in l; elim l. rewrite <- pred_of_minus. simpl; trivial.
-intuition. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus.
-rewrite <- (S_pred v n l). trivial.
+- destruct lt_eq_lt_dec as [ [] | ].
+  constructor. eapply substitution. apply H. apply H2. apply H3.
+  eapply nth_sub_item_inf. apply H3. intuition. trivial.
+  destruct H0 as (AA & ?& ?).
+  subst. rewrite substP3; intuition.
+  rewrite <- (nth_sub_eq H3 H4).
+  eapply thinning_eq_n. eapply sub_trunc. apply H3. trivial.
+  eapply substitution. apply H. apply H2. apply H3.
+  constructor. eapply substitution. apply H. apply H2.  apply H3.
+  destruct H0 as (AA & ? &?). subst.  rewrite substP3; intuition.
+  exists AA; split. replace (S (v-1)) with v. trivial.
+  rewrite <- pred_of_minus. rewrite <- (S_pred v n l). trivial.
+  eapply nth_sub_sup. apply H3. intuition. destruct v.
+  apply lt_n_O in l; elim l. rewrite <- pred_of_minus. simpl; trivial.
+  (* intuition. replace (S (v-1)) with v. trivial. rewrite <- pred_of_minus. *)
+  (* rewrite <- (S_pred v n l). trivial. *)
 (*4*)
-apply cPi_eq with s t; trivial.  eapply IHtyp1.  apply H2. trivial.  trivial. eapply IHtyp2. apply H2. trivial. constructor; trivial.
+- apply cPi_eq with s t; trivial.  eapply IHtyp1.  apply H2. trivial.  trivial. eapply IHtyp2. apply H2. trivial. constructor; trivial.
 (*5*)
-apply cLa_eq with s1 s2 s3; trivial. eapply IHtyp1.  apply H3. trivial.  trivial. eapply IHtyp3. apply H3. trivial. constructor; trivial.
-change !s2 with (!s2[(S n)← P]). eapply substitution. apply H1. apply H4. constructor; trivial.
+- apply cLa_eq with s1 s2 s3; trivial. eapply IHtyp1.  apply H3. trivial.  trivial. eapply IHtyp3. apply H3. trivial. constructor; trivial.
+  change !s2 with (!s2[(S n)← P]). eapply substitution. apply H1. apply H4. constructor; trivial.
 (*6*)
-rewrite subst_travers. apply cApp_eq with (A[n← P]).
-replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply IHtyp1; eauto.
-replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply IHtyp2; eauto.
+- rewrite subst_travers. apply cApp_eq with (A[n← P]).
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply IHtyp1; eauto.
+  replace (n+1) with (S n) by (rewrite plus_comm; trivial).  eapply IHtyp2; eauto.
+(*NaN*)
+- apply cId_eq.
+  + eapply IHtyp1 ; eauto.
+  + eapply IHtyp2 ; eauto.
+  + eapply IHtyp3 ; eauto.
+- apply cRfl_eq with s.
+  + eapply IHtyp1 ; eauto.
+  + eapply IHtyp2 ; eauto.
+- apply cJ_eq with s t.
+  + eapply IHtyp1 ; eauto.
+  + admit.
+  + admit.
+  + eapply IHtyp4 ; eauto.
+  + eapply IHtyp5 ; eauto.
+  + eapply IHtyp6 ; eauto.
 (*7*)
-apply Cnv_eq with (A[n← P]) s. change !s with (!s[n ← P]). eapply substitution. apply H. apply H2. trivial.
-eapply IHtyp. apply H1. trivial. trivial.
-Qed.
+- apply Cnv_eq with (A[n← P]) s. change !s with (!s[n ← P]). eapply substitution. apply H. apply H2. trivial.
+  eapply IHtyp. apply H1. trivial. trivial.
+Admitted.
 
 Lemma wf_item : forall Γ A n, A ↓ n ∈ Γ ->
    forall  Γ', Γ ⊣e ->  trunc (S n) Γ Γ' -> exists s, Γ' ⊢e A : !s.
@@ -539,71 +665,117 @@ Lemma TypeCorrect_Refl : (forall Γ M T, Γ ⊢e M : T -> exists s, T = !s \/ Γ
   (forall Γ M N T, Γ ⊢e M = N : T -> Γ ⊢e M : T /\ Γ ⊢e N : T /\ exists s, T = !s \/ Γ ⊢e T : !s) /\
   (forall Γ, Γ ⊣e -> True).
 apply typ_induc; intros; simpl in *.
-exists t; left; trivial.
+- exists t; left; trivial.
 (**)
-apply wf_item_lift in i. destruct i.  exists x; right ; trivial. trivial.
+- apply wf_item_lift in i. destruct i.  exists x; right ; trivial. trivial.
 (**)
-exists u; left; trivial.
+- exists u; left; trivial.
 (**)
-exists s3; right. apply cPi with s1 s2; trivial.
+- exists s3; right. apply cPi with s1 s2; trivial.
 (**)
-destruct H. destruct H. discriminate.
-apply wgen_pi in H as (s1 & s2 & s3 & h). decompose [and] h; clear h.
-exists s2; right. change !s2 with (!s2 [← b]). eapply substitution. apply H3. apply t0. constructor.
+- destruct H. destruct H. discriminate.
+  apply wgen_pi in H as (s1 & s2 & s3 & h). decompose [and] h; clear h.
+  exists s2; right. change !s2 with (!s2 [← b]). eapply substitution. apply H3. apply t0. constructor.
 (**)
-destruct H as (? & ? &?). exists s; right; trivial.
+- apply H.
+(***)
+- exists s ; right. apply cId ; trivial.
+- exists t ; right.
+  apply cApp with (a := C) (b := u) in t1 ; trivial. simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite lift0 in t1.
+  apply cApp with (a := C · u) (b := v) in t1 ; trivial. simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite 3!lift0 in t1.
+  apply cApp with (a := C · u · v) (b := p) in t1 ; trivial.
+- exists s ; right ; apply H.
 (**)
-split.
-  now constructor.
-split.
-  now constructor.
-exists t; left; trivial.
+- repeat split.
+  + now constructor.
+  + now constructor.
+  + exists t; left; trivial.
 (**)
-split.
-  now constructor.
-split.
-  now constructor.
-apply wf_item_lift in i. destruct i.  exists x; right ; trivial. trivial.
+- repeat split.
+  + now constructor.
+  + now constructor.
+  + apply wf_item_lift in i. destruct i.  exists x; right ; trivial. trivial.
 (**)
-destruct H as (? & ?& ?), H0 as (? & ?& ?). split.
-apply cPi with s t; trivial. split. apply cPi with s t; trivial.
-change (A'::Γ) with (nil++A'::Γ). eapply conv_in_env. apply H3. simpl; reflexivity. apply t0. trivial.
-exists u; left; trivial.
+- destruct H as (? & ?& ?), H0 as (? & ?& ?). split.
+  apply cPi with s t; trivial. split. apply cPi with s t; trivial.
+  change (A'::Γ) with (nil++A'::Γ). eapply conv_in_env. apply H3. simpl; reflexivity. apply t0. trivial.
+  exists u; left; trivial.
 (**)
-destruct H as (? & ?& ?), H0 as (? & ?& ?). split.
- apply cLa with s t u; trivial.
-split. apply Cnv with (Π(A'),B) u. apply cPi_eq with s t; intuition.
-change (A'::Γ) with (nil++A'::Γ).
-eapply conv_in_env. apply cRefl. apply t2. simpl; reflexivity.
-apply t0. trivial.
-apply cLa with s t u; trivial. change (A'::Γ) with (nil++A'::Γ).
-eapply conv_in_env. apply t2. simpl; reflexivity. apply t0. trivial.
-change (A'::Γ) with (nil++A'::Γ). eapply conv_in_env. apply H4.
-simpl; reflexivity. apply t0. trivial.
-exists u; right. apply cPi with s t; trivial.
+- destruct H as (? & ?& ?), H0 as (? & ?& ?). split.
+  apply cLa with s t u; trivial.
+  split. apply Cnv with (Π(A'),B) u. apply cPi_eq with s t; intuition.
+  change (A'::Γ) with (nil++A'::Γ).
+  eapply conv_in_env. apply cRefl. apply t2. simpl; reflexivity.
+  apply t0. trivial.
+  apply cLa with s t u; trivial. change (A'::Γ) with (nil++A'::Γ).
+  eapply conv_in_env. apply t2. simpl; reflexivity. apply t0. trivial.
+  change (A'::Γ) with (nil++A'::Γ). eapply conv_in_env. apply H4.
+  simpl; reflexivity. apply t0. trivial.
+  exists u; right. apply cPi with s t; trivial.
 (**)
-destruct H as (? & ? & ?), H0 as (? & ?& ?). split. apply cApp with A; trivial. split.
-destruct H2 as (s & ?). destruct H2. discriminate. apply wgen_pi in H2 as (a & b & c & h); decompose [and] h ;clear h.
-apply Cnv with (B[← N']) b. change !b with (!b[← N]). apply cSym. eapply substitution2.
-apply H7. apply t0. trivial. constructor. apply cApp with A; trivial.
-destruct H2. destruct H2. discriminate. apply wgen_pi in H2 as (a & b & c & h); decompose [and] h; clear h.
-exists b; right. change !b with (!b[←N]). eapply substitution. apply H7. apply H0. constructor.
+- destruct H as (? & ? & ?), H0 as (? & ?& ?). split. apply cApp with A; trivial. split.
+  destruct H2 as (s & ?). destruct H2. discriminate. apply wgen_pi in H2 as (a & b & c & h); decompose [and] h ;clear h.
+  apply Cnv with (B[← N']) b. change !b with (!b[← N]). apply cSym. eapply substitution2.
+  apply H7. apply t0. trivial. constructor. apply cApp with A; trivial.
+  destruct H2. destruct H2. discriminate. apply wgen_pi in H2 as (a & b & c & h); decompose [and] h; clear h.
+  exists b; right. change !b with (!b[←N]). eapply substitution. apply H7. apply H0. constructor.
+(***)
+- intuition. apply cId ; eauto.
+- intuition ; eauto.
+  apply Cnv with (A := Id A' u' u') (s:=s).
+  + apply cId_eq ; eauto.
+  + eauto.
+- intuition ; eauto.
+  + apply Cnv with (A := C' · u' · v' · p') (s:=t).
+    * apply cSym.
+      apply cApp_eq with (M := C) (N := u) (M' := C') (N' := u') in t1 ; trivial.
+      simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite lift0 in t1.
+      apply cApp_eq with (M := C · u) (N := v) (M' := C' · u') (N' := v') in t1 ; trivial.
+      simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite 3!lift0 in t1.
+      apply cApp_eq with (M := C · u · v) (N := p) (M' := C' · u' · v') (N' := p') in t1 ; trivial.
+    * { apply cJ with s t.
+        - eauto.
+        - admit. (* conversion and stuff *)
+        - admit.
+        - eauto.
+        - eauto.
+        - eauto.
+      }
+  + exists t ; right.
+    apply cApp with (a := C) (b := u) in H ; trivial.
+    simpl in H. rewrite 2!substP3 in H ; try omega. rewrite lift0 in H.
+    apply cApp with (a := C · u) (b := v) in H ; trivial.
+    simpl in H. rewrite 2!substP3 in H ; try omega. rewrite 3!lift0 in H.
+    apply cApp with (a := C · u · v) (b := p) in H ; trivial.
 (**)
-intuition.
+- intuition.
 (**)
-destruct H as (? & ?& ?), H0 as (? & ? & ?).
-intuition.
+- destruct H as (? & ?& ?), H0 as (? & ? & ?).
+  intuition.
 (**)
-destruct H as (? & ?& ?), H0 as (? & ?& ?).
-split. apply Cnv with A s; trivial. split. apply Cnv with A s; trivial.
-exists s; right; trivial.
+- destruct H as (? & ?& ?), H0 as (? & ?& ?).
+  split. apply Cnv with A s; trivial. split. apply Cnv with A s; trivial.
+  exists s; right; trivial.
 (**)
-split. apply cApp with A; trivial. apply cLa with s t u; trivial. split.
-eapply substitution. apply t2. apply t3. constructor. exists t; right.
-change !t with (!t[← N]). eapply substitution. apply t1. apply t3. constructor.
+- split. apply cApp with A; trivial. apply cLa with s t u; trivial. split.
+  eapply substitution. apply t2. apply t3. constructor. exists t; right.
+  change !t with (!t[← N]). eapply substitution. apply t1. apply t3. constructor.
+(***)
+- repeat split.
+  + apply cJ with s t ; eauto.
+  + apply cApp with (a := b) (b := u) in t2 ; trivial.
+    simpl in t2. rewrite 2!substP3 in t2 ; try omega. now rewrite !lift0 in t2.
+  + exists t. right.
+    apply cApp with (a := C) (b := u) in t1 ; trivial.
+    simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite lift0 in t1.
+    apply cApp with (a := C · u) (b := u) in t1 ; trivial.
+    simpl in t1. rewrite 2!substP3 in t1 ; try omega. rewrite 2!lift0 in t1.
+    apply cApp with (a := C · u · u) (b := refl A u) in t1 ; trivial.
+    eauto.
 (**)
-trivial. trivial.
-Qed.
+- trivial.
+- trivial.
+Admitted.
 
 Lemma TypeCorrect : forall Γ M T, Γ ⊢e M : T -> exists s, T = !s \/ Γ ⊢e T : !s.
 apply TypeCorrect_Refl.
@@ -646,68 +818,112 @@ Lemma FromPTSe_to_PTS : (forall Γ M T, Γ ⊢e M : T -> Γ ⊢ M : T) /\
   (forall Γ, Γ ⊣e -> Γ ⊣).
 apply typ_induc; intros; simpl in *.
 (**)
-intuition.
+- intuition.
 (**)
-intuition.
+- intuition.
 (**)
-apply SRM.cPi with s t; trivial.
+- apply SRM.cPi with s t; trivial.
 (**)
-apply SRM.cLa with s1 s2 s3; trivial.
+- apply SRM.cLa with s1 s2 s3; trivial.
 (**)
-apply SRM.cApp with A; trivial.
-destruct H as (? & ? & ?). apply SRM.Cnv with A s; trivial.
+- apply SRM.cApp with A; trivial.
+(***)
+- apply SRM.cId ; trivial.
+- apply SRM.cRefl with s ; trivial.
+- apply SRM.cJ with s t ; trivial.
 (**)
-split.
-  now constructor.
-split.
-  now constructor.
-now intuition.
+- destruct H as (? & ? & ?). apply SRM.Cnv with A s; trivial.
+- repeat split ; now constructor.
 (**)
-split.
-  now constructor.
-split.
-  now constructor.
-now intuition.
+- repeat split ; now constructor.
 (**)
-destruct H as (? & ?& ?). destruct H0 as ( ? & ? & ?).
-split. apply SRM.cPi with s t; trivial. split. apply SRM.cPi with s t; trivial.
-apply Betac_confl in H2 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
-apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
-econstructor. apply H1. apply Betas_env_hd; trivial. intuition.
+- destruct H as (? & ?& ?). destruct H0 as ( ? & ? & ?).
+  split. apply SRM.cPi with s t; trivial. split. apply SRM.cPi with s t; trivial.
+  apply Betac_confl in H2 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
+  apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
+  econstructor. apply H1. apply Betas_env_hd; trivial. intuition.
 (**)
-destruct H as (? & ?& ?). destruct H0 as (? & ?& ?).
-split. apply SRM.cLa with s t u; trivial. split. apply SRM.Cnv with (Π(A'),B) u.
-intuition. apply SRM.cLa with s t u; trivial.
-apply Betac_confl in H3 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
-apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
-econstructor. apply H2. apply Betas_env_hd; trivial.
-apply Betac_confl in H3 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
-apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
-econstructor. apply H2. apply Betas_env_hd; trivial.
-apply SRM.cPi with s t; trivial. intuition.
+- destruct H as (? & ?& ?). destruct H0 as (? & ?& ?).
+  split. apply SRM.cLa with s t u; trivial. split. apply SRM.Cnv with (Π(A'),B) u.
+  intuition. apply SRM.cLa with s t u; trivial.
+  apply Betac_confl in H3 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
+  apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
+  econstructor. apply H2. apply Betas_env_hd; trivial.
+  apply Betac_confl in H3 as (Z & ?& ?). apply Betas_env_sound_up with (Z::Γ).
+  apply Betas_env_sound with (A::Γ). trivial. apply Betas_env_hd; trivial.
+  econstructor. apply H2. apply Betas_env_hd; trivial.
+  apply SRM.cPi with s t; trivial. intuition.
 (**)
-destruct H as (? & ?& ?). destruct H0 as (? & ?& ?).
-split. apply SRM.cApp with A; trivial. split.
-assert (exists s, A::Γ ⊢ B : !s). apply SRM.TypeCorrect in H. destruct H as [ [s ?]| [ s ?] ].
-discriminate. apply gen_pi in H as (a & b & c & h);decompose [and] h; clear h. exists b; trivial.
-destruct H5 as (b & ?). apply SRM.Cnv with (B[← N']) b. intuition.
-apply SRM.cApp with A; trivial. change !b with (!b[← N]). eapply SRM.substitution.
-apply H5. apply H0. constructor. apply SRM.wf_typ in H5; trivial. intuition.
+- destruct H as (? & ?& ?). destruct H0 as (? & ?& ?).
+  split. apply SRM.cApp with A; trivial. split.
+  assert (exists s, A::Γ ⊢ B : !s). apply SRM.TypeCorrect in H. destruct H as [ [s ?]| [ s ?] ].
+  discriminate. apply gen_pi in H as (a & b & c & h);decompose [and] h; clear h. exists b; trivial.
+  destruct H5 as (b & ?). apply SRM.Cnv with (B[← N']) b. intuition.
+  apply SRM.cApp with A; trivial. change !b with (!b[← N]). eapply SRM.substitution.
+  apply H5. apply H0. constructor. apply SRM.wf_typ in H5; trivial. intuition.
+(***)
+- repeat split.
+  + destruct H ; destruct H0 ; destruct H1 ; now constructor.
+  + constructor.
+    * now destruct H.
+    * apply SRM.Cnv with A s ; now (destruct H ; destruct H0 ; destruct H1).
+    * apply SRM.Cnv with A s ; now (destruct H ; destruct H0 ; destruct H1).
+  + destruct H ; destruct H0 ; destruct H1 ; now apply Betac_Id.
+- destruct H as [tA [tA' cA]] ; destruct H0 as [tu [tu' cu]].
+  repeat split.
+  + apply SRM.cRefl with s ; trivial.
+  + apply SRM.Cnv with (Id A' u' u') s.
+    * apply Betac_sym. now apply Betac_Id.
+    * apply SRM.cRefl with s ; trivial.
+      apply SRM.Cnv with A s ; trivial.
+    * apply SRM.cId ; trivial.
+  + apply Betac_refls ; trivial.
+- destruct H as [tA [tA' cA]].
+  destruct H0 as [tC [tC' cC]].
+  destruct H1 as [tb [tb' cb]].
+  destruct H2 as [tu [tu' cu]].
+  destruct H3 as [tv [tv' cv]].
+  destruct H4 as [tp [tp' cp]].
+  repeat split.
+  + apply SRM.cJ with s t ; trivial.
+  + apply SRM.Cnv with (C' · u' · v' · p') t.
+    * apply Betac_sym. repeat apply Betac_App ; trivial.
+    * { apply SRM.cJ with s t ; trivial.
+        - (* apply SRM.Cnv with (Π (A), Π (A ↑ 1), Π (Id (A ↑ 2) #1 #0), ! t) ???  -- who is the sort to type it? *)
+          (* Maybe we need to add explicitely a sort for the type of C? *)
+          admit.
+        - admit.
+        - apply SRM.Cnv with A s ; trivial.
+        - apply SRM.Cnv with A s ; trivial.
+        - apply SRM.Cnv with (Id A u v) s ; trivial.
+          + apply Betac_Id ; trivial.
+          + apply SRM.cId ; trivial ; try (apply SRM.Cnv with A s ; trivial).
+      }
+    * admit. (* We just need to do the several applies *)
+  + apply Betac_J ; trivial.
 (**)
-intuition.
+- intuition.
 (**)
-destruct H as (? & ?& ?), H0 as (? & ?& ?). intuition. eauto.
+- destruct H as (? & ?& ?), H0 as (? & ?& ?). intuition. eauto.
 (**)
-destruct H as (? & ?& ?). destruct H0 as ( ?& ?& ?).
-split. apply SRM.Cnv with A s; trivial. split. apply SRM.Cnv with A s; trivial. trivial.
+- destruct H as (? & ?& ?). destruct H0 as ( ?& ?& ?).
+  split. apply SRM.Cnv with A s; trivial. split. apply SRM.Cnv with A s; trivial. trivial.
 (**)
-split. apply SRM.cApp with A. apply SRM.cLa with s t u; trivial. trivial.
-split. eapply SRM.substitution. apply H1. apply H2. constructor. eauto. intuition.
+- split. apply SRM.cApp with A. apply SRM.cLa with s t u; trivial. trivial.
+  split. eapply SRM.substitution. apply H1. apply H2. constructor. eauto. intuition.
+(***)
+- repeat split.
+  + apply SRM.cJ with s t ; trivial.
+    apply SRM.cRefl with s ; trivial.
+  + apply SRM.cApp with (M := b) (N := u) in H1 ; trivial.
+    simpl in H1. rewrite 2!substP3 in H1 ; try omega. rewrite !lift0 in H1.
+    assumption.
+  + apply Betac_Betas. apply Betas_Beta. apply Beta_jred.
 (**)
-intuition.
+- intuition.
 (**)
-eauto.
-Qed.
+- eauto.
+Admitted.
 
 (** Equivalence with simpler presentation of the typed equality,
     suggested by Randy Pollack *)
