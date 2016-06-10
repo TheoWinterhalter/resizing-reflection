@@ -6,6 +6,8 @@ ut_env.v
 ut_typ.v
 ut_sr.v
 ut_typ_eq.v
+term.v
+# Updating the last one above
 env.v
 f_end.v
 f_equivalence.v
@@ -16,6 +18,5 @@ final_result.v
 glue.v
 red.v
 strip.v
-term.v
 typ_annot.v
 ut_red.v
