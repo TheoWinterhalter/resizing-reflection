@@ -81,49 +81,69 @@ Theorem weakening: (forall Δ t t' T, Δ ⊢ t ▹ t' : T -> forall Γ d d' s n 
 (forall Δ t t' T, Δ ⊢ t ▹▹ t' : T -> forall Γ d d' s n Δ',
     ins_in_env Γ d n Δ Δ' ->   Γ ⊢ d ▹ d' :!s -> Δ' ⊢ t ↑ 1 # n ▹▹ t' ↑ 1 # n : T ↑ 1 # n ) /\
 (forall Γ, Γ ⊣ -> forall Δ Γ' n A A' s, ins_in_env Δ A n Γ Γ' -> Δ ⊢ A ▹ A' : !s -> Γ' ⊣).
-apply typ_induc; intros; simpl.
-destruct le_gt_dec. constructor. eapply H; eauto.
-destruct i as (u & ?& ?).
-rewrite H2. exists u; split.
-change (S (S x)) with (1+ S x). rewrite liftP3; trivial. intuition. simpl; intuition. eapply ins_item_ge. apply H0.
-trivial. trivial.
-constructor. eapply H; eauto. eapply ins_item_lift_lt. apply H0. trivial. trivial.
-(**)
-econstructor; trivial. eapply H; eauto.
-(**)
-apply typ_pi with s1 s2; trivial.
-change !s1 with (!s1 ↑ 1 # n); eapply H; eauto.
-change !s2 with (!s2 ↑ 1 # (S n)); eapply H0; eauto.
-(**)
-apply typ_la with s1 s2 s3; trivial.
-change !s1 with (!s1 ↑ 1 # n); eapply H; eauto.
-change !s2 with (!s2 ↑ 1 # (S n)); eapply H0; eauto.
-eapply H1; eauto.
-(** app with annot **)
-change n with (0+n); rewrite substP1. simpl.
-eapply typ_app. apply r. eapply H; eauto. eapply H0; eauto.
-eapply H1; eauto. eapply H2; eauto.
-(** beta with annot **)
-change n with (0+n); rewrite 2! substP1. simpl.
-eapply typ_beta. apply r. eapply H; eauto. eapply H0; eauto.
-eapply H1; eauto. eapply H2; eauto. eapply H3; eauto. eapply H4; eauto.
-eapply H5; eauto.
-(**)
-apply typ_red with (A ↑ 1 # n) s. eapply H; eauto.
-change !s with (!s ↑ 1 # n); eapply H0; eauto.
-(**)
-apply typ_exp with (B ↑ 1 # n) s. eapply H; eauto.
-change !s with (!s ↑ 1 # n); eapply H0; eauto.
-(* reds *)
-constructor; eapply H; eauto. eauto.
-(* wf *)
-inversion H; subst; clear H. eauto.
-(**)
-inversion H0; subst; clear H0.
-eauto.
-apply wf_cons with (A' ↑ 1  # n0) s.
-change !s with (!s ↑ 1 # n0); eauto.
-Qed.
+  apply typ_induc; intros; simpl.
+  - destruct le_gt_dec. constructor. eapply H; eauto.
+    destruct i as (u & ?& ?).
+    rewrite H2. exists u; split.
+    change (S (S x)) with (1+ S x). rewrite liftP3; trivial. intuition. simpl; intuition. eapply ins_item_ge. apply H0.
+    trivial. trivial.
+    constructor. eapply H; eauto. eapply ins_item_lift_lt. apply H0. trivial. trivial.
+  (**)
+  - econstructor; trivial. eapply H; eauto.
+  (**)
+  - apply typ_pi with s1 s2; trivial.
+    change !s1 with (!s1 ↑ 1 # n); eapply H; eauto.
+    change !s2 with (!s2 ↑ 1 # (S n)); eapply H0; eauto.
+  (**)
+  - apply typ_la with s1 s2 s3; trivial.
+    change !s1 with (!s1 ↑ 1 # n); eapply H; eauto.
+    change !s2 with (!s2 ↑ 1 # (S n)); eapply H0; eauto.
+    eapply H1; eauto.
+  (** app with annot **)
+  - change n with (0+n); rewrite substP1. simpl.
+    eapply typ_app. apply r. eapply H; eauto. eapply H0; eauto.
+    eapply H1; eauto. eapply H2; eauto.
+  (***)
+  - econstructor ; trivial.
+    + eapply H ; eauto.
+    + eapply H0 ; eauto.
+    + eapply H1 ; eauto.
+  - econstructor ; trivial.
+    + eapply H ; eauto.
+    + eapply H0 ; eauto.
+  - econstructor ; trivial.
+    + econstructor ; trivial.
+      * eapply H ; eauto.
+      * admit.
+      * admit.
+      * eapply H2 ; eauto.
+      * eapply H3 ; eauto.
+      * eapply H4 ; eauto.
+    + admit. (*! To be honest, I don't quite understand here yet. *)      
+  (** beta with annot **)
+  - change n with (0+n); rewrite 2! substP1. simpl.
+    eapply typ_beta. apply r. eapply H; eauto. eapply H0; eauto.
+    eapply H1; eauto. eapply H2; eauto. eapply H3; eauto. eapply H4; eauto.
+    eapply H5; eauto.
+  (**)
+  - apply typ_red with (A ↑ 1 # n) s. eapply H; eauto.
+    change !s with (!s ↑ 1 # n); eapply H0; eauto.
+  (**)
+  - apply typ_exp with (B ↑ 1 # n) s. eapply H; eauto.
+    change !s with (!s ↑ 1 # n); eapply H0; eauto.
+  (* reds *)
+  - constructor; eapply H; eauto.
+  - eauto.
+  (* wf *)
+  - inversion H; subst; clear H. eauto.
+  (**)
+  - inversion H0; subst; clear H0.
+    eauto.
+    apply wf_cons with (A' ↑ 1  # n0) s.
+    change !s with (!s ↑ 1 # n0); eauto.
+Admitted.
+
+(*** Continue below ***)
 
 Theorem thinning :
    forall Γ M N T A A' s,
