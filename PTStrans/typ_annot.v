@@ -44,8 +44,10 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
     Γ ⊢ (M ·(A,B) N) ▹ (M'·(A',B') N') : B[ ←N]
  | typ_id : forall Γ A A' u u' v v' s, Γ ⊢ A ▹ A' : !s -> Γ ⊢ u ▹ u' : A -> Γ ⊢ v ▹ v' : A -> Γ ⊢ Id A u v ▹ Id A' u' v' : !s
  | typ_refl : forall Γ A A' u u' s, Γ ⊢ A ▹ A' : !s -> Γ ⊢ u ▹ u' : A -> Γ ⊢ refl A u ▹ refl A' u' : Id A u u
- | typ_j : forall Γ A A' C C' b b' u u' v v' p p' s t,                                                                                          Γ ⊢ A ▹ A' : !s ->
+ | typ_j : forall Γ A A' C C' b b' u u' v v' p p' s t,
+           Γ ⊢ A ▹ A' : !s ->
            Γ ⊢ C ▹ C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+           (* Should we have A ↑ 1 or simply A after ·? *)
            Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 ·(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0) ->
            Γ ⊢ u ▹ u' : A ->
            Γ ⊢ v ▹ v' : A ->
@@ -87,6 +89,7 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
                 Γ ⊢ u0 ▹▹ u1 : A1 ->
                 Γ ⊢ u0 ▹▹ u2 : A1 ->
                 Γ ⊢ u0 ▹▹ u3 : A1 ->
+                (* We have to complete the type... Better solve the problem above first... *)
                 Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4, Π(A5 ↑ 1), Π(Id (A6 ↑ 2) #1 #0), !t) #0 ·(A7 ↑ 1, Π(Id (A8 ↑ 2) #1 #0), !t) #0 ·(Id (A9 ↑ 2) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1
  | typ_red : forall Γ M N A B s, Γ ⊢ M ▹ N : A -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : B
  | typ_exp : forall Γ M N A B s, Γ ⊢ M ▹ N : B -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : A
