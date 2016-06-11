@@ -55,6 +55,8 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
    Γ ⊢ A ▹ A : !s1 -> Γ ⊢ A' ▹ A' : !s1  -> Γ ⊢ A0 ▹▹ A : !s1 -> Γ ⊢ A0 ▹▹ A' : !s1 ->
    A::Γ ⊢ B ▹ B : !s2 -> A::Γ ⊢ M ▹ M' : B -> Γ ⊢ N ▹ N' : A ->
     Γ ⊢ ((λ[A],M) ·(A',B) N) ▹ M'[ ← N'] : B[ ←N]
+ (* | typ_jred : forall Γ A A'  *)
+ (* I don't exactly know what to put here... *)
  | typ_red : forall Γ M N A B s, Γ ⊢ M ▹ N : A -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : B
  | typ_exp : forall Γ M N A B s, Γ ⊢ M ▹ N : B -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : A
 where "Γ ⊢ M ▹ N : T" := (typ Γ  M N T) : Typ_scope
