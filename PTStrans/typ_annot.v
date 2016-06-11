@@ -587,74 +587,93 @@ Theorem subst_gen : (forall Γ M N T, Γ ⊢ M ▹ N : T ->
     + eapply H0.
       * apply H1.
       * apply H2.
-  - (*! What to do? *)
+  - simpl. (* apply typ_j with t. *)
+    admit. (* This is really complicated but it is probably just a matter of
+              seing that the type is indeed the right one. *)
   (* 1 / 3 *)
-  simpl. rewrite 2! subst_travers.
-  replace (n+1) with (S n) by (rewrite plus_comm; trivial).
-  eapply typ_beta. apply r.
-  eapply H; eauto.  apply red_refl_lt in H7; trivial.
-  eapply H0; eauto. apply red_refl_lt in H7; trivial.
-  eapply H1; eauto.
-  apply red_refl_lt in H7; trivial.
-  eapply H2; eauto. apply red_refl_lt in H7; trivial. eapply H3; eauto.
-  apply red_refl_lt in H7; trivial.
-  eapply H4; eauto. eapply H5; eauto.
+  - simpl. rewrite 2! subst_travers.
+    replace (n+1) with (S n) by (rewrite plus_comm; trivial).
+    eapply typ_beta. apply r.
+    eapply H; eauto.  apply red_refl_lt in H7; trivial.
+    eapply H0; eauto. apply red_refl_lt in H7; trivial.
+    eapply H1; eauto.
+    apply red_refl_lt in H7; trivial.
+    eapply H2; eauto. apply red_refl_lt in H7; trivial. eapply H3; eauto.
+    apply red_refl_lt in H7; trivial.
+    eapply H4; eauto. eapply H5; eauto.
   (* 1 / 2 *)
-  apply typ_red with (A[n ←u]) s. eapply H. apply H1. trivial.
-  change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2; trivial.
+  - apply typ_red with (A[n ←u]) s. eapply H. apply H1. trivial.
+    change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2; trivial.
   (* 1 / 1 *)
-  apply typ_exp with (B[n ←u]) s. eapply H. apply H1. trivial.
-  change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2. trivial.
+  - apply typ_exp with (B[n ←u]) s. eapply H. apply H1. trivial.
+    change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2. trivial.
   (* reds *)
-  eauto.
+  - eauto.
   (**)
-  eapply typ_reds_trans. eapply H. apply H1. apply red_refl_lt in H2. apply H2.
-  eapply H0; eauto.
+  - eapply typ_reds_trans. eapply H. apply H1. apply red_refl_lt in H2. apply H2.
+    eapply H0; eauto.
   (* wf *)
-  inversion H0.
+  - inversion H0.
   (**)
-  inversion H1; subst; clear H1.
-  apply wf_from_typ in t; trivial.
+  - inversion H1; subst; clear H1.
+    apply wf_from_typ in t; trivial.
 
-  eapply wf_cons. eapply H. apply H6. apply H0.
-Qed.
+    eapply wf_cons. eapply H. apply H6. apply H0.
+Admitted.
 
 
 (** Right-Hand Reflexivity: this time, is the ending part of a judgment that's always
 valid.*)
 Theorem red_refl_rt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ N ▹ N :T.
-induction 1; intros.
-(**)
-constructor; trivial.
-(**)
-constructor; trivial.
-(**)
-apply typ_pi with s1 s2; trivial. eapply red1_in_env. apply IHtyp2.
-econstructor. apply IHtyp1. eauto.
-(**)
-apply typ_exp with ( Π (A'), B) s3. apply typ_la with s1 s2 s3; trivial.
-eapply red1_in_env. apply IHtyp2. econstructor. apply IHtyp1. eauto.
-apply typ_red with B s2. eapply red1_in_env. apply IHtyp3. econstructor. apply IHtyp1. eauto.
-eapply red1_in_env. apply H1. econstructor. apply IHtyp1. eauto.
-apply typ_pi with s1 s2; trivial.
-(**)
-apply typ_exp with  B' [ ← N'] s2. eapply typ_app. apply H. trivial. eapply conv1_in_env. apply IHtyp2.
-eauto. econstructor. apply IHtyp1. apply typ_red with  (Π (A), B) s3. trivial. apply typ_pi with s1 s2; trivial.
-apply typ_red with A s1. trivial. trivial. change !s2 with (!s2[ ←N]).
-eapply subst_gen. apply H1. constructor. trivial.
-(**)
-apply typ_exp with B [ ← N'] s2. eapply subst_gen. apply IHtyp4. constructor. trivial.
-change !s2 with (!s2[ ←N]). eapply subst_gen. apply red_refl_lt in H4; apply H4.
-constructor. trivial.
-(**)
-apply typ_red with A s; trivial.
-(**)
-apply typ_exp with B s; trivial.
-Qed.
+  induction 1; intros.
+  (**)
+  - constructor; trivial.
+  (**)
+  - constructor; trivial.
+  (**)
+  - apply typ_pi with s1 s2; trivial. eapply red1_in_env. apply IHtyp2.
+    econstructor. apply IHtyp1. eauto.
+  (**)
+  - apply typ_exp with ( Π (A'), B) s3. apply typ_la with s1 s2 s3; trivial.
+    eapply red1_in_env. apply IHtyp2. econstructor. apply IHtyp1. eauto.
+    apply typ_red with B s2. eapply red1_in_env. apply IHtyp3. econstructor. apply IHtyp1. eauto.
+    eapply red1_in_env. apply H1. econstructor. apply IHtyp1. eauto.
+    apply typ_pi with s1 s2; trivial.
+  (**)
+  - apply typ_exp with  B' [ ← N'] s2. eapply typ_app. apply H. trivial. eapply conv1_in_env. apply IHtyp2.
+    eauto. econstructor. apply IHtyp1. apply typ_red with  (Π (A), B) s3. trivial. apply typ_pi with s1 s2; trivial.
+    apply typ_red with A s1. trivial. trivial. change !s2 with (!s2[ ←N]).
+    eapply subst_gen. apply H1. constructor. trivial.
+  (***)
+  - apply typ_id ; trivial.
+    + apply typ_red with A s ; trivial.
+    + apply typ_red with A s ; trivial.
+  - apply typ_exp with (Id A' u' u') s ; trivial.
+    + apply typ_refl with s ; trivial.
+      apply typ_red with A s ; trivial.
+    + apply typ_id ; trivial.
+  - apply typ_exp with (C' ·(A', Π(A' ↑ 1), Π(Id (A' ↑ 2) #1 #0), !t) u' ·(A' ↑ 1, Π(Id (A' ↑ 2) #1 #0), !t) v' ·(Id (A' ↑ 2) #1 #0, !t) p') t.
+    + apply typ_j with s ; trivial.
+      * admit. (* Once again we have to do this conversion... *)
+      * admit.
+      * apply typ_red with A s ; trivial.
+      * apply typ_red with A s ; trivial.
+      * apply typ_red with (Id A u v) s ; trivial.
+        apply typ_id ; trivial.
+    + admit. (* Here we need to instantiate hypothesis*)
+  (**)
+  - apply typ_exp with B [ ← N'] s2. eapply subst_gen. apply IHtyp4. constructor. trivial.
+    change !s2 with (!s2[ ←N]). eapply subst_gen. apply red_refl_lt in H4; apply H4.
+    constructor. trivial.
+  (**)
+  - apply typ_red with A s; trivial.
+  (**)
+  - apply typ_exp with B s; trivial.
+Admitted.
 
 Lemma reds_refl_rt : forall Γ M N T, Γ ⊢ M ▹▹ N : T -> Γ ⊢ N ▹ N :T.
-induction 1. apply red_refl_rt in H; trivial.
-trivial.
+  induction 1. apply red_refl_rt in H; trivial.
+  trivial.
 Qed.
 
 (** With Left and Right reflexivity, we can finally prove that context
