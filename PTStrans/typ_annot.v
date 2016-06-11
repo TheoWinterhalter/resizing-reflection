@@ -55,8 +55,39 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
    Γ ⊢ A ▹ A : !s1 -> Γ ⊢ A' ▹ A' : !s1  -> Γ ⊢ A0 ▹▹ A : !s1 -> Γ ⊢ A0 ▹▹ A' : !s1 ->
    A::Γ ⊢ B ▹ B : !s2 -> A::Γ ⊢ M ▹ M' : B -> Γ ⊢ N ▹ N' : A ->
     Γ ⊢ ((λ[A],M) ·(A',B) N) ▹ M'[ ← N'] : B[ ←N]
- (* | typ_jred : forall Γ A A'  *)
- (* I don't exactly know what to put here... *)
+ | typ_jred : forall Γ s t A0 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 C0 C1 C2 b1 b2 u0 u1 u2 u3 u4,
+                Γ ⊢ A1 ▹ A1 : !s ->
+                Γ ⊢ A2 ▹ A2 : !s ->
+                Γ ⊢ A3 ▹ A3 : !s ->
+                Γ ⊢ A4 ▹ A4 : !s ->
+                Γ ⊢ A5 ▹ A5 : !s ->
+                Γ ⊢ A6 ▹ A6 : !s ->
+                Γ ⊢ A7 ▹ A7 : !s ->
+                Γ ⊢ A8 ▹ A8 : !s ->
+                Γ ⊢ A9 ▹ A9 : !s ->
+                Γ ⊢ A10 ▹ A10 : !s ->
+                Γ ⊢ A0 ▹▹ A1 : !s ->
+                Γ ⊢ A0 ▹▹ A2 : !s ->
+                Γ ⊢ A0 ▹▹ A3 : !s ->
+                Γ ⊢ A0 ▹▹ A4 : !s ->
+                Γ ⊢ A0 ▹▹ A5 : !s ->
+                Γ ⊢ A0 ▹▹ A6 : !s ->
+                Γ ⊢ A0 ▹▹ A7 : !s ->
+                Γ ⊢ A0 ▹▹ A8 : !s ->
+                Γ ⊢ A0 ▹▹ A9 : !s ->
+                Γ ⊢ A0 ▹▹ A10 : !s ->
+                Γ ⊢ C1 ▹ C1 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
+                Γ ⊢ C2 ▹ C2 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
+                Γ ⊢ C0 ▹▹ C1 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
+                Γ ⊢ C0 ▹▹ C2 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
+                Γ ⊢ b1 ▹ b2 : Π(A1), (C1 ↑ 1) ·(A1, Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t) #0 ·(A1 ↑ 1, Π(Id (A1 ↑ 2) #1 #0), !t) #0 ·(Id (A1 ↑ 2) #1 #0, !t) (refl (A1 ↑ 1) #0) ->
+                Γ ⊢ u1 ▹ u4 : A1 ->
+                Γ ⊢ u2 ▹ u2 : A1 ->
+                Γ ⊢ u3 ▹ u3 : A1 ->
+                Γ ⊢ u0 ▹▹ u1 : A1 ->
+                Γ ⊢ u0 ▹▹ u2 : A1 ->
+                Γ ⊢ u0 ▹▹ u3 : A1 ->
+                Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4, Π(A5 ↑ 1), Π(Id (A6 ↑ 2) #1 #0), !t) #0 ·(A7 ↑ 1, Π(Id (A8 ↑ 2) #1 #0), !t) #0 ·(Id (A9 ↑ 2) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1
  | typ_red : forall Γ M N A B s, Γ ⊢ M ▹ N : A -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : B
  | typ_exp : forall Γ M N A B s, Γ ⊢ M ▹ N : B -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : A
 where "Γ ⊢ M ▹ N : T" := (typ Γ  M N T) : Typ_scope
