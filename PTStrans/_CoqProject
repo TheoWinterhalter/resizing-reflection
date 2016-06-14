@@ -10,6 +10,7 @@ term.v
 env.v
 red.v
 typ_annot.v
+strip.v
 # LIMIT
 f_end.v
 f_equivalence.v
@@ -18,5 +19,4 @@ f_typ.v
 f_typ2.v
 final_result.v
 glue.v
-strip.v
 ut_red.v

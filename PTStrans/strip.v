@@ -23,6 +23,9 @@ Fixpoint strip (T : T'M.Term ) : TM.Term := match T with
  | App M A B N => TM.App (strip M) (strip N)
  | !s => TM.Sort s
  | #x => TM.Var x
+ | Id A u v => TM.Id (strip A) (strip u) (strip v)
+ | refl A u => TM.refl (strip A) (strip u)
+ | J t A C b u v p => TM.J (strip A) (strip C) (strip b) (strip u) (strip v) (strip p)
 end.
 
 Fixpoint strip_env (Γ: E'M.Env) : EM.Env := match Γ with
@@ -32,22 +35,28 @@ end.
 
 (** Stripping doesn't not mess with lift or subst .*)
 Lemma strip_lift : forall M n m, strip (M ↑ n # m) = ((strip M) ↑ n # m)%UT.
-induction M; intros; simpl in *.
-destruct le_gt_dec; simpl; trivial.
-trivial.
-rewrite IHM1, IHM4; trivial.
-rewrite IHM1, IHM2; trivial.
-rewrite IHM1, IHM2; trivial.
+  induction M; intros; simpl in *.
+  - destruct le_gt_dec; simpl; trivial.
+  - trivial.
+  - rewrite IHM1, IHM4; trivial.
+  - rewrite IHM1, IHM2; trivial.
+  - rewrite IHM1, IHM2; trivial.
+  - rewrite IHM1, IHM2, IHM3. trivial.
+  - rewrite IHM1, IHM2. trivial.
+  - rewrite IHM1, IHM2, IHM3, IHM4, IHM5, IHM6. trivial.
 Qed.
 
 Lemma strip_subst : forall M n N, strip (M [n ← N]) = ((strip M) [ n ← strip N])%UT.
-induction M; intros; simpl in *.
-destruct lt_eq_lt_dec as [ [] | ]; simpl; trivial.
-rewrite strip_lift. trivial.
-trivial.
-rewrite IHM1, IHM4; trivial.
-rewrite IHM1, IHM2; trivial.
-rewrite IHM1, IHM2; trivial.
+  induction M; intros; simpl in *.
+  - destruct lt_eq_lt_dec as [ [] | ]; simpl; trivial.
+    rewrite strip_lift. trivial.
+  - trivial.
+  - rewrite IHM1, IHM4; trivial.
+  - rewrite IHM1, IHM2; trivial.
+  - rewrite IHM1, IHM2; trivial.
+  - rewrite IHM1, IHM2, IHM3. trivial.
+  - rewrite IHM1, IHM2. trivial.
+  - rewrite IHM1, IHM2, IHM3, IHM4, IHM5, IHM6. trivial.
 Qed.
 
 End strip_mod.
