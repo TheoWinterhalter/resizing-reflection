@@ -47,8 +47,7 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
  | typ_j : forall Γ A A' C C' b b' u u' v v' p p' s t,
            Γ ⊢ A ▹ A' : !s ->
            Γ ⊢ C ▹ C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
-           (* Should we have A ↑ 1 or simply A after ·? *)
-           Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A, Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t) #0 ·(A ↑ 1, Π(Id (A ↑ 2) #1 #0), !t) #0 ·(Id (A ↑ 2) #1 #0, !t) (refl (A ↑ 1) #0) ->
+           Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A ↑ 1, Π(A ↑ 2), Π(Id (A ↑ 3) #1 #0), !t) #0 ·(A ↑ 2, Π(Id (A ↑ 3) #1 #0), !t) #0 ·(Id (A ↑ 3) #1 #0, !t) (refl (A ↑ 1) #0) ->
            Γ ⊢ u ▹ u' : A ->
            Γ ⊢ v ▹ v' : A ->
            Γ ⊢ p ▹ p' : Id A u v ->
@@ -82,15 +81,14 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
                 Γ ⊢ C2 ▹ C2 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
                 Γ ⊢ C0 ▹▹ C1 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
                 Γ ⊢ C0 ▹▹ C2 : Π(A1), Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t ->
-                Γ ⊢ b1 ▹ b2 : Π(A1), (C1 ↑ 1) ·(A1, Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t) #0 ·(A1 ↑ 1, Π(Id (A1 ↑ 2) #1 #0), !t) #0 ·(Id (A1 ↑ 2) #1 #0, !t) (refl (A1 ↑ 1) #0) ->
+                Γ ⊢ b1 ▹ b2 : Π(A1), (C1 ↑ 1) ·(A1 ↑ 1, Π(A1 ↑ 2), Π(Id (A1 ↑ 3) #1 #0), !t) #0 ·(A1 ↑ 2, Π(Id (A1 ↑ 3) #1 #0), !t) #0 ·(Id (A1 ↑ 3) #1 #0, !t) (refl (A1 ↑ 1) #0) ->
                 Γ ⊢ u1 ▹ u4 : A1 ->
                 Γ ⊢ u2 ▹ u2 : A1 ->
                 Γ ⊢ u3 ▹ u3 : A1 ->
                 Γ ⊢ u0 ▹▹ u1 : A1 ->
                 Γ ⊢ u0 ▹▹ u2 : A1 ->
                 Γ ⊢ u0 ▹▹ u3 : A1 ->
-                (* We have to complete the type... Better solve the problem above first... *)
-                Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4, Π(A5 ↑ 1), Π(Id (A6 ↑ 2) #1 #0), !t) #0 ·(A7 ↑ 1, Π(Id (A8 ↑ 2) #1 #0), !t) #0 ·(Id (A9 ↑ 2) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1
+                Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4 ↑ 1, Π(A5 ↑ 2), Π(Id (A6 ↑ 3) #1 #0), !t) #0 ·(A7 ↑ 2, Π(Id (A8 ↑ 3) #1 #0), !t) #0 ·(Id (A9 ↑ 3) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1 ·(A1, Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(A1 ↑ 1, Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(Id (A1 ↑ 2) #1 #0, !t) (refl (A1 ↑ 1) u1)
  | typ_red : forall Γ M N A B s, Γ ⊢ M ▹ N : A -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : B
  | typ_exp : forall Γ M N A B s, Γ ⊢ M ▹ N : B -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : A
 where "Γ ⊢ M ▹ N : T" := (typ Γ  M N T) : Typ_scope
