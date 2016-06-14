@@ -12,11 +12,11 @@ red.v
 typ_annot.v
 strip.v
 glue.v
+final_result.v
 # LIMIT
 f_end.v
 f_equivalence.v
 f_term.v
 f_typ.v
 f_typ2.v
-final_result.v
 ut_red.v
