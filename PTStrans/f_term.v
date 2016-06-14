@@ -15,6 +15,9 @@ Inductive Term : Set:=
  | Prod   : Term  -> Term -> Term
  | Abs    : Term  -> Term -> Term
  | App    : Term  -> Term -> Term
+ | Id     : Term  -> Term -> Term -> Term
+ | Rfl    : Term  -> Term -> Term
+ | J      : Term  -> Term -> Term -> Term -> Term -> Term -> Term
  | Conv   : Term  -> Prf  -> Term
 with Prf : Set :=
  | Refl   : Term  -> Prf
@@ -25,6 +28,10 @@ with Prf : Set :=
  | AbsEq  : Prf   -> Term -> Prf -> Prf
  | AppEq  : Prf   -> Prf  -> Prf
  | Iota   : Term  -> Prf
+ | IdEq   : Prf   -> Prf  -> Prf -> Prf
+ | RflEq  : Prf   -> Prf  -> Prf
+ | JEq    : Prf   -> Prf  -> Prf -> Prf -> Prf -> Prf -> Prf
+ | JRed   : Term  -> Prf
 .
 
 (**instead of a bar, reflexivity is denoted by ρ. Adding a convertibility proof to a term is denoted by ★*)
@@ -47,7 +54,7 @@ Notation "'ι' A" := (Iota A) (at level 6) : F_scope.
 Reserved Notation " t ↑  x # n " (at level 5, x at level 0, left associativity).
 Reserved Notation " t ↑h x # n " (at level 5, x at level 0, left associativity).
 
-Delimit Scope F_scope with F. 
+Delimit Scope F_scope with F.
 
 Open Scope F_scope.
 
@@ -69,6 +76,9 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T} := match T with
    | Π ( A ), B => Π (A ↑ n # k), (B ↑ n # (S k))
    | λ [ A ], M => λ [A ↑ n # k], (M ↑ n # (S k)) 
    | A ∽ H => A ↑ n # k ∽ H ↑h n # k
+   | Id A u v => Id (A ↑ n # k) (u ↑ n # k) (v ↑ n # k)
+   | Rfl A u => Rfl (A ↑ n # k) (u ↑ n # k)
+   | J A C b u v p => J (A ↑ n # k) (C ↑ n # k) (b ↑ n # k) (u ↑ n # k) (v ↑ n # k) (p ↑ n # k)
  end  
    where "t ↑ n # k" := (lift_rec n k t) : F_scope
 with lift_rec_h (n:nat) (k:nat) (H:Prf) {struct H} := match H with
@@ -80,6 +90,10 @@ with lift_rec_h (n:nat) (k:nat) (H:Prf) {struct H} := match H with
    | {H,[A]K} => {H ↑h n # k,[A ↑ n # k]K ↑h n # (S k)}
    | ⟨H,[A]K⟩ => ⟨H ↑h n # k,[A ↑ n # k]K ↑h n # (S k)⟩
    | ι A => ι(A ↑ n # k)
+   | IdEq H1 H2 H3 => IdEq (H1 ↑h n # k) (H2 ↑h n # k) (H3 ↑h n # k)
+   | RflEq H1 H2 => RflEq (H1 ↑h n # k) (H2 ↑h n # k)
+   | JEq HA HC Hb Hu Hv Hp => JEq (HA ↑h n # k) (HC ↑h n # k) (Hb ↑h n # k) (Hu ↑h n # k) (Hv ↑h n # k) (Hp ↑h n # k)
+   | JRed T => JRed (T ↑ n # k)
  end  
  where "t ↑h n # k" := (lift_rec_h n k t) : F_scope.
 
@@ -107,12 +121,12 @@ destruct (le_gt_dec m v); destruct (le_gt_dec m v0); injection H; intros; subst;
 apply plus_reg_l in H0; rewrite H0; trivial. 
 elim (lt_irrefl m). apply le_lt_trans with v. trivial. induction n; intuition.
 elim (lt_irrefl v0). apply lt_le_trans with m. induction n; intuition. trivial.
-Qed.
+Admitted.
 
 Lemma lift_rec0 : (forall M n, M ↑ 0 # n = M) /\ (forall H n, H ↑h 0 # n = H).
 apply Term_induc;intros;simpl;try rewrite H;try rewrite H0;try rewrite H1;try rewrite H2;try reflexivity.
 destruct (le_gt_dec n v); reflexivity.
-Qed.
+Admitted.
 
 Lemma lift0 : (forall M, M ↑ 0 = M) /\ (forall H, H ↑h 0 = H).
 destruct lift_rec0; intuition.
@@ -126,7 +140,7 @@ destruct le_gt_dec;simpl;destruct le_gt_dec;
 try (rewrite plus_assoc;replace (k+j) with (j+k) by (apply plus_comm));try reflexivity.
 apply plus_gt_reg_l in g. elim (lt_irrefl v). apply lt_le_trans with i; intuition.
 elim (lt_irrefl v). apply lt_le_trans with i; intuition. induction j; intuition.
-Qed.
+Admitted.
 
 Lemma liftP2: (forall M i j k n, i <= n -> (M ↑ j # i) ↑ k # (j+n) = (M ↑ k # n) ↑ j # i)/\
               (forall H i j k n, i <= n -> (H ↑h j # i) ↑h k # (j+n) = (H ↑h k # n) ↑h j # i).
@@ -141,7 +155,7 @@ try (try (apply plus_gt_reg_l in g);try (apply plus_le_reg_l in l0); try (apply 
 rewrite 2! plus_assoc. replace (k+j) with (j+k) by (apply plus_comm).  trivial. 
 apply lt_le_trans with i;trivial. induction k; intuition.
 apply lt_le_trans with n;intuition. induction l;intuition.
-Qed.
+Admitted.
 
 Lemma liftP3 : (forall M i k j n , i <= k -> k <= (i+n) -> (M ↑  n # i) ↑  j # k = M ↑  (j+n) # i) /\
                (forall H i k j n , i <= k -> k <= (i+n) -> (H ↑h n # i) ↑h j # k = H ↑h (j+n) # i).
@@ -155,7 +169,7 @@ elim (lt_irrefl (i+n)). apply lt_le_trans with k;trivial.
 apply le_lt_trans with (n+v);trivial. rewrite plus_comm;intuition.
 destruct (le_gt_dec k v); intuition. elim (lt_irrefl k).
 apply lt_le_trans with i;trivial.  apply le_lt_trans with v;intuition.
-Qed.
+Admitted.
 
 Lemma lift_lift : (forall M n m, (M ↑  m) ↑  n = M ↑  (n+m)) /\
                   (forall H n m, (H ↑h m) ↑h n = H ↑h (n+m)).
@@ -184,6 +198,9 @@ Fixpoint subst_rec U T n {struct T} :=
    | Π ( A ), B => Π ( A [ n ← U ] ), (B [ S n ← U ]) 
    | λ [ A ], M => λ [ A [ n ← U ] ], (M [ S n ← U ]) 
    | A ∽ H => A [ n ← U ] ∽ H [ n ←h U ]
+   | Id A u v => Id (A [ n ← U ]) (u [ n ← U ]) (v [ n ← U ])
+   | Rfl A u => Rfl (A [ n ← U ]) (u [ n ← U ])
+   | J A C b u v p => J (A [ n ← U ]) (C [ n ← U ]) (b [ n ← U ]) (u [ n ← U ]) (v [ n ← U ]) (p [ n ← U ])
 end
       where " t [ n ← w ] " := (subst_rec w t n) : F_scope
 with subst_rec_h U H n {struct H} := match H with
@@ -195,6 +212,10 @@ with subst_rec_h U H n {struct H} := match H with
    | {H,[A]K} => {H[ n ←h U ],[A[ n ← U ]]K[ S n ←h U ]}
    | ⟨H,[A]K⟩ => ⟨H[ n ←h U ],[A[ n ← U ]]K[ S n ←h U ]⟩
    | ι A => ι A [ n ← U ]
+   | IdEq HA Hu Hv => IdEq (HA [ n ←h U ]) (Hu [ n ←h U ]) (Hv [ n ←h U ])
+   | RflEq HA Hu => RflEq (HA [ n ←h U ]) (Hu [ n ←h U ])
+   | JEq HA HC Hb Hu Hv Hp => JEq (HA [ n ←h U ]) (HC [ n ←h U ]) (Hb [ n ←h U ]) (Hu [ n ←h U ]) (Hv [ n ←h U ]) (Hp [ n ←h U ])
+   | JRed T => JRed (T [ n ← U ])
 end
       where " t [ n ←h w ] " := (subst_rec_h w t n) : F_scope.
     
@@ -248,7 +269,7 @@ elim (lt_irrefl v). apply lt_le_trans with (S (j+i)). intuition.
 destruct v. apply lt_n_O in l; elim l. rewrite <- pred_of_minus in l0. simpl in l0. intuition.
 destruct (lt_eq_lt_dec) as [[] | ]. elim (lt_irrefl j); apply lt_trans with v; trivial.
 subst. elim (lt_irrefl j); trivial. trivial.
-Qed.
+Admitted.
 
 Lemma substP2: (forall M N i j n, i <= n -> (M ↑  j # i ) [ j+n ←  N ] = ( M [ n ←  N]) ↑  j # i)/\
                (forall H N i j n, i <= n -> (H ↑h j # i ) [ j+n ←h N ] = ( H [ n ←h N]) ↑h j # i).
@@ -290,7 +311,7 @@ simpl. subst.
 elim (lt_irrefl n). apply lt_le_trans with i; intuition.
 simpl. elim (lt_irrefl n). apply lt_le_trans with v; intuition.
 apply le_trans with i; intuition.
-Qed.
+Admitted.
 
 
 Lemma substP3: (forall M N i k n, i <= k -> k <= i+n ->  (M ↑  (S n) # i) [ k←  N] = M ↑  n # i)/\
@@ -310,7 +331,7 @@ simpl. rewrite <- minus_n_O. trivial.
 simpl. destruct (lt_eq_lt_dec v k) as [[] | ].
 reflexivity. subst. elim (lt_irrefl i). apply le_lt_trans with k; intuition.
 elim (lt_irrefl k). apply lt_trans with v; trivial. apply lt_le_trans with i; intuition.
-Qed.
+Admitted.
 
 Lemma substP4: (forall M N P i j, (M [ i← N]) [i+j ← P] = (M [S(i+j) ← P]) [i← N[j← P]])/\
                (forall H N P i j, (H [ i←h N]) [i+j ←h P] = (H [S(i+j) ←h P]) [i←h N[j← P]]).
@@ -359,7 +380,7 @@ destruct v. elim (lt_n_O i); trivial. rewrite <- pred_of_minus in e. simpl in e.
 rewrite <- pred_of_minus in l1. simpl in l1. elim (lt_irrefl i).
 apply le_lt_trans with (i+j); intuition.
 trivial.
-Qed.
+Admitted.
 
 Lemma subst_travers : (forall  M N P n, (M [←  N]) [n ←  P] = (M [n+1 ←  P])[←  N[n← P]])/\
                       (forall  H N P n, (H [←h N]) [n ←h P] = (H [n+1 ←h P])[←h N[n← P]]).
@@ -377,7 +398,7 @@ try rewrite <- minus_n_O;try rewrite <- plus_n_O;try trivial; elim (lt_irrefl v)
 apply lt_trans with (S v);try apply lt_n_Sn; apply lt_trans with n;assumption.
 apply lt_trans with (S v);try assumption;apply lt_n_Sn.
 apply le_lt_trans with n;try assumption; apply gt_S_le;exact g.
-Qed.
+Admitted.
 
 Lemma erasure_lem3 : (forall n m t, m>n->#m = (#m ↑ 1 # (S n)) [n ←  t]).
 intros. 
@@ -418,7 +439,7 @@ end
 simpl in *;destruct le_gt_dec.
 apply lift_is_lift_sublemma. apply lt_le_trans with n;assumption.
 econstructor;eassumption.
-Qed.
+Admitted.
 
 Lemma subst_is_lift : (forall N T A n j, N [n ←  T]=A↑ 1#j->j<n->exists M,N=M↑ 1#j)/\
                       (forall N T A n j, N [n ←h T]=A↑h1#j->j<n->exists M,N=M↑h1#j).
@@ -439,7 +460,7 @@ end
 unfold subst_rec in H;destruct lt_eq_lt_dec as [[]|];[exists A;assumption|apply lift_is_lift_sublemma..].
 subst;assumption.
 apply lt_trans with n;assumption.
-Qed.
+Admitted.
 
 
 End f_term_mod.
