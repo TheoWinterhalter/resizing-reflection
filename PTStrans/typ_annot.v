@@ -1046,14 +1046,23 @@ apply red_refl_lt with A'; trivial. assumption.
 (**)
 right. exists s2. change !s2 with (!s2  [ ← N]).
 eapply subst_gen. apply red_refl_lt with B'; apply H1. constructor. apply red_refl_lt with N'; trivial.
+(***)
+- left. exists s. trivial.
+- right. exists s. apply typ_id.
+  + apply (red_refl_lt _ _ _ _ H).
+  + apply (red_refl_lt _ _ _ _ H0).
+  + apply (red_refl_lt _ _ _ _ H0).
+- right. exists t. admit.
 (**)
-right. exists s2. change !s2 with (!s2  [ ← N]).
-eapply subst_gen. apply red_refl_lt with B; apply H4. constructor. apply red_refl_lt with N'; trivial.
+- right. exists s2. change !s2 with (!s2  [ ← N]).
+  eapply subst_gen. apply red_refl_lt with B; apply H4. constructor. apply red_refl_lt with N'; trivial.
+(***)
+- right. exists t. admit.
 (**)
-right. exists s. apply red_refl_rt with A; trivial.
+- right. exists s. apply red_refl_rt with A; trivial.
 (**)
-right. exists s. apply red_refl_lt with B; trivial.
-Qed.
+- right. exists s. apply red_refl_lt with B; trivial.
+Admitted.
 
 
 (** Type Exchange: this property is critic. We need it to simulate a reduction
@@ -1063,66 +1072,72 @@ Pi-types.*)
 Theorem relocate : forall Γ M N A , Γ ⊢ M ▹ N : A  -> forall P B,  Γ ⊢ M ▹ P : B ->  Γ ⊢ M ▹ N : B /\ Γ ⊢ M ▹ P : A.
 induction 1; intros.
 (**)
-apply pgen_var in H1. destruct H1 as (-> & A' & ? &  ?).
-replace A' with A in *. split.
-apply typ_pcompat with A ; intuition.
-constructor; trivial.
-eapply fun_item_lift. apply H0. trivial.
+- apply pgen_var in H1. destruct H1 as (-> & A' & ? &  ?).
+  replace A' with A in *. split.
+  apply typ_pcompat with A ; intuition.
+  constructor; trivial.
+  eapply fun_item_lift. apply H0. trivial.
 (**)
-apply pgen_sort in H1. destruct H1 as (-> & t & ? & ?). destruct H2. subst. intuition.
-intuition.
-apply typ_pcompat with !t ;intuition.
+- apply pgen_sort in H1. destruct H1 as (-> & t & ? & ?). destruct H2. subst. intuition.
+  intuition.
+  apply typ_pcompat with !t ;intuition.
 (**)
-apply pgen_pi in H2. destruct H2 as (A'' & B'' & t1 & t2 & t3 & h).
-decompose [and] h; clear h. subst.
-destruct (IHtyp1 A'' !t1 H4) as ( ? & ?). clear IHtyp1.
-destruct (IHtyp2 B'' !t2 H3) as ( ? & ?). clear IHtyp2.
-destruct H7. subst. eauto.
-split.
-apply typ_pcompat with !t3 ;intuition. apply typ_pi with t1 t2; trivial.
-apply typ_pi with s1 s2; trivial.
+- apply pgen_pi in H2. destruct H2 as (A'' & B'' & t1 & t2 & t3 & h).
+  decompose [and] h; clear h. subst.
+  destruct (IHtyp1 A'' !t1 H4) as ( ? & ?). clear IHtyp1.
+  destruct (IHtyp2 B'' !t2 H3) as ( ? & ?). clear IHtyp2.
+  destruct H7. subst. eauto.
+  split.
+  apply typ_pcompat with !t3 ;intuition. apply typ_pi with t1 t2; trivial.
+  apply typ_pi with s1 s2; trivial.
 (**)
-apply pgen_la in H3. destruct H3 as (A'' & M'' & K & t1 & t2 & t3 & h).
-decompose [and] h; clear h. subst.
-destruct (IHtyp1 A'' !t1 H5) as (? & ?); clear IHtyp1.
-clear IHtyp2.
-destruct (IHtyp3 M'' K H4) as (? & ?); clear IHtyp3.
-split. apply typ_pcompat with (Π (A), K) ; intuition.
-apply typ_la with t1 t2 t3; trivial. apply typ_la with s1 s2 s3; trivial.
+- apply pgen_la in H3. destruct H3 as (A'' & M'' & K & t1 & t2 & t3 & h).
+  decompose [and] h; clear h. subst.
+  destruct (IHtyp1 A'' !t1 H5) as (? & ?); clear IHtyp1.
+  clear IHtyp2.
+  destruct (IHtyp3 M'' K H4) as (? & ?); clear IHtyp3.
+  split. apply typ_pcompat with (Π (A), K) ; intuition.
+  apply typ_la with t1 t2 t3; trivial. apply typ_la with s1 s2 s3; trivial.
 (**)
-apply pgen_app in H4 as (U & U' & B'' &  N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-destruct (IHtyp4 N'' U H7) as ( ? & ?); clear IHtyp4. destruct H10.
-destruct H10 as (M'' & ? & ? & ->). subst. destruct (IHtyp3 M'' (Π (U), B) H10) as (? & ?); clear IHtyp3. split.
-apply typ_pcompat with B [ ← N] ;intuition. eapply typ_app. apply H. trivial. trivial. trivial. trivial.
-eapply typ_app. apply H4. trivial. trivial. trivial. trivial.
+- apply pgen_app in H4 as (U & U' & B'' &  N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
+  destruct (IHtyp4 N'' U H7) as ( ? & ?); clear IHtyp4. destruct H10.
+  destruct H10 as (M'' & ? & ? & ->). subst. destruct (IHtyp3 M'' (Π (U), B) H10) as (? & ?); clear IHtyp3. split.
+  apply typ_pcompat with B [ ← N] ;intuition. eapply typ_app. apply H. trivial. trivial. trivial. trivial.
+  eapply typ_app. apply H4. trivial. trivial. trivial. trivial.
 
-destruct H10 as (K0 & K & K' & T & T' & ? & -> & ? & -> & ? & ? & ?). subst. split.
-apply typ_pcompat with B [ ← N];intuition.  eapply typ_app. apply H. trivial. trivial. trivial. trivial.
-eapply typ_beta. apply H4. apply red_refl_lt in H6; apply H6.
-apply red_refl_lt in H15; apply H15. apply H14. trivial.
-apply red_refl_lt in H5; apply H5. trivial. trivial.
+  destruct H10 as (K0 & K & K' & T & T' & ? & -> & ? & -> & ? & ? & ?). subst. split.
+  apply typ_pcompat with B [ ← N];intuition.  eapply typ_app. apply H. trivial. trivial. trivial. trivial.
+  eapply typ_beta. apply H4. apply red_refl_lt in H6; apply H6.
+  apply red_refl_lt in H15; apply H15. apply H14. trivial.
+  apply red_refl_lt in H5; apply H5. trivial. trivial.
+(***)
+- admit.
+- admit.
+- admit.
 (**)
-apply pgen_app in H7  as (U & U' &  D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-destruct (IHtyp5 N'' U H10) as ( ? & ?); clear IHtyp5. destruct H13. destruct H13 as (L & ? & ? & ->). subst.
-apply pgen_la in H13 as (A'' & M'' & K & u1 & u2 & u3 & h). decompose [and] h; clear h. subst.
-destruct (IHtyp1 A'' !u1 H16) as (? & ?); clear IHtyp1. clear IHtyp2.
-destruct (IHtyp4 M'' K H15) as (? & ?); clear IHtyp4. split. apply typ_pcompat with B [ ← N] ;intuition.
-eapply typ_beta. apply H. apply H0. apply reds_refl_rt in H3; apply H3. apply H2. trivial. apply H4. trivial. trivial.
-eapply typ_app. apply H7. trivial. trivial. apply typ_pcompat with  ( Π (A), K ) ; intuition.
-apply typ_la with u1 u2 u3; trivial. trivial.
+- apply pgen_app in H7  as (U & U' &  D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
+  destruct (IHtyp5 N'' U H10) as ( ? & ?); clear IHtyp5. destruct H13. destruct H13 as (L & ? & ? & ->). subst.
+  apply pgen_la in H13 as (A'' & M'' & K & u1 & u2 & u3 & h). decompose [and] h; clear h. subst.
+  destruct (IHtyp1 A'' !u1 H16) as (? & ?); clear IHtyp1. clear IHtyp2.
+  destruct (IHtyp4 M'' K H15) as (? & ?); clear IHtyp4. split. apply typ_pcompat with B [ ← N] ;intuition.
+  eapply typ_beta. apply H. apply H0. apply reds_refl_rt in H3; apply H3. apply H2. trivial. apply H4. trivial. trivial.
+  eapply typ_app. apply H7. trivial. trivial. apply typ_pcompat with  ( Π (A), K ) ; intuition.
+  apply typ_la with u1 u2 u3; trivial. trivial.
 
-destruct H13 as (U0 & K & K' & T & T' & ? & ? & ? & ->  & ? & ?& ?). injection H15; intros; subst; clear H15.
-clear IHtyp1. destruct (IHtyp2 K' !t1 H19) as (? & ?); clear IHtyp2. split.
-apply typ_pcompat with (B [ ← N]); intuition.
-eapply typ_beta. apply H. apply H0. apply H1. apply H2. trivial. apply H4. trivial. trivial.
-eapply typ_beta. apply H. apply H0. apply H1. apply H2. trivial. apply H4. trivial. trivial.
+  destruct H13 as (U0 & K & K' & T & T' & ? & ? & ? & ->  & ? & ?& ?). injection H15; intros; subst; clear H15.
+  clear IHtyp1. destruct (IHtyp2 K' !t1 H19) as (? & ?); clear IHtyp2. split.
+  apply typ_pcompat with (B [ ← N]); intuition.
+  eapply typ_beta. apply H. apply H0. apply H1. apply H2. trivial. apply H4. trivial. trivial.
+  eapply typ_beta. apply H. apply H0. apply H1. apply H2. trivial. apply H4. trivial. trivial.
+(***)
+- admit.
 (**)
-destruct (IHtyp1 P B0 H1) as (? & ?); clear IHtyp1.
-split. eauto. eauto.
+- destruct (IHtyp1 P B0 H1) as (? & ?); clear IHtyp1.
+  split. eauto. eauto.
 (**)
-destruct (IHtyp1 P B0 H1) as (? & ?); clear IHtyp1.
-split. eauto. eauto.
-Qed.
+- destruct (IHtyp1 P B0 H1) as (? & ?); clear IHtyp1.
+  split. eauto. eauto.
+Admitted.
 
 (** Facts abouts Reds*)
 Lemma typ_reds_trans_ : forall Γ M N T, Γ ⊢ M ▹▹ N : T  -> forall P T', Γ ⊢ N ▹ P : T' -> Γ ⊢ M ▹▹ P : T.
@@ -1188,7 +1203,9 @@ split. transitivity t. trivial. trivial.
 exists  s2; split; trivial.
 Qed.
 
+(*! TODO: Inversion lemmata for identity types *)
 
+(*! We probaby need to add more conditions... Yay! *)
 Lemma typ_ind2 :
 forall P : Env -> Term -> Term -> Term -> Prop,
        (forall (Γ : Env) (x : nat) (A : Term),
@@ -1255,13 +1272,19 @@ replace AA with A0. replace MM with M0.  trivial. injection H11; intros; subst; 
 injection H11; intros; subst; trivial. replace MM with M0. replace AA with A0. apply typ_ind2.
 trivial. injection H11; intros; subst; trivial. injection H11; intros; subst; trivial.  apply H5; trivial. apply H5;trivial.
 trivial. apply typ_ind2; trivial.
+(***)
+- admit.
+- admit.
+- admit.
 (**)
-eapply CBeta. apply H. apply H0. apply typ_ind2; trivial. apply H1. apply typ_ind2; trivial.
-apply H2. trivial. apply H4. apply typ_ind2; trivial. trivial. apply typ_ind2; trivial. trivial. apply typ_ind2; trivial.
+- eapply CBeta. apply H. apply H0. apply typ_ind2; trivial. apply H1. apply typ_ind2; trivial.
+  apply H2. trivial. apply H4. apply typ_ind2; trivial. trivial. apply typ_ind2; trivial. trivial. apply typ_ind2; trivial.
+(***)
+- admit.
 (**)
-eapply CRed. apply H. apply typ_ind2; trivial. apply H0. apply typ_ind2; trivial.
-eapply CExp. apply H. apply typ_ind2; trivial. apply H0. apply typ_ind2; trivial.
-Qed.
+- eapply CRed. apply H. apply typ_ind2; trivial. apply H0. apply typ_ind2; trivial.
+- eapply CExp. apply H. apply typ_ind2; trivial. apply H0. apply typ_ind2; trivial.
+Admitted.
 
 
 (** Diamond Property: PTS_{atr} is like [Betap], it enjoys the diamond property.
@@ -1269,133 +1292,133 @@ Qed.
   needed.*)
 Theorem OSDiamond  : forall Γ M N A , Γ ⊢ M ▹ N : A  -> forall P B,  Γ ⊢ M ▹ P : B ->
   exists Q, Γ ⊢ N ▹ Q : A /\ Γ ⊢ N ▹ Q : B /\ Γ ⊢ P ▹ Q: A /\ Γ ⊢ P ▹ Q : B.
-induction 1 using typ_ind2; intros.
-apply pgen_var in H1. destruct H1 as ( -> & A' & ? & ?).
-replace A' with A in *. exists #x; intuition.
-apply typ_pcompat with A; intuition. apply typ_pcompat with A; intuition.
-eapply fun_item_lift . apply H0. trivial.
-(**)
-apply pgen_sort in H1. destruct H1 as (-> & t & ? & ?).
-destruct H2; subst; exists !s1; intuition. apply typ_pcompat with !t; intuition. apply typ_pcompat with !t; intuition.
-(**)
-apply pgen_pi in H2. destruct H2 as (A'' & B'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-subst. destruct (IHtyp1 A'' !t1 H4) as ( QA & ? & ? & ?& ?).
-destruct (IHtyp2 B'' !t2 H3) as (QB & ? & ? & ? & ?). exists (Pi QA QB); repeat split.
-econstructor. apply H. trivial. eapply conv_in_env. apply H10. eauto.
-destruct H7. subst. econstructor. apply H2. trivial. eapply conv_in_env. apply H11. eauto.
-apply typ_pcompat with !t3; intuition. econstructor. apply H2. trivial.
-eapply conv_in_env. apply H11. eauto.
-econstructor. apply H. trivial. eapply conv_in_env. apply H12. eauto.
-destruct H7. subst. econstructor. apply H2. trivial. eapply conv_in_env. apply H13. eauto.
-apply typ_pcompat with !t3; intuition. econstructor. apply H2. trivial. eapply conv_in_env. apply H13. eauto.
-(**)
-apply pgen_la in H3. destruct H3 as (A'' & M'' & D & t1 & t2 & t3 & h).
-decompose [and] h; clear h. subst. destruct (IHtyp1 A'' !t1 H5) as (QA & ? & ?& ?& ?).
-destruct (IHtyp3 M'' D H4) as (QM & ? & ? & ?& ?). exists (La QA QM); intuition.
-eapply typ_exp with (Pi A' B) s3. econstructor. apply H. trivial.
-eapply conv_in_env. apply H1. eauto. eapply conv_in_env. apply H12. eauto.
-econstructor. apply H. trivial. apply red_refl_lt in H1. trivial.
-apply typ_pcompat with (Pi A D); trivial. apply typ_exp with (Pi A' D) t3.
-econstructor. apply H3. trivial. eapply conv_in_env. apply H6. eauto.
-eauto. eapply conv_in_env. apply H13. eauto. econstructor. apply H3. eapply relocate. apply H5. apply H0. apply red_refl_lt in H6; trivial.
-eapply typ_exp with (Pi A'' B) s3. econstructor. apply H. trivial.
-eapply conv_in_env. apply H1. eauto. eapply conv_in_env.  apply H14.  eauto.
-econstructor. apply H. eapply relocate. apply H0. apply H5. apply red_refl_lt in H1. trivial.
-apply typ_pcompat with (Pi A D); trivial. apply typ_exp with (Pi A'' D) t3.
-econstructor. apply H3. trivial. eapply conv_in_env.  apply H6. eauto.
-eapply conv_in_env. apply H15. eauto. econstructor. apply H3. trivial. apply red_refl_lt in H6; trivial.
-(**)
-apply pgen_app in H5 as (C & C' &  D'  & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-destruct (IHtyp4 N'' C H8) as (QN & ?& ? &? & ?). clear IHtyp4.  destruct H11.
-destruct H11 as (M'' & ? & ? & -> ). subst.
-destruct (IHtyp2 D' !t2) as (QB & ? & ?& ?& ?). trivial. clear IHtyp2.
-destruct (IHtyp3 M'' (Pi C B) H11) as (QM & ?& ? & ? & ?). clear IHtyp3.
-destruct (IHtyp1 C' !t1 H7) as (QC & ? & ?& ? & ?).
-exists (App QM QC QB QN); intuition.
-apply typ_exp with (B' [← N']) s2. econstructor. apply H. trivial.
-eapply conv_in_env. apply H15. eauto. apply typ_red with (Pi C B) s3. trivial. econstructor.
-apply H. trivial. trivial. apply typ_pcompat with C; trivial. eauto.
-change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial.
-apply typ_pcompat with (B [← N]); trivial.
-apply typ_exp with (B' [← N']) s2. econstructor. apply H. trivial.  eapply conv_in_env. apply H15. eauto.
-apply typ_red with (Pi C B) s3. trivial. econstructor. apply H. trivial. trivial. apply typ_pcompat with C; trivial. eauto.
-change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial.
-apply typ_exp with (D' [← N'']) t2. econstructor. apply H5. trivial. eapply conv_in_env. apply H18. eauto.
-apply typ_red with (Pi C B) t3. trivial. econstructor. apply H5. trivial. trivial. apply typ_pcompat with C; eauto.
-change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H6. constructor. trivial.
-apply typ_pcompat with (B [← N]); trivial.
-apply typ_exp with (D' [← N'']) t2. econstructor. apply H5. trivial. eapply conv_in_env.  apply H18.  eauto.
-apply typ_red with (Pi C B) t3. trivial. econstructor. apply H5. trivial. trivial. apply typ_pcompat with C; eauto.
-change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H6. constructor. trivial.
+(* induction 1 using typ_ind2; intros. *)
+(* apply pgen_var in H1. destruct H1 as ( -> & A' & ? & ?). *)
+(* replace A' with A in *. exists #x; intuition. *)
+(* apply typ_pcompat with A; intuition. apply typ_pcompat with A; intuition. *)
+(* eapply fun_item_lift . apply H0. trivial. *)
+(* (**) *)
+(* apply pgen_sort in H1. destruct H1 as (-> & t & ? & ?). *)
+(* destruct H2; subst; exists !s1; intuition. apply typ_pcompat with !t; intuition. apply typ_pcompat with !t; intuition. *)
+(* (**) *)
+(* apply pgen_pi in H2. destruct H2 as (A'' & B'' & t1 & t2 & t3 & h). decompose [and] h; clear h. *)
+(* subst. destruct (IHtyp1 A'' !t1 H4) as ( QA & ? & ? & ?& ?). *)
+(* destruct (IHtyp2 B'' !t2 H3) as (QB & ? & ? & ? & ?). exists (Pi QA QB); repeat split. *)
+(* econstructor. apply H. trivial. eapply conv_in_env. apply H10. eauto. *)
+(* destruct H7. subst. econstructor. apply H2. trivial. eapply conv_in_env. apply H11. eauto. *)
+(* apply typ_pcompat with !t3; intuition. econstructor. apply H2. trivial. *)
+(* eapply conv_in_env. apply H11. eauto. *)
+(* econstructor. apply H. trivial. eapply conv_in_env. apply H12. eauto. *)
+(* destruct H7. subst. econstructor. apply H2. trivial. eapply conv_in_env. apply H13. eauto. *)
+(* apply typ_pcompat with !t3; intuition. econstructor. apply H2. trivial. eapply conv_in_env. apply H13. eauto. *)
+(* (**) *)
+(* apply pgen_la in H3. destruct H3 as (A'' & M'' & D & t1 & t2 & t3 & h). *)
+(* decompose [and] h; clear h. subst. destruct (IHtyp1 A'' !t1 H5) as (QA & ? & ?& ?& ?). *)
+(* destruct (IHtyp3 M'' D H4) as (QM & ? & ? & ?& ?). exists (La QA QM); intuition. *)
+(* eapply typ_exp with (Pi A' B) s3. econstructor. apply H. trivial. *)
+(* eapply conv_in_env. apply H1. eauto. eapply conv_in_env. apply H12. eauto. *)
+(* econstructor. apply H. trivial. apply red_refl_lt in H1. trivial. *)
+(* apply typ_pcompat with (Pi A D); trivial. apply typ_exp with (Pi A' D) t3. *)
+(* econstructor. apply H3. trivial. eapply conv_in_env. apply H6. eauto. *)
+(* eauto. eapply conv_in_env. apply H13. eauto. econstructor. apply H3. eapply relocate. apply H5. apply H0. apply red_refl_lt in H6; trivial. *)
+(* eapply typ_exp with (Pi A'' B) s3. econstructor. apply H. trivial. *)
+(* eapply conv_in_env. apply H1. eauto. eapply conv_in_env.  apply H14.  eauto. *)
+(* econstructor. apply H. eapply relocate. apply H0. apply H5. apply red_refl_lt in H1. trivial. *)
+(* apply typ_pcompat with (Pi A D); trivial. apply typ_exp with (Pi A'' D) t3. *)
+(* econstructor. apply H3. trivial. eapply conv_in_env.  apply H6. eauto. *)
+(* eapply conv_in_env. apply H15. eauto. econstructor. apply H3. trivial. apply red_refl_lt in H6; trivial. *)
+(* (**) *)
+(* apply pgen_app in H5 as (C & C' &  D'  & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h. *)
+(* destruct (IHtyp4 N'' C H8) as (QN & ?& ? &? & ?). clear IHtyp4.  destruct H11. *)
+(* destruct H11 as (M'' & ? & ? & -> ). subst. *)
+(* destruct (IHtyp2 D' !t2) as (QB & ? & ?& ?& ?). trivial. clear IHtyp2. *)
+(* destruct (IHtyp3 M'' (Pi C B) H11) as (QM & ?& ? & ? & ?). clear IHtyp3. *)
+(* destruct (IHtyp1 C' !t1 H7) as (QC & ? & ?& ? & ?). *)
+(* exists (App QM QC QB QN); intuition. *)
+(* apply typ_exp with (B' [← N']) s2. econstructor. apply H. trivial. *)
+(* eapply conv_in_env. apply H15. eauto. apply typ_red with (Pi C B) s3. trivial. econstructor. *)
+(* apply H. trivial. trivial. apply typ_pcompat with C; trivial. eauto. *)
+(* change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial. *)
+(* apply typ_pcompat with (B [← N]); trivial. *)
+(* apply typ_exp with (B' [← N']) s2. econstructor. apply H. trivial.  eapply conv_in_env. apply H15. eauto. *)
+(* apply typ_red with (Pi C B) s3. trivial. econstructor. apply H. trivial. trivial. apply typ_pcompat with C; trivial. eauto. *)
+(* change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial. *)
+(* apply typ_exp with (D' [← N'']) t2. econstructor. apply H5. trivial. eapply conv_in_env. apply H18. eauto. *)
+(* apply typ_red with (Pi C B) t3. trivial. econstructor. apply H5. trivial. trivial. apply typ_pcompat with C; eauto. *)
+(* change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H6. constructor. trivial. *)
+(* apply typ_pcompat with (B [← N]); trivial. *)
+(* apply typ_exp with (D' [← N'']) t2. econstructor. apply H5. trivial. eapply conv_in_env.  apply H18.  eauto. *)
+(* apply typ_red with (Pi C B) t3. trivial. econstructor. apply H5. trivial. trivial. apply typ_pcompat with C; eauto. *)
+(* change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H6. constructor. trivial. *)
 
-destruct H11 as (C0 & K & K' & T & T' & ? & -> & ? &  ->  & ? & ? & ?). subst.
-apply pgen_la in H2 as (C'' & T'' & F & u1 & u2 & u3 & h). decompose [and] h; clear h. subst.
-destruct (H3 C T) as (MM & AA' & BB & h); trivial. decompose [and] h; clear h.
-injection H21; intros; subst; clear H21. clear H3. destruct (H25 T' B H15) as (QMM &? & ? & ? & ?). clear H25.
-assert( Γ ⊢ AA' ▹ AA' : !t1). destruct (relocate Γ  C C' !t1 H7 AA' !u1 H19). apply red_refl_rt in H27; trivial.
-assert( Γ ⊢ A' ▹ A' : !t1). destruct (relocate Γ  K K' !t1 H18 A' !s1 H0). apply red_refl_rt in H28; trivial.
-assert (AA' :: Γ ⊢ B' ▹ B' : !t2). destruct (relocate (C :: Γ)  B D' !t2 H6 B' !s2) as (? & ? ). eapply conv_in_env.
-eauto. apply c_trans with (C0::Γ). eauto. eauto. eapply conv_in_env with (C::Γ). apply red_refl_rt in H29; trivial. eauto.
-exists ( QMM [ ←  QN]); repeat split.
-apply typ_exp with (B' [← N']) s2. econstructor. apply H5. apply H25. apply H27.
-eapply typ_reds_trans2. apply H17. eauto. eauto. apply H28.
-apply typ_pcompat with B. eapply conv_in_env.  apply H21. eauto. eapply conv_in_env_peq.
-econstructor. apply H1. apply c_trans with (C0::Γ). eauto. apply c_trans with (C::Γ). eauto. eauto. apply typ_pcompat with C. trivial.
-eauto. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial.
-apply typ_pcompat with (B [← N]); trivial. apply typ_pcompat with (B'[← N']).
-econstructor. apply H5. apply H25. apply H27. eapply typ_reds_trans2. apply H17. eauto. eauto. apply H28.
-apply typ_pcompat with B. eapply conv_in_env. apply H21. eauto. eapply conv_in_env_peq. econstructor.
-apply H1.  apply c_trans with (C0::Γ). eauto. apply c_trans with (C::Γ). eauto. eauto. apply typ_pcompat with C. trivial.
-eauto. apply typ_peq_intro2 with s2.  change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial.
-apply typ_pcompat with (B [← N'']).  eapply subst_gen. apply H26. constructor. trivial.
-apply typ_peq_intro2 with s2. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H1; apply H1. constructor. apply typ_pcompat with C; eauto.
-apply typ_pcompat with (B [← N]); trivial. apply typ_pcompat with (B [← N'']).  eapply subst_gen. apply H26. constructor. trivial.
-apply typ_peq_intro2 with s2. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H1; apply H1. constructor. apply typ_pcompat with C; eauto.
-(**)
-apply pgen_app in H7 as (C & C' &  D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-destruct (IHtyp5 N'' C H10) as (QN & ?& ? &? & ?). clear IHtyp5.
-destruct H13. destruct H13 as (LM & ? & ? &  ->). subst.
-apply pgen_la in H13 as (A'' & M'' & F & u1 & u2 & u3 & h). decompose [and] h; clear h. subst.
-destruct (IHtyp4 M'' F H17) as (QM & ? & ? & ? & ?). clear IHtyp4.
-assert (Γ ⊢ A ≡' C). apply reds_to_conv in H3. apply reds_to_conv in H2. eauto.
-assert( Γ ⊢ A'' ▹ A'' : !s1). destruct (relocate Γ  A A !s1 H0 A'' !u1 H18). apply red_refl_rt in H27; trivial.
-assert( Γ ⊢ C' ▹ C' : !s1). destruct (relocate Γ  C C !s1 H1 C' !t1 H9). apply red_refl_rt in H28; trivial.
-assert( A''::Γ ⊢ D' ▹ D' : !s2). destruct (relocate (C::Γ) B D'!t2 H8 B !s2 ).
-eapply conv_in_env. apply H4. eauto. eapply conv_in_env. apply red_refl_rt in H28; apply H28. apply c_trans with (A:: Γ ). eauto. eauto.
-exists (QM [ ← QN]); intuition.
-apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H20. constructor. trivial.
-change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial.
-apply typ_pcompat with (B[ ← N]); trivial.  apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H20.
-constructor. trivial. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial.
-apply typ_exp with (D' [← N'']) t2.   econstructor. apply H. apply H26. apply H27. eapply typ_reds_trans2. apply H2. eauto.
-eauto. apply H28. apply typ_pcompat with B. eapply conv_in_env. apply H23. eauto. eapply conv_in_env_peq.
-eauto. apply c_trans with (A::Γ). eauto. eauto. apply typ_pcompat with A; trivial. eauto.
-change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H8. constructor. trivial.
-apply typ_pcompat with (B [← N]); trivial. apply typ_exp with (D' [← N'']) t2. econstructor. apply H.  apply H26. apply H27.
-eapply typ_reds_trans2. apply H2. eauto. eauto. apply H28. apply typ_pcompat with B. eapply conv_in_env. apply H23. apply c_trans with (A::Γ); eauto.
-eapply conv_in_env_peq. eauto. apply c_trans with (A::Γ); eauto. apply typ_pcompat with A; trivial. eauto.
-change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H8. constructor. trivial.
-                                  (* beta / beta, fight ! *)
-destruct H13 as (C0 & K & K' & T & T' & ? & ? & ? & -> & ? & ? & ?). injection H17; intros; subst; clear H17.
-destruct (IHtyp4 T' B H18) as (QM & ? & ? & ? & ?). clear IHtyp4.
-exists (QM  [ ← QN]); intuition.
-apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H13. constructor. trivial.
-change !s2 with (!s2 [←  N]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial.
-apply typ_pcompat with (B[←  N]); trivial. apply typ_exp with (B[← N']) s2.
-eapply subst_gen. apply H13. constructor. trivial.
-change !s2 with (!s2 [←  N]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial.
-apply typ_exp with (B [← N'']) t2. eapply subst_gen. apply H22. constructor. trivial.
-change !t2 with (!t2 [←  N]). eapply subst_gen. apply red_refl_lt in H8; apply H8. constructor. trivial.
-apply typ_pcompat with (B[←  N]); trivial. apply typ_exp with (B[← N'']) t2.
-eapply subst_gen. apply H22. constructor. trivial.
-change !t2 with (!t2 [←  N]). eapply subst_gen. apply red_refl_lt in H8; apply H8. constructor. trivial.
-(** YOUHHHHOU **)
-destruct (IHtyp1 P B0 H1) as (Z & ? & ? & ? & ?).
-exists Z; split; eauto.
-(**)
-destruct (IHtyp1 P B0 H1) as (Z & ? & ? & ? & ?).
-exists Z; split; eauto.
-Qed.
+(* destruct H11 as (C0 & K & K' & T & T' & ? & -> & ? &  ->  & ? & ? & ?). subst. *)
+(* apply pgen_la in H2 as (C'' & T'' & F & u1 & u2 & u3 & h). decompose [and] h; clear h. subst. *)
+(* destruct (H3 C T) as (MM & AA' & BB & h); trivial. decompose [and] h; clear h. *)
+(* injection H21; intros; subst; clear H21. clear H3. destruct (H25 T' B H15) as (QMM &? & ? & ? & ?). clear H25. *)
+(* assert( Γ ⊢ AA' ▹ AA' : !t1). destruct (relocate Γ  C C' !t1 H7 AA' !u1 H19). apply red_refl_rt in H27; trivial. *)
+(* assert( Γ ⊢ A' ▹ A' : !t1). destruct (relocate Γ  K K' !t1 H18 A' !s1 H0). apply red_refl_rt in H28; trivial. *)
+(* assert (AA' :: Γ ⊢ B' ▹ B' : !t2). destruct (relocate (C :: Γ)  B D' !t2 H6 B' !s2) as (? & ? ). eapply conv_in_env. *)
+(* eauto. apply c_trans with (C0::Γ). eauto. eauto. eapply conv_in_env with (C::Γ). apply red_refl_rt in H29; trivial. eauto. *)
+(* exists ( QMM [ ←  QN]); repeat split. *)
+(* apply typ_exp with (B' [← N']) s2. econstructor. apply H5. apply H25. apply H27. *)
+(* eapply typ_reds_trans2. apply H17. eauto. eauto. apply H28. *)
+(* apply typ_pcompat with B. eapply conv_in_env.  apply H21. eauto. eapply conv_in_env_peq. *)
+(* econstructor. apply H1. apply c_trans with (C0::Γ). eauto. apply c_trans with (C::Γ). eauto. eauto. apply typ_pcompat with C. trivial. *)
+(* eauto. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial. *)
+(* apply typ_pcompat with (B [← N]); trivial. apply typ_pcompat with (B'[← N']). *)
+(* econstructor. apply H5. apply H25. apply H27. eapply typ_reds_trans2. apply H17. eauto. eauto. apply H28. *)
+(* apply typ_pcompat with B. eapply conv_in_env. apply H21. eauto. eapply conv_in_env_peq. econstructor. *)
+(* apply H1.  apply c_trans with (C0::Γ). eauto. apply c_trans with (C::Γ). eauto. eauto. apply typ_pcompat with C. trivial. *)
+(* eauto. apply typ_peq_intro2 with s2.  change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply H1. constructor. trivial. *)
+(* apply typ_pcompat with (B [← N'']).  eapply subst_gen. apply H26. constructor. trivial. *)
+(* apply typ_peq_intro2 with s2. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H1; apply H1. constructor. apply typ_pcompat with C; eauto. *)
+(* apply typ_pcompat with (B [← N]); trivial. apply typ_pcompat with (B [← N'']).  eapply subst_gen. apply H26. constructor. trivial. *)
+(* apply typ_peq_intro2 with s2. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H1; apply H1. constructor. apply typ_pcompat with C; eauto. *)
+(* (**) *)
+(* apply pgen_app in H7 as (C & C' &  D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h. *)
+(* destruct (IHtyp5 N'' C H10) as (QN & ?& ? &? & ?). clear IHtyp5. *)
+(* destruct H13. destruct H13 as (LM & ? & ? &  ->). subst. *)
+(* apply pgen_la in H13 as (A'' & M'' & F & u1 & u2 & u3 & h). decompose [and] h; clear h. subst. *)
+(* destruct (IHtyp4 M'' F H17) as (QM & ? & ? & ? & ?). clear IHtyp4. *)
+(* assert (Γ ⊢ A ≡' C). apply reds_to_conv in H3. apply reds_to_conv in H2. eauto. *)
+(* assert( Γ ⊢ A'' ▹ A'' : !s1). destruct (relocate Γ  A A !s1 H0 A'' !u1 H18). apply red_refl_rt in H27; trivial. *)
+(* assert( Γ ⊢ C' ▹ C' : !s1). destruct (relocate Γ  C C !s1 H1 C' !t1 H9). apply red_refl_rt in H28; trivial. *)
+(* assert( A''::Γ ⊢ D' ▹ D' : !s2). destruct (relocate (C::Γ) B D'!t2 H8 B !s2 ). *)
+(* eapply conv_in_env. apply H4. eauto. eapply conv_in_env. apply red_refl_rt in H28; apply H28. apply c_trans with (A:: Γ ). eauto. eauto. *)
+(* exists (QM [ ← QN]); intuition. *)
+(* apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H20. constructor. trivial. *)
+(* change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial. *)
+(* apply typ_pcompat with (B[ ← N]); trivial.  apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H20. *)
+(* constructor. trivial. change !s2 with (!s2 [ ← N ]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial. *)
+(* apply typ_exp with (D' [← N'']) t2.   econstructor. apply H. apply H26. apply H27. eapply typ_reds_trans2. apply H2. eauto. *)
+(* eauto. apply H28. apply typ_pcompat with B. eapply conv_in_env. apply H23. eauto. eapply conv_in_env_peq. *)
+(* eauto. apply c_trans with (A::Γ). eauto. eauto. apply typ_pcompat with A; trivial. eauto. *)
+(* change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H8. constructor. trivial. *)
+(* apply typ_pcompat with (B [← N]); trivial. apply typ_exp with (D' [← N'']) t2. econstructor. apply H.  apply H26. apply H27. *)
+(* eapply typ_reds_trans2. apply H2. eauto. eauto. apply H28. apply typ_pcompat with B. eapply conv_in_env. apply H23. apply c_trans with (A::Γ); eauto. *)
+(* eapply conv_in_env_peq. eauto. apply c_trans with (A::Γ); eauto. apply typ_pcompat with A; trivial. eauto. *)
+(* change !t2 with (!t2 [ ← N ]). eapply subst_gen. apply H8. constructor. trivial. *)
+(*                                   (* beta / beta, fight ! *) *)
+(* destruct H13 as (C0 & K & K' & T & T' & ? & ? & ? & -> & ? & ? & ?). injection H17; intros; subst; clear H17. *)
+(* destruct (IHtyp4 T' B H18) as (QM & ? & ? & ? & ?). clear IHtyp4. *)
+(* exists (QM  [ ← QN]); intuition. *)
+(* apply typ_exp with (B [← N']) s2. eapply subst_gen. apply H13. constructor. trivial. *)
+(* change !s2 with (!s2 [←  N]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial. *)
+(* apply typ_pcompat with (B[←  N]); trivial. apply typ_exp with (B[← N']) s2. *)
+(* eapply subst_gen. apply H13. constructor. trivial. *)
+(* change !s2 with (!s2 [←  N]). eapply subst_gen. apply red_refl_lt in H4; apply H4. constructor. trivial. *)
+(* apply typ_exp with (B [← N'']) t2. eapply subst_gen. apply H22. constructor. trivial. *)
+(* change !t2 with (!t2 [←  N]). eapply subst_gen. apply red_refl_lt in H8; apply H8. constructor. trivial. *)
+(* apply typ_pcompat with (B[←  N]); trivial. apply typ_exp with (B[← N'']) t2. *)
+(* eapply subst_gen. apply H22. constructor. trivial. *)
+(* change !t2 with (!t2 [←  N]). eapply subst_gen. apply red_refl_lt in H8; apply H8. constructor. trivial. *)
+(* (** YOUHHHHOU **) *)
+(* destruct (IHtyp1 P B0 H1) as (Z & ? & ? & ? & ?). *)
+(* exists Z; split; eauto. *)
+(* (**) *)
+(* destruct (IHtyp1 P B0 H1) as (Z & ? & ? & ? & ?). *)
+(* exists Z; split; eauto. *)
+Admitted.
 
 
 Lemma SubDiam : forall Γ M N A, Γ ⊢ M ▹ N : A   -> forall P B,  Γ ⊢ M ▹▹ P : B -> exists Q, Γ ⊢ N ▹▹ Q : A /\  Γ ⊢ P ▹ Q : B.
@@ -1486,6 +1509,8 @@ intros. apply typ_reds_trans with (La A M'). eapply H0. apply H2. trivial. apply
 apply H3. apply H4. eapply H. apply H1. reflexivity. apply reds_refl_rt in H2; apply H2.
 apply H3. apply H4.
 Qed.
+
+(*! TODO: Some reds_Id or so? *)
 
 Lemma reds_subst : forall A Γ M M' B , A::Γ ⊢ M  ▹▹ M' : B -> forall N N' , Γ ⊢ N ▹ N' : A ->
    Γ ⊢  M[ ← N ] ▹▹ M' [ ← N' ] : B[ ← N ].
@@ -1593,91 +1618,92 @@ a multi-step PTS_{atr} judgment. This is because of our new annotation, we need
 some room to check the validity of the typing. *)
 Theorem SR : forall M N, Betap M N -> forall Γ A,  Γ ⊢ M ▹ M : A ->
   Γ ⊢ M ▹▹ N : A .
-induction 1; simpl in *; intros.
-constructor; apply red_refl_lt in H; trivial.
-(**)
-constructor; apply red_refl_lt in H; trivial.
-(**)
-apply pgen_la in H1 as (A'' & M'' & D  & t1 & t2 & t3 & h).
-decompose [and] h; clear h. apply reds_typ_pcompat with (Pi A D); trivial.
-apply red_refl_lt in H3. apply red_refl_lt in H2.
-eapply reds_La.  eapply IHBetap1; eauto. eapply IHBetap2; eauto.
-apply H4. apply H1.
-(**)
-apply pgen_pi in H1. destruct H1 as (A'' & B'' & t1 & t2 & t3 & h).
-decompose [and] h; clear h.
-apply red_refl_lt in H3.  apply red_refl_lt in H2.
- destruct H6.  subst. eapply reds_Pi. eapply IHBetap1; eauto.
-eapply IHBetap2; eauto. trivial. apply reds_typ_pcompat with !t3; intuition.
-eapply reds_Pi. eapply IHBetap1; eauto. eapply IHBetap2; eauto. trivial.
-(**)
-apply pgen_app in H3 as (C & C'  & D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h.
-apply reds_typ_pcompat with (B [ ← N]); trivial. destruct H9. destruct H8 as (M'' & ? & ? & _ ).  subst.
-apply red_refl_lt in H8. apply red_refl_lt in H6. apply red_refl_lt in H5.
-apply red_refl_lt in H4. eapply reds_App.
- eapply IHBetap1; eauto. eapply IHBetap2; eauto. eapply IHBetap3; eauto. eapply IHBetap4; eauto.
+(* induction 1; simpl in *; intros. *)
+(* constructor; apply red_refl_lt in H; trivial. *)
+(* (**) *)
+(* constructor; apply red_refl_lt in H; trivial. *)
+(* (**) *)
+(* apply pgen_la in H1 as (A'' & M'' & D  & t1 & t2 & t3 & h). *)
+(* decompose [and] h; clear h. apply reds_typ_pcompat with (Pi A D); trivial. *)
+(* apply red_refl_lt in H3. apply red_refl_lt in H2. *)
+(* eapply reds_La.  eapply IHBetap1; eauto. eapply IHBetap2; eauto. *)
+(* apply H4. apply H1. *)
+(* (**) *)
+(* apply pgen_pi in H1. destruct H1 as (A'' & B'' & t1 & t2 & t3 & h). *)
+(* decompose [and] h; clear h. *)
+(* apply red_refl_lt in H3.  apply red_refl_lt in H2. *)
+(*  destruct H6.  subst. eapply reds_Pi. eapply IHBetap1; eauto. *)
+(* eapply IHBetap2; eauto. trivial. apply reds_typ_pcompat with !t3; intuition. *)
+(* eapply reds_Pi. eapply IHBetap1; eauto. eapply IHBetap2; eauto. trivial. *)
+(* (**) *)
+(* apply pgen_app in H3 as (C & C'  & D' & N'' & t1 & t2 & t3 & h). decompose [and] h; clear h. *)
+(* apply reds_typ_pcompat with (B [ ← N]); trivial. destruct H9. destruct H8 as (M'' & ? & ? & _ ).  subst. *)
+(* apply red_refl_lt in H8. apply red_refl_lt in H6. apply red_refl_lt in H5. *)
+(* apply red_refl_lt in H4. eapply reds_App. *)
+(*  eapply IHBetap1; eauto. eapply IHBetap2; eauto. eapply IHBetap3; eauto. eapply IHBetap4; eauto. *)
 
-destruct H8 as (U0 & K & K' & T & T' & ? & -> &  ? & _ & ? & ? & ?). subst.
-eapply reds_App. eapply IHBetap1. apply typ_pcompat with (Π(U0),B). apply typ_pcompat with (Π(C),B).
-econstructor. apply H3.  apply red_refl_lt in H5; apply H5.
-apply red_refl_lt in H4; apply H4.
-apply red_refl_lt in H9; apply H9.
-apply typ_peq_sym. apply reds_to_conv with t3.
-eapply reds_Pi. apply H11. constructor. apply red_refl_lt with D'. eapply conv_in_env. apply H4. eauto. trivial.
-apply reds_to_conv with t3. eapply reds_Pi. apply H10. constructor. apply red_refl_lt with D'. eapply conv_in_env.
-apply H4. eauto. trivial. eapply IHBetap2. apply typ_pcompat with C.
-apply red_refl_lt in H6; apply H6.
-apply reds_to_conv in H11. apply reds_to_conv in H10. eauto.
-apply red_refl_lt in H12. eapply IHBetap3; eauto.
-eapply IHBetap4. eapply conv_in_env. apply red_refl_lt in H4; apply H4.
-apply reds_to_conv in H11. apply reds_to_conv in H10. eauto.
-(**)
-apply pgen_app in H1 as (C & C' &  D' &  N'' & t1 & t2 & t3 & h).
-decompose [and] h; clear h. apply reds_typ_pcompat with (L [ ← N]); trivial.
-destruct H7. destruct H6 as (LA & ? & ? &  _). subst.
-apply pgen_la in H6 as (A'' & m'' & F & u1 & u2 & u3 & h).
-decompose [and] h; clear h.
-clear H10 LA. apply PiInj in H12 as (? & ?).  destruct (Confluence Γ A C H10) as ( Z & a & c & ? & ?).
-destruct (Confluence (A::Γ) F L H11) as (Y & f & d & ? & ?).
-apply typ_reds_trans with ((λ[A],M)·(Z,L)N). eapply reds_App___.
-apply typ_pcompat with  (Π(Z),Y). apply typ_pcompat with (Π(A),Y). econstructor. apply H6. apply H8.
-eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9. apply typ_pcompat with F. apply H7. eauto.
-apply reds_to_conv with u3. apply reds_Pi with u1 u2. eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8.
-constructor. apply reds_refl_rt with F. eapply typ_reds_relocate. apply H14. apply H9. trivial. apply typ_peq_sym.
-apply reds_to_conv with t3. apply reds_Pi with t1 t2. eapply typ_reds_relocate. apply H13. apply red_refl_lt in H3; apply H3.
-eapply typ_reds_relocate. eapply conv_in_env_reds. apply H15. eauto.
-apply red_refl_lt in H2; apply H2. trivial. apply H4. apply H13.
-apply typ_reds_trans with ((λ[A],M)·(Z,Y)N). eapply reds_App__.
-apply typ_pcompat with  (Π(Z),Y). apply typ_pcompat with (Π(A),Y). econstructor. apply H6. apply H8.
-eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9. apply typ_pcompat with F. apply H7. eauto.
-apply reds_to_conv with u3. apply reds_Pi with u1 u2. eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8.
-constructor. apply reds_refl_rt with F. eapply typ_reds_relocate. apply H14. apply H9. trivial. apply typ_peq_sym.
-apply reds_to_conv with t3. apply reds_Pi with t1 t2. constructor. eapply reds_refl_rt. eapply typ_reds_relocate. apply H13.
-apply red_refl_lt in H3; apply H3. eapply typ_reds_relocate. eapply conv_in_env_reds. apply H15. eauto. eapply conv_in_env.
-apply red_refl_lt in H2; apply H2. eauto. trivial. apply typ_pcompat with C. apply H4. eauto. eapply conv_in_env_reds. apply H15. eauto.
-eapply typ_reds_trans2 with (N:=M[← N]). constructor. apply typ_pcompat with (Y[← N]). econstructor. apply H6. apply red_refl_lt in H8; apply H8.
-eapply reds_refl_rt.  eapply typ_reds_relocate. apply H12.
-apply red_refl_lt in H8; apply H8. constructor.
- apply red_refl_lt in H8; apply H8.
-eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8.
-eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9.
-apply typ_pcompat with F. apply red_refl_lt with m''; trivial. eauto. apply red_refl_lt with N''. apply typ_pcompat with C. trivial.
-eauto. apply typ_peq_sym. apply reds_to_conv with d. change !d with (!d[← N]). eapply reds_subst. apply H15. apply typ_pcompat with C.
-apply red_refl_lt with N''; trivial. eauto. eapply reds_subst_gen. eapply IHBetap1. apply red_refl_lt in H7; apply H7. eapply IHBetap2.
-apply typ_pcompat with C.
-apply red_refl_lt in H4; apply H4. eauto.
+(* destruct H8 as (U0 & K & K' & T & T' & ? & -> &  ? & _ & ? & ? & ?). subst. *)
+(* eapply reds_App. eapply IHBetap1. apply typ_pcompat with (Π(U0),B). apply typ_pcompat with (Π(C),B). *)
+(* econstructor. apply H3.  apply red_refl_lt in H5; apply H5. *)
+(* apply red_refl_lt in H4; apply H4. *)
+(* apply red_refl_lt in H9; apply H9. *)
+(* apply typ_peq_sym. apply reds_to_conv with t3. *)
+(* eapply reds_Pi. apply H11. constructor. apply red_refl_lt with D'. eapply conv_in_env. apply H4. eauto. trivial. *)
+(* apply reds_to_conv with t3. eapply reds_Pi. apply H10. constructor. apply red_refl_lt with D'. eapply conv_in_env. *)
+(* apply H4. eauto. trivial. eapply IHBetap2. apply typ_pcompat with C. *)
+(* apply red_refl_lt in H6; apply H6. *)
+(* apply reds_to_conv in H11. apply reds_to_conv in H10. eauto. *)
+(* apply red_refl_lt in H12. eapply IHBetap3; eauto. *)
+(* eapply IHBetap4. eapply conv_in_env. apply red_refl_lt in H4; apply H4. *)
+(* apply reds_to_conv in H11. apply reds_to_conv in H10. eauto. *)
+(* (**) *)
+(* apply pgen_app in H1 as (C & C' &  D' &  N'' & t1 & t2 & t3 & h). *)
+(* decompose [and] h; clear h. apply reds_typ_pcompat with (L [ ← N]); trivial. *)
+(* destruct H7. destruct H6 as (LA & ? & ? &  _). subst. *)
+(* apply pgen_la in H6 as (A'' & m'' & F & u1 & u2 & u3 & h). *)
+(* decompose [and] h; clear h. *)
+(* clear H10 LA. apply PiInj in H12 as (? & ?).  destruct (Confluence Γ A C H10) as ( Z & a & c & ? & ?). *)
+(* destruct (Confluence (A::Γ) F L H11) as (Y & f & d & ? & ?). *)
+(* apply typ_reds_trans with ((λ[A],M)·(Z,L)N). eapply reds_App___. *)
+(* apply typ_pcompat with  (Π(Z),Y). apply typ_pcompat with (Π(A),Y). econstructor. apply H6. apply H8. *)
+(* eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9. apply typ_pcompat with F. apply H7. eauto. *)
+(* apply reds_to_conv with u3. apply reds_Pi with u1 u2. eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8. *)
+(* constructor. apply reds_refl_rt with F. eapply typ_reds_relocate. apply H14. apply H9. trivial. apply typ_peq_sym. *)
+(* apply reds_to_conv with t3. apply reds_Pi with t1 t2. eapply typ_reds_relocate. apply H13. apply red_refl_lt in H3; apply H3. *)
+(* eapply typ_reds_relocate. eapply conv_in_env_reds. apply H15. eauto. *)
+(* apply red_refl_lt in H2; apply H2. trivial. apply H4. apply H13. *)
+(* apply typ_reds_trans with ((λ[A],M)·(Z,Y)N). eapply reds_App__. *)
+(* apply typ_pcompat with  (Π(Z),Y). apply typ_pcompat with (Π(A),Y). econstructor. apply H6. apply H8. *)
+(* eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9. apply typ_pcompat with F. apply H7. eauto. *)
+(* apply reds_to_conv with u3. apply reds_Pi with u1 u2. eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8. *)
+(* constructor. apply reds_refl_rt with F. eapply typ_reds_relocate. apply H14. apply H9. trivial. apply typ_peq_sym. *)
+(* apply reds_to_conv with t3. apply reds_Pi with t1 t2. constructor. eapply reds_refl_rt. eapply typ_reds_relocate. apply H13. *)
+(* apply red_refl_lt in H3; apply H3. eapply typ_reds_relocate. eapply conv_in_env_reds. apply H15. eauto. eapply conv_in_env. *)
+(* apply red_refl_lt in H2; apply H2. eauto. trivial. apply typ_pcompat with C. apply H4. eauto. eapply conv_in_env_reds. apply H15. eauto. *)
+(* eapply typ_reds_trans2 with (N:=M[← N]). constructor. apply typ_pcompat with (Y[← N]). econstructor. apply H6. apply red_refl_lt in H8; apply H8. *)
+(* eapply reds_refl_rt.  eapply typ_reds_relocate. apply H12. *)
+(* apply red_refl_lt in H8; apply H8. constructor. *)
+(*  apply red_refl_lt in H8; apply H8. *)
+(* eapply typ_reds_relocate. apply H12. apply red_refl_lt in H8; apply H8. *)
+(* eapply reds_refl_rt. eapply typ_reds_relocate. apply H14. apply H9. *)
+(* apply typ_pcompat with F. apply red_refl_lt with m''; trivial. eauto. apply red_refl_lt with N''. apply typ_pcompat with C. trivial. *)
+(* eauto. apply typ_peq_sym. apply reds_to_conv with d. change !d with (!d[← N]). eapply reds_subst. apply H15. apply typ_pcompat with C. *)
+(* apply red_refl_lt with N''; trivial. eauto. eapply reds_subst_gen. eapply IHBetap1. apply red_refl_lt in H7; apply H7. eapply IHBetap2. *)
+(* apply typ_pcompat with C. *)
+(* apply red_refl_lt in H4; apply H4. eauto. *)
 
-destruct H6 as (U0 & G & G' & T & T' & h); decompose [and] h; clear h.
-clear H9. injection H8; intros; subst; clear H8.
-eapply typ_reds_trans2 with (N :=  T[← N]).
-constructor. econstructor. apply H1.  apply red_refl_lt in H3; apply H3.
-apply red_refl_lt in H13; apply H13. apply H11.
-trivial. apply red_refl_lt in H2; trivial.
-apply red_refl_lt with T'; trivial. apply red_refl_lt with N''; trivial.
-eapply reds_subst_gen.
-eapply IHBetap1. apply red_refl_lt in H7; apply H7.
-eapply IHBetap2. apply red_refl_lt in H4; apply H4.
-Qed.
+(* destruct H6 as (U0 & G & G' & T & T' & h); decompose [and] h; clear h. *)
+(* clear H9. injection H8; intros; subst; clear H8. *)
+(* eapply typ_reds_trans2 with (N :=  T[← N]). *)
+(* constructor. econstructor. apply H1.  apply red_refl_lt in H3; apply H3. *)
+(* apply red_refl_lt in H13; apply H13. apply H11. *)
+(* trivial. apply red_refl_lt in H2; trivial. *)
+(* apply red_refl_lt with T'; trivial. apply red_refl_lt with N''; trivial. *)
+(* eapply reds_subst_gen. *)
+(* eapply IHBetap1. apply red_refl_lt in H7; apply H7. *)
+(* eapply IHBetap2. apply red_refl_lt in H4; apply H4. *)
+(* Qed. *)
+Admitted.
 
 Lemma SR_trans :   (forall M N, Betaps M N -> forall Γ A,  Γ ⊢ M ▹ M : A -> Γ ⊢ M ▹▹ N : A ).
 induction 1; intros.
