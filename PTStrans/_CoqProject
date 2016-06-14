@@ -14,9 +14,9 @@ strip.v
 glue.v
 final_result.v
 f_term.v
-# LIMIT
-f_end.v
-f_equivalence.v
+f_env.v
 f_typ.v
+# LIMIT
+f_equivalence.v
 f_typ2.v
 ut_red.v
