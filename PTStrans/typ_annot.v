@@ -88,7 +88,7 @@ with typ : Env -> Term -> Term -> Term -> Prop :=
                 Γ ⊢ u0 ▹▹ u1 : A1 ->
                 Γ ⊢ u0 ▹▹ u2 : A1 ->
                 Γ ⊢ u0 ▹▹ u3 : A1 ->
-                Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4 ↑ 1, Π(A5 ↑ 2), Π(Id (A6 ↑ 3) #1 #0), !t) #0 ·(A7 ↑ 2, Π(Id (A8 ↑ 3) #1 #0), !t) #0 ·(Id (A9 ↑ 3) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1 ·(A1, Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(A1 ↑ 1, Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(Id (A1 ↑ 2) #1 #0, !t) (refl (A1 ↑ 1) u1)
+                Γ ⊢ J t A1 C1 b1 u1 u2 (refl A2 u3) ▹ b2 ·(A3, (C2 ↑ 1) ·(A4 ↑ 1, Π(A5 ↑ 2), Π(Id (A6 ↑ 3) #1 #0), !t) #0 ·(A7 ↑ 2, Π(Id (A8 ↑ 3) #1 #0), !t) #0 ·(Id (A9 ↑ 3) #1 #0, !t) (refl (A10 ↑ 1) #0)) u4 : C1 ·(A1, Π(A1 ↑ 1), Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(A1 ↑ 1, Π(Id (A1 ↑ 2) #1 #0), !t) u1 ·(Id (A1 ↑ 2) #1 #0, !t) (refl A1 u1)
  | typ_red : forall Γ M N A B s, Γ ⊢ M ▹ N : A -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : B
  | typ_exp : forall Γ M N A B s, Γ ⊢ M ▹ N : B -> Γ ⊢ A ▹ B : !s -> Γ ⊢ M ▹ N : A
 where "Γ ⊢ M ▹ N : T" := (typ Γ  M N T) : Typ_scope
@@ -159,6 +159,7 @@ Theorem weakening: (forall Δ t t' T, Δ ⊢ t ▹ t' : T -> forall Γ d d' s n 
     eapply typ_beta. apply r. eapply H; eauto. eapply H0; eauto.
     eapply H1; eauto. eapply H2; eauto. eapply H3; eauto. eapply H4; eauto.
     eapply H5; eauto.
+  - admit.
   (**)
   - apply typ_red with (A ↑ 1 # n) s. eapply H; eauto.
     change !s with (!s ↑ 1 # n); eapply H0; eauto.
@@ -313,6 +314,7 @@ apply typ_induc; intros; simpl; trivial.
   eapply H3. econstructor. apply H; trivial. intuition.
   eapply H4. econstructor. apply H; trivial. intuition.
   intuition.
+- eapply typ_jred with (A0 := A0) (C0 := C0) (u0 := u0) ; eauto.
 (**)
 - apply typ_red with A s;intuition.
 (**)
@@ -488,6 +490,8 @@ Lemma   conv1_in_env : (forall Γ M N T, Γ ⊢ M ▹ N : T -> forall Γ', env_c
       * constructor; assumption.
       * econstructor; apply H; assumption.
     + apply H5; assumption.
+  (***)
+  - eapply typ_jred with (A0 := A0) (C0 := C0) (u0 := u0) ; eauto.
   (**)
   - eauto.
   (**)
@@ -522,6 +526,18 @@ Lemma reds_Pi_ : forall Γ A A' s, Γ ⊢ A  ▹▹ A' : !s -> forall B t u, A::
   apply typ_reds_to_red_ in H0. destruct H0 as (? & ? ). econstructor. apply H0. trivial.
 Qed.
 
+(* Let's see what we need before proving random stuff *)
+(* Lemma reds_Id_ : *)
+(*   forall Γ A A' s, Γ ⊢ A ▹▹ A' : !s -> *)
+(*   forall u, Γ ⊢ u ▹ u : A -> *)
+(*   forall v, Γ ⊢ v ▹ v : A -> *)
+(*   Γ ⊢ Id A u v ▹▹ Id A' u v : !s. *)
+(* Proof. *)
+(*   intros until 1. remember !s as S. revert s HeqS. induction H ; intros ; subst. *)
+(*   - constructor. eapply typ_id ; eauto. *)
+(*   - *)
+(* Abort. *)
+
 (** Left-Hand reflexivity: this ensure that a valid derivation starts from a well
 typed term.*)
 Theorem red_refl_lt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ M ▹ M :T.
@@ -545,10 +561,28 @@ Theorem red_refl_lt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ M ▹ M :T.
     apply reds_to_conv with s3. eapply reds_Pi_; eauto.
     eapply conv1_in_env. apply IHtyp3. eauto. apply typ_reds_to_red_ in H2 as (? & ?). econstructor; apply H2.
     apply typ_pcompat with A. trivial. eauto.
+  (***)
+  - apply typ_pcompat with (C1 ·( A1, Π (A1 ↑ 1), Π (Id (A1 ↑ 2) #1 #0), ! t) u1 ·( 
+     (A1 ↑ 1), Π (Id (A1 ↑ 2) #1 #0), ! t) u2 ·( Id (A1 ↑ 2) #1 #0,
+     ! t) refl A2 u3).
+    + eapply typ_j ; trivial.
+      * apply IHtyp1.
+      * { apply typ_pcompat with (Id A2 u3 u3).
+          - apply typ_refl with s ; trivial.
+            apply typ_pcompat with A1 ; trivial.
+            eapply typ_peq_trans.
+            + apply typ_peq_sym. apply reds_to_conv with s. apply H9.
+            + apply reds_to_conv with s. apply H10.
+          - apply typ_peq_trans with (B := Id A0 u0 u0).
+            + apply typ_peq_sym. apply reds_to_conv with s.
+              admit. (* proved with perhaps several lemmata as above (commented out) *)
+            + admit. (* likewise *)
+        } 
+    + admit. (* likewise but a lot more annoying *)
   (**)
   - apply typ_red with A s; trivial.
   - apply typ_exp with B s; trivial.
-Qed.
+Admitted.
 
 Lemma reds_refl_lt : forall Γ M N T, Γ ⊢ M ▹▹ N : T -> Γ ⊢ M ▹ M :T.
   induction 1. apply red_refl_lt in H; trivial.
@@ -635,6 +669,8 @@ Theorem subst_gen : (forall Γ M N T, Γ ⊢ M ▹ N : T ->
     eapply H2; eauto. apply red_refl_lt in H7; trivial. eapply H3; eauto.
     apply red_refl_lt in H7; trivial.
     eapply H4; eauto. eapply H5; eauto.
+  (* 1 / NaN *)
+  - simpl. admit. (* I admit I am powerless against this goal (at first sight) *)
   (* 1 / 2 *)
   - apply typ_red with (A[n ←u]) s. eapply H. apply H1. trivial.
     change !s with (!s[n ← u]). eapply H0. apply H1. apply red_refl_lt in H2; trivial.
@@ -699,6 +735,8 @@ Theorem red_refl_rt : forall Γ M N T, Γ ⊢ M ▹ N : T -> Γ ⊢ N ▹ N :T.
   - apply typ_exp with B [ ← N'] s2. eapply subst_gen. apply IHtyp4. constructor. trivial.
     change !s2 with (!s2[ ←N]). eapply subst_gen. apply red_refl_lt in H4; apply H4.
     constructor. trivial.
+  (***)
+  - admit. (* Applying and stuff *)
   (**)
   - apply typ_red with A s; trivial.
   (**)
@@ -898,7 +936,6 @@ exists A'; exists B'; exists s1; exists s2; exists s3; repeat split; trivial.
 destruct H6. subst; right; eauto. right; eauto.
 Qed.
 
-
 Lemma pgen_la : forall  Γ A M N T,  Γ  ⊢ λ[A],M ▹ N : T -> exists A',exists M', exists B,
  exists s1, exists s2, exists s3, Rel s1 s2 s3 /\ Γ  ⊢ A ▹ A' : !s1 /\ A::Γ  ⊢ M ▹ M' : B /\
   A::Γ  ⊢ B ▹ B :!s2 /\ N = λ[A'],M' /\ (Γ  ⊢ Π (A), B ≡' T ).
@@ -946,6 +983,47 @@ destruct (IHtyp1 W V P X) as (U & U' & V' & X' & s1 &s2 &s3  & h); trivial. deco
 exists U; exists U';  exists V'; exists X'; exists s1; exists s2; exists s3; intuition. eauto. eauto.
 Qed.
 
+Lemma pgen_id : forall Γ A u v N T, Γ ⊢ Id A u v ▹ N : T ->
+                exists A' u' v' s,
+                Γ ⊢ A ▹ A' : !s /\
+                Γ ⊢ u ▹ u' : A /\
+                Γ ⊢ v ▹ v' : A /\
+                N = Id A' u' v' /\
+                (T = !s \/ Γ ⊢ T ≡' !s).
+  intros Γ A u v N T h.
+  remember (Id A u v) as P. revert A u v HeqP.
+  induction h ; intros ; subst ; try discriminate.
+  - injection HeqP. intros H H0 H1. subst.
+    exists A', u', v', s. repeat split ; trivial. now left.
+  - destruct (IHh1 A0 u v eq_refl) as [A' [u' [v' [s' [ih1 [ih2 [ih3 [ih4 [ih5 | ih5]]]]]]]]] ;
+    exists A', u', v', s' ; repeat split ; trivial.
+    + subst. destruct (pgen_sort _ _ _ _ h2) as (goal & ?). now left.
+    + right. eapply typ_peq_trans.
+      * apply typ_peq_intro2 with s. apply h2.
+      * apply ih5.
+  - destruct (IHh1 A0 u v eq_refl) as [A' [u' [v' [s' [ih1 [ih2 [ih3 [ih4 [ih5 | ih5]]]]]]]]] ;
+    exists A', u', v', s' ; repeat split ; trivial.
+    + right. subst. now apply typ_peq_intro with s.
+    + right. eapply typ_peq_trans.
+      * apply typ_peq_intro with s. apply h2.
+      * apply ih5.
+Qed.
+
+Lemma pgen_refl : forall Γ A u N T, Γ ⊢ refl A u ▹ N : T ->
+                  exists A' u' s, Γ ⊢ A ▹ A' : s /\
+                             Γ ⊢ u ▹ u' : A /\
+                             N = refl A' u' /\
+                             Γ ⊢ T ≡' Id A u u.
+Admitted.
+
+(* Maybe not that simple, probably something like jred *)
+(* Lemma pgen_j : forall Γ t A C b u v p N T, Γ ⊢ J t A C b u v p ▹ N : T -> *)
+(*                exists A' C' b' u' v' p' s, Γ ⊢ A ▹ A' : !s /\ *)
+(*                                       Γ ⊢ C ▹ C' : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t /\ *)
+(*                                       Γ ⊢ b ▹ b' : Π(A), (C ↑ 1) ·(A ↑ 1, Π(A ↑ 2), Π(Id (A ↑ 3) #1 #0), !t) #0 ·(A ↑ 2, Π(Id (A ↑ 3) #1 #0), !t) #0 ·(Id (A ↑ 3) #1 #0, !t) (refl (A ↑ 1) #0) /\ *)
+(*                                       Γ ⊢ u ▹ u' : A /\ *)
+(*                                       Γ ⊢ v ▹ v' : A /\ *)
+(*                                       Γ ⊢ p ▹ p' : Id A u v /\ *)
 
 Lemma fun_item_lift : forall A A' v Γ , A ↓ v ⊂ Γ -> A' ↓ v ⊂ Γ -> A = A'.
 intros.
