@@ -21,3 +21,4 @@ f_typ2.v
 f_equivalence.v
 rr_term.v
 rr_env.v
+rr_typ.v
