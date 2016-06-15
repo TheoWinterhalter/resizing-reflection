@@ -28,7 +28,14 @@ with typ   : Env -> Term -> Term -> Prop :=
  | cProd   : forall Γ A B s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢ A : !s1 -> A::Γ ⊢ B : !s2 -> Γ ⊢  Π(A), B : !s3
  | cAbs    : forall Γ A B b s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢ A : !s1 -> A::Γ ⊢ b : B -> A::Γ ⊢ B : !s2 -> Γ ⊢ λ[A], b : Π(A), B
  | cApp    : forall Γ F a A B , Γ ⊢ F : Π(A), B -> Γ ⊢ a : A -> Γ ⊢ F · a : B[←a]
- | cConv    : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ a ∽ H : B
+ | cId     : forall Γ A u v s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ Id A u v : !s
+ | cRfl    : forall Γ A u s, Γ ⊢ A : !s -> Γ ⊢ u : A -> Γ ⊢ Rfl A u : Id A u u
+ | cJ      : forall Γ A C b u v p s t, Γ ⊢ A : !s ->
+                                  Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                                  Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+                                  Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ p : Id A u v ->
+                                  Γ ⊢ J A C b u v p : C · u · v · p
+ | cConv   : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ a ∽ H : B
 where "Γ ⊢ t : T" := (typ Γ t T) : F_scope
 with typ_h : Env -> Prf -> Term -> Term -> Prop :=
  | cRefl   : forall Γ a A, Γ ⊢ a : A -> Γ ⊢ ρ a : a = a
@@ -44,7 +51,44 @@ with typ_h : Env -> Prf -> Term -> Term -> Prop :=
                       -> Γ ⊢ H : A = A' -> A::Γ ⊢ K : b = (b'↑1#1)[←#0∽H↑h1] -> Γ ⊢ ⟨H,[A]K⟩ : λ[A], b = λ[A'], b'
  | cAppEq  : forall Γ F F' a a' A A' B B' H K, Γ ⊢ F : Π(A), B -> Γ ⊢ F' : Π(A'), B' -> Γ ⊢ a : A -> Γ ⊢ a' : A' 
                       -> Γ ⊢ H : F = F' -> Γ ⊢ K : a = a' -> Γ ⊢ H ·h K : F · a = F' · a'
- | cIota    : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ ι(a∽H) : a = a∽H
+ | cIota   : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ ι(a∽H) : a = a∽H
+ | cIdEq   : forall Γ A A' u u' v v' s s' HA Hu Hv,
+               Γ ⊢ A  : !s     -> Γ ⊢ A' : !s' ->
+               Γ ⊢ u  : A      -> Γ ⊢ u' : A'  ->
+               Γ ⊢ v  : A      -> Γ ⊢ v' : A'  ->
+               Γ ⊢ HA : A = A' ->
+               Γ ⊢ Hu : u = u' -> Γ ⊢ Hv : v = v' ->
+               Γ ⊢ IdEq HA Hu Hv : Id A u v = Id A' u' v'
+ | cRflEq  : forall Γ A A' u u' s s' HA Hu,
+               Γ ⊢ A  : !s     -> Γ ⊢ A' : !s'    ->
+               Γ ⊢ u  : A      -> Γ ⊢ u' : A'     ->
+               Γ ⊢ HA : A = A' -> Γ ⊢ Hu : u = u' ->
+               Γ ⊢ RflEq HA Hu : Rfl A u = Rfl A' u'
+ | cJEq    : forall Γ A A' C C' b b' u u' v v' p p' s t s' t' HA HC Hb Hu Hv Hp,
+               Γ ⊢ A  : !s       -> Γ ⊢ A' : !s'         ->
+               Γ ⊢ C  : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+               Γ ⊢ C' : Π(A'), Π(A' ↑ 1), Π(Id (A' ↑ 2) #1 #0), !t' ->
+               Γ ⊢ b  : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+               Γ ⊢ b' : Π(A'), (C' ↑ 1) · #0 · #0 · (Rfl (A' ↑ 1) #0) ->
+               Γ ⊢ u  : A        -> Γ ⊢ u' : A'          ->
+               Γ ⊢ v  : A        -> Γ ⊢ v' : A'          ->
+               Γ ⊢ p  : Id A u v -> Γ ⊢ p' : Id A' u' v' ->
+               Γ ⊢ HA : A = A'   -> Γ ⊢ HC : C = C'      ->
+               Γ ⊢ Hb : b = b'   -> Γ ⊢ Hu : u = u'      ->
+               Γ ⊢ Hv : v = v'   -> Γ ⊢ Hp : p = p'      ->
+               Γ ⊢ JEq HA HC Hb Hu Hv Hp : J A C b u v p = J A' C' b' u' v' p'
+ (* | cJRed   : forall Γ A A' C b u v w s s' t, *)
+ (*               Γ ⊢ A : !s -> Γ ⊢ A' : !s' -> *)
+ (*               Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t -> *)
+ (*               Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) -> *)
+ (*               Γ ⊢ u : A  -> Γ ⊢ v : A  -> Γ ⊢ w : A -> *)
+ (*               Γ ⊢ JRed (J A C b u v (Rfl A' w)) : J A C b u v (Rfl A' w) = b · u *)
+ | cJRed   : forall Γ A C b u s t,
+               Γ ⊢ A : !s ->
+               Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+               Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+               Γ ⊢ u : A ->
+               Γ ⊢ JRed (J A C b u u (Rfl A u)) : J A C b u u (Rfl A u) = b · u
 where "Γ ⊢ H : A = B" := (typ_h Γ H A B) : F_scope.
 
 Hint Constructors wf typ typ_h.
