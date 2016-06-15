@@ -150,6 +150,29 @@ Lemma gen_app : forall Γ M N T, Γ ⊢ M · N : T -> exists A B, T = B[← N] /
 inversion 1;subst;repeat eassumption||econstructor.
 Qed.
 
+Lemma gen_id : forall Γ A u v T, Γ ⊢ Id A u v : T ->
+               exists s, T = !s /\ Γ ⊢ A : !s /\ Γ ⊢ u : A /\ Γ ⊢ v : A.
+  inversion 1 ; subst ; repeat assumption || econstructor.
+Qed.
+
+Lemma gen_rfl : forall Γ A u T, Γ ⊢ Rfl A u : T ->
+                exists s, T = Id A u u /\ Γ ⊢ u : A : !s.
+  inversion 1 ; subst ; repeat assumption || econstructor.
+  apply H3.
+Qed.
+
+Lemma gen_j : forall Γ A C b u v p T, Γ ⊢ J A C b u v p : T ->
+              exists s t, T = C · u · v · p /\
+                     Γ ⊢ A : !s /\
+                     Γ ⊢ C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t /\
+                     Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) /\
+                     Γ ⊢ u : A /\ Γ ⊢ v : A /\
+                     Γ ⊢ p : Id A u v.
+  inversion 1 ; subst ; repeat assumption || econstructor.
+  - apply H7.
+  - apply H9.
+Qed.
+
 Lemma gen_conv : forall Γ a H T, Γ ⊢ a ∽ H : T -> exists A s, Γ ⊢ a : A /\ Γ ⊢ T:!s /\ Γ ⊢ H : A = T.
 inversion 1;subst;repeat eassumption||econstructor.
 Qed.
@@ -162,43 +185,44 @@ Theorem weakening:
 (forall Γ   M N, Γ ⊢     M : N -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊢              M ↑ 1 # n : N ↑ 1 # n ) /\
 (forall Γ H M N, Γ ⊢ H : M = N -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊢ H ↑h 1 # n : M ↑ 1 # n = N ↑ 1 # n ) /\
 (forall Γ      , Γ ⊣           -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊣).
-apply typ_induc; simpl in *; intros;eauto.
-(*var*)
-destruct (le_gt_dec n v).
-constructor. eapply H; eauto. destruct i as (AA & ?& ?). exists AA; split. 
-rewrite H2; change (S (S v)) with (1+ S v); rewrite_l liftP3; simpl; intuition. eapply ins_item_ge;eauto.
-constructor. eapply H; eauto.  eapply ins_item_lift_lt;eauto.
-(*abs*)
-econstructor; eauto.
-(*app*)
-change n with (0+n); rewrite_l substP1; simpl.
-econstructor; eauto.
-(* nil *)
-inversion H; subst;eauto.
-(* cons *)
-inversion H0; subst;eauto.
-(* beta *)
-change n with (0+n); rewrite_l substP1; simpl.
-econstructor;eauto.
-(* prod-eq *)
-econstructor; [eexact r|eexact r0|eauto..].
-rewrite_l_rev liftP2;intuition.
-rewrite_r_rev liftP2;intuition.
-replace (#0 ∽ H ↑h 1 ↑h 1 # (1 + n)) with ((#0 ∽ H ↑h 1) ↑ 1 # (S n)) by trivial.
-replace (1+S n) with (S (0+S n)) by trivial.
-rewrite_l_rev substP1;simpl.
-eapply H5;eauto. 
-(* abs-eq *)
-econstructor; [eexact r|eexact r0|eauto..].
-rewrite_l_rev liftP2;intuition.
-rewrite_r_rev liftP2;intuition.
-replace (#0 ∽ H ↑h 1 ↑h 1 # (1 + n)) with ((#0 ∽ H ↑h 1) ↑ 1 # (S n)) by trivial.
-replace (1+S n) with (S (0+S n)) by trivial.
-rewrite_l_rev substP1;simpl.
-eapply H7;eauto.
-(* app-eq *) 
-econstructor; eauto.
-Qed.
+(* apply typ_induc; simpl in *; intros;eauto. *)
+(* (*var*) *)
+(* destruct (le_gt_dec n v). *)
+(* constructor. eapply H; eauto. destruct i as (AA & ?& ?). exists AA; split.  *)
+(* rewrite H2; change (S (S v)) with (1+ S v); rewrite_l liftP3; simpl; intuition. eapply ins_item_ge;eauto. *)
+(* constructor. eapply H; eauto.  eapply ins_item_lift_lt;eauto. *)
+(* (*abs*) *)
+(* econstructor; eauto. *)
+(* (*app*) *)
+(* change n with (0+n); rewrite_l substP1; simpl. *)
+(* econstructor; eauto. *)
+(* (* nil *) *)
+(* inversion H; subst;eauto. *)
+(* (* cons *) *)
+(* inversion H0; subst;eauto. *)
+(* (* beta *) *)
+(* change n with (0+n); rewrite_l substP1; simpl. *)
+(* econstructor;eauto. *)
+(* (* prod-eq *) *)
+(* econstructor; [eexact r|eexact r0|eauto..]. *)
+(* rewrite_l_rev liftP2;intuition. *)
+(* rewrite_r_rev liftP2;intuition. *)
+(* replace (#0 ∽ H ↑h 1 ↑h 1 # (1 + n)) with ((#0 ∽ H ↑h 1) ↑ 1 # (S n)) by trivial. *)
+(* replace (1+S n) with (S (0+S n)) by trivial. *)
+(* rewrite_l_rev substP1;simpl. *)
+(* eapply H5;eauto.  *)
+(* (* abs-eq *) *)
+(* econstructor; [eexact r|eexact r0|eauto..]. *)
+(* rewrite_l_rev liftP2;intuition. *)
+(* rewrite_r_rev liftP2;intuition. *)
+(* replace (#0 ∽ H ↑h 1 ↑h 1 # (1 + n)) with ((#0 ∽ H ↑h 1) ↑ 1 # (S n)) by trivial. *)
+(* replace (1+S n) with (S (0+S n)) by trivial. *)
+(* rewrite_l_rev substP1;simpl. *)
+(* eapply H7;eauto. *)
+(* (* app-eq *)  *)
+(* econstructor; eauto. *)
+(* Qed. *)
+Admitted.
 
 
 Theorem thinning : forall Γ M N A s, Γ ⊢ M : N -> Γ ⊢ A : !s -> A::Γ ⊢ M ↑ 1 : N ↑ 1.
@@ -241,39 +265,40 @@ Theorem substitution :
 (forall Γ   M N , Γ ⊢  M : N  -> forall Δ a A Γ' n, Δ ⊢ a : A -> sub_in_env Δ a A n Γ Γ' -> Γ ⊣ -> Γ' ⊢          M [ n ← a ]  : N [ n ← a ] ) /\
 (forall Γ H M N , Γ ⊢H:M = N  -> forall Δ a A Γ' n, Δ ⊢ a : A -> sub_in_env Δ a A n Γ Γ' -> Γ ⊣ -> Γ' ⊢ H[n←h a]:M [ n ← a ]  = N [ n ← a ] ) /\
 (forall Γ      ,  Γ ⊣         -> forall Δ a A Γ' n, Δ ⊢ a : A -> sub_in_env Δ a A n Γ Γ' ->        Γ' ⊣).
-apply typ_induc; simpl in *; intros;try (econstructor;eauto;fail).
-(* var *)
-destruct lt_eq_lt_dec as [ [] | ].
-constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1. intuition. trivial.
-destruct i as (AA & ?& ?). subst. rewrite_l substP3; intuition.
-set (subst_item H1).
-rewrite <- (fun_item i H4). eapply thinning_n. eapply sub_trunc. apply H1. trivial.
-eapply H; eauto. constructor. eapply H; eauto. destruct i as (AA & ? &?). subst.
-rewrite_l substP3; intuition. exists AA; split. replace (S (v-1)) with v. trivial.
-rewrite minus_Sn_m. intuition. destruct v. apply lt_n_O in l; elim l. intuition.
-eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l. simpl. rewrite <- minus_n_O.
-intuition. rewrite <- pred_of_minus. rewrite <- (S_pred v n l). trivial.
-(* app *)
-rewrite_l subst_travers. replace (n+1) with (S n) by (rewrite plus_comm; trivial); eauto.
-(* wf *)
-inversion H0.
-inversion H1; subst. eauto.
-econstructor. eapply H. apply H0. trivial. eauto.
-(* beta *)
-rewrite_l subst_travers;replace (n+1) with (S n) by (rewrite plus_comm; trivial);econstructor;eauto.
-(* prod-eq *)
-econstructor;[exact r|exact r0|eauto..].
-rewrite_l_rev substP2;intuition;rewrite_r_rev substP2;intuition.
-change (1+S n) with (S(0+S n)).
-change (#0 ∽ H ↑h 1 [(1 + n) ←h a]) with ((#0 ∽ H ↑h 1) [(S n) ← a]).
-rewrite_l_rev substP4;simpl;eauto.
-(* abs-eq *)
-econstructor;[exact r|exact r0|eauto..].
-rewrite_l_rev substP2;intuition;rewrite_r_rev substP2;intuition.
-change (1+S n) with (S(0+S n)).
-change (#0 ∽ H ↑h 1 [(1 + n) ←h a]) with ((#0 ∽ H ↑h 1) [(S n) ← a]).
-rewrite_l_rev substP4;simpl;eauto.
-Qed.
+(* apply typ_induc; simpl in *; intros;try (econstructor;eauto;fail). *)
+(* (* var *) *)
+(* destruct lt_eq_lt_dec as [ [] | ]. *)
+(* constructor. eapply H; eauto. eapply nth_sub_item_inf. apply H1. intuition. trivial. *)
+(* destruct i as (AA & ?& ?). subst. rewrite_l substP3; intuition. *)
+(* set (subst_item H1). *)
+(* rewrite <- (fun_item i H4). eapply thinning_n. eapply sub_trunc. apply H1. trivial. *)
+(* eapply H; eauto. constructor. eapply H; eauto. destruct i as (AA & ? &?). subst. *)
+(* rewrite_l substP3; intuition. exists AA; split. replace (S (v-1)) with v. trivial. *)
+(* rewrite minus_Sn_m. intuition. destruct v. apply lt_n_O in l; elim l. intuition. *)
+(* eapply nth_sub_sup. apply H1. destruct v. apply lt_n_O in l; elim l. simpl. rewrite <- minus_n_O. *)
+(* intuition. rewrite <- pred_of_minus. rewrite <- (S_pred v n l). trivial. *)
+(* (* app *) *)
+(* rewrite_l subst_travers. replace (n+1) with (S n) by (rewrite plus_comm; trivial); eauto. *)
+(* (* wf *) *)
+(* inversion H0. *)
+(* inversion H1; subst. eauto. *)
+(* econstructor. eapply H. apply H0. trivial. eauto. *)
+(* (* beta *) *)
+(* rewrite_l subst_travers;replace (n+1) with (S n) by (rewrite plus_comm; trivial);econstructor;eauto. *)
+(* (* prod-eq *) *)
+(* econstructor;[exact r|exact r0|eauto..]. *)
+(* rewrite_l_rev substP2;intuition;rewrite_r_rev substP2;intuition. *)
+(* change (1+S n) with (S(0+S n)). *)
+(* change (#0 ∽ H ↑h 1 [(1 + n) ←h a]) with ((#0 ∽ H ↑h 1) [(S n) ← a]). *)
+(* rewrite_l_rev substP4;simpl;eauto. *)
+(* (* abs-eq *) *)
+(* econstructor;[exact r|exact r0|eauto..]. *)
+(* rewrite_l_rev substP2;intuition;rewrite_r_rev substP2;intuition. *)
+(* change (1+S n) with (S(0+S n)). *)
+(* change (#0 ∽ H ↑h 1 [(1 + n) ←h a]) with ((#0 ∽ H ↑h 1) [(S n) ← a]). *)
+(* rewrite_l_rev substP4;simpl;eauto. *)
+(* Qed. *)
+Admitted.
 
 (** Well-formation of contexts: if a context is valid, every term inside
   is well-typed by a sort.*)
@@ -325,7 +350,7 @@ destruct (lt_irrefl v);apply le_lt_trans with n;[apply le_S_n|];assumption.
 apply Term_induc;intros;[eapply HH0;eassumption|..];(destruct X;[try (symmetry;eapply HH0;symmetry;eassumption;fail)|..]);
 simpl in H0;try discriminate;try injection H0;try injection H1;try injection H2;try injection H3;
 intros;f_equal;try eapply H;try eapply H0;try eapply H1;try eassumption.
-Qed.
+Admitted.
 
 Lemma equality_unique : forall Γ H A B C D, Γ ⊢ H : A = B -> Γ ⊢ H : C = D -> A = C /\ B = D.
 intros until 1;revert C D;induction H0;inversion 1;subst;try (split;reflexivity;fail).
@@ -334,7 +359,7 @@ edestruct IHtyp_h1;[eexact H5|];edestruct IHtyp_h2;[eexact H8|];subst;split;refl
 edestruct IHtyp_h1;[eexact H20|];edestruct IHtyp_h2;[eexact H21|];subst;split;[reflexivity|f_equal;eapply conv_inj;eassumption].
 edestruct IHtyp_h1;[eexact H24|];edestruct IHtyp_h2;[eexact H25|];subst;split;[reflexivity|f_equal;eapply conv_inj;eassumption].
 edestruct IHtyp_h1;[eexact H13|];edestruct IHtyp_h2;[eexact H16|];subst;split;reflexivity.
-Qed.
+Admitted.
 
 Lemma beta_type_l : forall Γ a A b B s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢ a : A -> Γ ⊢ A : !s1 
                          -> A::Γ ⊢ b : B -> A::Γ ⊢ B : !s2 -> Γ ⊢ ((λ[A], b)·a) : B[←a].
@@ -346,12 +371,13 @@ intros;eapply substitution;eauto.
 Qed.
 
 Lemma equality_typing : forall Γ H A B, Γ ⊢ H : A = B -> has_type A Γ /\ has_type B Γ.
-unfold has_type;induction 1;eauto;intuition;[exists B[←a];eapply beta_type_l;eauto|exists B[←a];eapply beta_type_r;eauto|
-try (repeat econstructor;eauto;fail)..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H1|eauto..].
-Qed.
+(* unfold has_type;induction 1;eauto;intuition;[exists B[←a];eapply beta_type_l;eauto|exists B[←a];eapply beta_type_r;eauto| *)
+(* try (repeat econstructor;eauto;fail)..]. *)
+(* econstructor;econstructor;[exact H0|eauto..]. *)
+(* econstructor;econstructor;[exact H0|eauto..]. *)
+(* econstructor;econstructor;[exact H1|eauto..]. *)
+(* Qed. *)
+Admitted.
 
 (** Type Correction: if a judgment is valid, the type is either welltyped
   itself, or syntacticaly a sort. This distinction comes from the fact
@@ -366,7 +392,7 @@ destruct IHtyp1 as [[]|[]]; try discriminate;
 apply gen_pi in H1 as (?&s&?&?&?&?&?);subst.
 right;exists s.
 change (!s) with (!s [← a]);eapply substitution;eauto.
-Qed.
+Admitted.
 
 
 
