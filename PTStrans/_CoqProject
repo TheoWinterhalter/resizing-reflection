@@ -16,7 +16,7 @@ final_result.v
 f_term.v
 f_env.v
 f_typ.v
+f_typ2.v
 # LIMIT
 f_equivalence.v
-f_typ2.v
 ut_red.v
