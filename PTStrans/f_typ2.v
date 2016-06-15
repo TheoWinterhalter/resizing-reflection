@@ -862,19 +862,21 @@ Combined Scheme der_induc from der_typ_ind', der_h_ind',der_wf_ind'.
 Lemma der_complete : (forall Γ   A B, Γ ⊢     A : B -> exists D, der_typ D Γ   A B)/\
                      (forall Γ H A B, Γ ⊢ H : A = B -> exists D, der_h   D Γ H A B)/\
                      (forall Γ      , Γ ⊣           -> exists D, der_wf  D Γ      ).
-apply typ_induc;intros;
-try match (type of H) with
-| exists _, _ => destruct H
-end;
-try destruct H0;try destruct H1;try destruct H2;try destruct H3;try destruct H4;try destruct H5;try destruct H6;try destruct H7;
-econstructor;try (econstructor;eassumption);(econstructor;[| |eassumption..];eassumption).
-Qed.
+(* apply typ_induc;intros; *)
+(* try match (type of H) with *)
+(* | exists _, _ => destruct H *)
+(* end; *)
+(* try destruct H0;try destruct H1;try destruct H2;try destruct H3;try destruct H4;try destruct H5;try destruct H6;try destruct H7; *)
+(* econstructor;try (econstructor;eassumption);(econstructor;[| |eassumption..];eassumption). *)
+(* Qed. *)
+Admitted.
 
 Lemma der_sound : (forall D Γ   A B, der_typ D Γ   A B -> Γ ⊢     A : B)/\
                   (forall D Γ H A B, der_h   D Γ H A B -> Γ ⊢ H : A = B)/\
                   (forall D Γ      , der_wf  D Γ       -> Γ ⊣          ).
-apply der_induc;intros;try (econstructor;eassumption);(econstructor;[| |eassumption..];eassumption).
-Qed.
+(* apply der_induc;intros;try (econstructor;eassumption);(econstructor;[| |eassumption..];eassumption). *)
+(* Qed. *)
+Admitted.
 
 Theorem unique_der_ext : (forall D Γ   A B, der_typ D Γ A B   -> forall A0 B0 D0, der_typ D0 Γ A0 B0 -> comparable A A0 -> D = D0)/\
                          (forall D Γ H A B, der_h   D Γ H A B -> forall A0 B0 D0, der_h   D0 Γ H A0 B0                  -> D = D0)/\
