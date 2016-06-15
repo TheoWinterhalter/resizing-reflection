@@ -19,3 +19,4 @@ f_env.v
 f_typ.v
 f_typ2.v
 f_equivalence.v
+rr_term.v
