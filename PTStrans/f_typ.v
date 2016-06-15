@@ -411,6 +411,14 @@ with simple_typ   : Env -> Term -> Term -> Prop :=
  | lcProd   : forall Γ A B s1 s2 s3, Rel s1 s2 s3 -> Γ ⊢' A : !s1 -> A::Γ ⊢' B : !s2 -> Γ ⊢'  Π(A), B : !s3
  | lcAbs    : forall Γ A B b s, A::Γ ⊢' b : B -> Γ ⊢'  Π(A), B : !s -> Γ ⊢' λ[A], b : Π(A), B
  | lcApp    : forall Γ F a A B , Γ ⊢' F : Π(A), B -> Γ ⊢' a : A -> Γ ⊢' F · a : B[←a]
+ | lcId     : forall Γ A u v s, Γ ⊢' A : !s -> Γ ⊢' u : A -> Γ ⊢' v : A -> Γ ⊢' Id A u v : !s
+ | lcRfl    : forall Γ A u s, Γ ⊢' A : !s -> Γ ⊢' u : A -> Γ ⊢' Rfl A u : Id A u u
+ | lcJ      : forall Γ A C b u v p s t,
+                Γ ⊢' A : !s ->
+                Γ ⊢' C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                Γ ⊢' b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+                Γ ⊢' u : A -> Γ ⊢' v : A -> Γ ⊢' p : Id A u v ->
+                Γ ⊢' J A C b u v p : C · u · v · p
  | lcConv    : forall Γ a A B s H, Γ ⊢' a : A -> Γ ⊢' B : !s -> Γ ⊢' H : A = B -> Γ ⊢' a ∽ H : B
 where "Γ ⊢' t : T" := (simple_typ Γ t T) : F_scope
 with simple_typ_h : Env -> Prf -> Term -> Term -> Prop :=
@@ -424,7 +432,38 @@ with simple_typ_h : Env -> Prf -> Term -> Term -> Prop :=
             -> Γ ⊢' H : A = A' -> A::Γ ⊢' K : b = (b'↑1#1)[←#0∽H↑h1] -> Γ ⊢' ⟨H,[A]K⟩ : λ[A], b = λ[A'], b'
  | lcAppEq  : forall Γ F F' a a' B B' H K, Γ ⊢' F · a : B -> Γ ⊢' F' · a' : B'
             -> Γ ⊢' H : F = F' -> Γ ⊢' K : a = a' -> Γ ⊢' H ·h K : F · a = F' · a'
- | lcIota    : forall Γ a B H, Γ ⊢' a ∽ H : B -> Γ ⊢' ι(a∽H) : a = a∽H
+ | lcIota   : forall Γ a B H, Γ ⊢' a ∽ H : B -> Γ ⊢' ι(a∽H) : a = a∽H
+ | lcIdEq   : forall Γ A A' u u' v v' s s' HA Hu Hv,
+                Γ ⊢' A  : !s     -> Γ ⊢' A' : !s' ->
+                Γ ⊢' u  : A      -> Γ ⊢' u' : A'  ->
+                Γ ⊢' v  : A      -> Γ ⊢' v' : A'  ->
+                Γ ⊢' HA : A = A' ->
+                Γ ⊢' Hu : u = u' -> Γ ⊢' Hv : v = v' ->
+                Γ ⊢' IdEq HA Hu Hv : Id A u v = Id A' u' v'
+ | lcRflEq  : forall Γ A A' u u' s s' HA Hu,
+                Γ ⊢' A  : !s     -> Γ ⊢' A' : !s'    ->
+                Γ ⊢' u  : A      -> Γ ⊢' u' : A'     ->
+                Γ ⊢' HA : A = A' -> Γ ⊢' Hu : u = u' ->
+                Γ ⊢' RflEq HA Hu : Rfl A u = Rfl A' u'
+ | lcJEq    : forall Γ A A' C C' b b' u u' v v' p p' s t s' t' HA HC Hb Hu Hv Hp,
+                Γ ⊢' A  : !s       -> Γ ⊢' A' : !s'         ->
+                Γ ⊢' C  : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                Γ ⊢' C' : Π(A'), Π(A' ↑ 1), Π(Id (A' ↑ 2) #1 #0), !t' ->
+                Γ ⊢' b  : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+                Γ ⊢' b' : Π(A'), (C' ↑ 1) · #0 · #0 · (Rfl (A' ↑ 1) #0) ->
+                Γ ⊢' u  : A        -> Γ ⊢' u' : A'          ->
+                Γ ⊢' v  : A        -> Γ ⊢' v' : A'          ->
+                Γ ⊢' p  : Id A u v -> Γ ⊢' p' : Id A' u' v' ->
+                Γ ⊢' HA : A = A'   -> Γ ⊢' HC : C = C'      ->
+                Γ ⊢' Hb : b = b'   -> Γ ⊢' Hu : u = u'      ->
+                Γ ⊢' Hv : v = v'   -> Γ ⊢' Hp : p = p'      ->
+                Γ ⊢' JEq HA HC Hb Hu Hv Hp : J A C b u v p = J A' C' b' u' v' p'
+ | lcJRed   : forall Γ A C b u s t,
+                Γ ⊢' A : !s ->
+                Γ ⊢' C : Π(A), Π(A ↑ 1), Π(Id (A ↑ 2) #1 #0), !t ->
+                Γ ⊢' b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
+                Γ ⊢' u : A ->
+                Γ ⊢' JRed (J A C b u u (Rfl A u)) : J A C b u u (Rfl A u) = b · u
 where "Γ ⊢' H : A = B" := (simple_typ_h Γ H A B) : F_scope.
 
 Local Hint Constructors simple_typ simple_typ_h simple_wf.
