@@ -35,7 +35,6 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
   | Rfl    : Term  -> Term -> Term
   | J      : Term  -> Term -> Term -> Term -> Term -> Term -> Term
   | Conv   : Term  -> Prf  -> Term
-  | AA     : Term
   | RRAA   : Term
   | Inj    : Term  -> Term
   | Proj   : Term  -> Term
@@ -70,6 +69,37 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
   Notation "⟨ H1 , [ A ] H2 ⟩" := (AbsEq H1 A H2) (at level 15, left associativity) : RR_scope.
   Notation "H1 ·h H2" := (AppEq H1 H2) (at level 15, left associativity) : RR_scope.
   Notation "'ι' A" := (Iota A) (at level 6) : RR_scope.
+
+  (* This system is an extension of FTM *)
+  (* We will show later that it preserves typing. But we need to define it *)
+  (* now in order to get the translation of AA. *)
+  Fixpoint inrrt (t : FTM.Term) : Term :=
+    match t with
+    | FTM.Var v                 => Var v
+    | FTM.Sort s                => Sort s
+    | FTM.App a b               => App (inrrt a) (inrrt b)
+    | FTM.Prod A B              => Prod (inrrt A) (inrrt B)
+    | FTM.Abs A t               => Abs (inrrt A) (inrrt t)
+    | FTM.Id A u v              => Id (inrrt A) (inrrt u) (inrrt v)
+    | FTM.Rfl A u               => Rfl (inrrt A) (inrrt u)
+    | FTM.J A C b u v p         => J (inrrt A) (inrrt C) (inrrt b) (inrrt u) (inrrt v) (inrrt p)
+    | FTM.Conv t H              => Conv (inrrt t) (inrrp H)
+    end
+  with inrrp (H : FTM.Prf) : Prf :=
+    match H with
+    | FTM.Refl t                => Refl (inrrt t)
+    | FTM.Sym H                 => Sym (inrrp H)
+    | FTM.Trans H1 H2           => Trans (inrrp H1) (inrrp H2)
+    | FTM.Beta t                => Beta (inrrt t)
+    | FTM.ProdEq H1 A H2        => ProdEq (inrrp H1) (inrrt A) (inrrp H2)
+    | FTM.AbsEq H1 A H2         => AbsEq (inrrp H1) (inrrt A) (inrrp H2)
+    | FTM.AppEq H1 H2           => AppEq (inrrp H1) (inrrp H2)
+    | FTM.Iota A                => Iota (inrrt A)
+    | FTM.IdEq HA Hu Hv         => IdEq (inrrp HA) (inrrp Hu) (inrrp Hv)
+    | FTM.RflEq HA Hu           => RflEq (inrrp HA) (inrrp Hu)
+    | FTM.JEq HA HC Hb Hu Hv Hp => JEq (inrrp HA) (inrrp HC) (inrrp Hb) (inrrp Hu) (inrrp Hv) (inrrp Hp)
+    | FTM.JRed t                => JRed (inrrt t)
+    end.
 
   Reserved Notation " t ↑  x # n " (at level 5, x at level 0, left associativity).
   Reserved Notation " t ↑h x # n " (at level 5, x at level 0, left associativity).
