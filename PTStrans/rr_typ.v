@@ -9,7 +9,7 @@ Require Import Lt Le Gt Plus Minus.
 Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_env_mod X FTM)
                  (RE : resizing_env X Y FTM FEM) (TM : rr_term_mod X Y FTM FEM RE)
                  (EM : rr_env_mod X Y FTM FEM RE TM).
-  Import X Y TM EM.
+  Import X Y FTM FEM TM EM.
 
   Reserved Notation "Γ ⊢ t : T" (at level 80, t, T at level 30, no associativity) .
   Reserved Notation "Γ ⊣ " (at level 80, no associativity).
@@ -95,6 +95,63 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                 Γ ⊢ t : RRAA ->
                 Γ ⊢ IP t : Inj (Proj t) = t
   where "Γ ⊢ H : A = B" := (typ_h Γ H A B) : RR_scope.
+
+  Hint Constructors wf typ typ_h.
+
+  Open Scope RR_scope.
+
+  Scheme typ_ind' := Induction for typ   Sort Prop
+                    with   wf_ind' := Induction for wf    Sort Prop
+                                     with typh_ind' := Induction for typ_h Sort Prop.
+
+  Combined Scheme typ_induc from typ_ind', typh_ind',wf_ind'.
+
+  (* Let's start the translation to PTSf *)
+
+  Reserved Notation "⦑ A ⦒τ" (at level 7, no associativity).
+  Fixpoint unrrt (t : Term) : FTM.Term :=
+    match t with
+    | #v            => (#v)%F
+    | !s            => (!s)%F
+    | Π(A), B       => (Π (⦑ A ⦒τ), ⦑ B ⦒τ)%F
+    | λ[A], t       => (λ[⦑ A ⦒τ], ⦑ t ⦒τ)%F
+    | a · b         => (⦑ a ⦒τ · ⦑ b ⦒τ)%F
+    | Id A u v      => FTM.Id ⦑A⦒τ ⦑u⦒τ ⦑v⦒τ
+    | Rfl A u       => FTM.Rfl ⦑A⦒τ ⦑u⦒τ
+    | J A C b u v p => FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ ⦑p⦒τ
+    | t ∽ H         => match unrrtp ⦑t⦒τ H with
+                      | (t,H) => (t ∽ H)%F
+                      end
+    | RRAA          => RE.BB
+    | Inj t         => (RE.ff · ⦑t⦒τ)%F
+    | Proj t        => (RE.gg · ⦑t⦒τ)%F
+    end
+    where "⦑ A ⦒τ" := (unrrt A)
+  with unrrtp (t : FTM.Term) (H : Prf) : FTM.Term * FTM.Prf :=
+    match H with
+    | ρ A                           => (t, ρ ⦑A⦒τ)%F
+    | H †                           => match unrrtp t H with
+                                      | (t,H) => (t,H †)%F
+                                      end
+    | H1 • H2                       => match unrrtp t H1 with
+                                      | (t,H) => unrrtp (t ∽ H)%F H2
+                                      end
+    | β A                           => (t, β ⦑A⦒τ)%F
+    (* | { H1, [A] H2 } => ??? *)
+    (* | ⟨ H1, [A] H2 ⟩  => ??? *)
+    (* | H1 ·h H2       => ??? *)
+    (* Maybe in the three cases above we should do the translation with Refl instead of each Hi *)
+    (* | ι (a ∽ H)       => ??? *)
+    | ι A                           => (#0, FTM.Refl #0)%F (* This shouldn't happen so... wildcard *)
+    (* | IdEq HA Hu Hv  => ??? *)
+    (* | RflEq HA Hu    => ??? *)
+    (* | JEq HA HC Hb Hu Hv Hp => ??? *)
+    | JRed (J A C b u v (Rfl B w)) => (t, FTM.JRed (FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ (FTM.Rfl ⦑B⦒τ ⦑w⦒τ)))
+    (* | PI a                         =>  *)
+    | H                            => (#0, FTM.Refl #0)%F
+    end.
+
+  Notation "⦑ A ⦒τ" := (unrrt A) (at level 7, no associativity).
 
 End f_typ_mod.
 
