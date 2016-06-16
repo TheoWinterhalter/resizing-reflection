@@ -216,6 +216,11 @@ Module Type rr_env_mod (X: term_sig) (Y : pts_sig X) (FTM: f_term_mod X) (FEM : 
    induction 1;constructor;constructor||assumption.
  Qed.
 
+ (* We can also lift the inclusion for types to environments. *)
+ Definition inrrenv (Γ : FEM.Env) : Env :=
+   map inrrt Γ.
+ Notation "⟦ Γ ⟧γ" := (inrrenv Γ) (at level 7, no associativity) : RR_scope.
+
 End rr_env_mod.
 
 
