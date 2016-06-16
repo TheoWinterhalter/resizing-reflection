@@ -221,6 +221,9 @@ Module Type rr_env_mod (X: term_sig) (Y : pts_sig X) (FTM: f_term_mod X) (FEM : 
    map inrrt Γ.
  Notation "⟦ Γ ⟧γ" := (inrrenv Γ) (at level 7, no associativity) : RR_scope.
 
+ (* The ΓΓ translated. *)
+ Definition ΓΓΓ := ⟦ RE.ΓΓ ⟧γ.
+
 End rr_env_mod.
 
 
