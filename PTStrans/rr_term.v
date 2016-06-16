@@ -135,7 +135,6 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
     | Id A u v => Id (A ↑ n # k) (u ↑ n # k) (v ↑ n # k)
     | Rfl A u => Rfl (A ↑ n # k) (u ↑ n # k)
     | J A C b u v p => J (A ↑ n # k) (C ↑ n # k) (b ↑ n # k) (u ↑ n # k) (v ↑ n # k) (p ↑ n # k)
-    | AA => AA
     | RRAA => RRAA
     | Inj t => Inj (t ↑ n # k)
     | Proj t => Proj (t ↑ n # k)
@@ -208,7 +207,6 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
     | Id A u v => Id (A [ n ← U ]) (u [ n ← U ]) (v [ n ← U ])
     | Rfl A u => Rfl (A [ n ← U ]) (u [ n ← U ])
     | J A C b u v p => J (A [ n ← U ]) (C [ n ← U ]) (b [ n ← U ]) (u [ n ← U ]) (v [ n ← U ]) (p [ n ← U ])
-    | AA => AA
     | RRAA => RRAA
     | Inj t => Inj (t [ n ← U ])
     | Proj t => Proj (t [ n ← U ])
