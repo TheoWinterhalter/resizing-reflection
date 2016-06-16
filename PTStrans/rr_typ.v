@@ -34,9 +34,9 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                 Γ ⊢ u : A -> Γ ⊢ v : A -> Γ ⊢ p : Id A u v ->
                 Γ ⊢ J A C b u v p : C · u · v · p
   | cConv   : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ a ∽ H : B
-  (* | cAA     : forall Γ n,  *)
-  (* We first need a translation from PTSf to RRPTSf, which is trivial, this way we define ΓΓ translated *)
-  (* We should also do the same with AA which should be nothing else than a highlighted element *)
+  | cRRAA   : forall Γ n, trunc n Γ ΓΓΓ -> Γ ⊢ RRAA : ! (RE.t)
+  | cInj    : forall Γ t, Γ ⊢ t : AAA -> Γ ⊢ Inj t : RRAA
+  | cProj   : forall Γ t, Γ ⊢ t : RRAA -> Γ ⊢ Proj t : AAA
   where "Γ ⊢ t : T" := (typ Γ t T) : RR_scope
   with typ_h : Env -> Prf -> Term -> Term -> Prop :=
   | cRefl   : forall Γ a A, Γ ⊢ a : A -> Γ ⊢ ρ a : a = a
@@ -88,9 +88,15 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                 Γ ⊢ b : Π(A), (C ↑ 1) · #0 · #0 · (Rfl (A ↑ 1) #0) ->
                 Γ ⊢ u : A ->
                 Γ ⊢ JRed (J A C b u u (Rfl A u)) : J A C b u u (Rfl A u) = b · u
+  | cPI     : forall Γ t,
+                Γ ⊢ t : AAA ->
+                Γ ⊢ PI t : Proj (Inj t) = t
+  | cIP     : forall Γ t,
+                Γ ⊢ t : RRAA ->
+                Γ ⊢ IP t : Inj (Proj t) = t
   where "Γ ⊢ H : A = B" := (typ_h Γ H A B) : RR_scope.
 
-
+End f_typ_mod.
 
 
 
