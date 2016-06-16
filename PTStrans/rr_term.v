@@ -101,6 +101,9 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
     | FTM.JRed t                => JRed (inrrt t)
     end.
 
+  (* Definition of the term we resize. *)
+  Definition AAA := inrrt (RE.AA).
+
   Reserved Notation " t ↑  x # n " (at level 5, x at level 0, left associativity).
   Reserved Notation " t ↑h x # n " (at level 5, x at level 0, left associativity).
 
