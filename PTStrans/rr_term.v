@@ -70,6 +70,9 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
   Notation "H1 ·h H2" := (AppEq H1 H2) (at level 15, left associativity) : RR_scope.
   Notation "'ι' A" := (Iota A) (at level 6) : RR_scope.
 
+  Reserved Notation "⟦ A ⟧" (at level 7, no associativity).
+  Reserved Notation "⟦ H ⟧h" (at level 7, no associativity).
+
   (* This system is an extension of FTM *)
   (* We will show later that it preserves typing. But we need to define it *)
   (* now in order to get the translation of AA. *)
@@ -77,32 +80,38 @@ Module Type rr_term_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM
     match t with
     | FTM.Var v                 => Var v
     | FTM.Sort s                => Sort s
-    | FTM.App a b               => App (inrrt a) (inrrt b)
-    | FTM.Prod A B              => Prod (inrrt A) (inrrt B)
-    | FTM.Abs A t               => Abs (inrrt A) (inrrt t)
-    | FTM.Id A u v              => Id (inrrt A) (inrrt u) (inrrt v)
-    | FTM.Rfl A u               => Rfl (inrrt A) (inrrt u)
-    | FTM.J A C b u v p         => J (inrrt A) (inrrt C) (inrrt b) (inrrt u) (inrrt v) (inrrt p)
-    | FTM.Conv t H              => Conv (inrrt t) (inrrp H)
+    | FTM.App a b               => App ⟦a⟧ ⟦b⟧
+    | FTM.Prod A B              => Prod ⟦A⟧ ⟦B⟧
+    | FTM.Abs A t               => Abs ⟦A⟧ ⟦t⟧
+    | FTM.Id A u v              => Id ⟦A⟧ ⟦u⟧ ⟦v⟧
+    | FTM.Rfl A u               => Rfl ⟦A⟧ ⟦u⟧
+    | FTM.J A C b u v p         => J ⟦A⟧ ⟦C⟧ ⟦b⟧ ⟦u⟧ ⟦v⟧ ⟦p⟧
+    | FTM.Conv t H              => Conv ⟦t⟧ ⟦H⟧h
     end
+    where "⟦ A ⟧" := (inrrt A) : RR_scope
   with inrrp (H : FTM.Prf) : Prf :=
     match H with
-    | FTM.Refl t                => Refl (inrrt t)
-    | FTM.Sym H                 => Sym (inrrp H)
-    | FTM.Trans H1 H2           => Trans (inrrp H1) (inrrp H2)
-    | FTM.Beta t                => Beta (inrrt t)
-    | FTM.ProdEq H1 A H2        => ProdEq (inrrp H1) (inrrt A) (inrrp H2)
-    | FTM.AbsEq H1 A H2         => AbsEq (inrrp H1) (inrrt A) (inrrp H2)
-    | FTM.AppEq H1 H2           => AppEq (inrrp H1) (inrrp H2)
-    | FTM.Iota A                => Iota (inrrt A)
-    | FTM.IdEq HA Hu Hv         => IdEq (inrrp HA) (inrrp Hu) (inrrp Hv)
-    | FTM.RflEq HA Hu           => RflEq (inrrp HA) (inrrp Hu)
-    | FTM.JEq HA HC Hb Hu Hv Hp => JEq (inrrp HA) (inrrp HC) (inrrp Hb) (inrrp Hu) (inrrp Hv) (inrrp Hp)
-    | FTM.JRed t                => JRed (inrrt t)
-    end.
+    | FTM.Refl t                => Refl ⟦t⟧
+    | FTM.Sym H                 => Sym ⟦H⟧h
+    | FTM.Trans H1 H2           => Trans ⟦H1⟧h ⟦H2⟧h
+    | FTM.Beta t                => Beta ⟦t⟧
+    | FTM.ProdEq H1 A H2        => ProdEq ⟦H1⟧h ⟦A⟧ ⟦H2⟧h
+    | FTM.AbsEq H1 A H2         => AbsEq ⟦H1⟧h ⟦A⟧ ⟦H2⟧h
+    | FTM.AppEq H1 H2           => AppEq ⟦H1⟧h ⟦H2⟧h
+    | FTM.Iota A                => Iota ⟦A⟧
+    | FTM.IdEq HA Hu Hv         => IdEq ⟦HA⟧h ⟦Hu⟧h ⟦Hv⟧h
+    | FTM.RflEq HA Hu           => RflEq ⟦HA⟧h ⟦Hu⟧h
+    | FTM.JEq HA HC Hb Hu Hv Hp => JEq ⟦HA⟧h ⟦HC⟧h ⟦Hb⟧h ⟦Hu⟧h ⟦Hv⟧h ⟦Hp⟧h
+    | FTM.JRed t                => JRed ⟦t⟧
+    end
+    where "⟦ H ⟧h" := (inrrp H) : RR_scope.
+
+  Notation "⟦ A ⟧"  := (inrrt A) (at level 7, no associativity) : RR_scope.
+  Notation "⟦ H ⟧h" := (inrrp H) (at level 7, no associativity) : RR_scope.
 
   (* Definition of the term we resize. *)
-  Definition AAA := inrrt (RE.AA).
+  (* Definition AAA := ⟦ RE.AA ⟧. *)
+  Definition AAA := inrrt RE.AA .
 
   Reserved Notation " t ↑  x # n " (at level 5, x at level 0, left associativity).
   Reserved Notation " t ↑h x # n " (at level 5, x at level 0, left associativity).
