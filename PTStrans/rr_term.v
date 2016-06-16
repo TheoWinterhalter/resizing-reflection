@@ -18,6 +18,17 @@ Module Type resizing_env (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FE
   Parameter ηtyp  : forall n Δ, trunc n Δ ΓΓ -> Δ ⊢ η  : Π(AA), Id (AA ↑ 1) ((gg ↑ 1) · ((ff ↑ 1) · #0)) #0.
   Parameter εtyp  : forall n Δ, trunc n Δ ΓΓ -> Δ ⊢ ε  : Π(BB), Id (BB ↑ 1) ((ff ↑ 1) · ((gg ↑ 1) · #0)) #0.
 
+  (* We also assume that AA is hSet *)
+  Parameter AhSet : Term.
+  Parameter AhSettype :
+    forall n Δ, trunc n Δ ΓΓ ->
+    Δ ⊢ AhSet : Π(AA), Π(AA ↑ 1), Π(Id (AA ↑ 2) #1 #0), Π(Id (AA ↑ 3) #2 #1), Id (Id (AA ↑ 4) #3 #2) #1 #0.
+  (* For simplicity we also assume it for BB, but since they are equivalent, we don't lose generality *)
+  Parameter BhSet : Term.
+  Parameter BhSettype :
+    forall n Δ, trunc n Δ ΓΓ ->
+    Δ ⊢ BhSet : Π(BB), Π(BB ↑ 1), Π(Id (BB ↑ 2) #1 #0), Π(Id (BB ↑ 3) #2 #1), Id (Id (BB ↑ 4) #3 #2) #1 #0.
+
 End resizing_env.
 
 (** We assume that we have a context Γ in which everything required for the resizing rule is defined. *)
