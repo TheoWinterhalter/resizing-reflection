@@ -534,7 +534,30 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                       + exists !s. split ; simpl ; trivial.
                   }
               + simpl in H. apply H.
-            - 
+            - apply cSym. eapply cTrans.
+              + eapply cAppEq.
+                * admit.
+                * admit.
+                * admit.
+                * admit.
+                * admit.
+                * { eapply cRefl. eapply cRfl.
+                    - apply cSort.
+                      + apply hax.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                    - apply cVar.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                  }
+              + admit.
+          }
+        * simpl. admit.
+      + apply hA.
+      + apply hA'.
+      + apply hp.
+    - (* We need a conversion! *)
   Abort.
 
   (* Let's start the translation to PTSf *)
