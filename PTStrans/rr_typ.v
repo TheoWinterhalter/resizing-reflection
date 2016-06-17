@@ -1062,7 +1062,35 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                       + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
                         eapply wf_typ ; eauto.
                       + apply (translem6 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                      + admit. (* Goal4 *)
+                      + eapply cProd.
+                        * apply hrel.
+                        * { apply cId.
+                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                              eapply wf_typ ; eauto.
+                            - apply cVar.
+                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                eapply wf_typ ; eauto.
+                              + exists !s. split ; simpl ; trivial.
+                                repeat (apply item_tl || apply item_hd).
+                            - apply cVar.
+                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                eapply wf_typ ; eauto.
+                              + exists !s. split ; simpl ; trivial.
+                          }
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          { apply cId.
+                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                              eapply wf_typ ; eauto.
+                            - apply cVar.
+                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                eapply wf_typ ; eauto.
+                              + exists !s. split ; simpl ; trivial.
+                                repeat (apply item_tl || apply item_hd).
+                            - apply cVar.
+                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                eapply wf_typ ; eauto.
+                              + exists !s. split ; simpl ; trivial.
+                          }
                     - eapply cRefl. apply cRfl with t.
                       + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
                         eapply wf_typ ; eauto.
@@ -1092,7 +1120,18 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                           eapply wf_typ ; eauto.
                         * exists !s. split ; simpl ; trivial.
                     - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                    - admit.
+                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                      apply cId.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
                   }
           }
         * simpl. admit.
