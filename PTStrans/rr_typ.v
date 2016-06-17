@@ -745,7 +745,27 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                         eapply wf_typ ; eauto.
                       + exists !s. split ; simpl ; trivial.
                   }
-                * admit.
+                * { eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2)) _ #0).
+                    - apply (translem1 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                    - apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                    - apply cVar.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                    - apply cVar.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                    - eapply cBeta.
+                      + apply hrel.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + admit.
+                  }
                 * { eapply cRefl. eapply cRfl.
                     - apply cSort.
                       + apply hax.
