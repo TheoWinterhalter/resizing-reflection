@@ -926,7 +926,73 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                         eapply wf_typ ; eauto.
                       + exists !s. split ; simpl ; trivial.
                   }
-              + admit.
+              + eapply cTrans.
+                * { eapply (cAppEq _ _ (λ[Id !s #0 #0], Π(#1), #2) _ (Rfl !s #0)).
+                    - assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]).
+                      + eapply cApp.
+                        * apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                        * { apply cVar.
+                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                              eapply wf_typ ; eauto.
+                            - exists !s. split ; simpl ; trivial.
+                          }
+                      + simpl in H. apply H.
+                    - admit. (* Goal1 *)
+                    - apply cRfl with t.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - apply cRfl with t.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - eapply cBeta.
+                      + apply hrel.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + admit. (* Goal2 *)
+                      + admit.
+                    - eapply cRefl. apply cRfl with t.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                  }
+                * { eapply cBeta.
+                    - apply hrel.
+                    - apply cRfl with t.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - apply cId.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - admit. (* Goal3 *)
+                    - admit.
+                  }
           }
         * simpl. admit.
       + apply hA.
