@@ -370,6 +370,170 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                   }
                 * exists !s. split ; simpl ; trivial.
                   apply item_tl. apply item_hd.
+            - assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]).
+              + apply cApp with (A := Id !s #0 #0).
+                * { assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 : (Π(Id !s #1 #0), !s) [← #0]).
+                    - apply cApp with (A := !s).
+                      + assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(!s), Π(Id !s #1 #0), !s) [← #0]).
+                        * { apply cApp with (A := !s).
+                            - eapply cAbs.
+                              + apply hrel.
+                              + apply cSort ; trivial. apply wf_cons with t.
+                                apply cSort ; trivial. eapply wf_typ ; eauto.
+                              + eapply cAbs.
+                                * apply hrel.
+                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                  eapply wf_typ ; eauto.
+                                * { eapply cAbs.
+                                    - apply hrel.
+                                    - apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          apply item_tl. apply item_hd.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                    - eapply cProd.
+                                      + apply hsss.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          { apply cId.
+                                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                              eapply wf_typ ; eauto.
+                                            - apply cVar.
+                                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                                eapply wf_typ ; eauto.
+                                              + exists !s. split ; simpl ; trivial.
+                                                apply item_tl. apply item_hd.
+                                            - apply cVar.
+                                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                                eapply wf_typ ; eauto.
+                                              + exists !s. split ; simpl ; trivial.
+                                          }
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * apply wf_cons with s.
+                                          repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          { apply cVar.
+                                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                              apply cId.
+                                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                                eapply wf_typ ; eauto.
+                                              + apply cVar.
+                                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                                  eapply wf_typ ; eauto.
+                                                * exists !s. split ; simpl ; trivial.
+                                                  repeat (apply item_tl || apply item_hd).
+                                              + apply cVar.
+                                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                                  eapply wf_typ ; eauto.
+                                                * exists !s. split ; simpl ; trivial.
+                                            - exists !s. split ; simpl ; trivial.
+                                              repeat (apply item_tl || apply item_hd).
+                                          }
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                      apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                  }
+                                * { eapply cProd.
+                                    - apply hrel.
+                                    - apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                      apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                  }
+                              + eapply cProd.
+                                * apply hrel.
+                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                  eapply wf_typ ; eauto.
+                                * { eapply cProd.
+                                    - apply hrel. 
+                                    - apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                      apply cId.
+                                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                        eapply wf_typ ; eauto.
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                          repeat (apply item_tl || apply item_hd).
+                                      + apply cVar.
+                                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                          eapply wf_typ ; eauto.
+                                        * exists !s. split ; simpl ; trivial.
+                                  }
+                            - apply cVar.
+                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                                eapply wf_typ ; eauto.
+                              + exists !s. split ; simpl ; trivial.
+                          }
+                        * simpl in H. apply H.
+                      + apply cVar.
+                        * apply wf_cons with t. apply cSort ; trivial.
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - simpl in H. apply H.
+                  }
+                * { apply cRfl with t.
+                    - apply cSort ; trivial. apply wf_cons with t.
+                      apply cSort ; trivial. eapply wf_typ ; eauto.
+                    - apply cVar.
+                      + apply wf_cons with t. apply cSort ; trivial.
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                  }
+              + simpl in H. apply H.
             - 
   Abort.
 
