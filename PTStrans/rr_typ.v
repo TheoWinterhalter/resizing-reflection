@@ -1160,7 +1160,10 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
         * apply (thinning _ _ _ _ _ hA' hA).
       + eapply cTrans.
         * { eapply cAppEq.
-            - assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' : (Π(Id !s #1 #0), !s) [1 ← A] [← A']).
+            (*! I have to understand what types are involded down there... *)
+            (*! Might as well give up. *)
+            (*! Maybe what I don't get is the substituion definition for Pi... *)
+            - assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' : (Π(Id !s (A ↑ 1) #0), !s) [← A']).
               + apply cApp with (A := !s).
                 * { assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A : (Π(!s), Π(Id !s #1 #0), !s) [← A]).
                     - apply cApp with (A := !s).
