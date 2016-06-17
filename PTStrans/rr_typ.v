@@ -125,6 +125,16 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
     induction 1; eauto.
   Qed.
 
+  Theorem weakening: 
+    (forall Γ   M N, Γ ⊢     M : N -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊢              M ↑ 1 # n : N ↑ 1 # n ) /\
+    (forall Γ H M N, Γ ⊢ H : M = N -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊢ H ↑h 1 # n : M ↑ 1 # n = N ↑ 1 # n ) /\
+    (forall Γ      , Γ ⊣           -> forall Δ A s n Γ', ins_in_env Δ A n Γ Γ' -> Δ ⊢ A : !s -> Γ' ⊣).
+  Admitted.
+
+  Theorem thinning : forall Γ M N A s, Γ ⊢ M : N -> Γ ⊢ A : !s -> A::Γ ⊢ M ↑ 1 : N ↑ 1.
+    intros;eapply weakening;eassumption||econstructor.
+  Qed.
+
   (* First we define a transport that would come in handy. *)
 
   Definition Ht1 (s : Sorts) : Prf. 
@@ -580,7 +590,13 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       + apply hA.
       + apply hA'.
       + apply hp.
-    - (* We need a conversion! *)
+    - eapply cConv.
+      + apply H.
+      + eapply cProd.
+        * apply hsss.
+        * apply hA.
+        * apply (thinning _ _ _ _ _ hA' hA).
+      + admit.
   Abort.
 
   (* Let's start the translation to PTSf *)
