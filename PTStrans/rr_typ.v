@@ -185,7 +185,6 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
 
   Definition transport s A A' p := (transport' s A A' p) ∽ (Ht2 s A A' p).
 
-  (* This could be used in translem3 with weakening...? *)
   Lemma translem4 :
     forall Γ s t A A' p,
       Ax s t ->
@@ -486,7 +485,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
         * apply wf_cons with t. apply cSort ; trivial.
           eapply wf_typ ; eauto.
         * exists !s. split ; simpl ; trivial.
-            - simpl in H. apply H.
+    - simpl in H. apply H.
   Qed.
 
   Lemma transport_typ :
@@ -494,12 +493,11 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       Ax s t ->
       Rel t t t ->
       Rel s s s ->
-      (* Rel s t t -> *)
       Γ ⊢ A  : !s ->
       Γ ⊢ A' : !s ->
       Γ ⊢ p  : Id !s A A' ->
       Γ ⊢ transport s A A' p : Π(A), A' ↑ 1.
-    intros Γ s t A A' p hax hrel hsss (* hstt *) hA hA' hp.
+    intros Γ s t A A' p hax hrel hsss hA hA' hp.
     assert (Γ ⊢ transport' s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p).
     - eapply cJ.
       + eapply cSort.
@@ -720,11 +718,33 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                   }
               + simpl in H. apply H.
             - apply cSym. eapply cTrans.
-              + eapply cAppEq.
-                * admit.
-                * admit.
-                * admit.
-                * admit.
+              + eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0) _ (Rfl !s #0)).
+                * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                * { assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]).
+                    - eapply cApp.
+                      + apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                      + apply cVar.
+                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                          eapply wf_typ ; eauto.
+                        * exists !s. split ; simpl ; trivial.
+                    - simpl in H. apply H.
+                  }
+                * { apply cRfl with t.
+                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                      eapply wf_typ ; eauto.
+                    - apply cVar.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                  }
+                * { apply cRfl with t.
+                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                      eapply wf_typ ; eauto.
+                    - apply cVar.
+                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                  }
                 * admit.
                 * { eapply cRefl. eapply cRfl.
                     - apply cSort.
