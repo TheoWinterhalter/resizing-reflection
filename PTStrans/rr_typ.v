@@ -149,8 +149,31 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       + exact (β ((λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0))).
   Defined.
 
-  Definition transport s A A' p : Term :=
+  Definition Ht2 (s : Sorts) (A A' p : Term) : Prf.
+    (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = Π(A), A' ↑ 1 *)
+    simple refine (_ • _).
+    (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = *)
+    (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p *)
+    - simple refine (_ ·h (ρ p)). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' = *)
+                                  (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' *)
+      simple refine (_ ·h (ρ A')). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A = *)
+                                   (* λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2 *)
+      exact (β ((λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A)).
+    (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = Π(A), A' ↑ 1 *)
+    - simple refine (_ • _).
+      (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = *)
+      (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p *)
+      + simple refine (_ ·h (ρ p)). (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' = *)
+                                    (* λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2 *)
+        exact (β ((λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A')).
+      (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p = Π(A), A' ↑ 1 *)
+      + exact (β ((λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p)).
+  Defined.
+
+  Definition transport' s A A' p : Term :=
     J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], (λ[#0], #0) ∽ (Ht1 s)) A A' p.
+
+  Definition transport s A A' p := (transport' s A A' p) ∽ (Ht2 s A A' p).
 
   Lemma transport_typ :
     forall Γ s t A A' p,
@@ -163,7 +186,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       Γ ⊢ p  : Id !s A A' ->
       Γ ⊢ transport s A A' p : Π(A), A' ↑ 1.
     intros Γ s t A A' p hax hrel hsss (* hstt *) hA hA' hp.
-    assert (Γ ⊢ transport s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p).
+    assert (Γ ⊢ transport' s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p).
     - eapply cJ.
       + eapply cSort.
         * apply hax.
