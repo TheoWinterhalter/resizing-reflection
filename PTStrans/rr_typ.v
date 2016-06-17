@@ -142,8 +142,12 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
     - simple refine (_ • _).
       (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) = *)
       (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) *)
-      + 
-  Abort.
+      + simple refine (_ ·h (ρ (Rfl !s #0))). (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 = *)
+                                              (* (λ[Id !s #0 #0], Π(#1), #2) *)
+        exact (β ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0)).
+      (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) =  Π(#0), #1 *)
+      + exact (β ((λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0))).
+  Defined.
 
   Definition transport s A A' p : Term :=
     J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], λ[#0], #0) A A' p.
