@@ -707,11 +707,12 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       Ax s t ->
       Rel t t t ->
       Rel s s s ->
+      Rel t s t ->
       Γ ⊢ A  : !s ->
       Γ ⊢ A' : !s ->
       Γ ⊢ p  : Id !s A A' ->
       Γ ⊢ transport s A A' p : Π(A), A' ↑ 1.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
+    intros Γ s t A A' p hax hrel hsss htst hA hA' hp.
     assert (Γ ⊢ transport' s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p).
     - eapply cJ.
       + eapply cSort.
@@ -895,7 +896,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                   }
           }
       + eapply cAbs.
-        * apply hrel.
+        * (* apply hrel. *) apply htst.
         * apply cSort ; trivial. eapply wf_typ ; eauto.
         * { simpl. eapply cConv.
             - eapply cAbs.
@@ -1134,7 +1135,20 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                         * exists !s. split ; simpl ; trivial.
                   }
           }
-        * simpl. admit.
+        * simpl.
+          { assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]).
+              + apply cApp with (A := Id !s #0 #0).
+                * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
+                * { apply cRfl with t.
+                    - apply cSort ; trivial. apply wf_cons with t.
+                      apply cSort ; trivial. eapply wf_typ ; eauto.
+                    - apply cVar.
+                      + apply wf_cons with t. apply cSort ; trivial.
+                        eapply wf_typ ; eauto.
+                      + exists !s. split ; simpl ; trivial.
+                  }
+              + simpl in H. apply H.
+          }
       + apply hA.
       + apply hA'.
       + apply hp.
@@ -1194,7 +1208,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                 * apply hA'.
               + simpl in H0. apply H0.
             - admit.
-            - apply hp.
+            - apply hp. (*! This does not generate the wanted goal... *)
             - admit.
             - admit.
             - eapply cRefl. apply hp.
