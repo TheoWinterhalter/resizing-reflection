@@ -185,7 +185,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
 
   Definition transport s A A' p := (transport' s A A' p) ∽ (Ht2 s A A' p).
 
-  Lemma translem7 :
+  Lemma translem8 :
     forall Γ s t A A' p,
       Ax s t ->
       Rel t t t ->
@@ -193,22 +193,9 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       Γ ⊢ A  : !s ->
       Γ ⊢ A' : !s ->
       Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ λ[Id !s #0 #0], Π(#1), #2 : Π(Id !s #0 #0), !s.
+      Id !s #0 #0 :: !s :: Γ ⊢ Π(#1), #2 : !s.
     intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-    - apply hrel.
-    - apply cId.
-      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-    - eapply cProd.
+    eapply cProd.
       + apply hsss.
       + apply cVar.
         * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
@@ -247,6 +234,32 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
           }
         * exists !s. split ; simpl ; trivial.
           repeat (apply item_tl || apply item_hd).
+  Qed.
+
+  Lemma translem7 :
+    forall Γ s t A A' p,
+      Ax s t ->
+      Rel t t t ->
+      Rel s s s ->
+      Γ ⊢ A  : !s ->
+      Γ ⊢ A' : !s ->
+      Γ ⊢ p  : Id !s A A' ->
+      !s :: Γ ⊢ λ[Id !s #0 #0], Π(#1), #2 : Π(Id !s #0 #0), !s.
+    intros Γ s t A A' p hax hrel hsss hA hA' hp.
+    eapply cAbs.
+    - apply hrel.
+    - apply cId.
+      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+        eapply wf_typ ; eauto.
+      + apply cVar.
+        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+          eapply wf_typ ; eauto.
+        * exists !s. split ; simpl ; trivial.
+      + apply cVar.
+        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
+          eapply wf_typ ; eauto.
+        * exists !s. split ; simpl ; trivial.
+    - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
     - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
       apply cId.
       + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
@@ -1078,7 +1091,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
                         * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
                           eapply wf_typ ; eauto.
                         * exists !s. split ; simpl ; trivial.
-                    - admit. (* Goal3 *)
+                    - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
                     - admit.
                   }
           }
