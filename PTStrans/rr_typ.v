@@ -150,7 +150,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
   Defined.
 
   Definition transport s A A' p : Term :=
-    J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], λ[#0], #0) A A' p.
+    J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], (λ[#0], #0) ∽ (Ht1 s)) A A' p.
 
   Lemma transport_typ :
     forall Γ s t A A' p,
@@ -348,8 +348,30 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       + eapply cAbs.
         * apply hrel.
         * apply cSort ; trivial. eapply wf_typ ; eauto.
-        * simpl.
-                  
+        * { simpl. eapply cConv.
+            - eapply cAbs.
+              + apply hsss.
+              + apply cVar.
+                * apply wf_cons with t. apply cSort ; trivial.
+                  eapply wf_typ ; eauto.
+                * exists !s. split ; simpl ; trivial.
+              + apply cVar.
+                * { apply wf_cons with s. apply cVar.
+                    - apply wf_cons with t. apply cSort ; trivial.
+                      eapply wf_typ ; eauto.
+                    - exists !s. split ; simpl ; trivial.
+                  }
+                * exists #0. split ; simpl ; trivial.
+              + apply cVar.
+                * { apply wf_cons with s. apply cVar.
+                    - apply wf_cons with t. apply cSort ; trivial.
+                      eapply wf_typ ; eauto.
+                    - exists !s. split ; simpl ; trivial.
+                  }
+                * exists !s. split ; simpl ; trivial.
+                  apply item_tl. apply item_hd.
+            - 
+  Abort.
 
   (* Let's start the translation to PTSf *)
 
