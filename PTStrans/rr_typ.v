@@ -170,6 +170,9 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
     Axiom transport : FTM.Term -> FTM.Term.
     Notation "p ⋆" := (transport p) (at level 3).
 
+    Axiom sym : FTM.Term.
+    Axiom trans : FTM.Term.
+
   Close Scope F.
 
   (* Let's start the translation to PTSf *)
@@ -198,13 +201,10 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
   with unrrp (H : Prf) : FTM.Term :=
     match H with
     | ρ A => FTM.Rfl (#0)%F ⦑A⦒τ
-    (* | H †                           => match unrrtp t H with *)
-    (*                                   | (t,H) => (t,H †)%F *)
-    (*                                   end *)
-    (* | H1 • H2                       => match unrrtp t H1 with *)
-    (*                                   | (t,H) => unrrtp (t ∽ H)%F H2 *)
-    (*                                   end *)
-    (* | β A                           => (t, β ⦑A⦒τ)%F *)
+    | H † => sym · ⦑H⦒α
+    | H1 • H2 => trans · ⦑H1⦒α · ⦑H2⦒α (* In both cases we actually would need *)
+                                     (* the types! *)
+    | β ((λ[A], t) · u) => FTM.Rfl (#0)%F ⦑(λ[A], t) · u⦒τ
     (* | { H1, [A] H2 } => ??? *)
     (* | ⟨ H1, [A] H2 ⟩  => ??? *)
     (* | H1 ·h H2       => ??? *)
