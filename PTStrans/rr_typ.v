@@ -137,572 +137,9 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
 
   (* First we define a transport that would come in handy. *)
 
-  Definition Ht1 (s : Sorts) : Prf. 
-    (* Π(#0), #1 = (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) *)
-    simple refine (_ †). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) = Π(#0), #1 *)
-    simple refine (_ • _).
-    (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) = *)
-    (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) *)
-    - simple refine (_ ·h (ρ (Rfl !s #0))). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 = *)
-                                            (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 *)
-      simple refine (_ ·h (ρ #0)). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 = *)
-                                   (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) *)
-      exact (β ((λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0)).
-    (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) = Π(#0), #1 *)
-    - simple refine (_ • _).
-      (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) = *)
-      (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) *)
-      + simple refine (_ ·h (ρ (Rfl !s #0))). (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 = *)
-                                              (* (λ[Id !s #0 #0], Π(#1), #2) *)
-        exact (β ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0)).
-      (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) =  Π(#0), #1 *)
-      + exact (β ((λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0))).
-  Defined.
+  Axiom transport : Sorts -> Term -> Term -> Term -> Term.
 
-  Definition Ht2 (s : Sorts) (A A' p : Term) : Prf.
-    (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = Π(A), A' ↑ 1 *)
-    simple refine (_ • _).
-    (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = *)
-    (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p *)
-    - simple refine (_ ·h (ρ p)). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' = *)
-                                  (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' *)
-      simple refine (_ ·h (ρ A')). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A = *)
-                                   (* λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2 *)
-      exact (β ((λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A)).
-    (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = Π(A), A' ↑ 1 *)
-    - simple refine (_ • _).
-      (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = *)
-      (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p *)
-      + simple refine (_ ·h (ρ p)). (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' = *)
-                                    (* λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2 *)
-        exact (β ((λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A')).
-      (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p = Π(A), A' ↑ 1 *)
-      + exact (β ((λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p)).
-  Defined.
-
-  Definition transport' s A A' p : Term :=
-    J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], (λ[#0], #0) ∽ (Ht1 s)) A A' p.
-
-  Definition transport s A A' p := (transport' s A A' p) ∽ (Ht2 s A A' p).
-
-  Lemma translem8 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      Id !s #0 #0 :: !s :: Γ ⊢ Π(#1), #2 : !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cProd.
-      + apply hsss.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          { apply cId.
-            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            - apply cVar.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + exists !s. split ; simpl ; trivial.
-            - apply cVar.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + exists !s. split ; simpl ; trivial.
-          }
-        * exists !s. split ; simpl ; trivial.
-          repeat (apply item_tl || apply item_hd).
-      + apply cVar.
-        * apply wf_cons with s.
-          repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          { apply cVar.
-            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              apply cId.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + apply cVar.
-                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                  eapply wf_typ ; eauto.
-                * exists !s. split ; simpl ; trivial.
-              + apply cVar.
-                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                  eapply wf_typ ; eauto.
-                * exists !s. split ; simpl ; trivial.
-            - exists !s. split ; simpl ; trivial.
-              repeat (apply item_tl || apply item_hd).
-          }
-        * exists !s. split ; simpl ; trivial.
-          repeat (apply item_tl || apply item_hd).
-  Qed.
-
-  Lemma translem7 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ λ[Id !s #0 #0], Π(#1), #2 : Π(Id !s #0 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-    - apply hrel.
-    - apply cId.
-      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-    - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-      apply cId.
-      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-  Qed.
-
-  Lemma translem6 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: !s :: Γ ⊢ λ[Id !s #1 #0], Π(#2), #2 : Π(Id !s #1 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-    - apply hrel.
-    - apply cId.
-      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-          apply item_tl. apply item_hd.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-    - eapply cProd.
-      + apply hsss.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          { apply cId.
-            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            - apply cVar.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + exists !s. split ; simpl ; trivial.
-                apply item_tl. apply item_hd.
-            - apply cVar.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + exists !s. split ; simpl ; trivial.
-          }
-        * exists !s. split ; simpl ; trivial.
-          repeat (apply item_tl || apply item_hd).
-      + apply cVar.
-        * apply wf_cons with s.
-          repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          { apply cVar.
-            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              apply cId.
-              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              + apply cVar.
-                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                  eapply wf_typ ; eauto.
-                * exists !s. split ; simpl ; trivial.
-                  repeat (apply item_tl || apply item_hd).
-              + apply cVar.
-                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                  eapply wf_typ ; eauto.
-                * exists !s. split ; simpl ; trivial.
-            - exists !s. split ; simpl ; trivial.
-              repeat (apply item_tl || apply item_hd).
-          }
-        * exists !s. split ; simpl ; trivial.
-          repeat (apply item_tl || apply item_hd).
-    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-      apply cId.
-      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-          repeat (apply item_tl || apply item_hd).
-      + apply cVar.
-        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-  Qed.
-
-  Lemma translem5 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: !s :: Γ ⊢ λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(Id !s #1 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-      * apply hrel.
-      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      * { eapply cAbs.
-          - apply hrel.
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                apply item_tl. apply item_hd.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - eapply cProd.
-            + apply hsss.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                { apply cId.
-                  - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                    eapply wf_typ ; eauto.
-                  - apply cVar.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + exists !s. split ; simpl ; trivial.
-                      apply item_tl. apply item_hd.
-                  - apply cVar.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + exists !s. split ; simpl ; trivial.
-                }
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * apply wf_cons with s.
-                repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                { apply cVar.
-                  - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                    apply cId.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + apply cVar.
-                      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      * exists !s. split ; simpl ; trivial.
-                        repeat (apply item_tl || apply item_hd).
-                    + apply cVar.
-                      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      * exists !s. split ; simpl ; trivial.
-                  - exists !s. split ; simpl ; trivial.
-                    repeat (apply item_tl || apply item_hd).
-                }
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-      * { eapply cProd.
-          - apply hrel.
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-  Qed.
-
-  Lemma translem4 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(Id !s #1 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-      * apply hrel.
-      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      * apply (translem6 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-      * { eapply cProd.
-          - apply hrel.
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-  Qed.
-
-  Lemma translem3 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(!s), Π(Id !s #1 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    eapply cAbs.
-    + apply hrel.
-    + apply cSort ; trivial. apply wf_cons with t.
-      apply cSort ; trivial. eapply wf_typ ; eauto.
-    + eapply cAbs.
-      * apply hrel.
-      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      * { eapply cAbs.
-          - apply hrel.
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                apply item_tl. apply item_hd.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - eapply cProd.
-            + apply hsss.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                { apply cId.
-                  - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                    eapply wf_typ ; eauto.
-                  - apply cVar.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + exists !s. split ; simpl ; trivial.
-                      apply item_tl. apply item_hd.
-                  - apply cVar.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + exists !s. split ; simpl ; trivial.
-                }
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * apply wf_cons with s.
-                repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                { apply cVar.
-                  - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                    apply cId.
-                    + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    + apply cVar.
-                      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      * exists !s. split ; simpl ; trivial.
-                        repeat (apply item_tl || apply item_hd).
-                    + apply cVar.
-                      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      * exists !s. split ; simpl ; trivial.
-                  - exists !s. split ; simpl ; trivial.
-                    repeat (apply item_tl || apply item_hd).
-                }
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-      * { eapply cProd.
-          - apply hrel.
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-    + eapply cProd.
-      * apply hrel.
-      * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-        eapply wf_typ ; eauto.
-      * { eapply cProd.
-          - apply hrel. 
-          - apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-          - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            apply cId.
-            + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-              eapply wf_typ ; eauto.
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-                repeat (apply item_tl || apply item_hd).
-            + apply cVar.
-              * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                eapply wf_typ ; eauto.
-              * exists !s. split ; simpl ; trivial.
-        }
-  Qed.
-        
-  Lemma translem1 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ (λ [!s], λ [!s], λ [Id !s #1 #0], Π (#2), #2) · #0 : Π (!s), Π (Id !s #1 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(!s), Π(Id !s #1 #0), !s) [← #0]).
-    * { apply cApp with (A := !s).
-        - apply (translem3 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-        - apply cVar.
-          + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-            eapply wf_typ ; eauto.
-          + exists !s. split ; simpl ; trivial.
-      }
-    * simpl in H. apply H.
-  Qed.
-
-  Lemma translem2 :
-    forall Γ s t A A' p,
-      Ax s t ->
-      Rel t t t ->
-      Rel s s s ->
-      Γ ⊢ A  : !s ->
-      Γ ⊢ A' : !s ->
-      Γ ⊢ p  : Id !s A A' ->
-      !s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 : Π(Id !s #0 #0), !s.
-    intros Γ s t A A' p hax hrel hsss hA hA' hp.
-    assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 : (Π(Id !s #1 #0), !s) [← #0]).
-    - apply cApp with (A := !s).
-      + apply (translem1 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-      + apply cVar.
-        * apply wf_cons with t. apply cSort ; trivial.
-          eapply wf_typ ; eauto.
-        * exists !s. split ; simpl ; trivial.
-    - simpl in H. apply H.
-  Qed.
-
-  Lemma transport_typ :
+  Axiom transport_typ :
     forall Γ s t A A' p,
       Ax s t ->
       Rel t t t ->
@@ -712,512 +149,1088 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X) (FEM : f_en
       Γ ⊢ A' : !s ->
       Γ ⊢ p  : Id !s A A' ->
       Γ ⊢ transport s A A' p : Π(A), A' ↑ 1.
-    intros Γ s t A A' p hax hrel hsss htst hA hA' hp.
-    assert (Γ ⊢ transport' s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p).
-    - eapply cJ.
-      + eapply cSort.
-        * apply hax.
-        * eapply wf_typ. apply hA.
-      + eapply cAbs.
-        * apply hrel.
-        * apply cSort ; trivial. eapply wf_typ ; eauto.
-        * { eapply cAbs.
-            - apply hrel.
-            - simpl. apply cSort ; trivial.
-              apply wf_cons with t. apply cSort ; trivial. eapply wf_typ ; eauto.
-            - simpl. eapply cAbs.
-              + apply hrel.
-              + apply cId.
-                * apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t.
-                      apply cSort ; trivial. apply wf_cons with t.
-                      apply cSort ; trivial. eapply wf_typ ; eauto.
-                    - exists !s. split.
-                      + now simpl.
-                      + apply item_tl. apply item_hd.
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t.
-                      apply cSort ; trivial. apply wf_cons with t.
-                      apply cSort ; trivial. eapply wf_typ ; eauto.
-                    - exists !s. split.
-                      + now simpl.
-                      + apply item_hd.
-                  }
-              + eapply cProd.
-                * apply hsss.
-                * { apply cVar.
-                    - apply wf_cons with t.
-                      apply cId.
-                      + apply cSort ; trivial. apply wf_cons with t.
-                        apply cSort ; trivial. apply wf_cons with t.
-                        apply cSort ; trivial. eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * apply wf_cons with t. apply cSort ; trivial.
-                          apply wf_cons with t. apply cSort ; trivial.
-                          eapply wf_typ ; eauto.
-                        * { exists !s. split.
-                            - now simpl.
-                            - apply item_tl. apply item_hd.
-                          }
-                      + apply cVar.
-                        * apply wf_cons with t. apply cSort ; trivial.
-                          apply wf_cons with t. apply cSort ; trivial.
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - exists !s. split ; simpl ; trivial.
-                      apply item_tl. apply item_tl. apply item_hd.
-                  }
-                * { apply cVar.
-                    - apply wf_cons with s. apply cVar.
-                      + apply wf_cons with t. apply cId.
-                        * apply cSort ; trivial. apply wf_cons with t.
-                          apply cSort ; trivial. apply wf_cons with t.
-                          apply cSort ; trivial. eapply wf_typ ; eauto.
-                        * { apply cVar.
-                            - apply wf_cons with t. apply cSort ; trivial.
-                              apply wf_cons with t. apply cSort ; trivial.
-                              eapply wf_typ ; eauto.
-                            - exists !s. split ; simpl ; trivial.
-                              apply item_tl. apply item_hd.
-                          }
-                        * { apply cVar.
-                            - apply wf_cons with t. apply cSort ; trivial.
-                              apply wf_cons with t. apply cSort ; trivial.
-                              eapply wf_typ ; eauto.
-                            - exists !s. split ; simpl ; trivial.
-                          }
-                      + exists !s. split ; simpl ; trivial.
-                        repeat (apply item_tl || apply item_hd).
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-              + apply cSort ; trivial. apply wf_cons with t.
-                apply cId.
-                * apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-            - eapply cProd.
-              + apply hrel.
-              + simpl. apply cId.
-                * apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-              + apply cSort ; trivial. apply wf_cons with t.
-                apply cId ; simpl.
-                * apply cSort ; trivial.
-                  apply wf_cons with t. apply cSort ; trivial.
-                  apply wf_cons with t. apply cSort ; trivial.
-                  eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-          }
-        * { eapply cProd.
-            - apply hrel.
-            - simpl. apply cSort ; trivial.
-              apply wf_cons with t. apply cSort ; trivial.
-              eapply wf_typ ; eauto.
-            - simpl. eapply cProd.
-              + apply hrel.
-              + apply cId.
-                * apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-              + apply cSort ; trivial. apply wf_cons with t.
-                apply cId.
-                * apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. apply wf_cons with t.
-                  apply cSort ; trivial. eapply wf_typ ; eauto.
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                      repeat (apply item_tl || apply item_hd).
-                  }
-                * { apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-          }
-      + eapply cAbs.
-        * (* apply hrel. *) apply htst.
-        * apply cSort ; trivial. eapply wf_typ ; eauto.
-        * { simpl. eapply cConv.
-            - eapply cAbs.
-              + apply hsss.
-              + apply cVar.
-                * apply wf_cons with t. apply cSort ; trivial.
-                  eapply wf_typ ; eauto.
-                * exists !s. split ; simpl ; trivial.
-              + apply cVar.
-                * { apply wf_cons with s. apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-                * exists #0. split ; simpl ; trivial.
-              + apply cVar.
-                * { apply wf_cons with s. apply cVar.
-                    - apply wf_cons with t. apply cSort ; trivial.
-                      eapply wf_typ ; eauto.
-                    - exists !s. split ; simpl ; trivial.
-                  }
-                * exists !s. split ; simpl ; trivial.
-                  apply item_tl. apply item_hd.
-            - assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]).
-              + apply cApp with (A := Id !s #0 #0).
-                * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                * { apply cRfl with t.
-                    - apply cSort ; trivial. apply wf_cons with t.
-                      apply cSort ; trivial. eapply wf_typ ; eauto.
-                    - apply cVar.
-                      + apply wf_cons with t. apply cSort ; trivial.
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                  }
-              + simpl in H. apply H.
-            - apply cSym. eapply cTrans.
-              + eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0) _ (Rfl !s #0)).
-                * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                * { assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]).
-                    - eapply cApp.
-                      + apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - simpl in H. apply H.
-                  }
-                * { apply cRfl with t.
-                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    - apply cVar.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                  }
-                * { apply cRfl with t.
-                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      eapply wf_typ ; eauto.
-                    - apply cVar.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                  }
-                * { eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2)) _ #0).
-                    - apply (translem1 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                    - apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                    - apply cVar.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                    - apply cVar.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                    - eapply cBeta.
-                      + apply hrel.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply (translem5 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                      + eapply cProd.
-                        * apply hrel.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * { eapply cProd.
-                            - apply hrel. 
-                            - apply cId.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + apply cVar.
-                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                  eapply wf_typ ; eauto.
-                                * exists !s. split ; simpl ; trivial.
-                                  repeat (apply item_tl || apply item_hd).
-                              + apply cVar.
-                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                  eapply wf_typ ; eauto.
-                                * exists !s. split ; simpl ; trivial.
-                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                              apply cId.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + apply cVar.
-                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                  eapply wf_typ ; eauto.
-                                * exists !s. split ; simpl ; trivial.
-                                  repeat (apply item_tl || apply item_hd).
-                              + apply cVar.
-                                * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                  eapply wf_typ ; eauto.
-                                * exists !s. split ; simpl ; trivial.
-                          }
-                    - eapply cRefl.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                  }
-                * { eapply cRefl. eapply cRfl.
-                    - apply cSort.
-                      + apply hax.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                    - apply cVar.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                  }
-              + eapply cTrans.
-                * { eapply (cAppEq _ _ (λ[Id !s #0 #0], Π(#1), #2) _ (Rfl !s #0)).
-                    - assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]).
-                      + eapply cApp.
-                        * apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                        * { apply cVar.
-                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                              eapply wf_typ ; eauto.
-                            - exists !s. split ; simpl ; trivial.
-                          }
-                      + simpl in H. apply H.
-                    - apply (translem7 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                    - apply cRfl with t.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - apply cRfl with t.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - eapply cBeta.
-                      + apply hrel.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply (translem6 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                      + eapply cProd.
-                        * apply hrel.
-                        * { apply cId.
-                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                              eapply wf_typ ; eauto.
-                            - apply cVar.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + exists !s. split ; simpl ; trivial.
-                                repeat (apply item_tl || apply item_hd).
-                            - apply cVar.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + exists !s. split ; simpl ; trivial.
-                          }
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          { apply cId.
-                            - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                              eapply wf_typ ; eauto.
-                            - apply cVar.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + exists !s. split ; simpl ; trivial.
-                                repeat (apply item_tl || apply item_hd).
-                            - apply cVar.
-                              + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                eapply wf_typ ; eauto.
-                              + exists !s. split ; simpl ; trivial.
-                          }
-                    - eapply cRefl. apply cRfl with t.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                  }
-                * { eapply cBeta.
-                    - apply hrel.
-                    - apply cRfl with t.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - apply cId.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                    - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                    - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                      apply cId.
-                      + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                        eapply wf_typ ; eauto.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                      + apply cVar.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * exists !s. split ; simpl ; trivial.
-                  }
-          }
-        * simpl.
-          { assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]).
-              + apply cApp with (A := Id !s #0 #0).
-                * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                * { apply cRfl with t.
-                    - apply cSort ; trivial. apply wf_cons with t.
-                      apply cSort ; trivial. eapply wf_typ ; eauto.
-                    - apply cVar.
-                      + apply wf_cons with t. apply cSort ; trivial.
-                        eapply wf_typ ; eauto.
-                      + exists !s. split ; simpl ; trivial.
-                  }
-              + simpl in H. apply H.
-          }
-      + apply hA.
-      + apply hA'.
-      + apply hp.
-    - eapply cConv.
-      + apply H.
-      + eapply cProd.
-        * apply hsss.
-        * apply hA.
-        * apply (thinning _ _ _ _ _ hA' hA).
-      + eapply cTrans.
-        * { eapply cAppEq.
-            (*! I have to understand what types are involded down there... *)
-            (*! Might as well give up. *)
-            (*! Maybe what I don't get is the substituion definition for Pi... *)
-            - assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' : (Π(Id !s (A ↑ 1) #0), !s) [← A']).
-              + apply cApp with (A := !s).
-                * { assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A : (Π(!s), Π(Id !s #1 #0), !s) [← A]).
-                    - apply cApp with (A := !s).
-                      + eapply cAbs.
-                        * apply hrel.
-                        * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                          eapply wf_typ ; eauto.
-                        * apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp).
-                        * { eapply cProd.
-                            * apply hrel.
-                            * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                              eapply wf_typ ; eauto.
-                            * { eapply cProd.
-                                - apply hrel. 
-                                - apply cId.
-                                  + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                    eapply wf_typ ; eauto.
-                                  + apply cVar.
-                                    * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                      eapply wf_typ ; eauto.
-                                    * exists !s. split ; simpl ; trivial.
-                                      repeat (apply item_tl || apply item_hd).
-                                  + apply cVar.
-                                    * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                      eapply wf_typ ; eauto.
-                                    * exists !s. split ; simpl ; trivial.
-                                - repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                  apply cId.
-                                  + repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                    eapply wf_typ ; eauto.
-                                  + apply cVar.
-                                    * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                      eapply wf_typ ; eauto.
-                                    * exists !s. split ; simpl ; trivial.
-                                      repeat (apply item_tl || apply item_hd).
-                                  + apply cVar.
-                                    * repeat ((apply cSort ; trivial) || (apply wf_cons with t)).
-                                      eapply wf_typ ; eauto.
-                                    * exists !s. split ; simpl ; trivial.
-                              }
-                          }
-                      + apply hA.
-                    - simpl in H0. simpl. apply H0.
-                  }
-                * apply hA'.
-              + simpl in H0. apply H0.
-            - admit.
-            - apply hp. (*! This does not generate the wanted goal... *)
-            - admit.
-            - admit.
-            - eapply cRefl. apply hp.
-          }
-        * admit.
-  Abort.
+
+  (* Definition Ht1 (s : Sorts) : Prf.  *)
+  (*   (* Π(#0), #1 = (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) *) *)
+  (*   simple refine (_ †). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) = Π(#0), #1 *) *)
+  (*   simple refine (_ • _). *)
+  (*   (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) = *) *)
+  (*   (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) *) *)
+  (*   - simple refine (_ ·h (ρ (Rfl !s #0))). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 = *) *)
+  (*                                           (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 *) *)
+  (*     simple refine (_ ·h (ρ #0)). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 = *) *)
+  (*                                  (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) *) *)
+  (*     exact (β ((λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0)). *)
+  (*   (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) = Π(#0), #1 *) *)
+  (*   - simple refine (_ • _). *)
+  (*     (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · (Rfl !s #0) = *) *)
+  (*     (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) *) *)
+  (*     + simple refine (_ ·h (ρ (Rfl !s #0))). (* (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 = *) *)
+  (*                                             (* (λ[Id !s #0 #0], Π(#1), #2) *) *)
+  (*       exact (β ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0)). *)
+  (*     (* (λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0) =  Π(#0), #1 *) *)
+  (*     + exact (β ((λ[Id !s #0 #0], Π(#1), #2) · (Rfl !s #0))). *)
+  (* Defined. *)
+
+  (* Definition Ht2 (s : Sorts) (A A' p : Term) : Prf. *)
+  (*   (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = Π(A), A' ↑ 1 *) *)
+  (*   simple refine (_ • _). *)
+  (*   (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p = *) *)
+  (*   (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p *) *)
+  (*   - simple refine (_ ·h (ρ p)). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' = *) *)
+  (*                                 (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' *) *)
+  (*     simple refine (_ ·h (ρ A')). (* (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A = *) *)
+  (*                                  (* λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2 *) *)
+  (*     exact (β ((λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A)). *)
+  (*   (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = Π(A), A' ↑ 1 *) *)
+  (*   - simple refine (_ • _). *)
+  (*     (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' · p = *) *)
+  (*     (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p *) *)
+  (*     + simple refine (_ ·h (ρ p)). (* (λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A' = *) *)
+  (*                                   (* λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2 *) *)
+  (*       exact (β ((λ[!s], λ[Id !s (A ↑ 1) #0], Π(A ↑ 2), #2) · A')). *)
+  (*     (* (λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p = Π(A), A' ↑ 1 *) *)
+  (*     + exact (β ((λ[Id !s A A'], Π(A ↑ 1), A' ↑ 2) · p)). *)
+  (* Defined. *)
+
+  (* Definition transport' s A A' p : Term := *)
+  (*   J !s (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) (λ[!s], (λ[#0], #0) ∽ (Ht1 s)) A A' p. *)
+
+  (* Definition transport s A A' p := (transport' s A A' p) ∽ (Ht2 s A A' p). *)
+
+  (* Lemma translem8 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     Id !s #0 #0 :: !s :: Γ ⊢ Π(#1), #2 : !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cProd. *)
+  (*     + apply hsss. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         { apply cId. *)
+  (*           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           - apply cVar. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + exists !s. split ; simpl ; trivial. *)
+  (*           - apply cVar. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + exists !s. split ; simpl ; trivial. *)
+  (*         } *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         repeat (apply item_tl || apply item_hd). *)
+  (*     + apply cVar. *)
+  (*       * apply wf_cons with s. *)
+  (*         repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         { apply cVar. *)
+  (*           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             apply cId. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + apply cVar. *)
+  (*               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*             + apply cVar. *)
+  (*               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*           - exists !s. split ; simpl ; trivial. *)
+  (*             repeat (apply item_tl || apply item_hd). *)
+  (*         } *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         repeat (apply item_tl || apply item_hd). *)
+  (* Qed. *)
+
+  (* Lemma translem7 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: Γ ⊢ λ[Id !s #0 #0], Π(#1), #2 : Π(Id !s #0 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cAbs. *)
+  (*   - apply hrel. *)
+  (*   - apply cId. *)
+  (*     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*   - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*   - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*     apply cId. *)
+  (*     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (* Qed. *)
+
+  (* Lemma translem6 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: !s :: Γ ⊢ λ[Id !s #1 #0], Π(#2), #2 : Π(Id !s #1 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cAbs. *)
+  (*   - apply hrel. *)
+  (*   - apply cId. *)
+  (*     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         apply item_tl. apply item_hd. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*   - eapply cProd. *)
+  (*     + apply hsss. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         { apply cId. *)
+  (*           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           - apply cVar. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + exists !s. split ; simpl ; trivial. *)
+  (*               apply item_tl. apply item_hd. *)
+  (*           - apply cVar. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + exists !s. split ; simpl ; trivial. *)
+  (*         } *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         repeat (apply item_tl || apply item_hd). *)
+  (*     + apply cVar. *)
+  (*       * apply wf_cons with s. *)
+  (*         repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         { apply cVar. *)
+  (*           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             apply cId. *)
+  (*             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             + apply cVar. *)
+  (*               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*                 repeat (apply item_tl || apply item_hd). *)
+  (*             + apply cVar. *)
+  (*               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*           - exists !s. split ; simpl ; trivial. *)
+  (*             repeat (apply item_tl || apply item_hd). *)
+  (*         } *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         repeat (apply item_tl || apply item_hd). *)
+  (*   - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*     apply cId. *)
+  (*     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*         repeat (apply item_tl || apply item_hd). *)
+  (*     + apply cVar. *)
+  (*       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (* Qed. *)
+
+  (* Lemma translem5 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: !s :: Γ ⊢ λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(Id !s #1 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cAbs. *)
+  (*     * apply hrel. *)
+  (*     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     * { eapply cAbs. *)
+  (*         - apply hrel. *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               apply item_tl. apply item_hd. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - eapply cProd. *)
+  (*           + apply hsss. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               { apply cId. *)
+  (*                 - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                   eapply wf_typ ; eauto. *)
+  (*                 - apply cVar. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + exists !s. split ; simpl ; trivial. *)
+  (*                     apply item_tl. apply item_hd. *)
+  (*                 - apply cVar. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + exists !s. split ; simpl ; trivial. *)
+  (*               } *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * apply wf_cons with s. *)
+  (*               repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               { apply cVar. *)
+  (*                 - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                   apply cId. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + apply cVar. *)
+  (*                     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     * exists !s. split ; simpl ; trivial. *)
+  (*                       repeat (apply item_tl || apply item_hd). *)
+  (*                   + apply cVar. *)
+  (*                     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     * exists !s. split ; simpl ; trivial. *)
+  (*                 - exists !s. split ; simpl ; trivial. *)
+  (*                   repeat (apply item_tl || apply item_hd). *)
+  (*               } *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (*     * { eapply cProd. *)
+  (*         - apply hrel. *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (* Qed. *)
+
+  (* Lemma translem4 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: Γ ⊢ λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(Id !s #1 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cAbs. *)
+  (*     * apply hrel. *)
+  (*     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     * apply (translem6 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*     * { eapply cProd. *)
+  (*         - apply hrel. *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (* Qed. *)
+
+  (* Lemma translem3 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: Γ ⊢ λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2 : Π(!s), Π(!s), Π(Id !s #1 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   eapply cAbs. *)
+  (*   + apply hrel. *)
+  (*   + apply cSort ; trivial. apply wf_cons with t. *)
+  (*     apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*   + eapply cAbs. *)
+  (*     * apply hrel. *)
+  (*     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     * { eapply cAbs. *)
+  (*         - apply hrel. *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               apply item_tl. apply item_hd. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - eapply cProd. *)
+  (*           + apply hsss. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               { apply cId. *)
+  (*                 - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                   eapply wf_typ ; eauto. *)
+  (*                 - apply cVar. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + exists !s. split ; simpl ; trivial. *)
+  (*                     apply item_tl. apply item_hd. *)
+  (*                 - apply cVar. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + exists !s. split ; simpl ; trivial. *)
+  (*               } *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * apply wf_cons with s. *)
+  (*               repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               { apply cVar. *)
+  (*                 - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                   apply cId. *)
+  (*                   + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   + apply cVar. *)
+  (*                     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     * exists !s. split ; simpl ; trivial. *)
+  (*                       repeat (apply item_tl || apply item_hd). *)
+  (*                   + apply cVar. *)
+  (*                     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     * exists !s. split ; simpl ; trivial. *)
+  (*                 - exists !s. split ; simpl ; trivial. *)
+  (*                   repeat (apply item_tl || apply item_hd). *)
+  (*               } *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (*     * { eapply cProd. *)
+  (*         - apply hrel. *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (*   + eapply cProd. *)
+  (*     * apply hrel. *)
+  (*     * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*       eapply wf_typ ; eauto. *)
+  (*     * { eapply cProd. *)
+  (*         - apply hrel.  *)
+  (*         - apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*         - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           apply cId. *)
+  (*           + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*               repeat (apply item_tl || apply item_hd). *)
+  (*           + apply cVar. *)
+  (*             * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*               eapply wf_typ ; eauto. *)
+  (*             * exists !s. split ; simpl ; trivial. *)
+  (*       } *)
+  (* Qed. *)
+        
+  (* Lemma translem1 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: Γ ⊢ (λ [!s], λ [!s], λ [Id !s #1 #0], Π (#2), #2) · #0 : Π (!s), Π (Id !s #1 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(!s), Π(Id !s #1 #0), !s) [← #0]). *)
+  (*   * { apply cApp with (A := !s). *)
+  (*       - apply (translem3 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*       - apply cVar. *)
+  (*         + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*           eapply wf_typ ; eauto. *)
+  (*         + exists !s. split ; simpl ; trivial. *)
+  (*     } *)
+  (*   * simpl in H. apply H. *)
+  (* Qed. *)
+
+  (* Lemma translem2 : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     !s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 : Π(Id !s #0 #0), !s. *)
+  (*   intros Γ s t A A' p hax hrel hsss hA hA' hp. *)
+  (*   assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 : (Π(Id !s #1 #0), !s) [← #0]). *)
+  (*   - apply cApp with (A := !s). *)
+  (*     + apply (translem1 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*     + apply cVar. *)
+  (*       * apply wf_cons with t. apply cSort ; trivial. *)
+  (*         eapply wf_typ ; eauto. *)
+  (*       * exists !s. split ; simpl ; trivial. *)
+  (*   - simpl in H. apply H. *)
+  (* Qed. *)
+
+  (* Lemma transport_typ : *)
+  (*   forall Γ s t A A' p, *)
+  (*     Ax s t -> *)
+  (*     Rel t t t -> *)
+  (*     Rel s s s -> *)
+  (*     Rel t s t -> *)
+  (*     Γ ⊢ A  : !s -> *)
+  (*     Γ ⊢ A' : !s -> *)
+  (*     Γ ⊢ p  : Id !s A A' -> *)
+  (*     Γ ⊢ transport s A A' p : Π(A), A' ↑ 1. *)
+  (*   intros Γ s t A A' p hax hrel hsss htst hA hA' hp. *)
+  (*   assert (Γ ⊢ transport' s A A' p : (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' · p). *)
+  (*   - eapply cJ. *)
+  (*     + eapply cSort. *)
+  (*       * apply hax. *)
+  (*       * eapply wf_typ. apply hA. *)
+  (*     + eapply cAbs. *)
+  (*       * apply hrel. *)
+  (*       * apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*       * { eapply cAbs. *)
+  (*           - apply hrel. *)
+  (*           - simpl. apply cSort ; trivial. *)
+  (*             apply wf_cons with t. apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*           - simpl. eapply cAbs. *)
+  (*             + apply hrel. *)
+  (*             + apply cId. *)
+  (*               * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split. *)
+  (*                     + now simpl. *)
+  (*                     + apply item_tl. apply item_hd. *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split. *)
+  (*                     + now simpl. *)
+  (*                     + apply item_hd. *)
+  (*                 } *)
+  (*             + eapply cProd. *)
+  (*               * apply hsss. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. *)
+  (*                     apply cId. *)
+  (*                     + apply cSort ; trivial. apply wf_cons with t. *)
+  (*                       apply cSort ; trivial. apply wf_cons with t. *)
+  (*                       apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * apply wf_cons with t. apply cSort ; trivial. *)
+  (*                         apply wf_cons with t. apply cSort ; trivial. *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * { exists !s. split. *)
+  (*                           - now simpl. *)
+  (*                           - apply item_tl. apply item_hd. *)
+  (*                         } *)
+  (*                     + apply cVar. *)
+  (*                       * apply wf_cons with t. apply cSort ; trivial. *)
+  (*                         apply wf_cons with t. apply cSort ; trivial. *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     apply item_tl. apply item_tl. apply item_hd. *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with s. apply cVar. *)
+  (*                     + apply wf_cons with t. apply cId. *)
+  (*                       * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                         apply cSort ; trivial. apply wf_cons with t. *)
+  (*                         apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                       * { apply cVar. *)
+  (*                           - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                             apply wf_cons with t. apply cSort ; trivial. *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           - exists !s. split ; simpl ; trivial. *)
+  (*                             apply item_tl. apply item_hd. *)
+  (*                         } *)
+  (*                       * { apply cVar. *)
+  (*                           - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                             apply wf_cons with t. apply cSort ; trivial. *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           - exists !s. split ; simpl ; trivial. *)
+  (*                         } *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                       repeat (apply item_tl || apply item_hd). *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*             + apply cSort ; trivial. apply wf_cons with t. *)
+  (*               apply cId. *)
+  (*               * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*           - eapply cProd. *)
+  (*             + apply hrel. *)
+  (*             + simpl. apply cId. *)
+  (*               * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*             + apply cSort ; trivial. apply wf_cons with t. *)
+  (*               apply cId ; simpl. *)
+  (*               * apply cSort ; trivial. *)
+  (*                 apply wf_cons with t. apply cSort ; trivial. *)
+  (*                 apply wf_cons with t. apply cSort ; trivial. *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*         } *)
+  (*       * { eapply cProd. *)
+  (*           - apply hrel. *)
+  (*           - simpl. apply cSort ; trivial. *)
+  (*             apply wf_cons with t. apply cSort ; trivial. *)
+  (*             eapply wf_typ ; eauto. *)
+  (*           - simpl. eapply cProd. *)
+  (*             + apply hrel. *)
+  (*             + apply cId. *)
+  (*               * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*             + apply cSort ; trivial. apply wf_cons with t. *)
+  (*               apply cId. *)
+  (*               * apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. apply wf_cons with t. *)
+  (*                 apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                     repeat (apply item_tl || apply item_hd). *)
+  (*                 } *)
+  (*               * { apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*         } *)
+  (*     + eapply cAbs. *)
+  (*       * (* apply hrel. *) apply htst. *)
+  (*       * apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*       * { simpl. eapply cConv. *)
+  (*           - eapply cAbs. *)
+  (*             + apply hsss. *)
+  (*             + apply cVar. *)
+  (*               * apply wf_cons with t. apply cSort ; trivial. *)
+  (*                 eapply wf_typ ; eauto. *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*             + apply cVar. *)
+  (*               * { apply wf_cons with s. apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * exists #0. split ; simpl ; trivial. *)
+  (*             + apply cVar. *)
+  (*               * { apply wf_cons with s. apply cVar. *)
+  (*                   - apply wf_cons with t. apply cSort ; trivial. *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * exists !s. split ; simpl ; trivial. *)
+  (*                 apply item_tl. apply item_hd. *)
+  (*           - assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]). *)
+  (*             + apply cApp with (A := Id !s #0 #0). *)
+  (*               * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*               * { apply cRfl with t. *)
+  (*                   - apply cSort ; trivial. apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                   - apply cVar. *)
+  (*                     + apply wf_cons with t. apply cSort ; trivial. *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*             + simpl in H. apply H. *)
+  (*           - apply cSym. eapply cTrans. *)
+  (*             + eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0) _ (Rfl !s #0)). *)
+  (*               * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*               * { assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]). *)
+  (*                   - eapply cApp. *)
+  (*                     + apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - simpl in H. apply H. *)
+  (*                 } *)
+  (*               * { apply cRfl with t. *)
+  (*                   - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - apply cVar. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * { apply cRfl with t. *)
+  (*                   - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     eapply wf_typ ; eauto. *)
+  (*                   - apply cVar. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * { eapply (cAppEq _ _ ((λ[!s], λ[Id !s #1 #0], Π(#2), #2)) _ #0). *)
+  (*                   - apply (translem1 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                   - apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                   - apply cVar. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                   - apply cVar. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                   - eapply cBeta. *)
+  (*                     + apply hrel. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply (translem5 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                     + eapply cProd. *)
+  (*                       * apply hrel. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * { eapply cProd. *)
+  (*                           - apply hrel.  *)
+  (*                           - apply cId. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + apply cVar. *)
+  (*                               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                 eapply wf_typ ; eauto. *)
+  (*                               * exists !s. split ; simpl ; trivial. *)
+  (*                                 repeat (apply item_tl || apply item_hd). *)
+  (*                             + apply cVar. *)
+  (*                               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                 eapply wf_typ ; eauto. *)
+  (*                               * exists !s. split ; simpl ; trivial. *)
+  (*                           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                             apply cId. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + apply cVar. *)
+  (*                               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                 eapply wf_typ ; eauto. *)
+  (*                               * exists !s. split ; simpl ; trivial. *)
+  (*                                 repeat (apply item_tl || apply item_hd). *)
+  (*                             + apply cVar. *)
+  (*                               * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                 eapply wf_typ ; eauto. *)
+  (*                               * exists !s. split ; simpl ; trivial. *)
+  (*                         } *)
+  (*                   - eapply cRefl. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * { eapply cRefl. eapply cRfl. *)
+  (*                   - apply cSort. *)
+  (*                     + apply hax. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                   - apply cVar. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*             + eapply cTrans. *)
+  (*               * { eapply (cAppEq _ _ (λ[Id !s #0 #0], Π(#1), #2) _ (Rfl !s #0)). *)
+  (*                   - assert (!s :: Γ ⊢ (λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 : (Π(Id !s #1 #0), !s) [ ← #0]). *)
+  (*                     + eapply cApp. *)
+  (*                       * apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                       * { apply cVar. *)
+  (*                           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           - exists !s. split ; simpl ; trivial. *)
+  (*                         } *)
+  (*                     + simpl in H. apply H. *)
+  (*                   - apply (translem7 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                   - apply cRfl with t. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - apply cRfl with t. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - eapply cBeta. *)
+  (*                     + apply hrel. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply (translem6 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                     + eapply cProd. *)
+  (*                       * apply hrel. *)
+  (*                       * { apply cId. *)
+  (*                           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           - apply cVar. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + exists !s. split ; simpl ; trivial. *)
+  (*                               repeat (apply item_tl || apply item_hd). *)
+  (*                           - apply cVar. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + exists !s. split ; simpl ; trivial. *)
+  (*                         } *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         { apply cId. *)
+  (*                           - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           - apply cVar. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + exists !s. split ; simpl ; trivial. *)
+  (*                               repeat (apply item_tl || apply item_hd). *)
+  (*                           - apply cVar. *)
+  (*                             + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                               eapply wf_typ ; eauto. *)
+  (*                             + exists !s. split ; simpl ; trivial. *)
+  (*                         } *)
+  (*                   - eapply cRefl. apply cRfl with t. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*               * { eapply cBeta. *)
+  (*                   - apply hrel. *)
+  (*                   - apply cRfl with t. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - apply cId. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                   - apply (translem8 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                   - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                     apply cId. *)
+  (*                     + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                     + apply cVar. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*         } *)
+  (*       * simpl. *)
+  (*         { assert (!s :: Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · #0 · #0 · (Rfl !s #0) : !s [ ← Rfl !s #0]). *)
+  (*             + apply cApp with (A := Id !s #0 #0). *)
+  (*               * apply (translem2 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*               * { apply cRfl with t. *)
+  (*                   - apply cSort ; trivial. apply wf_cons with t. *)
+  (*                     apply cSort ; trivial. eapply wf_typ ; eauto. *)
+  (*                   - apply cVar. *)
+  (*                     + apply wf_cons with t. apply cSort ; trivial. *)
+  (*                       eapply wf_typ ; eauto. *)
+  (*                     + exists !s. split ; simpl ; trivial. *)
+  (*                 } *)
+  (*             + simpl in H. apply H. *)
+  (*         } *)
+  (*     + apply hA. *)
+  (*     + apply hA'. *)
+  (*     + apply hp. *)
+  (*   - eapply cConv. *)
+  (*     + apply H. *)
+  (*     + eapply cProd. *)
+  (*       * apply hsss. *)
+  (*       * apply hA. *)
+  (*       * apply (thinning _ _ _ _ _ hA' hA). *)
+  (*     + eapply cTrans. *)
+  (*       * { eapply cAppEq. *)
+  (*           (*! I have to understand what types are involded down there... *) *)
+  (*           (*! Might as well give up. *) *)
+  (*           (*! Maybe what I don't get is the substituion definition for Pi... *) *)
+  (*           - assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A · A' : (Π(Id !s (A ↑ 1) #0), !s) [← A']). *)
+  (*             + apply cApp with (A := !s). *)
+  (*               * { assert (Γ ⊢ (λ[!s], λ[!s], λ[Id !s #1 #0], Π(#2), #2) · A : (Π(!s), Π(Id !s #1 #0), !s) [← A]). *)
+  (*                   - apply cApp with (A := !s). *)
+  (*                     + eapply cAbs. *)
+  (*                       * apply hrel. *)
+  (*                       * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                         eapply wf_typ ; eauto. *)
+  (*                       * apply (translem4 _ _ _ _ _ _ hax hrel hsss hA hA' hp). *)
+  (*                       * { eapply cProd. *)
+  (*                           * apply hrel. *)
+  (*                           * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                             eapply wf_typ ; eauto. *)
+  (*                           * { eapply cProd. *)
+  (*                               - apply hrel.  *)
+  (*                               - apply cId. *)
+  (*                                 + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                   eapply wf_typ ; eauto. *)
+  (*                                 + apply cVar. *)
+  (*                                   * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                     eapply wf_typ ; eauto. *)
+  (*                                   * exists !s. split ; simpl ; trivial. *)
+  (*                                     repeat (apply item_tl || apply item_hd). *)
+  (*                                 + apply cVar. *)
+  (*                                   * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                     eapply wf_typ ; eauto. *)
+  (*                                   * exists !s. split ; simpl ; trivial. *)
+  (*                               - repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                 apply cId. *)
+  (*                                 + repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                   eapply wf_typ ; eauto. *)
+  (*                                 + apply cVar. *)
+  (*                                   * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                     eapply wf_typ ; eauto. *)
+  (*                                   * exists !s. split ; simpl ; trivial. *)
+  (*                                     repeat (apply item_tl || apply item_hd). *)
+  (*                                 + apply cVar. *)
+  (*                                   * repeat ((apply cSort ; trivial) || (apply wf_cons with t)). *)
+  (*                                     eapply wf_typ ; eauto. *)
+  (*                                   * exists !s. split ; simpl ; trivial. *)
+  (*                             } *)
+  (*                         } *)
+  (*                     + apply hA. *)
+  (*                   - simpl in H0. simpl. apply H0. *)
+  (*                 } *)
+  (*               * apply hA'. *)
+  (*             + simpl in H0. apply H0. *)
+  (*           - admit. *)
+  (*           - apply hp. (*! This does not generate the wanted goal... *) *)
+  (*           - admit. *)
+  (*           - admit. *)
+  (*           - eapply cRefl. apply hp. *)
+  (*         } *)
+  (*       * admit. *)
+  (* Abort. *)
 
   (* Let's start the translation to PTSf *)
 
