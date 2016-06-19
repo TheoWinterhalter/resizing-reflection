@@ -178,7 +178,7 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
   (* Let's start the translation to PTSf *)
 
   Reserved Notation "⦑ A ⦒τ" (at level 7, no associativity).
-  Reserved Notation "⦑ H ⦒α" (at level 7, no associativity).
+  Reserved Notation "⦑ H ÷ T ⦒α" (at level 7, no associativity).
 
   (* We need to have some information about the type if we want to *)
   (* be able to make the transport or proofs such as Rfl... *)
@@ -192,19 +192,19 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
     | Id A u v      => FTM.Id ⦑A⦒τ ⦑u⦒τ ⦑v⦒τ
     | Rfl A u       => FTM.Rfl ⦑A⦒τ ⦑u⦒τ
     | J A C b u v p => FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ ⦑p⦒τ
-    | t ∽ H         => (⦑H⦒α ⋆ · ⦑t⦒τ)%F
+    | t ∽ H         => (⦑ H ÷ (#0)%RR ⦒α ⋆ · ⦑t⦒τ)%F
     | RRAA          => RE.BB
     | Inj t         => (RE.ff · ⦑t⦒τ)%F
     | Proj t        => (RE.gg · ⦑t⦒τ)%F
     end
     where "⦑ A ⦒τ" := (unrrt A)
-  with unrrp (H : Prf) : FTM.Term :=
+  with unrrp (H : Prf) (T : Term) : FTM.Term :=
     match H with
-    | ρ A => FTM.Rfl (#0)%F ⦑A⦒τ
-    | H † => sym · ⦑H⦒α
-    | H1 • H2 => trans · ⦑H1⦒α · ⦑H2⦒α (* In both cases we actually would need *)
-                                     (* the types! *)
-    | β ((λ[A], t) · u) => FTM.Rfl (#0)%F ⦑(λ[A], t) · u⦒τ
+    | ρ A => FTM.Rfl ⦑T⦒τ ⦑A⦒τ
+    | H † => (sym · ⦑H ÷ T⦒α)%F
+    | H1 • H2 => (trans · ⦑H1 ÷ T⦒α · ⦑H2 ÷ T⦒α)%F
+      (* In both cases we actually would need the types! *)
+    | β ((λ[A], t) · u) => FTM.Rfl ⦑T⦒τ ⦑(λ[A], t) · u⦒τ
     (* | { H1, [A] H2 } => ??? *)
     (* | ⟨ H1, [A] H2 ⟩  => ??? *)
     (* | H1 ·h H2       => ??? *)
@@ -218,10 +218,10 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
     (* | PI a                         =>  *)
     | H => (#0)%F
     end
-    where "⦑ H ⦒α" := (unrrp H).
+    where "⦑ H ÷ T ⦒α" := (unrrp H T).
 
   Notation "⦑ A ⦒τ" := (unrrt A) (at level 7, no associativity).
-  Notation "⦑ H ⦒α" := (unrrp H) (at level 7, no associativity).
+  Notation "⦑ H : T ⦒α" := (unrrp H T) (at level 7, no associativity).
 
   Definition unrrenv (Γ : Env) : FEM.Env :=
     map unrrt Γ.
