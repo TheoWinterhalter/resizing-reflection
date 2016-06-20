@@ -44,7 +44,7 @@ with typ_h : Env -> Prf -> Term -> Term -> Prop :=
                       -> Γ ⊢ H : A = A' -> A::Γ ⊢ K : b = (b'↑1#1)[←#0∽H↑h1] -> Γ ⊢ ⟨H,[A]K⟩ : λ[A], b = λ[A'], b'
  | cAppEq  : forall Γ F F' a a' A A' B B' H K, Γ ⊢ F : Π(A), B -> Γ ⊢ F' : Π(A'), B' -> Γ ⊢ a : A -> Γ ⊢ a' : A' 
                       -> Γ ⊢ H : F = F' -> Γ ⊢ K : a = a' -> Γ ⊢ H ·h K : F · a = F' · a'
- | cIota    : forall Γ a A B s H, Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ ι(a∽H) : a = a∽H
+ | cIota    : forall Γ a A B s H H', Γ ⊢ a : A -> Γ ⊢ B : !s -> Γ ⊢ H : A = B -> Γ ⊢ H' : A = B -> Γ ⊢ ι a H H' : a∽H = a∽H'
 where "Γ ⊢ H : A = B" := (typ_h Γ H A B) : F_scope.
 
 Hint Constructors wf typ typ_h.
@@ -154,6 +154,7 @@ rewrite_l_rev substP1;simpl.
 eapply H7;eauto.
 (* app-eq *) 
 econstructor; eauto.
+econstructor ; eauto.
 Qed.
 
 
@@ -303,10 +304,7 @@ Qed.
 
 Lemma equality_typing : forall Γ H A B, Γ ⊢ H : A = B -> has_type A Γ /\ has_type B Γ.
 unfold has_type;induction 1;eauto;intuition;[exists B[←a];eapply beta_type_l;eauto|exists B[←a];eapply beta_type_r;eauto|
-try (repeat econstructor;eauto;fail)..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H1|eauto..].
+try (econstructor;eauto;fail)..].
 Qed.
 
 (** Type Correction: if a judgment is valid, the type is either welltyped
@@ -354,7 +352,7 @@ with simple_typ_h : Env -> Prf -> Term -> Term -> Prop :=
             -> Γ ⊢' H : A = A' -> A::Γ ⊢' K : b = (b'↑1#1)[←#0∽H↑h1] -> Γ ⊢' ⟨H,[A]K⟩ : λ[A], b = λ[A'], b'
  | lcAppEq  : forall Γ F F' a a' B B' H K, Γ ⊢' F · a : B -> Γ ⊢' F' · a' : B'
             -> Γ ⊢' H : F = F' -> Γ ⊢' K : a = a' -> Γ ⊢' H ·h K : F · a = F' · a'
- | lcIota    : forall Γ a B H, Γ ⊢' a ∽ H : B -> Γ ⊢' ι(a∽H) : a = a∽H
+ | lcIota    : forall Γ a B H H', Γ ⊢' a ∽ H : B -> Γ ⊢' a ∽ H' : B -> Γ ⊢' ι a H H' : a∽H = a∽H'
 where "Γ ⊢' H : A = B" := (simple_typ_h Γ H A B) : F_scope.
 
 Local Hint Constructors simple_typ simple_typ_h simple_wf.
@@ -382,8 +380,8 @@ inversion H0;inversion H1;subst;econstructor;[eexact H7|..];eassumption.
 (*prod-eq*)
 inversion H0;inversion H1;subst;econstructor;eassumption.
 (*iota*)
-inversion H0;subst;econstructor;eassumption.
-Qed.
+inversion H0. subst. inversion H1. subst. econstructor ; try eassumption.
+Abort.
 
 Lemma normal2simple : (forall Γ   M N, Γ ⊢     M : N -> Γ ⊢'     M : N)/\
                       (forall Γ H M N, Γ ⊢ H : M = N -> Γ ⊢' H : M = N)/\
@@ -397,7 +395,7 @@ Qed.
 Lemma normal_equiv_simple : (forall Γ   M N, Γ ⊢     M : N <-> Γ ⊢'     M : N)/\
                             (forall Γ H M N, Γ ⊢ H : M = N <-> Γ ⊢' H : M = N)/\
                             (forall Γ      , Γ ⊣           <-> Γ ⊣').
-repeat split;apply simple2normal||apply normal2simple.
-Qed.
+(* repeat split;apply simple2normal||apply normal2simple. *)
+Abort.
 
 End f_typ_mod.

@@ -2,7 +2,7 @@
 
 base.v
 env.v
-f_end.v
+f_env.v
 f_equivalence.v
 f_term.v
 f_typ.v

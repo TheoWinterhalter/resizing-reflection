@@ -135,10 +135,10 @@ apply typ_induc;simpl;intros;trivial;try (econstructor;eassumption).
 constructor;try apply erasure_item_lift;trivial.
 rewrite erasure_subst. econstructor;eassumption.
 (*eq*)
-apply Betac_sym;trivial.
-apply Betac_trans with ε B;trivial.
+(* apply Betac_sym; trivial. *)
+(* apply Betac_trans with ε B; trivial. *)
 apply Betac_Betas;apply Betas_Beta;rewrite erasure_subst;simpl;constructor.
-simpl;apply Betac_Pi;rewrite <- erasure_lem2 in H5;assumption. 
+simpl;apply Betac_Pi;rewrite <- erasure_lem2 in H5;assumption.
 simpl;apply Betac_La;rewrite <- erasure_lem2 in H7;assumption. 
 simpl;apply Betac_App;assumption.
 Qed.
@@ -148,9 +148,11 @@ Proposition erasure_injectivity_term : forall a b Γ A B,Γ ⊢ a : A->Γ ⊢ b 
 induction a;
 [(induction b;simpl;intros;try discriminate;try (inversion H0;subst;edestruct IHb;eauto))..
 |intros; apply gen_conv in H; destruct H as (A0&s&?&?&?);
-destruct (IHa b Γ A0 B);trivial;exists (ι(a∽p)†•x);eauto].
+destruct (IHa b Γ A0 B);trivial ;
+simple refine (ex_intro _ ((ι a p _)†•x) _) ; eauto].
 (*var*)
-injection H1;intros;subst; exists (ρ #v0);eauto.
+injection H1. intros;subst. exists (ρ #v0). eauto.
+
 (*sort*)
 injection H1;intros;subst; exists (ρ !s0);eauto.
 (*prod*)

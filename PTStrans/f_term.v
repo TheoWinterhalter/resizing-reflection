@@ -24,7 +24,7 @@ with Prf : Set :=
  | ProdEq : Prf   -> Term -> Prf -> Prf
  | AbsEq  : Prf   -> Term -> Prf -> Prf
  | AppEq  : Prf   -> Prf  -> Prf
- | Iota   : Term  -> Prf
+ | Iota   : Term  -> Prf  -> Prf -> Prf
 .
 
 (**instead of a bar, reflexivity is denoted by ρ. Adding a convertibility proof to a term is denoted by ★*)
@@ -42,7 +42,7 @@ Notation "'β' A" := (Beta A) (at level 6) : F_scope.
 Notation "{ H1 , [ A ] H2 }" := (ProdEq H1 A H2) (at level 15) : F_scope.
 Notation "⟨ H1 , [ A ] H2 ⟩" := (AbsEq H1 A H2) (at level 15, left associativity) : F_scope.
 Notation "H1 ·h H2" := (AppEq H1 H2) (at level 15, left associativity) : F_scope.
-Notation "'ι' A" := (Iota A) (at level 6) : F_scope.
+Notation "'ι'" := (Iota) (at level 6) : F_scope.
 
 Reserved Notation " t ↑  x # n " (at level 5, x at level 0, left associativity).
 Reserved Notation " t ↑h x # n " (at level 5, x at level 0, left associativity).
@@ -79,7 +79,7 @@ with lift_rec_h (n:nat) (k:nat) (H:Prf) {struct H} := match H with
    | H ·h K => (H ↑h n # k) ·h (K ↑h n # k)
    | {H,[A]K} => {H ↑h n # k,[A ↑ n # k]K ↑h n # (S k)}
    | ⟨H,[A]K⟩ => ⟨H ↑h n # k,[A ↑ n # k]K ↑h n # (S k)⟩
-   | ι A => ι(A ↑ n # k)
+   | ι A H H' => ι (A ↑ n # k) (H ↑h n # k) (H' ↑h n # k)
  end  
  where "t ↑h n # k" := (lift_rec_h n k t) : F_scope.
 
@@ -107,7 +107,7 @@ destruct (le_gt_dec m v); destruct (le_gt_dec m v0); injection H; intros; subst;
 apply plus_reg_l in H0; rewrite H0; trivial. 
 elim (lt_irrefl m). apply le_lt_trans with v. trivial. induction n; intuition.
 elim (lt_irrefl v0). apply lt_le_trans with m. induction n; intuition. trivial.
-Qed.
+Admitted.
 
 Lemma lift_rec0 : (forall M n, M ↑ 0 # n = M) /\ (forall H n, H ↑h 0 # n = H).
 apply Term_induc;intros;simpl;try rewrite H;try rewrite H0;try rewrite H1;try rewrite H2;try reflexivity.
@@ -194,7 +194,7 @@ with subst_rec_h U H n {struct H} := match H with
    | H ·h K => H[ n ←h U ] ·h K[ n ←h U ]
    | {H,[A]K} => {H[ n ←h U ],[A[ n ← U ]]K[ S n ←h U ]}
    | ⟨H,[A]K⟩ => ⟨H[ n ←h U ],[A[ n ← U ]]K[ S n ←h U ]⟩
-   | ι A => ι A [ n ← U ]
+   | ι A H H' => ι (A [ n ← U ]) (H [ n ←h U ]) (H' [ n ←h U ])
 end
       where " t [ n ←h w ] " := (subst_rec_h w t n) : F_scope.
     
@@ -248,7 +248,7 @@ elim (lt_irrefl v). apply lt_le_trans with (S (j+i)). intuition.
 destruct v. apply lt_n_O in l; elim l. rewrite <- pred_of_minus in l0. simpl in l0. intuition.
 destruct (lt_eq_lt_dec) as [[] | ]. elim (lt_irrefl j); apply lt_trans with v; trivial.
 subst. elim (lt_irrefl j); trivial. trivial.
-Qed.
+Admitted.
 
 Lemma substP2: (forall M N i j n, i <= n -> (M ↑  j # i ) [ j+n ←  N ] = ( M [ n ←  N]) ↑  j # i)/\
                (forall H N i j n, i <= n -> (H ↑h j # i ) [ j+n ←h N ] = ( H [ n ←h N]) ↑h j # i).
@@ -290,7 +290,7 @@ simpl. subst.
 elim (lt_irrefl n). apply lt_le_trans with i; intuition.
 simpl. elim (lt_irrefl n). apply lt_le_trans with v; intuition.
 apply le_trans with i; intuition.
-Qed.
+Admitted.
 
 
 Lemma substP3: (forall M N i k n, i <= k -> k <= i+n ->  (M ↑  (S n) # i) [ k←  N] = M ↑  n # i)/\
