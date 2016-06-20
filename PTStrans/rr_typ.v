@@ -149,87 +149,94 @@ Module f_typ_mod (X : term_sig) (Y : pts_sig X) (FTM : f_term_mod X)
 
   (* First we define a transport that would come in handy. *)
 
-  Open Scope F.
+  (* Open Scope F. *)
 
-    (* Axiom transport : Sorts -> FTM.Term -> FTM.Term -> FTM.Term -> FTM.Term. *)
+  (*   (* Axiom transport : Sorts -> FTM.Term -> FTM.Term -> FTM.Term -> FTM.Term. *) *)
 
-    (* DAMN! Is it possible to talk about typing in the other system???!! *)
-    (* Axiom transport_typ : *)
-    (*   forall (Γ : FEM.Env) (s t : Sorts) (A A' p : FTM.Term), *)
-    (*     Ax s t -> *)
-    (*     Rel t t t -> *)
-    (*     Rel s s s -> *)
-    (*     Rel t s t -> *)
-    (*     (f_typ_mod X Y FTM FEM).typ Γ A !s -> *)
-    (*     Γ ⊢ A  : !s -> *)
-    (*     Γ ⊢ A' : !s -> *)
-    (*     Γ ⊢ p  : Id !s A A' -> *)
-    (*     Γ ⊢ transport s A A' p : Π(A), A' ↑ 1. *)
+  (*   (* DAMN! Is it possible to talk about typing in the other system???!! *) *)
+  (*   (* Axiom transport_typ : *) *)
+  (*   (*   forall (Γ : FEM.Env) (s t : Sorts) (A A' p : FTM.Term), *) *)
+  (*   (*     Ax s t -> *) *)
+  (*   (*     Rel t t t -> *) *)
+  (*   (*     Rel s s s -> *) *)
+  (*   (*     Rel t s t -> *) *)
+  (*   (*     (f_typ_mod X Y FTM FEM).typ Γ A !s -> *) *)
+  (*   (*     Γ ⊢ A  : !s -> *) *)
+  (*   (*     Γ ⊢ A' : !s -> *) *)
+  (*   (*     Γ ⊢ p  : Id !s A A' -> *) *)
+  (*   (*     Γ ⊢ transport s A A' p : Π(A), A' ↑ 1. *) *)
 
-    (* Maybe we can hope for a version that doesn't need the types. *)
-    Axiom transport : FTM.Term -> FTM.Term.
-    Notation "p ⋆" := (transport p) (at level 3).
+  (*   (* Maybe we can hope for a version that doesn't need the types. *) *)
+  (*   Axiom transport : FTM.Term -> FTM.Term. *)
+  (*   Notation "p ⋆" := (transport p) (at level 3). *)
 
-    Axiom sym : FTM.Term.
-    Axiom trans : FTM.Term.
+  (*   Axiom sym : FTM.Term. *)
+  (*   Axiom trans : FTM.Term. *)
 
-  Close Scope F.
+  (* Close Scope F. *)
 
   (* Let's start the translation to PTSf *)
 
-  Reserved Notation "⦑ A ⦒τ" (at level 7, no associativity).
-  Reserved Notation "⦑ H ÷ T ⦒α" (at level 7, no associativity).
+  (* Reserved Notation "⦑ A ÷ B ÷ C ⦒τ" (at level 7, no associativity). *)
+  (* Reserved Notation "⦑ H ÷ T ⦒α" (at level 7, no associativity). *)
 
-  (* We need to have some information about the type if we want to *)
-  (* be able to make the transport or proofs such as Rfl... *)
-  Fixpoint unrrt (t : Term) : FTM.Term :=
-    match t with
-    | #v            => (#v)%F
-    | !s            => (!s)%F
-    | Π(A), B       => (Π (⦑ A ⦒τ), ⦑ B ⦒τ)%F
-    | λ[A], t       => (λ[⦑ A ⦒τ], ⦑ t ⦒τ)%F
-    | a · b         => (⦑ a ⦒τ · ⦑ b ⦒τ)%F
-    | Id A u v      => FTM.Id ⦑A⦒τ ⦑u⦒τ ⦑v⦒τ
-    | Rfl A u       => FTM.Rfl ⦑A⦒τ ⦑u⦒τ
-    | J A C b u v p => FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ ⦑p⦒τ
-    | t ∽ H         => (⦑ H ÷ (#0)%RR ⦒α ⋆ · ⦑t⦒τ)%F
-    | RRAA          => RE.BB
-    | Inj t         => (RE.ff · ⦑t⦒τ)%F
-    | Proj t        => (RE.gg · ⦑t⦒τ)%F
-    end
-    where "⦑ A ⦒τ" := (unrrt A)
-  with unrrp (H : Prf) (T : Term) : FTM.Term :=
-    match H with
-    | ρ A => FTM.Rfl ⦑T⦒τ ⦑A⦒τ
-    | H † => (sym · ⦑H ÷ T⦒α)%F
-    | H1 • H2 => (trans · ⦑H1 ÷ T⦒α · ⦑H2 ÷ T⦒α)%F
-      (* In both cases we actually would need the types! *)
-    | β ((λ[A], t) · u) => FTM.Rfl ⦑T⦒τ ⦑(λ[A], t) · u⦒τ
-    (* | { H1, [A] H2 } => ??? *)
-    (* | ⟨ H1, [A] H2 ⟩  => ??? *)
-    (* | H1 ·h H2       => ??? *)
-    (* Maybe in the three cases above we should do the translation with Refl instead of each Hi *)
-    (* | ι (a ∽ H)       => ??? *)
-    (* | ι A                           => (#0, FTM.Refl #0)%F *) (* This shouldn't happen so... wildcard *)
-    (* | IdEq HA Hu Hv  => ??? *)
-    (* | RflEq HA Hu    => ??? *)
-    (* | JEq HA HC Hb Hu Hv Hp => ??? *)
-    (* | JRed (J A C b u v (Rfl B w)) => (t, FTM.JRed (FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ (FTM.Rfl ⦑B⦒τ ⦑w⦒τ))) *)
-    (* | PI a                         =>  *)
-    | H => (#0)%F
-    end
-    where "⦑ H ÷ T ⦒α" := (unrrp H T).
+  (* (* We need to have some information about the type if we want to *) *)
+  (* (* be able to make the transport or proofs such as Rfl... *) *)
+  (* Fixpoint unrrt (t : Term) (T : Term) (S : Term) : FTM.Term := *)
+  (*   match t with *)
+  (*   | #v            => (#v)%F *)
+  (*   | !s            => (!s)%F *)
+  (*   | Π(A), B       => (Π (⦑ A ⦒τ), ⦑ B ⦒τ)%F *)
+  (*   | λ[A], t       => (λ[⦑ A ⦒τ], ⦑ t ⦒τ)%F *)
+  (*   | a · b         => (⦑ a ⦒τ · ⦑ b ⦒τ)%F *)
+  (*   | Id A u v      => FTM.Id ⦑A⦒τ ⦑u⦒τ ⦑v⦒τ *)
+  (*   | Rfl A u       => FTM.Rfl ⦑A⦒τ ⦑u⦒τ *)
+  (*   | J A C b u v p => FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ ⦑p⦒τ *)
+  (*   | t ∽ H         => (⦑ H ÷ (#0)%RR ⦒α ⋆ · ⦑t⦒τ)%F *)
+  (*   | RRAA          => RE.BB *)
+  (*   | Inj t         => (RE.ff · ⦑t⦒τ)%F *)
+  (*   | Proj t        => (RE.gg · ⦑t⦒τ)%F *)
+  (*   end *)
+  (*   where "⦑ A ⦒τ" := (unrrt A) *)
+  (* with unrrp (H : Prf) (T : Term) : FTM.Term := *)
+  (*   match H with *)
+  (*   | ρ A => FTM.Rfl ⦑T⦒τ ⦑A⦒τ *)
+  (*   | H † => (sym · ⦑H ÷ T⦒α)%F *)
+  (*   | H1 • H2 => (trans · ⦑H1 ÷ T⦒α · ⦑H2 ÷ T⦒α)%F *)
+  (*     (* In both cases we actually would need the types! *) *)
+  (*   | β ((λ[A], t) · u) => FTM.Rfl ⦑T⦒τ ⦑(λ[A], t) · u⦒τ *)
+  (*   (* | { H1, [A] H2 } => ??? *) *)
+  (*   (* | ⟨ H1, [A] H2 ⟩  => ??? *) *)
+  (*   (* | H1 ·h H2       => ??? *) *)
+  (*   (* Maybe in the three cases above we should do the translation with Refl instead of each Hi *) *)
+  (*   (* | ι (a ∽ H)       => ??? *) *)
+  (*   (* | ι A                           => (#0, FTM.Refl #0)%F *) (* This shouldn't happen so... wildcard *) *)
+  (*   (* | IdEq HA Hu Hv  => ??? *) *)
+  (*   (* | RflEq HA Hu    => ??? *) *)
+  (*   (* | JEq HA HC Hb Hu Hv Hp => ??? *) *)
+  (*   (* | JRed (J A C b u v (Rfl B w)) => (t, FTM.JRed (FTM.J ⦑A⦒τ ⦑C⦒τ ⦑b⦒τ ⦑u⦒τ ⦑v⦒τ (FTM.Rfl ⦑B⦒τ ⦑w⦒τ))) *) *)
+  (*   (* | PI a                         =>  *) *)
+  (*   | H => (#0)%F *)
+  (*   end *)
+  (*   where "⦑ H ÷ T ⦒α" := (unrrp H T). *)
 
-  Notation "⦑ A ⦒τ" := (unrrt A) (at level 7, no associativity).
-  Notation "⦑ H : T ⦒α" := (unrrp H T) (at level 7, no associativity).
+  (* Notation "⦑ A ⦒τ" := (unrrt A) (at level 7, no associativity). *)
+  (* Notation "⦑ H : T ⦒α" := (unrrp H T) (at level 7, no associativity). *)
 
-  Definition unrrenv (Γ : Env) : FEM.Env :=
-    map unrrt Γ.
-  Notation "⦑ Γ ⦒γ" := (unrrenv Γ) (at level 7, no associativity).
+  (* Definition unrrenv (Γ : Env) : FEM.Env := *)
+  (*   map unrrt Γ. *)
+  (* Notation "⦑ Γ ⦒γ" := (unrrenv Γ) (at level 7, no associativity). *)
 
-  Theorem trans_compat :
-    (forall Γ t T, Γ ⊢ t : T -> (⦑Γ⦒γ ⊢ ⦑t⦒τ : ⦑T⦒τ)%F) /\
-    (forall Γ H A B, Γ ⊢ H : A = B -> exists s, (⦑Γ⦒γ ⊢ ⦑H⦒α : FTM.Id !s ⦑A⦒τ ⦑B⦒τ)%F).
+  (* Theorem trans_compat : *)
+  (*   (forall Γ t T, Γ ⊢ t : T -> (⦑Γ⦒γ ⊢ ⦑t⦒τ : ⦑T⦒τ)%F) /\ *)
+  (*   (forall Γ H A B, Γ ⊢ H : A = B -> exists s, (⦑Γ⦒γ ⊢ ⦑H⦒α : FTM.Id !s ⦑A⦒τ ⦑B⦒τ)%F). *)
+  
+  (* Maybe we can do it differently, directly by proving a theorem... *)
+  (* Theorem translation : *)
+  (*   (forall Γ, Γ ⊣ -> exists Γ', (⟦ Γ' ⟧γ ⊣)%F) /\ *)
+  (*   (forall Γ t T, Γ ⊢ t : T -> *)
+  (*             (exists Γ', (⟦ Γ' ⟧γ ⊣)%F) /\ *)
+  (*             (forall Γ', (⟦ Γ' ⟧γ ⊣)%F -> exists t' T', )) *)
 
 
 End f_typ_mod.
