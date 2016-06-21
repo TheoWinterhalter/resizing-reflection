@@ -1,4 +1,4 @@
-{-# OPTIONS --type-in-type #-}
+{-# OPTIONS --type-in-type --without-K #-}
 
 -- open import Agda.Primitive
 
@@ -78,3 +78,6 @@ elim-eq A B f g u v p h = h (f u) (g v)
 
 η-eq : ∀ A B (f : Π A B) → Id f (λ x → f x)
 η-eq A B f = Refl
+
+dada : ∀ A B (e : Id A B) (x : A) → Id (((e ⁻¹) *) ((e *) x)) x
+dada B .B Refl x = Refl
