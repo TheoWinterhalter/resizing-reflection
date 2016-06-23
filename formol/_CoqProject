@@ -2,5 +2,6 @@
 
 Base.v
 Terms.v
+Typing.v
 RTerms.v
 XTerms.v
