@@ -1,0 +1,80 @@
+\documentclass[a4paper,english]{lipics-utf8x}
+
+\usepackage[T1]{fontenc} %
+
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{pifont}
+\PrerenderUnicode{é} % For the author names in the heading
+
+% Add some colors
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+ linktocpage,
+ colorlinks,
+ citecolor=BlueViolet,
+ filecolor=red,
+ linkcolor=Blue,
+ urlcolor=BrickRed
+}
+
+\usepackage{graphicx}
+\usepackage{placeins}
+
+% Meta comment
+\newcommand\meta[1]{\noindent\textcolor{blue}{\emph{#1}}}
+
+% Include the macro file
+\input{macros}
+
+% Title and so...
+\title{Working Resizing of Equivalence under Univalence}
+\author[1]{Théo Winterhalter}
+
+\begin{document}
+
+  \maketitle
+
+  \begin{abstract}
+    ...
+  \end{abstract}
+
+  \section{Our systems}
+
+  This is the syntax of the system in which we start.
+
+  \[
+    \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
+      \Var  & \ni & x,y,X,Y \\
+      \Sort & \ni & s             & ::= & \Type_k \mbox{ }
+                                                (k \in \mathbb{N}) \\
+      \Exp  & \ni & t,u,T,U & ::= & s \mid \Pi x:U.T \mid
+                                    \Id T\ t\ u \\
+                         &&& \mid & x \mid \lambda x:U.t \mid t~u
+                               \mid \refl(T,t) \mid
+                               \J (T,U,t_{refl},u_1,u_2,t_{eq}) \\
+      \Ctx  & \ni & \Gamma  & ::= & \cdot \mid \Gamma, x:T \\
+    \end{array}
+  \]
+  %
+  We assume it contains $\mA$ and $\mB$ that are equivalent (and respectively in
+  universes $\sA$ and $\sB$), but up to univalence, we only assume that
+  there is $e$ such that $\der e : \Id s\ \mA\ \mB$ for some $s$
+  (note: we will only treat the case where this holds in the empty context,
+  but it should scale easily).
+
+  We then extend this system with $\mR$, $\inj(t)$ and $\proj(t)$ as well as
+  the following rules (which we will note with $\derr$ instead of $\dere$).
+
+  \begin{mathc}
+    \ru{\derr \Gamma
+      }{\Gamma \derr \mR : \sB}
+    \qquad
+    \ru{\Gamma \derr t : \mA
+      }{\Gamma \derr \proj(\inj(t)) = t : \mA}
+    \qquad
+    \ru{\Gamma \derr t : \mR
+      }{\Gamma \derr \inj(\proj(t)) = t : \mR}
+  \end{mathc}
+
+\end{document}
