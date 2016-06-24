@@ -111,7 +111,18 @@
       such that $\Gamma' \dere a' : A'$ (and that are translations).
       Then, we can use the second induction hypothesis with $\Gamma'$.
       \meta{We would also need to be able to provide $A'$ or make sure that
-      two translations of the same term are equal.}
+      two translations of the same term are equal (only under the same type
+      obviously).}
+
+      \nextcase
+      \begin{mathc}
+        \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
+             \Gamma, x : A_1 \derr b_1 = b_2 : B : s_2
+           }{\Gamma \derr \lambda x:A_1.b_1 = \lambda x:A_2.b_2 : \Pi x:A_1.B
+           }{(s_1,s_2,s_3)}
+      \end{mathc}
+      \meta{It seems that if they give me a translation of $\lambda x:A_1.b_1$,
+      I cannot deduce one of $A_1$ (at least not that easily).}
     \end{caselist}
   \end{proof}
 
