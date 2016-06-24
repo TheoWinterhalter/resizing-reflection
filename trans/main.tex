@@ -77,4 +77,42 @@
       }{\Gamma \derr \inj(\proj(t)) = t : \mR}
   \end{mathc}
 
+  \section{Translation for Consistency}
+
+  \begin{theorem}[Translation]
+    \leavevmode
+    \begin{enumerate}
+      \item If $\Gamma \derr t : T$ then there exists $\Gamma'$ a well-formed
+      translation of $\Gamma$ and for any such $\Gamma'$, there are $t'$ and
+      $T'$ translations of $t$, $T$ such that $\Gamma' \dere t' : T'$.
+      \item If $\Gamma \derr t = u : T$ then there exists $\Gamma'$ a
+      well-formed translation of $\Gamma$ and for any such $\Gamma'$, there are
+      $t'$, $u'$ and $T'$ translations of $t$, $u$, $T$ and $h$ such that
+      $\Gamma' \dere h : \Id T'\ t'\ u'$.
+      \item If $\derr \Gamma$ then there exists $\Gamma'$ a translation of
+      $\Gamma$ such that $\dere \Gamma'$.
+    \end{enumerate}
+  \end{theorem}
+
+  \meta{We have to define what \emph{translation} means}.
+
+  \begin{proof}
+    By induction on the derivation.
+
+    \leavevmode
+    \begin{caselist}
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr a : A \qquad
+            \Gamma \derr A = B : s
+          }{\Gamma \derr a : B}
+      \end{mathc}
+      By the first induction hypothesis, there is $\Gamma'$, $a'$ and $A'$
+      such that $\Gamma' \dere a' : A'$ (and that are translations).
+      Then, we can use the second induction hypothesis with $\Gamma'$.
+      \meta{We would also need to be able to provide $A'$ or make sure that
+      two translations of the same term are equal.}
+    \end{caselist}
+  \end{proof}
+
 \end{document}
