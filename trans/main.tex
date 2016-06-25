@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc} %
 
 \usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{bm}
 \usepackage{pifont}
 \PrerenderUnicode{é} % For the author names in the heading
 
@@ -59,7 +60,7 @@
   %
   We assume it contains $\mA$ and $\mB$ that are equivalent (and respectively in
   universes $\sA$ and $\sB$), but up to univalence, we only assume that
-  there is $e$ such that $\der e : \Id s\ \mA\ \mB$ for some $s$
+  there is $\me$ such that $\der \me : \Id s\ \mA\ \mB$ for some $s$
   (note: we will only treat the case where this holds in the empty context,
   but it should scale easily).
 
@@ -78,6 +79,67 @@
   \end{mathc}
 
   \section{Translation for Consistency}
+
+  Because our translation is based on the derivation of a judgement and not
+  only the judgement itself, we need to have some criterium of compatibility.
+  It will also be helpful to ensure that the empty type is mapped to something
+  close to the empty type (as in, it is empty as well).
+
+  We will write $\msigma$ for the substitution
+  $[\mA := \mA, \mB := \mA, \me := \refl(s,\mA)]$.
+  And in the following $\Gamma \dere t = t'$ shall mean that there exists $A$
+  such that $\Gamma \dere t = t' : A$ holds.
+
+  \begin{definition}[$\Gamma$-translation]
+    For any context $\dere \Gamma$ we define the notion of $\Gamma$-translation
+    of a term $u$ (in PTSe) by induction on $u$.
+    \begin{itemize}
+      \item $t$ is a $\Gamma$-translation of $s$ if $\Gamma \dere t \sigma = s$.
+      \item $t$ is a $\Gamma$-translation of $\Pi x:A.B$ if
+            $\Gamma \dere t \sigma = \Pi x:A'.B'$ where $A'$ is a
+            $\Gamma$-translation of $A$ and $B'$ is a
+            $(\Gamma, x:A')$-translation of $B$.
+      \item $t$ is a $\Gamma$-translation of $\Id A\ u\ v$ if
+            $\Gamma \dere t \sigma = \Id A'\ u'\ v'$ where $A',u',v'$ are
+            $\Gamma$-translations of $A,u,v$ respectively.
+      \item $t$ is a $\Gamma$-translation of $x$ if $\Gamma \dere t \sigma = x$.
+      \item $t$ is a $\Gamma$-translation of $\lambda x:A.b$ if
+            $\Gamma \dere t \sigma = \lambda x:A'.b'$ where $A'$ is a
+            $\Gamma$-translation of $A$ and $b'$ is a
+            $(\Gamma, x:A')$-translation of $b$.
+      \item $t$ is a $\Gamma$-translation of $a\ b$ if
+            $\Gamma \dere t \sigma = a'\ b'$ where $a',b'$ are
+            $\Gamma$-translations of $a,b$ respectively.
+      \item $t$ is a $\Gamma$-tanslation of $\refl(A,u)$ if
+            $\Gamma \dere t \sigma = \refl(A',u')$ where $A',u'$ are
+            $\Gamma$-translations of $A,u$ respectively.
+      \item \sloppy
+            $t$ is a $\Gamma$-tanslation of $\J(A,C,b,u,v,p)$ if
+            $\Gamma \dere t \sigma = \J(A',C',b',u',v',p')$ where
+            $A',C',b',u',v',p'$ are $\Gamma$-translations of
+            $A,C,b,u,v,p$ respectively.
+      \item $t$ is a $\Gamma$-translation of $\mR$ if
+            $\Gamma \dere t \sigma = \mA$.
+      \item $t$ is a $\Gamma$-translation of $\inj(u)$ if
+            $\Gamma \dere t \sigma = u'$ where $u'$ is a $\Gamma$-translation
+            of $u$.
+      \item $t$ is a $\Gamma$-translation of $\proj(u)$ if
+            $\Gamma \dere t \sigma = u'$ where $u'$ is a $\Gamma$-translation
+            of $u$.
+    \end{itemize}
+  \end{definition}
+
+  \begin{definition}[Context Translation]
+    We define translations of a context $\Gamma$ by induction on $\Gamma$:
+    \begin{itemize}
+      \item $\cdot$ is a translation of $\cdot$.
+      \item $\Gamma', x:A'$ is a translation of $\Gamma, x:A$ if $\Gamma'$ is
+            a translation of $\Gamma$ and $A'$ is a $\Gamma'$-translation of
+            $A$.
+    \end{itemize}
+  \end{definition}
+  %
+  We can now go on defining the theorem using the above definitions.
 
   \begin{theorem}[Translation]
     \leavevmode

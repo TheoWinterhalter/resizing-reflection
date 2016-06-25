@@ -101,26 +101,10 @@
 \DeclareMathOperator{\seq}{\mathbf{seq}}
 \DeclareMathOperator{\mA}{\mathbf{A}}
 \DeclareMathOperator{\mB}{\mathbf{B}}
+\DeclareMathOperator{\me}{\mathbf{e}}
 \DeclareMathOperator{\mR}{\mathbf{R}}
 \newcommand\sA{s_{\mA}}
 \newcommand\sB{s_{\mB}}
 \DeclareMathOperator{\inj}{\mathbf{inj}}
 \DeclareMathOperator{\proj}{\mathbf{proj}}
-
-% Making my own symbols (thanks StackOverflow)
-\usepackage{mathabx}
-
-\makeatletter
-\newcommand\incircbin
-{%
-  \mathpalette\@incircbin
-}
-\newcommand\@incircbin[2]
-{%
-  \mathbin%
-  {%
-    \ooalign{\hidewidth$#1#2$\hidewidth\crcr$#1\ovoid$}%
-  }%
-}
-\newcommand{\oeq}{\incircbin{=}}
-\makeatother
+\DeclareMathOperator{\msigma}{\pmb{\bm{\sigma}}}
