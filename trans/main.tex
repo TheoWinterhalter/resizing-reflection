@@ -215,8 +215,30 @@
            }{\Gamma \derr \lambda x:A_1.b_1 = \lambda x:A_2.b_2 : \Pi x:A_1.B
            }{(s_1,s_2,s_3)}
       \end{mathc}
-      \meta{It seems that if they give me a translation of $\lambda x:A_1.b_1$,
-      I cannot deduce one of $A_1$ (at least not that easily).}
+      By induction hypothesis, there are $\Gamma',A'_1,A'_2,t_1$ translations
+      and $h$ such that $\Gamma' \dere h_1 : \Id t_1\ A'_1\ A'_2$.
+      Thus, $\Gamma' \dere A'_1 : t_1$, and by lemma~\ref{lem:transleq}
+      (noting that any sort is a translation of itself (modulo injection))
+      we have $e_1$ such that $\Gamma' \dere e_1 : \Id s_4\ t_1\ s_1$ and
+      then $\Gamma' \dere (e_1)_*\ A'_1 : s_1$.
+      $\Gamma', x : (e_1)_*\ A'_1$ is a well-formed translation of
+      $\Gamma, x:A$. We will write it $\Delta$ for short.
+
+      We can instantiate the second hypothesis to get
+      $\Delta \dere h_2 : \Id B'\ b'_1\ b'_2$ and $\Delta \dere B'' : t_2$.
+      By lemma~\ref{lem:transleq}, we have $e_2,e_3$ such that
+      $\Delta \dere e_2 : \Id s_5\ t_2\ s_2$ and
+      $\Delta \dere (e_3)_* : B' \to (e_2)_*\ B''$.
+      We finally have
+      \[
+        \Gamma' \dere ?? : \Id (\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B'')\ %
+        (\lambda (x : (e_1)_*\ A'_1). (e_3)_*\ b'_1)\ ??.
+      \]
+
+      \meta{What to do? The translations we want are
+      $\lambda (x : (e_1)_*\ A'_1). b'_1$, $\lambda (x : (e_1)_*\ A'_2). b'_2$,
+      and $\Pi (x : (e_1)_*\ A'_1). B'$, but the second $\lambda$
+      does not have the right type...}
     \end{caselist}
   \end{proof}
 
