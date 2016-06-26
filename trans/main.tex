@@ -102,42 +102,42 @@
     For any context $\dere \Gamma$ we define the notion of $\Gamma$-translation
     of a term $u$ (in PTSe) by induction on $u$.
     \begin{itemize}
-      \item $t$ is a $\Gamma$-translation of $s$ if $\Gamma \dere t \sigma = s$.
+      \item $t$ is a $\Gamma$-translation of $s$ if
+            $\Gamma \msigma \dere t \msigma = s$.
       \item $t$ is a $\Gamma$-translation of $\Pi x:A.B$ if
-            $\Gamma \dere t \sigma = \Pi x:A'.B'$ where $A'$ is a
+            $\Gamma \msigma \dere t \msigma = \Pi x:A'.B'$ where $A'$ is a
             $\Gamma$-translation of $A$ and $B'$ is a
             $(\Gamma, x:A')$-translation of $B$.
       \item $t$ is a $\Gamma$-translation of $\Id A\ u\ v$ if
-            $\Gamma \dere t \sigma = \Id A'\ u'\ v'$ where $A',u',v'$ are
-            $\Gamma$-translations of $A,u,v$ respectively.
-      \item $t$ is a $\Gamma$-translation of $x$ if $\Gamma \dere t \sigma = x$.
+            $\Gamma \msigma \dere t \msigma = \Id A'\ u'\ v'$ where $A',u',v'$
+            are $\Gamma$-translations of $A,u,v$ respectively.
+      \item $t$ is a $\Gamma$-translation of $x$ if
+            $\Gamma \msigma \dere t \msigma = x$.
       \item $t$ is a $\Gamma$-translation of $\lambda x:A.b$ if
-            $\Gamma \dere t \sigma = \lambda x:A'.b'$ where $A'$ is a
+            $\Gamma \msigma \dere t \msigma = \lambda x:A'.b'$ where $A'$ is a
             $\Gamma$-translation of $A$ and $b'$ is a
             $(\Gamma, x:A')$-translation of $b$.
       \item $t$ is a $\Gamma$-translation of $a\ b$ if
-            $\Gamma \dere t \sigma = a'\ b'$ where $a',b'$ are
+            $\Gamma \msigma \dere t \msigma = a'\ b'$ where $a',b'$ are
             $\Gamma$-translations of $a,b$ respectively.
       \item $t$ is a $\Gamma$-tanslation of $\refl(A,u)$ if
-            $\Gamma \dere t \sigma = \refl(A',u')$ where $A',u'$ are
+            $\Gamma \msigma \dere t \msigma = \refl(A',u')$ where $A',u'$ are
             $\Gamma$-translations of $A,u$ respectively.
       \item \sloppy
             $t$ is a $\Gamma$-tanslation of $\J(A,C,b,u,v,p)$ if
-            $\Gamma \dere t \sigma = \J(A',C',b',u',v',p')$ where
+            $\Gamma \msigma \dere t \msigma = \J(A',C',b',u',v',p')$ where
             $A',C',b',u',v',p'$ are $\Gamma$-translations of
             $A,C,b,u,v,p$ respectively.
       \item $t$ is a $\Gamma$-translation of $\mR$ if
-            $\Gamma \dere t \sigma = \mA$.
+            $\Gamma \msigma \dere t \msigma = \mA$.
       \item $t$ is a $\Gamma$-translation of $\inj(u)$ if
-            $\Gamma \dere t \sigma = u'$ where $u'$ is a $\Gamma$-translation
-            of $u$.
+            $\Gamma \msigma \dere t \msigma = u'$ where $u'$ is a
+            $\Gamma$-translation of $u$.
       \item $t$ is a $\Gamma$-translation of $\proj(u)$ if
-            $\Gamma \dere t \sigma = u'$ where $u'$ is a $\Gamma$-translation
-            of $u$.
+            $\Gamma \msigma \dere t \msigma = u'$ where $u'$ is a
+            $\Gamma$-translation of $u$.
     \end{itemize}
   \end{definition}
-
-  \meta{Shouldn't the $\msigma$ be in the context as well??}
 
   \begin{definition}[Context Translation]
     We define translations of a context $\Gamma$ by induction on $\Gamma$:
@@ -160,8 +160,10 @@
   \end{lemma}
 
   \begin{proof}
-    Formally we prove by induction that $\Gamma \dere t \msigma = t' \msigma$
-    meaning $\Gamma \dere t \msigma = t' \msigma : T\msigma$ for some $T$
+    Formally we prove by induction that
+    $\Gamma \msigma \dere t \msigma = t' \msigma$
+    meaning $\Gamma \msigma \dere t \msigma = t' \msigma : T\msigma$ for some
+    $T$
     (\meta{This is only true if $t$ and $t'$ can have the same type, we should
     precise who is the type in the definition of translation then.
     There is also the problem of having a type under the substitution!}).
