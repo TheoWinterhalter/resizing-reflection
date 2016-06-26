@@ -238,22 +238,31 @@
       $\Delta \dere e_2 : \Id s_5\ t_2\ s_2$ and
       $\Delta \dere (e_3)_* : B' \to (e_2)_*\ B''$.
 
-      The problem is that $\lambda (x : (e_1)_*\ A'_2). (e_3)_*\ b'_2$ has type
+      The problem is that
+      \[
+        \lambda (x : (e_1)_*\ A'_2). (e_3)_*\ b'_2[x := ((e_1)_* (h_1\inv))_*\ x]
+      \]
+      has type
       $\Pi (x : (e_1)_*\ A'_2). (e_2)_*\ B''$ instead of
-      $\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B''$ (\meta{It's acutally not even
-      well-typed as $b'_2$ mentions a $x$ in $(e_1)_*\ A'_1$! But wouldn't
-      a substitution $[x := ((e_1)_* (h_1\inv))_*\ x]$ corrupt the translation
-      property? -- It seems to work.})
+      $\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B''$.
       However these two types are equal thanks to $h_1$.
-      \meta{We could explicit it, but everyone should be convinced. We can then
+      (We could explicit it, but everyone should be convinced. We can then
       transport the whole $\lambda$ expression, we keep the translation
-      property and thus equality by destructing $e$}.
+      property and thus equality by destructing $e$).
 
       We finally have
+      $\Gamma' \dere e_5 : \Id T\ u_1\ u_2$ for some $e_4,e_5$,
+      where
       \[
-        \Gamma' \dere ?? : \Id (\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B'')\ %
-        (\lambda (x : (e_1)_*\ A'_1). (e_3)_*\ b'_1)\ ??.
+        \begin{array}{l@{~}l}
+          T   &:= \Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B'' \\
+          u_1 &:= \lambda (x : (e_1)_*\ A'_1). (e_3)_*\ b'_1 \\
+          u_2 &:= (e_4)_*\ %
+                   (\lambda (x : (e_1)_*\ A'_2).
+                    (e_3)_*\ b'_2[x := ((e_1)_* (h_1\inv))_*\ x])
+        \end{array}
       \]
+      And everything behaves well under $\msigma$.
 
       \nextcase
       \begin{mathc}
