@@ -72,6 +72,14 @@
       }{\Gamma \derr \mR : \sB}
     \qquad
     \ru{\Gamma \derr t : \mA
+      }{\Gamma \derr \inj(t) : \mR}
+    \qquad
+    \ru{\Gamma \derr t : \mR
+      }{\Gamma \derr \proj(t) : \mA}
+  \end{mathc}
+
+  \begin{mathc}
+    \ru{\Gamma \derr t : \mA
       }{\Gamma \derr \proj(\inj(t)) = t : \mA}
     \qquad
     \ru{\Gamma \derr t : \mR
@@ -246,6 +254,27 @@
         \Gamma' \dere ?? : \Id (\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B'')\ %
         (\lambda (x : (e_1)_*\ A'_1). (e_3)_*\ b'_1)\ ??.
       \]
+
+      \nextcase
+      \begin{mathc}
+        \ru{\derr \Gamma
+          }{\Gamma \derr \mR : \sB}
+      \end{mathc}
+      By induction hypothesis, there exists $\Gamma'$ a well-formed translation
+      of $\Gamma$. And for any such translation, $\Gamma' \dere \mB : \sB$
+      which is a valid translation.
+
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr t : \mA
+          }{\Gamma \derr \inj(t) : \mR}
+      \end{mathc}
+      By induction hypothesis, we have $\Gamma' \dere t' : A'$.
+      Since $\mA$ and $A'$ can be equated (lemma~\ref{lem:transleq}),
+      we have a transport $h_* : A' \to \mA$, so
+      $\Gamma' \dere h_*\ t' : \mA$ and thus
+      $\Gamma' \dere \me_*\ (h_*\ t') : \mB$ which gives us a desired
+      translation.
     \end{caselist}
   \end{proof}
 
