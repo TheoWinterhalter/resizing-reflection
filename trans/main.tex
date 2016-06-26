@@ -229,16 +229,23 @@
       By lemma~\ref{lem:transleq}, we have $e_2,e_3$ such that
       $\Delta \dere e_2 : \Id s_5\ t_2\ s_2$ and
       $\Delta \dere (e_3)_* : B' \to (e_2)_*\ B''$.
+
+      The problem is that $\lambda (x : (e_1)_*\ A'_2). (e_3)_*\ b'_2$ has type
+      $\Pi (x : (e_1)_*\ A'_2). (e_2)_*\ B''$ instead of
+      $\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B''$ (\meta{It's acutally not even
+      well-typed as $b'_2$ mentions a $x$ in $(e_1)_*\ A'_1$! But wouldn't
+      a substitution $[x := ((e_1)_* (h_1\inv))_*\ x]$ corrupt the translation
+      property? -- It seems to work.})
+      However these two types are equal thanks to $h_1$.
+      \meta{We could explicit it, but everyone should be convinced. We can then
+      transport the whole $\lambda$ expression, we keep the translation
+      property and thus equality by destructing $e$}.
+
       We finally have
       \[
         \Gamma' \dere ?? : \Id (\Pi (x : (e_1)_*\ A'_1). (e_2)_*\ B'')\ %
         (\lambda (x : (e_1)_*\ A'_1). (e_3)_*\ b'_1)\ ??.
       \]
-
-      \meta{What to do? The translations we want are
-      $\lambda (x : (e_1)_*\ A'_1). b'_1$, $\lambda (x : (e_1)_*\ A'_2). b'_2$,
-      and $\Pi (x : (e_1)_*\ A'_1). B'$, but the second $\lambda$
-      does not have the right type...}
     \end{caselist}
   \end{proof}
 
