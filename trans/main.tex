@@ -154,19 +154,17 @@
 
   \begin{lemma}[Equality of translations]
     \label{lem:transleq}
-    If $t$ and $t'$ are both $\Gamma$-translations of the same term $u$ then
-    there exists $A$ and $e$ such that $\Gamma \dere e : \Id A\ t\ t'$.
-    \meta{Besides, $e\msigma$ is convertible to $\refl$ (say it explicitely).}
+    If $t$ and $t'$ are both $\Gamma$-translations of the same term $u$ and if
+    there exists $A$ such that $\Gamma \dere t, t' : T$ then there exists $e$
+    such that $\Gamma \dere e : \Id T\ t\ t'$.
+    %
+    Besides, $\Gamma \msigma \dere e \msigma = \refl(T\msigma,t\msigma)$.
   \end{lemma}
 
   \begin{proof}
     Formally we prove by induction that
     $\Gamma \msigma \dere t \msigma = t' \msigma$
-    meaning $\Gamma \msigma \dere t \msigma = t' \msigma : T\msigma$ for some
-    $T$
-    (\meta{This is only true if $t$ and $t'$ can have the same type, we should
-    precise who is the type in the definition of translation then.
-    There is also the problem of having a type under the substitution!}).
+    meaning $\Gamma \msigma \dere t \msigma = t' \msigma : T\msigma$.
     Then we have
     \[\Gamma \dere \J(s,\lambda \mA, \mB, \me. \Id T\ t\ t',
     \lambda \mA. \refl(T\msigma,t\msigma),\mA,\mB,\me) : \Id T\ t\ t'.\]
@@ -174,7 +172,7 @@
     $\lambda$ which may not be really pretty, but you have to admit it's easier
     written this way, basically, the only thing this does is destructing
     equality $\me$ (as one would do in Coq) and then apply reflexivity).
-    \meta{Under $\msigma$, $\me$ becomes $\refl$, so does the whole $\J$.}
+    Under $\msigma$, $\me$ becomes $\refl$, so does the whole $\J$.
   \end{proof}
 
 
@@ -214,8 +212,7 @@
       we thus have $A'',B',t$ that are $\Gamma'$-translations of $A,B,s$ and
       $h$ such that $\Gamma' \dere h : \Id t\ A''\ B'$.
       By lemma~\ref{lem:transleq}, there is $h'$ such that
-      $\Gamma' \dere h' : \Id s'\ A'\ A''$ for some $s'$ (\meta{at some point
-      we should say where it comes from}).
+      $\Gamma' \dere h' : \Id s'\ A'\ A''$ for some $s'$.
       Then $\Gamma' \dere (h \cons h')_*\ a' : B'$ with everything being
       $\Gamma'$-translations.
 
