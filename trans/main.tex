@@ -181,6 +181,7 @@
   We can now go on defining the theorem using the above definitions.
 
   \begin{theorem}[Translation]
+    \label{thm:transl}
     \leavevmode
     \begin{enumerate}
       \item If $\Gamma \derr t : T$ then there exists $\Gamma'$ a well-formed
@@ -287,6 +288,22 @@
       $\Gamma' \dere \me_*\ (h_*\ t') : \mB$ which gives us a desired
       translation.
     \end{caselist}
+  \end{proof}
+
+  \begin{theorem}[Consistency]
+    The least type is not inhabited: $X : \Type_0 \nvdash_r t : X$.
+  \end{theorem}
+
+  \begin{proof}
+    Let's write $\Gamma := X : \Type_0$ and assume $\Gamma \derr t : X$.
+    Thus, by theorem~\ref{thm:transl}, we have $\Gamma \dere t' : T$ with
+    the right translations (we indeed can choose whatever we want for the
+    translation of $\Gamma$ and $\Gamma$ itself is valid).
+    \Wlog, by lemma~\ref{lem:transleq}, we can assume
+    $\Gamma \dere t' : X$ (by applying a transport to $t'$).
+    Now, assuming that PTSe is itself consistent (we may rely on Coq consistency
+    for instance), this is a contradiction.
+    Thus, our system with resizing rules is consistent.
   \end{proof}
 
 \end{document}
