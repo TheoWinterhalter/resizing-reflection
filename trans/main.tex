@@ -244,6 +244,22 @@
         Thus $\Gamma' \dere x : A'$ is a valid translation.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\Gamma \derr A : s_1 \qquad
+               \Gamma, x : A \derr B : s_2
+             }{\Gamma \derr \Pi x:A.B : s_3
+             }{(s_1,s_2,s_3)}
+        \end{mathc}
+        By induction hypothesis, $\Gamma' \dere A' : t_1$ is a valid
+        translation.
+        By lemma~\ref{lem:transleq}, $\Gamma' \dere A' : s_1$ (up to transport).
+        Thus, $\dere \Gamma', x : A'$, and so, by second induction hypothesis,
+        $\Gamma', x:A' \dere B' : t_2$, but likewise, we assume we have
+        $\Gamma', x:A' \dere B' : s_2$ instead.
+        So $\Gamma' \dere \Pi x:A'.B' : s_3$ is a valid translation.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
