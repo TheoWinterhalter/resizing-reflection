@@ -390,6 +390,19 @@
         So $\Gamma' \dere h_1 \cons h_2 : \Id A'\ a'_1\ a'_3$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\Gamma \derr a : A : s_1 \qquad
+               \Gamma, x : A \derr b : B : s_2
+             }{\Gamma \derr (\lambda x:A.b)\ a = b[x := a] : B[x := a]
+             }{(s_1,s_2,s_3)}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere a' : A' : s_1$ and
+        $\Gamma', x:A' \dere b' : B' : s_2$, then
+        $\Gamma' \dere \refl(B'[x := a'], b'[x := a']) : \Id B'[x := a']\ %
+        ((\lambda x:A'.b')\ a')\ b'[x := a']$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
