@@ -231,6 +231,16 @@
 
       \nextcase
       \begin{mathc}
+        \rux{\derr \Gamma
+           }{\Gamma \derr x : A
+           }{(x : A) \in \Gamma}
+      \end{mathc}
+      By induction hypothesis, $\dere \Gamma'$ is a translation and
+      $(x : A') \in \Gamma'$ for $A'$ a translation of $A$.
+      Thus $\Gamma' \dere x : A'$ is a valid translation.
+
+      \nextcase
+      \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
             \Gamma \derr A = B : s
           }{\Gamma \derr a : B}
