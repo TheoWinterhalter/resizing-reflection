@@ -428,6 +428,15 @@
       $\Gamma' \dere h_*\ t' : \mA$ and thus
       $\Gamma' \dere \me_*\ (h_*\ t') : \mB$ which gives us a desired
       translation.
+
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr t : \mR
+          }{\Gamma \derr \proj(t) : \mA}
+      \end{mathc}
+      By induction hypothesis, $\Gamma' \dere t' : R'$.
+      We can safely assume $\Gamma' \dere t' : \mB$ and thus
+      $\Gamma' \dere {e\inv}_*\ t' : \mA$.
     \end{caselist}
   \end{proof}
 
