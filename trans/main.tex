@@ -324,6 +324,24 @@
         $\Gamma' \dere \refl(A',u') : \Id A'\ u'\ u'$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \tru{\Gamma \derr A : s \qquad
+               \Gamma \derr C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
+             }{\Gamma \derr b : \Pi x:A. C\ x\ x\ \refl(A,x)
+             }{\Gamma \derr u, v : A \qquad
+               \Gamma \derr p : \Id A\ u\ v
+             }{\Gamma \derr \J (A,C,b,u,v,p) : C\ u\ v\ p}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere A' : s$ and
+        $\Gamma' \dere C' : \Pi x:A'. \Pi y:A'. (\Id A'\ x\ y) \to s'$ and
+        $\Gamma' \dere b' : \Pi x:A'. C'\ x\ x\ \refl(A',x)$ and
+        $\Gamma' \dere u' : A'$ and $\Gamma' \dere v : A'$ and
+        $\Gamma' \dere p : \Id A'\ u'\ v'$ (the trick can be used as long as we
+        have a valid translation, which we have in all of the cases above).
+        Thus $\Gamma' \dere \J(A',C',b',u',v',p') : C'\ u'\ v'\ p'$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
