@@ -164,7 +164,8 @@
   \begin{proof}
     Formally we prove by induction that
     $\Gamma \msigma \dere t \msigma = t' \msigma$
-    meaning $\Gamma \msigma \dere t \msigma = t' \msigma : T\msigma$.
+    meaning $\Gamma \msigma \dere t \msigma = t' \msigma : T\msigma$
+    (to do so we rely on unicity of typing).
     Then we have
     \[\Gamma \dere \J(s,\lambda \mA, \mB, \me. \Id T\ t\ t',
     \lambda \mA. \refl(T\msigma,t\msigma),\mA,\mB,\me) : \Id T\ t\ t'.\]
