@@ -512,6 +512,41 @@
         like the one from the precedent case.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \tru{\Gamma \derr A = A' : s \qquad
+               \Gamma \derr C = C' : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
+             }{\Gamma \derr b = b' : \Pi x:A. C\ x\ x\ \refl(A,x)
+             }{\Gamma \derr u = u' : A \qquad
+               \Gamma \derr v = v' : A \qquad
+               \Gamma \derr p = p' : \Id A\ u\ v
+             }{\Gamma \derr \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') :
+               C\ u\ v\ p}
+        \end{mathc}
+        \meta{TODO}
+      \end{graycase}
+
+      \begin{graycase}
+        \begin{mathc}
+          \dru{\Gamma \derr A : s \qquad
+               \Gamma \derr C : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
+             }{\Gamma \derr b : \Pi x:A. C\ x\ x\ \refl(A,x) \qquad
+               \Gamma \derr u : A
+             }{\Gamma \derr \J (A,C,b,u,u,\refl(A,u)) = b\ u :
+               C\ u\ u\ \refl(A,u)}
+        \end{mathc}
+        \meta{TODO}
+      \end{graycase}
+
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr a_1 = a_2 : A_1 \qquad
+              \Gamma \derr A_1 = A_2 : s
+            }{\Gamma \derr a_1 = a_2 : A_2}
+        \end{mathc}
+        \meta{TODO}
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\derr \Gamma
@@ -541,6 +576,20 @@
       By induction hypothesis, $\Gamma' \dere t' : R'$.
       We can safely assume $\Gamma' \dere t' : \mB$ and thus
       $\Gamma' \dere {e\inv}_*\ t' : \mA$.
+
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr t : \mA
+          }{\Gamma \derr \proj(\inj(t)) = t : \mA}
+      \end{mathc}
+      \meta{TODO}
+
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr t : \mR
+          }{\Gamma \derr \inj(\proj(t)) = t : \mR}
+      \end{mathc}
+      \meta{TODO}
     \end{caselist}
   \end{proof}
 
