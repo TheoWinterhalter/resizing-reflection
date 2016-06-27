@@ -369,6 +369,15 @@
         $\Gamma' \dere \refl(A',a') : \Id A'\ a'\ a'$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr a_1 = a_2 : A
+            }{\Gamma \derr a_2 = a_1 : A}
+        \end{mathc}
+        By induction hypothesis, $\Gamma' \dere h : \Id A'\ a'_1\ a'_2$.
+        Thus $\Gamma' \dere h\inv : \Id A'\ a'_2\ a'_1$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
