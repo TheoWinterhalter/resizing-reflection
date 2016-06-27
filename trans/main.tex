@@ -498,6 +498,20 @@
         (\Id A'_2\ ({h_A}_*\ u'_2)\ ({h_A}_*\ v'_2))$ for some $h$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr A_1 = A_2 : s \qquad
+              \Gamma \derr u_1 = u_2 : A_1
+            }{\Gamma \derr \refl(A_1,u_1) = \refl(A_2,u_2) : \Id A_1\ u_1\ u_1}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$
+        and $\Gamma' \dere h_u : \Id A'_1\ u'_1\ u'_2$.
+        This case is treated as the previous one by saying there is an $h$
+        such that $\Gamma' \dere h : \Id (\Id A'_1\ u'_1\ u'_1)\ %
+        \refl(A'_1,u'_1)\ (h'_*\ \refl(A'_2,u'_2))$ where $h'$ is an equality
+        like the one from the precedent case.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\derr \Gamma
