@@ -203,6 +203,25 @@
     \begin{caselist}
       \nextcase
       \begin{mathc}
+        \ru{}{\derr \cdot}
+      \end{mathc}
+      We have $\dere \cdot$, which corresponds to a valid translation.
+
+      \nextcase
+      \begin{mathc}
+        \rux{\Gamma \derr A : s
+           }{\derr \Gamma, x ; A
+           }{x \notin \dom \Gamma}
+      \end{mathc}
+      By induction hypothesis, we have $\Gamma' \dere A' : t$ a valid
+      translation. By lemma~\ref{lem:transleq}, we have $\Gamma' \dere A'' : s$
+      which is still a valid translation. So $\dere \Gamma', x : A''$ and
+      $\Gamma', x : A''$ is a translation of $\Gamma, x : A$.
+      (Note: Being a translation means that $x \notin \Gamma$ ensures
+      $x \notin \Gamma'$).
+
+      \nextcase
+      \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
             \Gamma \derr A = B : s
           }{\Gamma \derr a : B}
