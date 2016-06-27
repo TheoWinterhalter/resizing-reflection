@@ -482,6 +482,22 @@
         transport around $F'_2\ a'_2$, but we won't state anything explicitely.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr A_1 = A_2 : s \qquad
+              \Gamma \derr u_1 = u_2 : A_1 \qquad
+              \Gamma \derr v_1 = v_2 : A_1
+            }{\Gamma \derr \Id A_1\ u_1\ v_1 = \Id A_2\ u_2\ v_2 : s}
+        \end{mathc}
+        By induction hypothesis, $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$
+        and $\Gamma' \dere h_u : \Id A'_1\ u'_1\ u'_2$ and
+        $\Gamma' \dere h_v : \Id A'_1\ v'_1\ v'_2$.
+        Destructing these three equalities \emph{is all it takes\footnote{Thus
+        avoiding to do it \emph{in extenso} here.}} to prove
+        $\Gamma' \dere h : \Id s\ (\Id A'_1\ u'_1\ v'_1)\ %
+        (\Id A'_2\ ({h_A}_*\ u'_2)\ ({h_A}_*\ v'_2))$ for some $h$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\derr \Gamma
