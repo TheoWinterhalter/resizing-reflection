@@ -69,6 +69,8 @@
   there is $\me$ such that $\der \me : \Id s\ \mA\ \mB$ for some $s$
   (note: we will only treat the case where this holds in the empty context,
   but it should scale easily).
+  We will write $\eta$ and $\epsilon$ for the section and retraction (even
+  though they can be explicited with $\me$).
 
   We then extend this system with $\mR$, $\inj(t)$ and $\proj(t)$ as well as
   the following rules (which we will note with $\derr$ instead of $\dere$).
@@ -594,14 +596,16 @@
         \ru{\Gamma \derr t : \mA
           }{\Gamma \derr \proj(\inj(t)) = t : \mA}
       \end{mathc}
-      \meta{TODO}
+      By induction hypothesis, $\Gamma' \dere t' : \mA$.
+      Then $\eta\ t'$ is the proof we seek.
 
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr t : \mR
           }{\Gamma \derr \inj(\proj(t)) = t : \mR}
       \end{mathc}
-      \meta{TODO}
+      By induction hypothesis, $\Gamma' \dere t' : \mB$.
+      Then $\epsilon\ t'$ is the proof we seek.
     \end{caselist}
   \end{proof}
 
