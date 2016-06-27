@@ -378,6 +378,18 @@
         Thus $\Gamma' \dere h\inv : \Id A'\ a'_2\ a'_1$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr a_1 = a_2 : A \qquad
+              \Gamma \derr a_2 = a_3 : A
+            }{\Gamma \derr a_1 = a_3 : A}
+        \end{mathc}
+        By induction hyoptheses (and using the ``trick''),
+        $\Gamma' \dere h_1 : \Id A'\ a'_1\ a'_2$ and
+        $\Gamma' \dere h_2 : \Id A'\ a'_2\ a'_3$.
+        So $\Gamma' \dere h_1 \cons h_2 : \Id A'\ a'_1\ a'_3$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
