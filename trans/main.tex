@@ -299,6 +299,20 @@
                       B'[x := h_*\ a'].
       \]
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr A : s \qquad
+              \Gamma \derr u : A \qquad
+              \Gamma \derr v : A
+            }{\Gamma \derr Id A\ u\ v : s}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere A' : s$ (using the trick
+        aforementioned), $\Gamma' \dere u' : A_u$ and $\Gamma' \dere v' : A_v$,
+        using the same trick again, we assume $\Gamma' \dere u' : A'$ and
+        $\Gamma' \dere v' : A'$.
+        Thus, $\Gamma' \dere \Id A'\ u'\ v' : s$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
