@@ -313,6 +313,17 @@
         Thus, $\Gamma' \dere \Id A'\ u'\ v' : s$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr A : s \qquad
+              \Gamma \derr u : A
+            }{\Gamma \derr \refl(A,u) : \Id A\ u\ u}
+        \end{mathc}
+        By induction hypothesis, $\Gamma' \dere A' : s$ and
+        $\Gamma' \dere u' : A'$ so
+        $\Gamma' \dere \refl(A',u') : \Id A'\ u'\ u'$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
