@@ -360,6 +360,15 @@
       Then $\Gamma' \dere (h \cons h')_*\ a' : B'$ with everything being
       $\Gamma'$-translations.
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr a : A
+            }{\Gamma \derr a = a : A}
+        \end{mathc}
+        By induction hypothesis, $\Gamma' \dere a' : A'$ and thus
+        $\Gamma' \dere \refl(A',a') : \Id A'\ a'\ a'$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
