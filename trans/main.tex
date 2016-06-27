@@ -520,16 +520,19 @@
 
       \begin{graycase}
         \begin{mathc}
-          \tru{\Gamma \derr A = A' : s \qquad
-               \Gamma \derr C = C' : \Pi x:A. \Pi y:A. (\Id A\ x\ y) \to s'
-             }{\Gamma \derr b = b' : \Pi x:A. C\ x\ x\ \refl(A,x)
-             }{\Gamma \derr u = u' : A \qquad
-               \Gamma \derr v = v' : A \qquad
-               \Gamma \derr p = p' : \Id A\ u\ v
-             }{\Gamma \derr \J (A,C,b,u,v,p) = \J (A',C',b',u',v',p') :
-               C\ u\ v\ p}
+          \tru{\Gamma \derr A_1 = A_2 : s \qquad
+               \Gamma \derr C_1 = C_2 : \Pi x:A_1. \Pi y:A_1. (\Id A_1\ x\ y) \to s'
+             }{\Gamma \derr b_1 = b_2 : \Pi x:A_1. C_1\ x\ x\ \refl(A_1,x)
+             }{\Gamma \derr u_1 = u_2 : A_1 \qquad
+               \Gamma \derr v_1 = v_2 : A_1 \qquad
+               \Gamma \derr p_1 = p_2 : \Id A_1\ u_1\ v_1
+             }{\Gamma \derr \J(A_1,C_1,b_1,u_1,v_1,p_1) =
+               \J(A_2,C_2,b_2,u_2,v_2,p_2) :
+               C_1\ u_1\ v_1\ p_1}
         \end{mathc}
-        \meta{TODO}
+        This is again treated the same way, with a transport on the right to
+        make everything
+        type\footnote{I don't think anyone would read it anyway.}.
       \end{graycase}
 
       \begin{graycase}
