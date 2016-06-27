@@ -260,6 +260,24 @@
         So $\Gamma' \dere \Pi x:A'.B' : s_3$ is a valid translation.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\Gamma \derr A : s_1 \qquad
+               \Gamma, x:A \derr b : B : s_2
+             }{\Gamma \derr \lambda x:A.b : \Pi x:A.B
+             }{(s_1,s_2,s_3)}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere A' : s_1$ (implicitely using
+        lemma~\ref{lem:transleq}) and $\Gamma', x:A' \dere b' : B''$ and
+        $\Gamma', x:A' \dere B' : s_2$.
+        Using a transport\footnote{It is alright to assume that $B'$ and $B''$
+        can have the same type (to use lemma~\ref{lem:transleq})
+        thanks to cumulativity, combined with the fact that being on the right
+        of colons, imply you can be typed by a sort.},
+        we can assume $\Gamma', x:A' \dere b' : B'$ instead.
+        Now, $\Gamma' \dere \lambda x:A'.b' : \Pi x:A'.B'$.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
