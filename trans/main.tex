@@ -403,6 +403,20 @@
         ((\lambda x:A'.b')\ a')\ b'[x := a']$.
       \end{graycase}
 
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
+               \Gamma, x : A_1 \derr B_1 = B_2 : s_2
+             }{\Gamma \derr \Pi x:A_1.B_1 = \Pi x:A_2.B_2
+             }{(s_1,s_2,s_3)}
+        \end{mathc}
+        By induction hypotheses, $\Gamma' \dere h_1 : \Id s_1\ A'_1\ A'_2$
+        and $\Gamma', x:A'_1 \dere h_2 : \Id s_2\ B'_1\ B'_2$.
+        Thus,
+        $\Gamma' \dere h_3 : \Id s_3\ (\Pi x:A'_1.B'_1)\ (\Pi x:A'_2.B'_2)$
+        for some $h_3$ that we won't state out explicitely.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \rux{\Gamma \derr A_1 = A_2 : s_1 \qquad
