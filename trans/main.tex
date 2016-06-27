@@ -287,7 +287,17 @@
       \end{mathc}
       By induction hypotheses, $\Gamma' \dere F' : T$ and
       $\Gamma' \dere a' : A'$.
-      \meta{TODO}
+      Since $T$ is a translation of $\Pi x:A.B$, by definition, there exist
+      $A''$ a $\Gamma'$-translation of $A$ and
+      $B'$ a $(\Gamma', x:A'')$-translation of $B$.
+      By lemma~\ref{lem:transleq}, we have $\Gamma' \dere h_* : A' \to A''$.
+      The idea now is to ``destruct'' $\me$ so that $F'$ has a $\Pi$-type
+      of domain the type of $a$. The way to do it is to use $\J$ as follows:
+      \[
+        \Gamma' \dere \J(s,\lambda \mA,\mB,\me. B'[x := h_*\ a'],
+                         \lambda \mA. F'\msigma\ a'\msigma, \mA, \mB, \me) :
+                      B'[x := h_*\ a'].
+      \]
 
       \nextcase
       \begin{mathc}
