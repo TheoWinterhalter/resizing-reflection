@@ -105,36 +105,37 @@
       \item $t$ is a $\Gamma$-translation of $s$ if
             $\Gamma \msigma \dere t \msigma = s$.
       \item $t$ is a $\Gamma$-translation of $\Pi x:A.B$ if
-            $\Gamma \msigma \dere t \msigma = \Pi x:A'.B'$ where $A'$ is a
-            $\Gamma$-translation of $A$ and $B'$ is a
+            $\Gamma \msigma \dere t \msigma = \Pi x:A'\msigma.B'\msigma$ where
+            $A'$ is a $\Gamma$-translation of $A$ and $B'$ is a
             $(\Gamma, x:A')$-translation of $B$.
       \item $t$ is a $\Gamma$-translation of $\Id A\ u\ v$ if
-            $\Gamma \msigma \dere t \msigma = \Id A'\ u'\ v'$ where $A',u',v'$
+            $\Gamma \msigma \dere t \msigma = \Id A'\msigma\ u'\msigma\ %
+            v'\msigma$ where $A',u',v'$
             are $\Gamma$-translations of $A,u,v$ respectively.
       \item $t$ is a $\Gamma$-translation of $x$ if
             $\Gamma \msigma \dere t \msigma = x$.
       \item $t$ is a $\Gamma$-translation of $\lambda x:A.b$ if
-            $\Gamma \msigma \dere t \msigma = \lambda x:A'.b'$ where $A'$ is a
-            $\Gamma$-translation of $A$ and $b'$ is a
+            $\Gamma \msigma \dere t \msigma = \lambda x:A'\msigma.b'\msigma$
+            where $A'$ is a $\Gamma$-translation of $A$ and $b'$ is a
             $(\Gamma, x:A')$-translation of $b$.
       \item $t$ is a $\Gamma$-translation of $a\ b$ if
-            $\Gamma \msigma \dere t \msigma = a'\ b'$ where $a',b'$ are
-            $\Gamma$-translations of $a,b$ respectively.
+            $\Gamma \msigma \dere t \msigma = a'\msigma\ b'\msigma$ where
+            $a',b'$ are $\Gamma$-translations of $a,b$ respectively.
       \item $t$ is a $\Gamma$-tanslation of $\refl(A,u)$ if
-            $\Gamma \msigma \dere t \msigma = \refl(A',u')$ where $A',u'$ are
-            $\Gamma$-translations of $A,u$ respectively.
+            $\Gamma \msigma \dere t \msigma = \refl(A'\msigma,u'\msigma)$ where
+            $A',u'$ are $\Gamma$-translations of $A,u$ respectively.
       \item \sloppy
             $t$ is a $\Gamma$-tanslation of $\J(A,C,b,u,v,p)$ if
-            $\Gamma \msigma \dere t \msigma = \J(A',C',b',u',v',p')$ where
-            $A',C',b',u',v',p'$ are $\Gamma$-translations of
+            $\Gamma \msigma \dere t \msigma = \J(A',C',b',u',v',p')\msigma$
+            where $A',C',b',u',v',p'$ are $\Gamma$-translations of
             $A,C,b,u,v,p$ respectively.
       \item $t$ is a $\Gamma$-translation of $\mR$ if
             $\Gamma \msigma \dere t \msigma = \mA$.
       \item $t$ is a $\Gamma$-translation of $\inj(u)$ if
-            $\Gamma \msigma \dere t \msigma = u'$ where $u'$ is a
+            $\Gamma \msigma \dere t \msigma = u'\msigma$ where $u'$ is a
             $\Gamma$-translation of $u$.
       \item $t$ is a $\Gamma$-translation of $\proj(u)$ if
-            $\Gamma \msigma \dere t \msigma = u'$ where $u'$ is a
+            $\Gamma \msigma \dere t \msigma = u'\msigma$ where $u'$ is a
             $\Gamma$-translation of $u$.
     \end{itemize}
   \end{definition}
@@ -277,6 +278,16 @@
         we can assume $\Gamma', x:A' \dere b' : B'$ instead.
         Now, $\Gamma' \dere \lambda x:A'.b' : \Pi x:A'.B'$.
       \end{graycase}
+
+      \nextcase
+      \begin{mathc}
+        \ru{\Gamma \derr F : \Pi x:A.B \qquad
+            \Gamma \derr a : A
+          }{\Gamma \derr F\ a : B[x := a]}
+      \end{mathc}
+      By induction hypotheses, $\Gamma' \dere F' : T$ and
+      $\Gamma' \dere a' : A'$.
+      \meta{TODO}
 
       \nextcase
       \begin{mathc}
