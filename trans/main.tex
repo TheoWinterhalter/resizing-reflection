@@ -544,7 +544,7 @@
              }{\Gamma \derr \J (A,C,b,u,u,\refl(A,u)) = b\ u :
                C\ u\ u\ \refl(A,u)}
         \end{mathc}
-        \meta{TODO}
+        This time, it's basically like $\beta$-reduction, we use $\refl$.
       \end{graycase}
 
       \begin{graycase}
@@ -553,7 +553,10 @@
               \Gamma \derr A_1 = A_2 : s
             }{\Gamma \derr a_1 = a_2 : A_2}
         \end{mathc}
-        \meta{TODO}
+        By induction hypotheses, $\Gamma' \dere h_a : \Id A'_1\ a'_1\ a'_2$
+        and $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$.
+        We easily get $h$ such that $\Gamma' \der h : \Id A'_2\ %
+        ({h_A}_*\ a'_1)\ ({h_A}_*\ a'_2)$.
       \end{graycase}
 
       \nextcase
