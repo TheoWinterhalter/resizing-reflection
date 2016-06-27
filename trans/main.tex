@@ -201,43 +201,48 @@
 
     \leavevmode
     \begin{caselist}
-      \nextcase
-      \begin{mathc}
-        \ru{}{\derr \cdot}
-      \end{mathc}
-      We have $\dere \cdot$, which corresponds to a valid translation.
+      \begin{graycase}
+        \begin{mathc}
+          \ru{}{\derr \cdot}
+        \end{mathc}
+        We have $\dere \cdot$, which corresponds to a valid translation.
+      \end{graycase}
 
-      \nextcase
-      \begin{mathc}
-        \rux{\Gamma \derr A : s
-           }{\derr \Gamma, x ; A
-           }{x \notin \dom \Gamma}
-      \end{mathc}
-      By induction hypothesis, we have $\Gamma' \dere A' : t$ a valid
-      translation. By lemma~\ref{lem:transleq}, we have $\Gamma' \dere A'' : s$
-      which is still a valid translation. So $\dere \Gamma', x : A''$ and
-      $\Gamma', x : A''$ is a translation of $\Gamma, x : A$.
-      (Note: Being a translation means that $x \notin \Gamma$ ensures
-      $x \notin \Gamma'$).
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\Gamma \derr A : s
+             }{\derr \Gamma, x ; A
+             }{x \notin \dom \Gamma}
+        \end{mathc}
+        By induction hypothesis, we have $\Gamma' \dere A' : t$ a valid
+        translation. By lemma~\ref{lem:transleq}, we have
+        $\Gamma' \dere A'' : s$ which is still a valid translation.
+        So $\dere \Gamma', x : A''$ and $\Gamma', x : A''$ is a translation of
+        $\Gamma, x : A$.
+        (Note: Being a translation means that $x \notin \Gamma$ ensures
+        $x \notin \Gamma'$).
+      \end{graycase}
 
-      \nextcase
-      \begin{mathc}
-        \rux{\derr \Gamma
-           }{\Gamma \derr s_1 : s_2
-           }{(s_1,s_2)}
-      \end{mathc}
-      By induction hypothesis, $\dere \Gamma'$ is a translation.
-      And so is $\Gamma' \dere s_1 : s_2$.
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\derr \Gamma
+             }{\Gamma \derr s_1 : s_2
+             }{(s_1,s_2)}
+        \end{mathc}
+        By induction hypothesis, $\dere \Gamma'$ is a translation.
+        And so is $\Gamma' \dere s_1 : s_2$.
+      \end{graycase}
 
-      \nextcase
-      \begin{mathc}
-        \rux{\derr \Gamma
-           }{\Gamma \derr x : A
-           }{(x : A) \in \Gamma}
-      \end{mathc}
-      By induction hypothesis, $\dere \Gamma'$ is a translation and
-      $(x : A') \in \Gamma'$ for $A'$ a translation of $A$.
-      Thus $\Gamma' \dere x : A'$ is a valid translation.
+      \begin{graycase}
+        \begin{mathc}
+          \rux{\derr \Gamma
+             }{\Gamma \derr x : A
+             }{(x : A) \in \Gamma}
+        \end{mathc}
+        By induction hypothesis, $\dere \Gamma'$ is a translation and
+        $(x : A') \in \Gamma'$ for $A'$ a translation of $A$.
+        Thus $\Gamma' \dere x : A'$ is a valid translation.
+      \end{graycase}
 
       \nextcase
       \begin{mathc}

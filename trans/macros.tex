@@ -68,6 +68,12 @@
 
 \newcommand{\nextcase}{\item~}
 
+\newenvironment{graycase}{%
+  \color{gray}%
+  \nextcase%
+}{\ignorespacesafterend%
+}
+
 % Symbols and names
 % \newcommand\Type{\operatorname{Type}}
 \DeclareMathOperator{\Type}{\mathbf{Type}}
