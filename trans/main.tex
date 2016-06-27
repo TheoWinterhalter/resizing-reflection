@@ -222,6 +222,15 @@
 
       \nextcase
       \begin{mathc}
+        \rux{\derr \Gamma
+           }{\Gamma \derr s_1 : s_2
+           }{(s_1,s_2)}
+      \end{mathc}
+      By induction hypothesis, $\dere \Gamma'$ is a translation.
+      And so is $\Gamma' \dere s_1 : s_2$.
+
+      \nextcase
+      \begin{mathc}
         \ru{\Gamma \derr a : A \qquad
             \Gamma \derr A = B : s
           }{\Gamma \derr a : B}
