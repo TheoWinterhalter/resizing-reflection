@@ -465,6 +465,23 @@
       \]
       And everything behaves well under $\msigma$.
 
+      \begin{graycase}
+        \begin{mathc}
+          \ru{\Gamma \derr F_1 = F_2 : \Pi x:A.B \qquad
+              \Gamma \derr a_1 = a_2 : A
+            }{\Gamma \derr F_1\ a_1 = F_2\ a_2 : B[x := a_1]}
+        \end{mathc}
+        By induction hypotheses,
+        $\Gamma' \dere h_1 : \Id (\Pi x:A'.B')\ F'_1\ F'_2$ and
+        $\Gamma' \dere h_2 : \Id A'\ a'_1\ a'_2$ (here we use an elaborate
+        version of the transport trick since the original translation gives us
+        $A'$ and $B'$).
+        The only problem here is that $F'_2\ a'_2$ would have type
+        $B'[x := a'_2]$ instead of $B'[x := a'_1]$ but these two types are equal
+        (as in, there exists an identity proof) so we can conclude with a
+        transport around $F'_2\ a'_2$, but we won't state anything explicitely.
+      \end{graycase}
+
       \nextcase
       \begin{mathc}
         \ru{\derr \Gamma
