@@ -623,7 +623,7 @@
     \end{caselist}
   \end{proof}
 
-  \begin{corollary}[Consistency]
+  \begin{corollary}[Consistency (with respect to $\Sb$)]
     The least type is not inhabited: $X : \Type_0 \nvdash_r t : X$.
   \end{corollary}
 
@@ -634,9 +634,8 @@
     translation of $\Gamma$ and $\Gamma$ itself is valid).
     \Wlog, by lemma~\ref{lem:transleq}, we can assume
     $\Gamma \derb t' : X$ (by applying a transport to $t'$).
-    Now, assuming that PTSe is itself consistent (we may rely on Coq consistency
-    for instance), this is a contradiction.
-    Thus, our system with resizing rules is consistent.
+    Now, assuming that $\Sb$ is itself consistent, this is a contradiction.
+    Thus, our system with resizing rules is consistent (with respect to $\Sb$).
   \end{proof}
 
   \section{Consistency of Other Resizing Rules}
