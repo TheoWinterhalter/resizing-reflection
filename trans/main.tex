@@ -50,7 +50,8 @@
 
   \subsection{Systems}
 
-  This is the syntax of the system in which we start.
+  This is the syntax of the system in which we start, which we will call
+  $\lambda_e$.
 
   \[
     \begin{array}{l@{~}l@{~}l@{~}r@{~}l@{\quad}l}
@@ -75,7 +76,8 @@
   though they can be explicited with $\me$).
 
   We then extend this system with $\mR$, $\inj(t)$ and $\proj(t)$ as well as
-  the following rules (which we will note with $\derr$ instead of $\dere$).
+  the following rules (which we will note with $\derr$ instead of $\dere$)
+  (this one will be called $\lambda_r$).
 
   \begin{mathc}
     \ru{\derr \Gamma
@@ -95,6 +97,12 @@
     \ru{\Gamma \derr t : \mR
       }{\Gamma \derr \inj(\proj(t)) = t : \mR}
   \end{mathc}
+
+  Finally, we define $\lambda_b$ which is an intermediary for the translation
+  with residuals for $\mR$ and $\me$ : $\mbB$ and $\mbe$.
+  This is simply an extension of $\lambda_e$ but where
+  $\mbe : \Id s\ \mA\ \mbB$ and $\mbB$ behaves as $\mB$ but can be abstracted
+  over, meaning we can destruct $\mbe$.
 
   \subsection{Translation for Consistency}
 
