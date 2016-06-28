@@ -463,7 +463,8 @@
 
       The problem is that
       \[
-        \lambda (x : (e_1)_*\ A'_2). (e_3)_*\ b'_2[x := ((e_1)_* (h_1\inv))_*\ x]
+        \lambda (x : (e_1)_*\ A'_2). (e_3)_*\ %
+        b'_2[x := ((e_1)_* (h_1\inv))_*\ x]
       \]
       has type
       $\Pi (x : (e_1)_*\ A'_2). (e_2)_*\ B''$ instead of
@@ -537,7 +538,8 @@
       \begin{graycase}
         \begin{mathc}
           \tru{\Gamma \derr A_1 = A_2 : s \qquad
-               \Gamma \derr C_1 = C_2 : \Pi x:A_1. \Pi y:A_1. (\Id A_1\ x\ y) \to s'
+               \Gamma \derr C_1 = C_2 : \Pi x:A_1. \Pi y:A_1. (\Id A_1\ x\ y)
+               \to s'
              }{\Gamma \derr b_1 = b_2 : \Pi x:A_1. C_1\ x\ x\ \refl(A_1,x)
              }{\Gamma \derr u_1 = u_2 : A_1 \qquad
                \Gamma \derr v_1 = v_2 : A_1 \qquad
@@ -624,7 +626,9 @@
   \end{proof}
 
   \begin{corollary}[Consistency (with respect to $\Sb$)]
-    The least type is not inhabited: $X : \Type_0 \nvdash_r t : X$.
+    \label{cor:cons1}
+    The least type is not inhabited: $X : \Type_0 \nvdash_r t : X$
+    (as long as it is not inhabited in $\Sb$).
   \end{corollary}
 
   \begin{proof}
@@ -636,6 +640,46 @@
     $\Gamma \derb t' : X$ (by applying a transport to $t'$).
     Now, assuming that $\Sb$ is itself consistent, this is a contradiction.
     Thus, our system with resizing rules is consistent (with respect to $\Sb$).
+  \end{proof}
+
+  \subsection{Elimination of Residuals}
+
+  This time, we will translate a judgement of $\Sb$ to a judgement of $\Se$
+  in order to finally conclude on consistency (as $\Se$ can be seen as a subset
+  of Coq).
+
+  Our main tool will be the substitution of $\mbB$ by $\mB$, as $\mbB$ was only
+  an abstraction of $\mB$. We write $\mrho$ for $[\mbB := \mB ; \mbe := \me]$.
+
+  \begin{theorem}[Erasure ($\Sb$ to $\Se$)]
+    \label{thm:erase}
+    If $\Gamma \derb t : T$ then $\Gamma\mrho \dere t\mrho : T\mrho$.
+  \end{theorem}
+
+  \begin{proof}
+    The proof is straightforward as we eliminate all uses of $\mbe$ and $\mbB$
+    at toplevel, while the others are shadowed (abstracted) and do not rely
+    on the specific rules.
+  \end{proof}
+
+  \begin{corollary}[Consistency of $\Sb$]
+    \label{cor:cons2}
+    $\Sb$ is consistent as long as $\Se$ is.
+  \end{corollary}
+
+  \begin{proof}
+    By theorem~\ref{thm:erase}, $\Sb$ is consitent: $\mrho$ has no effect on
+    $X$ (because $\mbB$ or $\mbe$ are not actual variables).
+  \end{proof}
+
+  \begin{corollary}[Consitency]
+    $\Sr$ is consistent as long as $\Se$ is.
+  \end{corollary}
+
+  \begin{proof}
+    Assuming $\Sr$ is inconsistent, by corollary~\ref{cor:cons1},
+    $\Sb$ is inconsistent and thus, by corollary~\ref{cor:cons2},
+    $\Se$ is inconsistent.
   \end{proof}
 
   \section{Consistency of Other Resizing Rules}
