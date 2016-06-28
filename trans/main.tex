@@ -650,6 +650,9 @@
 
   Our main tool will be the substitution of $\mbB$ by $\mB$, as $\mbB$ was only
   an abstraction of $\mB$. We write $\mrho$ for $[\mbB := \mB ; \mbe := \me]$.
+  Remark: This is not an actual subsitution, even though we write it as one,
+  it is merely a compact way of writing a translation that leaves everything
+  unchanged but the bullets ($\bullet$) that it removes.
 
   \begin{theorem}[Erasure ($\Sb$ to $\Se$)]
     \label{thm:erase}
@@ -659,7 +662,8 @@
   \begin{proof}
     The proof is straightforward as we eliminate all uses of $\mbe$ and $\mbB$
     at toplevel, while the others are shadowed (abstracted) and do not rely
-    on the specific rules.
+    on the specific rules. Since $\mbe$ and $\mbB$ have the same typing rules
+    as $\mB$ (the bullets are just tags), the complete derivation still holds.
   \end{proof}
 
   \begin{corollary}[Consistency of $\Sb$]
