@@ -103,6 +103,8 @@
   This is simply an extension of $\Se$ but where
   $\mbe : \Id s\ \mA\ \mbB$ and $\mbB$ behaves as $\mB$ but can be abstracted
   over, meaning we can destruct $\mbe$ (basically, $\mbB$ is a variable).
+  We will also assume we have $\eta^\bullet$ and $\epsilon^\bullet$ which are
+  basically $\eta$ and $\epsilon$ but on $\mbe$ instead of $\me$.
 
   \subsection{Translation with Residuals ($\Sr$ to $\Sb$)}
 
@@ -192,13 +194,10 @@
     meaning $\Gamma \msigma \derb t \msigma = t' \msigma : T\msigma$
     (to do so we rely on unicity of typing).
     Then we have
-    \[\Gamma \derb \J(s,\lambda \mA, \mB, \me. \Id T\ t\ t',
-    \lambda \mA. \refl(T\msigma,t\msigma),\mA,\mB,\me) : \Id T\ t\ t'.\]
-    (implicitely, we replace $\mA,\mB,\me$ in $T,t,t'$ by the ones of the
-    $\lambda$ which may not be really pretty, but you have to admit it's easier
-    written this way, basically, the only thing this does is destructing
-    equality $\me$ (as one would do in Coq) and then apply reflexivity).
-    Under $\msigma$, $\me$ becomes $\refl$, so does the whole $\J$.
+    \[
+      \Gamma \derb \de(\Id T\ t\ t', \refl(T\msigma, t\msigma)) : Id T\ t\ t'.
+    \]
+    Under $\msigma$, $\me$ becomes $\refl$, so does the whole $\J/\de$.
   \end{proof}
 
 
@@ -317,12 +316,11 @@
       $A''$ a $\Gamma'$-translation of $A$ and
       $B'$ a $(\Gamma', x:A'')$-translation of $B$.
       By lemma~\ref{lem:transleq}, we have $\Gamma' \derb h_* : A' \to A''$.
-      The idea now is to ``destruct'' $\me$ so that $F'$ has a $\Pi$-type
-      of domain the type of $a$. The way to do it is to use $\J$ as follows:
+      The idea now is to ``destruct'' $\mbe$ so that $F'$ has a $\Pi$-type
+      of domain the type of $a$:
       \[
-        \Gamma' \derb \J(s,\lambda \mA,\mB,\me. B'[x := h_*\ a'],
-                         \lambda \mA. F'\msigma\ a'\msigma, \mA, \mB, \me) :
-                      B'[x := h_*\ a'].
+        \Gamma' \derb \de(B'[x := h_*\ a'], F'\msigma\ a'\msigma) :
+        B'[x := h_*\ a'].
       \]
 
       \begin{graycase}
@@ -473,7 +471,7 @@
       However these two types are equal thanks to $h_1$.
       (We could explicit it, but everyone should be convinced. We can then
       transport the whole $\lambda$ expression, we keep the translation
-      property and thus equality by destructing $e$).
+      property and thus equality by destructing $\mbe$).
 
       We finally have
       $\Gamma' \derb e_5 : \Id T\ u_1\ u_2$ for some $e_4,e_5$,
@@ -583,7 +581,7 @@
           }{\Gamma \derr \mR : \sB}
       \end{mathc}
       By induction hypothesis, there exists $\Gamma'$ a well-formed translation
-      of $\Gamma$. And for any such translation, $\Gamma' \derb \mB : \sB$
+      of $\Gamma$. And for any such translation, $\Gamma' \derb \mbB : \sB$
       which is a valid translation.
 
       \nextcase
@@ -595,7 +593,7 @@
       Since $\mA$ and $A'$ can be equated (lemma~\ref{lem:transleq}),
       we have a transport $h_* : A' \to \mA$, so
       $\Gamma' \derb h_*\ t' : \mA$ and thus
-      $\Gamma' \derb \me_*\ (h_*\ t') : \mB$ which gives us a desired
+      $\Gamma' \derb \mbe_*\ (h_*\ t') : \mB$ which gives us a desired
       translation.
 
       \nextcase
@@ -605,7 +603,7 @@
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : R'$.
       We can safely assume $\Gamma' \derb t' : \mB$ and thus
-      $\Gamma' \derb {e\inv}_*\ t' : \mA$.
+      $\Gamma' \derb {\mbe\inv}_*\ t' : \mA$.
 
       \nextcase
       \begin{mathc}
@@ -613,7 +611,7 @@
           }{\Gamma \derr \proj(\inj(t)) = t : \mA}
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : \mA$.
-      Then $\eta\ t'$ is the proof we seek.
+      Then $\eta^\bullet\ t'$ is the proof we seek.
 
       \nextcase
       \begin{mathc}
@@ -621,7 +619,7 @@
           }{\Gamma \derr \inj(\proj(t)) = t : \mR}
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : \mB$.
-      Then $\epsilon\ t'$ is the proof we seek.
+      Then $\epsilon^\bullet\ t'$ is the proof we seek.
     \end{caselist}
   \end{proof}
 
