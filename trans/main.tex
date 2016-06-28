@@ -29,7 +29,7 @@
 \input{macros}
 
 % Title and so...
-\title{Working Resizing of Equivalence under Univalence}
+\title{Working Resizing Rules under Univalence}
 \author[1]{Théo Winterhalter}
 
 \begin{document}
@@ -46,7 +46,9 @@
     versions of the univalence axiom (and excluded middle).
   \end{abstract}
 
-  \section{Our systems}
+  \section{Resizing of Equality}
+
+  \subsection{Systems}
 
   This is the syntax of the system in which we start.
 
@@ -94,7 +96,7 @@
       }{\Gamma \derr \inj(\proj(t)) = t : \mR}
   \end{mathc}
 
-  \section{Translation for Consistency}
+  \subsection{Translation for Consistency}
 
   Because our translation is based on the derivation of a judgement and not
   only the judgement itself, we need to have some criterium of compatibility.
@@ -624,5 +626,49 @@
     for instance), this is a contradiction.
     Thus, our system with resizing rules is consistent.
   \end{proof}
+
+  \section{Consistency of Other Resizing Rules}
+
+  Now that we treated the case of the resizing of equality by adding a
+  pseudo-record $\mR$ representing the resized $\mA$ (\ie in the universe of
+  $\mB$), we can handle different kinds of resizing rules as long as we assume
+  some axioms.
+  Please note that this is only to prove consistency, the user doesn't have to
+  rely on these extra axioms.
+
+  \paradot{Resizing of Equivalence}
+
+  Assuming univalence, this one is pretty straightforward.
+  Indeed, if two type are equivalent,
+  they can be stated equal as a result of univalence. Instead of resizing an
+  equivalence we are then resizing equality.
+
+  \paradot{Resizing of Propositions}
+
+  If we assume the law of excluded-middle, it is possible to create an
+  equivalence between any mere proposition and either the empty type or the
+  unit type (depending on the result of the excluded middle on this
+  proposition). The only natural way of defining such maps yields an equivalence
+  (coherences hold because of the proposition property or by \emph{exfalso}).
+
+  Since, both the empty type and the unit type inhabit the smallest universe,
+  by using the resizing for equivalence, we know that any mere proposition lives
+  in the smallest universe (or equivalently any universe).
+
+  In a similar fashion, one can resize the type of mere propositions to the
+  smallest universe\footnote{Or any universe that shelters the booleans.} as
+  well by remarking that it can be shown equivalent to
+  the type of booleans in presence of the excluded middle.
+
+  \paradot{Resizing of Embeddings}
+
+  If we have an embedding $f$ of $A$ into $B$, then $A$ can be shown equivalent
+  to its image through $f$ : $\{ b : B \mid \| \exists a:A. b = f(a) \| \}$.
+  Since the squash is a mere proposition, the image can be resized to the
+  universe of $B$ and so can $A$.
+
+  Note that this rule entails the one on equivalence (and thus equality) and
+  the one on propositions (but not the resizing of the type of propositions
+  itself).
 
 \end{document}
