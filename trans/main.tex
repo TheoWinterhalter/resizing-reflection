@@ -69,14 +69,14 @@
   %
   We assume it contains $\mA$ and $\mB$ that are equivalent (and respectively in
   universes $\sA$ and $\sB$), but up to univalence, we only assume that
-  there is $\me$ such that $\der \me : \Id s\ \mA\ \mB$ for some $s$
+  there is $\me$ such that $\der \me : \Id \sR\ \mA\ \mB$ for some $\sR$
   (note: we will only treat the case where this holds in the empty context,
   but it should scale easily).
   We will write $\eta$ and $\epsilon$ for the section and retraction (even
   though they can be explicited with $\me$).
 
   We then extend this system with $\mR$, $\inj(t)$ and $\proj(t)$ as well as
-  the following rules (which we will note with $\derr$ instead of $\derb$)
+  the following rules (which we will note with $\derr$ instead of $\dere$)
   (this one will be called $\Sr$).
 
   \begin{mathc}
@@ -102,9 +102,11 @@
   with residuals for $\mR$ and $\me$ : $\mbB$ and $\mbe$.
   This is simply an extension of $\Se$ but where
   $\mbe : \Id s\ \mA\ \mbB$ and $\mbB$ behaves as $\mB$ but can be abstracted
-  over, meaning we can destruct $\mbe$ (basically, $\mbB$ is a variable).
-  We will also assume we have $\eta^\bullet$ and $\epsilon^\bullet$ which are
-  basically $\eta$ and $\epsilon$ but on $\mbe$ instead of $\me$.
+  over, meaning we can destruct $\mbe$ (basically, $\mbB$ is a variable
+  \emph{and} lives in universe $\sR$ instead of $\sB$, this implies that we
+  need to be careful when writing $\mbB$).
+  % We will also assume we have $\eta^\bullet$ and $\epsilon^\bullet$ which are
+  % basically $\eta$ and $\epsilon$ but on $\mbe$ instead of $\me$.
 
   \subsection{Translation with Residuals ($\Sr$ to $\Sb$)}
 
@@ -114,15 +116,20 @@
   close to the empty type (as in, it is empty as well).
 
   We will write $\msigma$ for the substitution
-  $[\mbB := \mA, \mbe := \refl(s,\mA)]$.
+  $[\mbB := \mA, \mbe := \refl(\sR,\mA)]$.
   And in the following $\Gamma \derb t = t'$ shall mean that there exists $A$
   such that $\Gamma \derb t = t' : A$ holds.
   %
   We want to be able to ``destruct'' $\mbe$, or rewrite $\mbB$ into $\mA$.
   To do so we use the following
   \[
-    \de(C,b) := \J(s, \lambda \_, \mbB, \mbe. C, \lambda A. b, \mA, \mbB, \mbe).
+    \de(C,b) :=
+      \J(s, \lambda \_, \mbB, \mbe. C, \lambda A. b, \mA, \mbB, \mbe).
   \]
+  \meta{What should I quantify over in $b$?}
+
+  \meta{Below, $\Gamma \msigma$ doesn't really make sens, should I say for any
+  $\Delta$ such that $\Delta \derb \msigma : \Gamma$?}
 
   \begin{definition}[$\Gamma$-translation]
     For any context $\derb \Gamma$ we define the notion of $\Gamma$-translation
@@ -156,13 +163,14 @@
             where $A',C',b',u',v',p'$ are $\Gamma$-translations of
             $A,C,b,u,v,p$ respectively.
       \item $t$ is a $\Gamma$-translation of $\mR$ if
-            $\Gamma \msigma \derb t \msigma = \mA$.
+            $\Gamma \msigma \derb t \msigma = B' \msigma$ where $B'$ is a
+            $\Gamma$-translation of $\mB$.
       \item $t$ is a $\Gamma$-translation of $\inj(u)$ if
-            $\Gamma \msigma \derb t \msigma = u'\msigma$ where $u'$ is a
+            $\Gamma \msigma \derb t \msigma = \me_*\ u'\msigma$ where $u'$ is a
             $\Gamma$-translation of $u$.
       \item $t$ is a $\Gamma$-translation of $\proj(u)$ if
-            $\Gamma \msigma \derb t \msigma = u'\msigma$ where $u'$ is a
-            $\Gamma$-translation of $u$.
+            $\Gamma \msigma \derb t \msigma = {\me\inv}_*\ u'\msigma$ where $u'$
+            is a $\Gamma$-translation of $u$.
     \end{itemize}
   \end{definition}
 
@@ -176,8 +184,8 @@
     \end{itemize}
   \end{definition}
   %
-  Before dealing with our theorem, we will look at a few lemmata regarding the
-  translation.
+  Before dealing with our theorem, we will look at an important lemma regarding
+  the translation.
 
   \begin{lemma}[Equality of translations]
     \label{lem:transleq}
@@ -214,7 +222,8 @@
       \item If $\Gamma \derr t = u : T$ then there exists $\Gamma'$ a
       well-formed translation of $\Gamma$ and for any such $\Gamma'$, there are
       $t'$, $u'$ and $T'$, $\Gamma'$-translations of $t$, $u$, $T$, and $h$ such
-      that $\Gamma' \derb h : \Id T'\ t'\ u'$.
+      that $\Gamma' \derb h : \Id T'\ t'\ u'$ and such that if we destruct
+      $\mbe$, $h$ becomes $\refl$.
       \item If $\derr \Gamma$ then there exists $\Gamma'$ a translation of
       $\Gamma$ such that $\derb \Gamma'$.
     \end{enumerate}
@@ -245,8 +254,8 @@
         $\Gamma' \derb A'' : s$ which is still a valid translation.
         So $\derb \Gamma', x : A''$ and $\Gamma', x : A''$ is a translation of
         $\Gamma, x : A$.
-        (Note: Being a translation means that $x \notin \Gamma$ ensures
-        $x \notin \Gamma'$).
+        (Note: Being a translation means that $x \notin \dom \Gamma$ ensures
+        $x \notin \dom \Gamma'$).
       \end{graycase}
 
       \begin{graycase}
@@ -311,17 +320,15 @@
           }{\Gamma \derr F\ a : B[x := a]}
       \end{mathc}
       By induction hypotheses, $\Gamma' \derb F' : T$ and
-      $\Gamma' \derb a' : A'$.
+      $\Gamma' \derb a' : A''$.
       Since $T$ is a translation of $\Pi x:A.B$, by definition, there exist
-      $A''$ a $\Gamma'$-translation of $A$ and
-      $B'$ a $(\Gamma', x:A'')$-translation of $B$.
-      By lemma~\ref{lem:transleq}, we have $\Gamma' \derb h_* : A' \to A''$.
-      The idea now is to ``destruct'' $\mbe$ so that $F'$ has a $\Pi$-type
-      of domain the type of $a$:
-      \[
-        \Gamma' \derb \de(B'[x := h_*\ a'], F'\msigma\ a'\msigma) :
-        B'[x := h_*\ a'].
-      \]
+      $A'$ a $\Gamma'$-translation of $A$ and
+      $B'$ a $(\Gamma', x:A')$-translation of $B$.
+      Thus, $\Pi x:A'.B'$ is a $\Gamma'$-translation of $\Pi x:A.B$ and, by
+      lemma~\ref{lem:transleq}, we can safely assume
+      $\Gamma' \derb F' : \Pi x:A'.B'$. We can also assume
+      $\Gamma' \derb a' : A'$.
+      Then, we finally have $\Gamma' \derb F'\ a' : B'[x := a']$.
 
       \begin{graycase}
         \begin{mathc}
@@ -361,7 +368,7 @@
         $\Gamma' \derb C' : \Pi x:A'. \Pi y:A'. (\Id A'\ x\ y) \to s'$ and
         $\Gamma' \derb b' : \Pi x:A'. C'\ x\ x\ \refl(A',x)$ and
         $\Gamma' \derb u' : A'$ and $\Gamma' \derb v : A'$ and
-        $\Gamma' \derb p : \Id A'\ u'\ v'$ (the trick can be used as long as we
+        $\Gamma' \derb p' : \Id A'\ u'\ v'$ (the trick can be used as long as we
         have a valid translation, which we have in all of the cases above).
         Thus $\Gamma' \derb \J(A',C',b',u',v',p') : C'\ u'\ v'\ p'$.
       \end{graycase}
@@ -447,7 +454,7 @@
            }{(s_1,s_2,s_3)}
       \end{mathc}
       By induction hypothesis, there are $\Gamma',A'_1,A'_2,t_1$ translations
-      and $h$ such that $\Gamma' \derb h_1 : \Id t_1\ A'_1\ A'_2$.
+      and $h_1$ such that $\Gamma' \derb h_1 : \Id t_1\ A'_1\ A'_2$.
       Thus, $\Gamma' \derb A'_1 : t_1$, and by lemma~\ref{lem:transleq}
       (noting that any sort is a translation of itself (modulo injection))
       we have $e_1$ such that $\Gamma' \derb e_1 : \Id s_4\ t_1\ s_1$ and
@@ -501,7 +508,7 @@
         $A'$ and $B'$).
         The only problem here is that $F'_2\ a'_2$ would have type
         $B'[x := a'_2]$ instead of $B'[x := a'_1]$ but these two types are equal
-        (as in, there exists an identity proof) so we can conclude with a
+        (as in there exists an identity proof) so we can conclude with a
         transport around $F'_2\ a'_2$, but we won't state anything explicitely.
       \end{graycase}
 
@@ -512,7 +519,7 @@
               \Gamma \derr v_1 = v_2 : A_1
             }{\Gamma \derr \Id A_1\ u_1\ v_1 = \Id A_2\ u_2\ v_2 : s}
         \end{mathc}
-        By induction hypothesis, $\Gamma' \derb h_A : \Id s\ A'_1\ A'_2$
+        By induction hypotheses, $\Gamma' \derb h_A : \Id s\ A'_1\ A'_2$
         and $\Gamma' \derb h_u : \Id A'_1\ u'_1\ u'_2$ and
         $\Gamma' \derb h_v : \Id A'_1\ v'_1\ v'_2$.
         Destructing these three equalities \emph{is all it takes\footnote{Thus
@@ -583,7 +590,7 @@
           }{\Gamma \derr \mR : \sB}
       \end{mathc}
       By induction hypothesis, there exists $\Gamma'$ a well-formed translation
-      of $\Gamma$. And for any such translation, $\Gamma' \derb \mbB : \sB$
+      of $\Gamma$. And for any such translation, $\Gamma' \derb \mB : \sB$
       which is a valid translation.
 
       \nextcase
@@ -595,7 +602,7 @@
       Since $\mA$ and $A'$ can be equated (lemma~\ref{lem:transleq}),
       we have a transport $h_* : A' \to \mA$, so
       $\Gamma' \derb h_*\ t' : \mA$ and thus
-      $\Gamma' \derb \mbe_*\ (h_*\ t') : \mB$ which gives us a desired
+      $\Gamma' \derb \me_*\ (h_*\ t') : \mB$ which gives us a desired
       translation.
 
       \nextcase
@@ -605,7 +612,7 @@
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : R'$.
       We can safely assume $\Gamma' \derb t' : \mB$ and thus
-      $\Gamma' \derb {\mbe\inv}_*\ t' : \mA$.
+      $\Gamma' \derb {\me\inv}_*\ t' : \mA$.
 
       \nextcase
       \begin{mathc}
@@ -613,7 +620,7 @@
           }{\Gamma \derr \proj(\inj(t)) = t : \mA}
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : \mA$.
-      Then $\eta^\bullet\ t'$ is the proof we seek.
+      Then $\eta\ t'$ is the proof we seek.
 
       \nextcase
       \begin{mathc}
@@ -621,7 +628,7 @@
           }{\Gamma \derr \inj(\proj(t)) = t : \mR}
       \end{mathc}
       By induction hypothesis, $\Gamma' \derb t' : \mB$.
-      Then $\epsilon^\bullet\ t'$ is the proof we seek.
+      Then $\epsilon\ t'$ is the proof we seek.
     \end{caselist}
   \end{proof}
 
@@ -649,10 +656,11 @@
   of Coq).
 
   Our main tool will be the substitution of $\mbB$ by $\mB$, as $\mbB$ was only
-  an abstraction of $\mB$. We write $\mrho$ for $[\mbB := \mB ; \mbe := \me]$.
+  an abstraction of $\mB$ (in a possibly higher universe).
+  We write $\mrho$ for $[\mbB := \mB ; \mbe := \me]$.
   Remark: This is not an actual subsitution, even though we write it as one,
   it is merely a compact way of writing a translation that leaves everything
-  unchanged but the bullets ($\bullet$) that it removes.
+  unchanged but the bullets ($\bullet$) at toplevel that it removes.
 
   \begin{theorem}[Erasure ($\Sb$ to $\Se$)]
     \label{thm:erase}
@@ -662,8 +670,10 @@
   \begin{proof}
     The proof is straightforward as we eliminate all uses of $\mbe$ and $\mbB$
     at toplevel, while the others are shadowed (abstracted) and do not rely
-    on the specific rules. Since $\mbe$ and $\mbB$ have the same typing rules
-    as $\mB$ (the bullets are just tags), the complete derivation still holds.
+    on the specific rules. Since $\mbe$ and $\mbB$ have similar typing rules
+    as $\mB$ (the bullets are just tags -- the only difference is in the
+    universe of $\mbB$ which is bigger than the one of $\mB$ potentially,
+    but this doesn't change anything), the complete derivation still holds.
   \end{proof}
 
   \begin{corollary}[Consistency of $\Sb$]
