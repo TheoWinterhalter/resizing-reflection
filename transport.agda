@@ -78,3 +78,7 @@ elim-eq A B f g u v p h = h (f u) (g v)
 
 η-eq : ∀ A B (f : Π A B) → Id f (λ x → f x)
 η-eq A B f = Refl
+
+
+mkη : ∀ A B (e : Id A B) (x : A) → Id (((e ⁻¹) *) ((e *) x)) x
+mkη A B e x = (J _ (λ u v p → ∀ (x : u) → Id (((p ⁻¹) *) ((p *) x)) x) (λ u x → Refl) _ _ e) x
