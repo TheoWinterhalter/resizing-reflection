@@ -82,3 +82,6 @@ elim-eq A B f g u v p h = h (f u) (g v)
 
 mkη : ∀ A B (e : Id A B) (x : A) → Id (((e ⁻¹) *) ((e *) x)) x
 mkη A B e x = (J _ (λ u v p → ∀ (x : u) → Id (((p ⁻¹) *) ((p *) x)) x) (λ u x → Refl) _ _ e) x
+
+ηrefl : ∀ A x → Id (mkη A A Refl x) Refl
+ηrefl A x = Refl
