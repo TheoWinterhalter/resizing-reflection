@@ -171,33 +171,56 @@
     \begin{itemize}
       \item $\cdot$ is a translation of $\cdot$.
       \item $\Gamma', x:A'$ is a translation of $\Gamma, x:A$ if $\Gamma'$ is
-            a translation of $\Gamma$ and $A'$ is a $\Gamma'$-translation of
-            $A$.
+            a translation of $\Gamma$ and $A' \in \tr{A}{\Gamma'}$.
     \end{itemize}
   \end{definition}
-  %
+
   Before dealing with our theorem, we will look at an important lemma regarding
   the translation.
 
   \begin{lemma}[Equality of translations]
     \label{lem:transleq}
-    If $t$ and $t'$ are both $\Gamma$-translations of the same term $u$ and if
-    there exists $T$ such that $\Gamma \derb t, t' : T$ then there exists $e$
-    such that $\Gamma \derb e : \Id T\ t\ t'$.
+    If $t_1, t_2 \in \tr{u}{\Gamma}$ and if
+    there exists $T$ such that
+    $\Gamma\pfull \dere t_1\pfull, t_2\pfull : T\pfull$
+    then there exists $h$ such that
+    \[
+      \Gamma\pfull \dere h\pfull : \Id T\pfull\ t_1\pfull\ t_2\pfull.
+    \]
     %
-    Besides, $\Gamma \msigma \derb e \msigma = \refl(T\msigma,t\msigma)$.
+    Besides, $\Gamma\prfl \dere h\prfl = \refl(T\prfl,t_1\prfl)$.
   \end{lemma}
 
   \begin{proof}
     Formally we prove by induction that
-    $\Gamma \msigma \derb t \msigma = t' \msigma$
-    meaning $\Gamma \msigma \derb t \msigma = t' \msigma : T\msigma$
+    $\Gamma\prfl \dere t_1\prfl = t_2\prfl$
+    meaning $\Gamma\prfl \dere t\prfl = t'\prfl : T\prfl$
     (to do so we rely on unicity of typing).
     Then we have
     \[
-      \Gamma \derb \de(\Id T\ t\ t', \refl(T\msigma, t\msigma)) : \Id T\ t\ t'.
+      \Gamma\pfull \dere \J(\sR, P, p, \mA, \mB, \me)\ %
+      (\mid \Gamma\pfull \mid) : \Id T\pfull\ t_1\pfull\ t_2\pfull
     \]
-    Under $\msigma$, $\me$ becomes $\refl$, so does the whole $\J/\de$.
+    where
+    \[
+      \begin{array}{l@{~}l}
+        P &:= \lambda \mA,\mB,\me. \Pi \Gamma\pfull. %
+              \Id T\pfull\ t_1\pfull\ t_2\pfull \\
+        p &:= \lambda \mA. \lambda \Gamma\prfl. \refl
+      \end{array}
+    \]
+    and
+    \[
+      \begin{array}{l@{~}l@{\qquad}l@{~}l}
+        \Pi (\Gamma, x:T).T' &:= \Pi \Gamma. \Pi x:T. T' &
+        \Pi \cdot. T &:= T \\
+        \lambda (\Gamma, x:T).t &:= \lambda \Gamma. \lambda x:T.t &
+        \lambda \cdot.t &:= t
+      \end{array}
+    \]
+    and where $\mid \Gamma \mid$ means applying every variable in $\dom \Gamma$
+    successively.
+    We indeed have that it is convertible to $\refl$ when $\me$ is.
   \end{proof}
 
 
