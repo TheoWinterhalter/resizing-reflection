@@ -224,8 +224,15 @@
     We indeed have that it is convertible to $\refl$ when $\me$ is.
   \end{proof}
 
-  \meta{I think we need to make a lemma stating that $\Gamma \derr t = u : T$
-  implies that any translations under $\prfl$ are also convertible.}
+  \begin{lemma}[Translation of Convertibility]
+    If $\Gamma \derr t = u : T$ and $\Gamma'$ is a translation of $\Gamma$ and
+    $t' \in \tr{t}{\Gamma'}$ and $u' \in \tr{u}{\Gamma'}$ and
+    $T' \in \tr{T}{\Gamma'}$ then
+    $\Gamma'\prfl \dere t'\prfl = u'\prfl : T'\prfl$.
+  \end{lemma}
+
+  \noindent
+  This lemma allows us to consider $\refl$ on such terms.
 
 
   We can now go on defining the theorem using the above definitions.
