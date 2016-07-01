@@ -224,6 +224,9 @@
     We indeed have that it is convertible to $\refl$ when $\me$ is.
   \end{proof}
 
+  \meta{I think we need to make a lemma stating that $\Gamma \derr t = u : T$
+  implies that any translations under $\prfl$ are also convertible.}
+
 
   We can now go on defining the theorem using the above definitions.
 
@@ -232,16 +235,17 @@
     \leavevmode
     \begin{enumerate}
       \item If $\Gamma \derr t : T$ then there exists $\Gamma'$ a well-formed
-      translation of $\Gamma$ and for any such $\Gamma'$, there are $t'$ and
-      $T'$, $\Gamma'$-translations of $t$,$T$,
-      such that $\Gamma' \derb t' : T'$.
+      translation of $\Gamma$ and for any such $\Gamma'$, there are
+      $t' \in \tr{t}{\Gamma}$ and $T' \in \tr{T}{\Gamma}$
+      such that $\Gamma'\pany \dere t'\pany : T'\pany$.
       \item If $\Gamma \derr t = u : T$ then there exists $\Gamma'$ a
       well-formed translation of $\Gamma$ and for any such $\Gamma'$, there are
-      $t'$, $u'$ and $T'$, $\Gamma'$-translations of $t$, $u$, $T$, and $h$ such
-      that $\Gamma' \derb h : \Id T'\ t'\ u'$ and such that if we destruct
-      $\mbe$, $h$ becomes $\refl$.
+      $t' \in \tr{t}{\Gamma}$ and $u' \in \tr{u}{\Gamma}$ and
+      $T' \in \tr{T}{\Gamma}$ and $h$ such that
+      $\Gamma'\pany \dere h\pany : \Id T'\pany\ t'\pany\ u'\pany$ and
+      $\Gamma'\prfl \dere h\prfl = \refl$.
       \item If $\derr \Gamma$ then there exists $\Gamma'$ a translation of
-      $\Gamma$ such that $\derb \Gamma'$.
+      $\Gamma$ such that $\dere \Gamma'$.
     \end{enumerate}
   \end{theorem}
 
