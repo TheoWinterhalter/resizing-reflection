@@ -98,79 +98,71 @@
       }{\Gamma \derr \inj(\proj(t)) = t : \mR}
   \end{mathc}
 
-  Finally, we define $\Sb$ which is an intermediary for the translation
-  with residuals for $\mR$ and $\me$ : $\mbB$ and $\mbe$.
-  This is simply an extension of $\Se$ but where
-  $\mbe : \Id s\ \mA\ \mbB$ and $\mbB$ behaves as $\mB$ but can be abstracted
-  over, meaning we can destruct $\mbe$ (basically, $\mbB$ is a variable
-  \emph{and} lives in universe $\sR$ instead of $\sB$, this implies that we
-  need to be careful when writing $\mbB$).
+  % Finally, we define $\Sb$ which is an intermediary for the translation
+  % with residuals for $\mR$ and $\me$ : $\mbB$ and $\mbe$.
+  % This is simply an extension of $\Se$ but where
+  % $\mbe : \Id s\ \mA\ \mbB$ and $\mbB$ behaves as $\mB$ but can be abstracted
+  % over, meaning we can destruct $\mbe$ (basically, $\mbB$ is a variable
+  % \emph{and} lives in universe $\sR$ instead of $\sB$, this implies that we
+  % need to be careful when writing $\mbB$).
   % We will also assume we have $\eta^\bullet$ and $\epsilon^\bullet$ which are
   % basically $\eta$ and $\epsilon$ but on $\mbe$ instead of $\me$.
 
-  \subsection{Translation with Residuals ($\Sr$ to $\Sb$)}
+  \subsection{Translation for Consistency ($\Sr$ to $\Se$)}
 
   Because our translation is based on the derivation of a judgement and not
   only the judgement itself, we need to have some criterium of compatibility.
   It will also be helpful to ensure that the empty type is mapped to something
   close to the empty type (as in, it is empty as well).
-
-  We will write $\msigma$ for the substitution
-  $[\mbB := \mA, \mbe := \refl(\sR,\mA)]$.
-  And in the following $\Gamma \derb t = t'$ shall mean that there exists $A$
-  such that $\Gamma \derb t = t' : A$ holds.
   %
-  We want to be able to ``destruct'' $\mbe$, or rewrite $\mbB$ into $\mA$.
-  To do so we use the following
-  \[
-    \de(C,b) :=
-      \J(s, \lambda \_, \mbB, \mbe. C, \lambda A. b, \mA, \mbB, \mbe).
-  \]
-  \meta{What should I quantify over in $b$?}
+  Translated terms are paraletrized by $\mA,\mB,\me$ in order to make it
+  possible to use $\J$ on them, as well as characterizing their behavior
+  ``under it''. We extend this parametrization on contexts naturally.
 
-  \meta{Below, $\Gamma \msigma$ doesn't really make sens, should I say for any
-  $\Delta$ such that $\Delta \derb \msigma : \Gamma$?}
+  In the following $\Gamma \derb t = t'$ shall mean that there exists $A$
+  such that $\Gamma \derb t = t' : A$ holds. We will write $t\prfl$ for
+  $t[\mA,\mA,\refl]$.
 
   \begin{definition}[$\Gamma$-translation]
-    For any context $\derb \Gamma$ we define the notion of $\Gamma$-translation
-    of a term $u$ (in $\Sb$) by induction on $u$.
+    For any parametrized context $\derb \Gamma$ we define the notion of
+    $\Gamma$-translation of a term $u$ (in $\Se$), writing $\tr{t}{\Gamma}$ for
+    the set of such terms, by induction on $u$.
     \begin{itemize}
-      \item $t$ is a $\Gamma$-translation of $s$ if
-            $\Gamma \msigma \derb t \msigma = s$.
-      \item $t$ is a $\Gamma$-translation of $\Pi x:A.B$ if
-            $\Gamma \msigma \derb t \msigma = \Pi x:A'\msigma.B'\msigma$ where
-            $A'$ is a $\Gamma$-translation of $A$ and $B'$ is a
-            $(\Gamma, x:A')$-translation of $B$.
-      \item $t$ is a $\Gamma$-translation of $\Id A\ u\ v$ if
-            $\Gamma \msigma \derb t \msigma = \Id A'\msigma\ u'\msigma\ %
-            v'\msigma$ where $A',u',v'$
-            are $\Gamma$-translations of $A,u,v$ respectively.
-      \item $t$ is a $\Gamma$-translation of $x$ if
-            $\Gamma \msigma \derb t \msigma = x$.
-      \item $t$ is a $\Gamma$-translation of $\lambda x:A.b$ if
-            $\Gamma \msigma \derb t \msigma = \lambda x:A'\msigma.b'\msigma$
-            where $A'$ is a $\Gamma$-translation of $A$ and $b'$ is a
-            $(\Gamma, x:A')$-translation of $b$.
-      \item $t$ is a $\Gamma$-translation of $a\ b$ if
-            $\Gamma \msigma \derb t \msigma = a'\msigma\ b'\msigma$ where
-            $a',b'$ are $\Gamma$-translations of $a,b$ respectively.
-      \item $t$ is a $\Gamma$-tanslation of $\refl(A,u)$ if
-            $\Gamma \msigma \derb t \msigma = \refl(A'\msigma,u'\msigma)$ where
-            $A',u'$ are $\Gamma$-translations of $A,u$ respectively.
+      \item $t \in \tr{s}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = s$.
+      \item $t \in \tr{\Pi x:A.B}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl =
+            \Pi x:A'\prfl.B'\prfl$ where
+            $A' \in \tr{A}{\Gamma}$ and $B' \in \tr{B}{\Gamma, x:A'}$.
+      \item $t \in \tr{\Id A\ u\ v}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = \Id A'\prfl\ u'\prfl\ %
+            v'\prfl$ where $A' \in \tr{A}{\Gamma}, u' \in \tr{u}{\Gamma}$,
+            $v' \in \tr{v}{\Gamma}$.
+      \item $t \in \tr{x}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = x$.
+      \item $t \in \tr{\lambda x:A.b}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = \lambda x:A'\prfl.b'\prfl$
+            where $A' \in \tr{A}{\Gamma}$ and $b' \in \tr{b}{\Gamma, x:A'}$.
+      \item $t \in \tr{a\ b}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = a'\prfl\ b'\prfl$ where
+            $a' \in \tr{a}{\Gamma}, b' \in \tr{b}{\Gamma}$.
+      \item $t \in \tr{\refl(A,u)}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = \refl(A'\prfl,u'\prfl)$ where
+            $A' \in \tr{A}{\Gamma}, u' \in \tr{u}{\Gamma}$.
       \item \sloppy
-            $t$ is a $\Gamma$-tanslation of $\J(A,C,b,u,v,p)$ if
-            $\Gamma \msigma \derb t \msigma = \J(A',C',b',u',v',p')\msigma$
+            $t \in \tr{\J(A,C,b,u,v,p)}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = \J(A',C',b',u',v',p')\prfl$
             where $A',C',b',u',v',p'$ are $\Gamma$-translations of
             $A,C,b,u,v,p$ respectively.
-      \item $t$ is a $\Gamma$-translation of $\mR$ if
-            $\Gamma \msigma \derb t \msigma = B' \msigma$ where $B'$ is a
-            $\Gamma$-translation of $\mB$.
-      \item $t$ is a $\Gamma$-translation of $\inj(u)$ if
-            $\Gamma \msigma \derb t \msigma = \me_*\ u'\msigma$ where $u'$ is a
-            $\Gamma$-translation of $u$.
-      \item $t$ is a $\Gamma$-translation of $\proj(u)$ if
-            $\Gamma \msigma \derb t \msigma = {\me\inv}_*\ u'\msigma$ where $u'$
-            is a $\Gamma$-translation of $u$.
+      \item $t \in \tr{\mR}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = B'\prfl$ where
+            $B' \in \tr{\mB}{\Gamma}$.
+      \item $t \in \tr{\inj(u)}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = u'\prfl$ where
+            $u' \in \tr{u}{\Gamma}$.
+      \item $t \in \tr{\proj(u)}{\Gamma}$ iff
+            $\Gamma\prfl \dere t\prfl = u'\prfl$ where
+            $u' \in \tr{u}{\Gamma}$.
     \end{itemize}
   \end{definition}
 
