@@ -233,6 +233,7 @@
 
   \noindent
   This lemma allows us to consider $\refl$ on such terms.
+  \meta{Prove it!}
 
 
   We can now go on defining the theorem using the above definitions.
@@ -267,7 +268,7 @@
         \begin{mathc}
           \ru{}{\derr \cdot}
         \end{mathc}
-        We have $\derb \cdot$, which corresponds to a valid translation.
+        We have $\dere \cdot$, which corresponds to a valid translation.
       \end{graycase}
 
       \begin{graycase}
@@ -276,9 +277,13 @@
              }{\derr \Gamma, x ; A
              }{x \notin \dom \Gamma}
         \end{mathc}
-        By induction hypothesis, we have $\Gamma' \derb A' : t$ a valid
-        translation. By lemma~\ref{lem:transleq}, we have
-        $\Gamma' \derb A'' : s$ which is still a valid translation.
+        By induction hypothesis, we have $\Gamma' \dere A' : t$ a valid
+        translation\footnote{This stands for
+        $\Gamma'\pany \dere A'\pany : t\pany$}.
+        By lemma~\ref{lem:transleq}, we have
+        $\Gamma' \derb A'' : s$ which is still a valid translation
+        (indeed $s \in \tr{s}{\Gamma}$, it parameterized in the sense that it
+        does not mention $\mA,\mB,\me$).
         So $\derb \Gamma', x : A''$ and $\Gamma', x : A''$ is a translation of
         $\Gamma, x : A$.
         (Note: Being a translation means that $x \notin \dom \Gamma$ ensures
@@ -291,8 +296,8 @@
              }{\Gamma \derr s_1 : s_2
              }{(s_1,s_2)}
         \end{mathc}
-        By induction hypothesis, $\derb \Gamma'$ is a translation.
-        And so is $\Gamma' \derb s_1 : s_2$.
+        By induction hypothesis, $\dere \Gamma'$ is a translation.
+        And so is $\Gamma' \dere s_1 : s_2$.
       \end{graycase}
 
       \begin{graycase}
@@ -301,9 +306,9 @@
              }{\Gamma \derr x : A
              }{(x : A) \in \Gamma}
         \end{mathc}
-        By induction hypothesis, $\derb \Gamma'$ is a translation and
+        By induction hypothesis, $\dere \Gamma'$ is a translation and
         $(x : A') \in \Gamma'$ for $A'$ a translation of $A$.
-        Thus $\Gamma' \derb x : A'$ is a valid translation.
+        Thus $\Gamma' \dere x : A'$ is a valid translation.
       \end{graycase}
 
       \begin{graycase}
@@ -313,13 +318,13 @@
              }{\Gamma \derr \Pi x:A.B : s_3
              }{(s_1,s_2,s_3)}
         \end{mathc}
-        By induction hypothesis, $\Gamma' \derb A' : t_1$ is a valid
+        By induction hypothesis, $\Gamma' \dere A' : t_1$ is a valid
         translation.
-        By lemma~\ref{lem:transleq}, $\Gamma' \derb A' : s_1$ (up to transport).
-        Thus, $\derb \Gamma', x : A'$, and so, by second induction hypothesis,
-        $\Gamma', x:A' \derb B' : t_2$, but likewise, we assume we have
-        $\Gamma', x:A' \derb B' : s_2$ instead.
-        So $\Gamma' \derb \Pi x:A'.B' : s_3$ is a valid translation.
+        By lemma~\ref{lem:transleq}, $\Gamma' \dere A' : s_1$ (up to transport).
+        Thus, $\dere \Gamma', x : A'$, and so, by second induction hypothesis,
+        $\Gamma', x:A' \dere B' : t_2$, but likewise, we assume we have
+        $\Gamma', x:A' \dere B' : s_2$ instead.
+        So $\Gamma' \dere \Pi x:A'.B' : s_3$ is a valid translation.
       \end{graycase}
 
       \begin{graycase}
@@ -329,15 +334,15 @@
              }{\Gamma \derr \lambda x:A.b : \Pi x:A.B
              }{(s_1,s_2,s_3)}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb A' : s_1$ (implicitely using
-        lemma~\ref{lem:transleq}) and $\Gamma', x:A' \derb b' : B''$ and
-        $\Gamma', x:A' \derb B' : s_2$.
+        By induction hypotheses, $\Gamma' \dere A' : s_1$ (implicitely using
+        lemma~\ref{lem:transleq}) and $\Gamma', x:A' \dere b' : B''$ and
+        $\Gamma', x:A' \dere B' : s_2$.
         Using a transport\footnote{It is alright to assume that $B'$ and $B''$
         can have the same type (to use lemma~\ref{lem:transleq})
         thanks to cumulativity, combined with the fact that being on the right
-        of colons, imply you can be typed by a sort.},
-        we can assume $\Gamma', x:A' \derb b' : B'$ instead.
-        Now, $\Gamma' \derb \lambda x:A'.b' : \Pi x:A'.B'$.
+        of colons implies you can be typed by a sort.},
+        we can assume $\Gamma', x:A' \dere b' : B'$ instead.
+        Now, $\Gamma' \dere \lambda x:A'.b' : \Pi x:A'.B'$.
       \end{graycase}
 
       \nextcase
@@ -346,16 +351,17 @@
             \Gamma \derr a : A
           }{\Gamma \derr F\ a : B[x := a]}
       \end{mathc}
-      By induction hypotheses, $\Gamma' \derb F' : T$ and
-      $\Gamma' \derb a' : A''$.
-      Since $T$ is a translation of $\Pi x:A.B$, by definition, there exist
-      $A'$ a $\Gamma'$-translation of $A$ and
-      $B'$ a $(\Gamma', x:A')$-translation of $B$.
-      Thus, $\Pi x:A'.B'$ is a $\Gamma'$-translation of $\Pi x:A.B$ and, by
+      By induction hypotheses, $\Gamma' \dere F' : T$ and
+      $\Gamma' \dere a' : A''$.
+      Since $T \in \tr{\Pi x:A.B}{\Gamma'}$, by definition, there exist
+      $A' \in \tr{A}{\Gamma'}$ and $B' \in \tr{B}{\Gamma', x:A'}$.
+      Thus, $\Pi x:A'.B' \in \tr{\Pi x:A.B}{\Gamma}$ and, by
       lemma~\ref{lem:transleq}, we can safely assume
-      $\Gamma' \derb F' : \Pi x:A'.B'$. We can also assume
-      $\Gamma' \derb a' : A'$.
-      Then, we finally have $\Gamma' \derb F'\ a' : B'[x := a']$.
+      $\Gamma' \dere F' : \Pi x:A'.B'$. We can also assume
+      $\Gamma' \dere a' : A'$.
+      Then, we finally have $\Gamma' \dere F'\ a' : B'[x := a']$.
+      \meta{Perhaps should we have a lemma to justify translations are
+      preserved under substitutions.}
 
       \begin{graycase}
         \begin{mathc}
@@ -364,11 +370,11 @@
               \Gamma \derr v : A
             }{\Gamma \derr \Id A\ u\ v : s}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb A' : s$ (using the trick
-        aforementioned), $\Gamma' \derb u' : A_u$ and $\Gamma' \derb v' : A_v$,
-        using the same trick again, we assume $\Gamma' \derb u' : A'$ and
-        $\Gamma' \derb v' : A'$.
-        Thus, $\Gamma' \derb \Id A'\ u'\ v' : s$.
+        By induction hypotheses, $\Gamma' \dere A' : s$ (using the trick
+        aforementioned), $\Gamma' \dere u' : A_u$ and $\Gamma' \dere v' : A_v$,
+        using the same trick again, we assume $\Gamma' \dere u' : A'$ and
+        $\Gamma' \dere v' : A'$.
+        Thus, $\Gamma' \dere \Id A'\ u'\ v' : s$.
       \end{graycase}
 
       \begin{graycase}
@@ -377,9 +383,9 @@
               \Gamma \derr u : A
             }{\Gamma \derr \refl(A,u) : \Id A\ u\ u}
         \end{mathc}
-        By induction hypothesis, $\Gamma' \derb A' : s$ and
-        $\Gamma' \derb u' : A'$ so
-        $\Gamma' \derb \refl(A',u') : \Id A'\ u'\ u'$.
+        By induction hypothesis, $\Gamma' \dere A' : s$ and
+        $\Gamma' \dere u' : A'$ so
+        $\Gamma' \dere \refl(A',u') : \Id A'\ u'\ u'$.
       \end{graycase}
 
       \begin{graycase}
@@ -391,13 +397,13 @@
                \Gamma \derr p : \Id A\ u\ v
              }{\Gamma \derr \J (A,C,b,u,v,p) : C\ u\ v\ p}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb A' : s$ and
-        $\Gamma' \derb C' : \Pi x:A'. \Pi y:A'. (\Id A'\ x\ y) \to s'$ and
-        $\Gamma' \derb b' : \Pi x:A'. C'\ x\ x\ \refl(A',x)$ and
-        $\Gamma' \derb u' : A'$ and $\Gamma' \derb v : A'$ and
-        $\Gamma' \derb p' : \Id A'\ u'\ v'$ (the trick can be used as long as we
+        By induction hypotheses, $\Gamma' \dere A' : s$ and
+        $\Gamma' \dere C' : \Pi x:A'. \Pi y:A'. (\Id A'\ x\ y) \to s'$ and
+        $\Gamma' \dere b' : \Pi x:A'. C'\ x\ x\ \refl(A',x)$ and
+        $\Gamma' \dere u' : A'$ and $\Gamma' \dere v : A'$ and
+        $\Gamma' \dere p' : \Id A'\ u'\ v'$ (the trick can be used as long as we
         have a valid translation, which we have in all of the cases above).
-        Thus $\Gamma' \derb \J(A',C',b',u',v',p') : C'\ u'\ v'\ p'$.
+        Thus $\Gamma' \dere \J(A',C',b',u',v',p') : C'\ u'\ v'\ p'$.
       \end{graycase}
 
       \nextcase
@@ -407,13 +413,13 @@
           }{\Gamma \derr a : B}
       \end{mathc}
       By the first induction hypothesis, there are $\Gamma'$, $a'$ and $A'$
-      such that $\Gamma' \derb a' : A'$ (and that are translations).
+      such that $\Gamma' \dere a' : A'$ (and that are translations).
       Then, we can instantiate the second induction hypothesis with $\Gamma'$:
       we thus have $A'',B',t$ that are $\Gamma'$-translations of $A,B,s$ and
-      $h$ such that $\Gamma' \derb h : \Id t\ A''\ B'$.
+      $h$ such that $\Gamma' \dere h : \Id t\ A''\ B'$.
       By lemma~\ref{lem:transleq}, there is $h'$ such that
-      $\Gamma' \derb h' : \Id s'\ A'\ A''$ for some $s'$.
-      Then $\Gamma' \derb (h \cons h')_*\ a' : B'$ with everything being
+      $\Gamma' \dere h' : \Id s'\ A'\ A''$ for some $s'$.
+      Then $\Gamma' \dere (h \cons h')_*\ a' : B'$ with everything being
       $\Gamma'$-translations.
 
       \begin{graycase}
@@ -421,8 +427,8 @@
           \ru{\Gamma \derr a : A
             }{\Gamma \derr a = a : A}
         \end{mathc}
-        By induction hypothesis, $\Gamma' \derb a' : A'$ and thus
-        $\Gamma' \derb \refl(A',a') : \Id A'\ a'\ a'$.
+        By induction hypothesis, $\Gamma' \dere a' : A'$ and thus
+        $\Gamma' \dere \refl(A',a') : \Id A'\ a'\ a'$.
       \end{graycase}
 
       \begin{graycase}
@@ -430,8 +436,8 @@
           \ru{\Gamma \derr a_1 = a_2 : A
             }{\Gamma \derr a_2 = a_1 : A}
         \end{mathc}
-        By induction hypothesis, $\Gamma' \derb h : \Id A'\ a'_1\ a'_2$.
-        Thus $\Gamma' \derb h\inv : \Id A'\ a'_2\ a'_1$.
+        By induction hypothesis, $\Gamma' \dere h : \Id A'\ a'_1\ a'_2$.
+        Thus $\Gamma' \dere h\inv : \Id A'\ a'_2\ a'_1$.
       \end{graycase}
 
       \begin{graycase}
@@ -441,9 +447,9 @@
             }{\Gamma \derr a_1 = a_3 : A}
         \end{mathc}
         By induction hyoptheses (and using the ``trick''),
-        $\Gamma' \derb h_1 : \Id A'\ a'_1\ a'_2$ and
-        $\Gamma' \derb h_2 : \Id A'\ a'_2\ a'_3$.
-        So $\Gamma' \derb h_1 \cons h_2 : \Id A'\ a'_1\ a'_3$.
+        $\Gamma' \dere h_1 : \Id A'\ a'_1\ a'_2$ and
+        $\Gamma' \dere h_2 : \Id A'\ a'_2\ a'_3$.
+        So $\Gamma' \dere h_1 \cons h_2 : \Id A'\ a'_1\ a'_3$.
       \end{graycase}
 
       \begin{graycase}
@@ -453,9 +459,9 @@
              }{\Gamma \derr (\lambda x:A.b)\ a = b[x := a] : B[x := a]
              }{(s_1,s_2,s_3)}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb a' : A' : s_1$ and
-        $\Gamma', x:A' \derb b' : B' : s_2$, then
-        $\Gamma' \derb \refl(B'[x := a'], b'[x := a']) : \Id B'[x := a']\ %
+        By induction hypotheses, $\Gamma' \dere a' : A' : s_1$ and
+        $\Gamma', x:A' \dere b' : B' : s_2$, then
+        $\Gamma' \dere \refl(B'[x := a'], b'[x := a']) : \Id B'[x := a']\ %
         ((\lambda x:A'.b')\ a')\ b'[x := a']$.
       \end{graycase}
 
@@ -466,10 +472,10 @@
              }{\Gamma \derr \Pi x:A_1.B_1 = \Pi x:A_2.B_2
              }{(s_1,s_2,s_3)}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb h_1 : \Id s_1\ A'_1\ A'_2$
-        and $\Gamma', x:A'_1 \derb h_2 : \Id s_2\ B'_1\ B'_2$.
+        By induction hypotheses, $\Gamma' \dere h_1 : \Id s_1\ A'_1\ A'_2$
+        and $\Gamma', x:A'_1 \dere h_2 : \Id s_2\ B'_1\ B'_2$.
         Thus,
-        $\Gamma' \derb h_3 : \Id s_3\ (\Pi x:A'_1.B'_1)\ (\Pi x:A'_2.B'_2)$
+        $\Gamma' \dere h_3 : \Id s_3\ (\Pi x:A'_1.B'_1)\ (\Pi x:A'_2.B'_2)$
         for some $h_3$ that we won't state out explicitely.
       \end{graycase}
 
@@ -481,19 +487,19 @@
            }{(s_1,s_2,s_3)}
       \end{mathc}
       By induction hypothesis, there are $\Gamma',A'_1,A'_2,t_1$ translations
-      and $h_1$ such that $\Gamma' \derb h_1 : \Id t_1\ A'_1\ A'_2$.
-      Thus, $\Gamma' \derb A'_1 : t_1$, and by lemma~\ref{lem:transleq}
+      and $h_1$ such that $\Gamma' \dere h_1 : \Id t_1\ A'_1\ A'_2$.
+      Thus, $\Gamma' \dere A'_1 : t_1$, and by lemma~\ref{lem:transleq}
       (noting that any sort is a translation of itself (modulo injection))
-      we have $e_1$ such that $\Gamma' \derb e_1 : \Id s_4\ t_1\ s_1$ and
-      then $\Gamma' \derb (e_1)_*\ A'_1 : s_1$.
+      we have $e_1$ such that $\Gamma' \dere e_1 : \Id s_4\ t_1\ s_1$ and
+      then $\Gamma' \dere (e_1)_*\ A'_1 : s_1$.
       $\Gamma', x : (e_1)_*\ A'_1$ is a well-formed translation of
       $\Gamma, x:A$. We will write it $\Delta$ for short.
 
       We can instantiate the second hypothesis to get
-      $\Delta \derb h_2 : \Id B'\ b'_1\ b'_2$ and $\Delta \derb B'' : t_2$.
+      $\Delta \dere h_2 : \Id B'\ b'_1\ b'_2$ and $\Delta \dere B'' : t_2$.
       By lemma~\ref{lem:transleq}, we have $e_2,e_3$ such that
-      $\Delta \derb e_2 : \Id s_5\ t_2\ s_2$ and
-      $\Delta \derb (e_3)_* : B' \to (e_2)_*\ B''$.
+      $\Delta \dere e_2 : \Id s_5\ t_2\ s_2$ and
+      $\Delta \dere (e_3)_* : B' \to (e_2)_*\ B''$.
 
       The problem is that
       \[
@@ -506,10 +512,10 @@
       However these two types are equal thanks to $h_1$.
       (We could explicit it, but everyone should be convinced. We can then
       transport the whole $\lambda$ expression, we keep the translation
-      property and thus equality by destructing $\mbe$).
+      property and thus equality under $\prfl$).
 
       We finally have
-      $\Gamma' \derb e_5 : \Id T\ u_1\ u_2$ for some $e_4,e_5$,
+      $\Gamma' \dere e_5 : \Id T\ u_1\ u_2$ for some $e_4,e_5$,
       where
       \[
         \begin{array}{l@{~}l}
@@ -520,7 +526,7 @@
                     (e_3)_*\ b'_2[x := ((e_1)_* (h_1\inv))_*\ x])
         \end{array}
       \]
-      And everything behaves well under $\msigma$.
+      And everything behaves well under $\prfl$.
 
       \begin{graycase}
         \begin{mathc}
@@ -529,8 +535,8 @@
             }{\Gamma \derr F_1\ a_1 = F_2\ a_2 : B[x := a_1]}
         \end{mathc}
         By induction hypotheses,
-        $\Gamma' \derb h_1 : \Id (\Pi x:A'.B')\ F'_1\ F'_2$ and
-        $\Gamma' \derb h_2 : \Id A'\ a'_1\ a'_2$ (here we use an elaborate
+        $\Gamma' \dere h_1 : \Id (\Pi x:A'.B')\ F'_1\ F'_2$ and
+        $\Gamma' \dere h_2 : \Id A'\ a'_1\ a'_2$ (here we use an elaborate
         version of the transport trick since the original translation gives us
         $A'$ and $B'$).
         The only problem here is that $F'_2\ a'_2$ would have type
@@ -546,16 +552,17 @@
               \Gamma \derr v_1 = v_2 : A_1
             }{\Gamma \derr \Id A_1\ u_1\ v_1 = \Id A_2\ u_2\ v_2 : s}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb h_A : \Id s\ A'_1\ A'_2$
-        and $\Gamma' \derb h_u : \Id A'_1\ u'_1\ u'_2$ and
-        $\Gamma' \derb h_v : \Id A'_1\ v'_1\ v'_2$.
+        By induction hypotheses, $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$
+        and $\Gamma' \dere h_u : \Id A'_1\ u'_1\ u'_2$ and
+        $\Gamma' \dere h_v : \Id A'_1\ v'_1\ v'_2$.
         Destructing these three equalities \emph{is all it takes\footnote{Thus
         avoiding to do it \emph{in extenso} here.}} to prove
-        $\Gamma' \derb h : \Id s\ (\Id A'_1\ u'_1\ v'_1)\ %
+        $\Gamma' \dere h : \Id s\ (\Id A'_1\ u'_1\ v'_1)\ %
         (\Id A'_2\ ({h_A}_*\ u'_2)\ ({h_A}_*\ v'_2))$ for some $h$.
       \end{graycase}
 
       \begin{graycase}
+        \meta{TODO BELOW}
         \begin{mathc}
           \ru{\Gamma \derr A_1 = A_2 : s \qquad
               \Gamma \derr u_1 = u_2 : A_1
