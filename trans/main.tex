@@ -120,12 +120,12 @@
   their behavior
   ``under it''. We extend this parametrization on contexts naturally.
 
-  In the following $\Gamma \derb t = t'$ shall mean that there exists $A$
-  such that $\Gamma \derb t = t' : A$ holds. We will write $t\prfl$ for
+  In the following $\Gamma \dere t = t'$ shall mean that there exists $A$
+  such that $\Gamma \dere t = t' : A$ holds. We will write $t\prfl$ for
   $t[\mA,\mA,\refl]$, and $t\pfull$ for $t[\mA,\mB,\me]$.
 
   \begin{definition}[$\Gamma$-translation]
-    For any parametrized context $\derb \Gamma$ we define the notion of
+    For any parametrized context $\dere \Gamma$ we define the notion of
     $\Gamma$-translation of a term $u$ (in $\Se$), writing $\tr{t}{\Gamma}$ for
     the set of such terms, by induction on $u$.
     \begin{itemize}
@@ -281,10 +281,10 @@
         translation\footnote{This stands for
         $\Gamma'\pany \dere A'\pany : t\pany$}.
         By lemma~\ref{lem:transleq}, we have
-        $\Gamma' \derb A'' : s$ which is still a valid translation
+        $\Gamma' \dere A'' : s$ which is still a valid translation
         (indeed $s \in \tr{s}{\Gamma}$, it parameterized in the sense that it
         does not mention $\mA,\mB,\me$).
-        So $\derb \Gamma', x : A''$ and $\Gamma', x : A''$ is a translation of
+        So $\dere \Gamma', x : A''$ and $\Gamma', x : A''$ is a translation of
         $\Gamma, x : A$.
         (Note: Being a translation means that $x \notin \dom \Gamma$ ensures
         $x \notin \dom \Gamma'$).
@@ -562,16 +562,15 @@
       \end{graycase}
 
       \begin{graycase}
-        \meta{TODO BELOW}
         \begin{mathc}
           \ru{\Gamma \derr A_1 = A_2 : s \qquad
               \Gamma \derr u_1 = u_2 : A_1
             }{\Gamma \derr \refl(A_1,u_1) = \refl(A_2,u_2) : \Id A_1\ u_1\ u_1}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb h_A : \Id s\ A'_1\ A'_2$
-        and $\Gamma' \derb h_u : \Id A'_1\ u'_1\ u'_2$.
+        By induction hypotheses, $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$
+        and $\Gamma' \dere h_u : \Id A'_1\ u'_1\ u'_2$.
         This case is treated as the previous one by saying there is an $h$
-        such that $\Gamma' \derb h : \Id (\Id A'_1\ u'_1\ u'_1)\ %
+        such that $\Gamma' \dere h : \Id (\Id A'_1\ u'_1\ u'_1)\ %
         \refl(A'_1,u'_1)\ (h'_*\ \refl(A'_2,u'_2))$ where $h'$ is an equality
         like the one from the precedent case.
       \end{graycase}
@@ -612,9 +611,9 @@
               \Gamma \derr A_1 = A_2 : s
             }{\Gamma \derr a_1 = a_2 : A_2}
         \end{mathc}
-        By induction hypotheses, $\Gamma' \derb h_a : \Id A'_1\ a'_1\ a'_2$
-        and $\Gamma' \derb h_A : \Id s\ A'_1\ A'_2$.
-        We easily get $h$ such that $\Gamma' \der h : \Id A'_2\ %
+        By induction hypotheses, $\Gamma' \dere h_a : \Id A'_1\ a'_1\ a'_2$
+        and $\Gamma' \dere h_A : \Id s\ A'_1\ A'_2$.
+        We easily get $h$ such that $\Gamma' \dere h : \Id A'_2\ %
         ({h_A}_*\ a'_1)\ ({h_A}_*\ a'_2)$.
       \end{graycase}
 
@@ -624,7 +623,7 @@
           }{\Gamma \derr \mR : \sB}
       \end{mathc}
       By induction hypothesis, there exists $\Gamma'$ a well-formed translation
-      of $\Gamma$. And for any such translation, $\Gamma' \derb \mB : \sB$
+      of $\Gamma$. And for any such translation, $\Gamma' \dere \mB : \sB$
       which is a valid translation.
 
       \nextcase
@@ -632,104 +631,63 @@
         \ru{\Gamma \derr t : \mA
           }{\Gamma \derr \inj(t) : \mR}
       \end{mathc}
-      By induction hypothesis, we have $\Gamma' \derb t' : A'$.
-      Since $\mA$ and $A'$ can be equated (lemma~\ref{lem:transleq}),
+      By induction hypothesis, we have $\Gamma' \dere t' : A'$.
+      Since $\mA$ and $A'$ can be equated (lemma~\ref{lem:transleq}
+      \meta{plus a lemma that says that any term of $\Se$ is a translation of
+      itself?}),
       we have a transport $h_* : A' \to \mA$, so
-      $\Gamma' \derb h_*\ t' : \mA$ and thus
-      $\Gamma' \derb \me_*\ (h_*\ t') : \mB$ which gives us a desired
-      translation.
+      $\Gamma' \dere h_*\ t' : \mA$ and thus
+      $\Gamma' \dere \mbe_*\ (h_*\ t') : \mbB$ which gives us a desired
+      translation... \meta{This actually doesn't work, we have to figure it out!
+      If we want to use $\mbe$, we need to start from $\mbA$.
+      While it makes sense with $\pfull$, what does it mean under $\prfl$?}
 
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr t : \mR
           }{\Gamma \derr \proj(t) : \mA}
       \end{mathc}
-      By induction hypothesis, $\Gamma' \derb t' : R'$.
-      We can safely assume $\Gamma' \derb t' : \mB$ and thus
-      $\Gamma' \derb {\me\inv}_*\ t' : \mA$.
+      By induction hypothesis, $\Gamma' \dere t' : R'$.
+      We can safely assume $\Gamma' \dere t' : \mB$ and thus
+      $\Gamma' \dere {\me\inv}_*\ t' : \mA$.
+      \meta{Same problem...}
 
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr t : \mA
           }{\Gamma \derr \proj(\inj(t)) = t : \mA}
       \end{mathc}
-      By induction hypothesis, $\Gamma' \derb t' : \mA$.
-      Then $\eta\ t'$ is the proof we seek.
-      \meta{There is the problem that it doesn't become $\refl$ when $\mbe$
-      is destructed!}
+      By induction hypothesis, $\Gamma' \dere t' : \mA$.
+      Then $\eta\ t'$ is the proof we seek, where $\eta^\bullet$
+      is $\eta$ using the variables $\mbA,\mbB,\mbe$ instead of
+      $\mA,\mB,\me$ (it indeed does not need to know anything about them).
 
       \nextcase
       \begin{mathc}
         \ru{\Gamma \derr t : \mR
           }{\Gamma \derr \inj(\proj(t)) = t : \mR}
       \end{mathc}
-      By induction hypothesis, $\Gamma' \derb t' : \mB$.
-      Then $\epsilon\ t'$ is the proof we seek.
+      By induction hypothesis, $\Gamma' \dere t' : \mB$.
+      Then $\epsilon^\bullet\ t'$ is the proof we seek, where $\epsilon^\bullet$
+      is $\epsilon$ using the variables $\mbA,\mbB,\mbe$ (like $\eta$).
     \end{caselist}
   \end{proof}
 
-  \begin{corollary}[Consistency (with respect to $\Sb$)]
+  \begin{corollary}[Consistency]
     \label{cor:cons1}
     The least type is not inhabited: $X : \Type_0 \nvdash_r t : X$
-    (as long as it is not inhabited in $\Sb$).
+    (as long as it is not inhabited in $\Se$).
   \end{corollary}
 
   \begin{proof}
     Let's write $\Gamma := X : \Type_0$ and assume $\Gamma \derr t : X$.
-    Thus, by theorem~\ref{thm:transl}, we have $\Gamma \derb t' : T$ with
+    Thus, by theorem~\ref{thm:transl}, we have $\Gamma \dere t' : T$ with
     the right translations (we indeed can choose whatever we want for the
     translation of $\Gamma$ and $\Gamma$ itself is valid).
     \Wlog, by lemma~\ref{lem:transleq}, we can assume
-    $\Gamma \derb t' : X$ (by applying a transport to $t'$).
-    Now, assuming that $\Sb$ is itself consistent, this is a contradiction.
-    Thus, our system with resizing rules is consistent (with respect to $\Sb$).
-  \end{proof}
-
-  \subsection{Elimination of Residuals}
-
-  This time, we will translate a judgement of $\Sb$ to a judgement of $\Se$
-  in order to finally conclude on consistency (as $\Se$ can be seen as a subset
-  of Coq).
-
-  Our main tool will be the substitution of $\mbB$ by $\mB$, as $\mbB$ was only
-  an abstraction of $\mB$ (in a possibly higher universe).
-  We write $\mrho$ for $[\mbB := \mB ; \mbe := \me]$.
-  Remark: This is not an actual subsitution, even though we write it as one,
-  it is merely a compact way of writing a translation that leaves everything
-  unchanged but the bullets ($\bullet$) at toplevel that it removes.
-
-  \begin{theorem}[Erasure ($\Sb$ to $\Se$)]
-    \label{thm:erase}
-    If $\Gamma \derb t : T$ then $\Gamma\mrho \dere t\mrho : T\mrho$.
-  \end{theorem}
-
-  \begin{proof}
-    The proof is straightforward as we eliminate all uses of $\mbe$ and $\mbB$
-    at toplevel, while the others are shadowed (abstracted) and do not rely
-    on the specific rules. Since $\mbe$ and $\mbB$ have similar typing rules
-    as $\mB$ (the bullets are just tags -- the only difference is in the
-    universe of $\mbB$ which is bigger than the one of $\mB$ potentially,
-    but this doesn't change anything), the complete derivation still holds.
-  \end{proof}
-
-  \begin{corollary}[Consistency of $\Sb$]
-    \label{cor:cons2}
-    $\Sb$ is consistent as long as $\Se$ is.
-  \end{corollary}
-
-  \begin{proof}
-    By theorem~\ref{thm:erase}, $\Sb$ is consitent: $\mrho$ has no effect on
-    $X$ (because $\mbB$ or $\mbe$ are not actual variables).
-  \end{proof}
-
-  \begin{corollary}[Consitency]
-    $\Sr$ is consistent as long as $\Se$ is.
-  \end{corollary}
-
-  \begin{proof}
-    Assuming $\Sr$ is inconsistent, by corollary~\ref{cor:cons1},
-    $\Sb$ is inconsistent and thus, by corollary~\ref{cor:cons2},
-    $\Se$ is inconsistent.
+    $\Gamma \dere t' : X$ (by applying a transport to $t'$).
+    Now, assuming that $\Se$ is itself consistent, this is a contradiction.
+    Thus, our system with resizing rules is consistent (with respect to $\Se$).
   \end{proof}
 
   \section{Consistency of Other Resizing Rules}
