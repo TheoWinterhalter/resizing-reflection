@@ -195,8 +195,10 @@
   \begin{proof}
     Formally we prove by induction that
     $\Gamma\prfl \dere t_1\prfl = t_2\prfl$
-    meaning $\Gamma\prfl \dere t\prfl = t'\prfl : T\prfl$
+    meaning $\Gamma\prfl \dere t_1\prfl = t_2\prfl : T\prfl$
     (to do so we rely on unicity of typing).
+    \meta{We should try to see what hypothesis we want exactly... Because we
+    only assumed typing on $\pfull$ and not on $\prfl$}.
     Then we have
     \[
       \Gamma\pfull \dere \J(\sR, P, p, \mA, \mB, \me)\ %
