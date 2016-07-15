@@ -36,6 +36,12 @@ Proof.
 Qed.
 
 (* The problem is indeed the JMLeibniz property... *)
-       
+
+Set Printing Universes.
+Definition trans2@{i} (A B : Type@{i}) (p : @Id2 Type@{i} Type@{i} A B) : A -> B.
+  destruct p. exact (fun x => x).
+Defined.
+
+(* Goal forall (A B : Type) (p : I) *)
 
 
