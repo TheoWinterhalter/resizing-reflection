@@ -41,8 +41,9 @@ Qed.
    necessarilly a type. *)
 Definition trans2 (A B : Type) (p : Id2 A B) : A -> B :=
   Id2_rect Type A
-           (fun (T : Type) (B : T) (p : Id2 A B) => A -> B)
-           (fun x => x) Type B p
+           (fun (T : Type) (B : T) (p : Id2 A B) =>
+              forall (e : Id T Type), Id A (trans e B) -> A -> trans e B)
+           (fun e f a => trans f a) Type B p (refl _) _
 .
 
 (* Goal forall (A B : Type) (p : I) *)
