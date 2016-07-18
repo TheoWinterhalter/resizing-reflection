@@ -46,24 +46,44 @@ manières de prouver deux objets égaux.
 
 \subsection*{Le problème étudié}
 
-Quelle est la question que vous avez abordée ?
-Pourquoi est-elle importante, à quoi cela sert-il d'y répondre ?
-Est-ce un nouveau problème ?
-Si oui, pourquoi êtes-vous le premier chercheur de l'univers à l'avoir posée ?
-Si non, pourquoi pensiez-vous pouvoir apporter une contribution originale ?
+% Quelle est la question que vous avez abordée ?
+% Pourquoi est-elle importante, à quoi cela sert-il d'y répondre ?
+% Est-ce un nouveau problème ?
+% Si oui, pourquoi êtes-vous le premier chercheur de l'univers à l'avoir posée ?
+% Si non, pourquoi pensiez-vous pouvoir apporter une contribution originale ?
+En théorie des types, et donc dans des assistants de preuve tels que Coq ou
+Agda, pour éviter des paradoxes à la Russel, on établit une hiérarchie d'univers
+(les types des types) assurant alors la cohérence du système (sans ça, il serait
+possible de prouver \emph{faux} en Coq par exemple).
+Néanmoins, les règles concernant les univers sont syntaxiques et en quelque
+sorte une surapproximation. Il est donc raisonnable de se demander si dans
+certain cas il est possible de les assouplir.
+Énoncées par Vladimir Voevodsky, les \emph{resizing rules} sont des règles
+qui permettent d'abaisser le niveau d'univers d'un type suivant des conditions
+précises. La question est donc de comment les justifier et de comment les
+instrumenter pour qu'elles soient utilisables en pratique dans Coq par exemple.
 
 \subsection*{La contribution proposée}
 
-Qu'avez vous proposé comme solution à cette question ?
-Attention, pas de technique, seulement les grandes idées !
-Soignez particulièrement la description de la démarche \emph{scientifique}.
+% Qu'avez vous proposé comme solution à cette question ?
+% Attention, pas de technique, seulement les grandes idées !
+% Soignez particulièrement la description de la démarche \emph{scientifique}.
+Ma contribution consiste en une proposition d'implémentation dans Coq
+(qui s'accompagne par une réelle implémentation dans Coq par l'un des membres
+de l'équipe) ainsi que des pistes pour une justification qui soit compatible
+avec l'axiome d'univalence. En plus de proposer une nouvelle \emph{resizing
+rule}, on montre que l'on peut ramener toutes les règles à une seule (à
+condition de s'autoriser le tiers-exclu pour les propositions).
 
 \subsection*{Les arguments en faveur de sa validité}
 
-Qu'est-ce qui montre que cette solution est une bonne solution ?
-Des expériences, des corollaires ?
-Commentez la \emph{robustesse} de votre proposition :
-comment la validité de la solution dépend-elle des hypothèses de travail ?
+% Qu'est-ce qui montre que cette solution est une bonne solution ?
+% Des expériences, des corollaires ?
+% Commentez la \emph{robustesse} de votre proposition :
+% comment la validité de la solution dépend-elle des hypothèses de travail ?
+Nous n'avons malheureusement pas été en mesure d'établir la cohérence de nos
+\emph{resizing rules} néanmoins on propose une ébauche de preuve où toutes les
+étapes sont montrées exceptée une étape qui repose sur une conjecture.
 
 \subsection*{Le bilan et les perspectives}
 
