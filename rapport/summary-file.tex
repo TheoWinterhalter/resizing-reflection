@@ -3,7 +3,7 @@
 % Font
 % \renewcommand{\familydefault}{\sfdefault}
 % \usepackage{helvet}
-\usepackage[sfdefault,light]{roboto}
+% \usepackage[sfdefault,light]{roboto}
 
 \usepackage[T1]{fontenc} %
 % \usepackage[latin1]{inputenc} %
@@ -14,6 +14,8 @@
 % \setlength{\parskip}{0.3\baselineskip}
 
 \usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
 \usepackage{bm}
 \usepackage{pifont}
 
@@ -32,8 +34,27 @@
 % NTH
 \usepackage[super]{nth}
 
+% For EPS figures
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{wrapfig}
+
+% Theorems
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{note}{Note}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{remark}
+\newtheorem*{example}{Example}
+
 % Meta comment
 \newcommand\meta[1]{\noindent\textcolor{blue}{\emph{#1}}}
+
+% Include the macro file
+\input{macros}
 
 \begin{document}
 
@@ -112,7 +133,8 @@ Our work consists of a proof and an implementation.
 However, our proof relies on some axioms that we deem consistent in a univalent
 setting but this would require more work to justify their use more explicitely.
 
-% Comment the robustness of your solution: how does it rely/depend on the working assumptions ?
+% Comment the robustness of your solution:
+% how does it rely/depend on the working assumptions ?
 
 \subsection*{Summary and future work}
 
@@ -136,14 +158,128 @@ resizing rule might serve as a basis for articles we decided to write this
 report in English.
 
 \newpage
+\pagestyle{plain} %
 
 \section{Homotopy Type Theory}
 
+We will start by briefly presenting type theory and then go to its homotopic
+counterpart.
+
 \subsection{Proof Theory and Proof Assistants}
+
+The Curry-Howard isomorphism sets the basis for seeing $\lambda$-terms as
+proofs and types as propositions. Since then, many systems such as
+Martin-L\" of Type Theory (the theory behind Agda) or the Calculus of
+Inductive Constructions (CIC -- the theory behind Coq) extended it to dependent
+types that allow types to depend on terms.
+% This way, the dependent product $\Pi x:A.B$ (where $B$ can mention $x$)
+% represents the proposition $\forall x:A, B$.
+We shall assume the reader is familiar with basic concepts associated to CIC
+such as the inductive types as CIC will serve as our implicit context.
 
 \subsection{Proofs and Equality}
 
+Even though in Coq, one notion of equality is built-in: conversion which
+identifies terms up to $\beta$-reductions, it is often interesting to talk
+about equality inside of proof terms.
+We thus use the so-called identity types $\Id\ A\ u\ v$ (meaning the type of
+proofs that $u$ and $v$ of type $A$ are equal; often written
+$u =_A v$ or even $u = v$ when $A$ is understood) such that $\Id\ A\ x\ x$
+have one inhabitant: $\refl_x$.
+Basically this means that we can only prove equality of objects that are already
+convertible without relying on hypotheses of course: this is the smallest
+reflexive relation.
+
+\begin{wrapfigure}{r}{0.25\textwidth}
+    \centering
+    \includegraphics[scale=.4]{s1.eps}
+\end{wrapfigure}
+Homotopy type theory comes with concepts that tend to inhabit equlity through
+other means than reflexivity. For instance, it introduces the notion of
+\emph{higher inductive types} that are not only described by constructors but
+also by equalities.
+The most standard example is probably the circle $\S1$ that has one constructor
+$\base : \S1$ and one non-trivial equality $\sloop : \base = \base$
+(in the figure on the right we implicitely see an equality as a directed arrow).
+This can go against the intuition but this type doesn't have only one element,
+\ie it is not provable that $\forall x,y : \S1.\ x = y$. It is however
+reassuring that the circle doesn't consist of only one point.
+Obviously, all equalities in $\sloop = \sloop$ aren't provably equal either.
+However, for a type such as $\bool$ whose elements are clearly not all
+identifiable (we can even prove $\true \neq \false$), we can prove (this does
+not come easily) that all proofs of $b =_{\bool} b$ are equal.
+This gives rise to a classification of types depending on the properties
+of their (higher) equalities.
+
+\begin{definition}[$n-\Type$s]
+  \leavevmode
+  \begin{itemize}
+    \item We say a type $T$ is \emph{contractible} (or a $(-2)-\Type$) when
+          there is $t : T$ such that $\forall x : T. x = t$.
+    \item We say that $T$ is an $(n+1)-\Type$ when for all $x, y : T$, the type
+          $x =_T y$ is an $n-\Type$.
+  \end{itemize}
+\end{definition}
+%
+\noindent
+In particular, we shall say that a $(-1)-\Type$ is a \emph{(mere) proposition}
+following the intuition that such a type is either \emph{true} ($\top$ -- the
+unit type) or \emph{false} ($\bot$ -- the empty type).
+We also say that a $0-\Type$ is a \emph{set} as it verifies uniqueness of
+identity proofs as sets of set theory.
+
+\paradot{Transport}
+We represented the circle by drawing $\sloop$ as a path from $\base$ to
+$\base$, this way of representing the equality can be explicited by the notion
+of transport.
+Basically, given $p : A =_{\Type} B$, it is possible to construct a function
+$p_* : A \to B$ using the elimination principle of equality.
+
+\paradot{Operations}
+The elimination principle for equality can be annoying to use in general so we
+rather prove basic lemmata that make reasoning about equality easier.
+One that is useful for instance is the congruence of equality under application:
+\[ \ap : \forall (f : A \to B).\ x =_A y \to f\ x =_B f\ y. \]
+
 \subsection{Univalence}
+
+As we already mentioned, univalence is a principle that basically allows to
+identify objects that are equivalent. To really give meaning to those words we
+need to define what we mean by equivalence.
+
+\begin{definition}[Equivalence]
+  Given $A$, $B$ and $f : A \to B$, we say that $f$ is an equivalence
+  if there exist the following terms:
+  \begin{itemize}
+    \item $g : B \to A$,
+    \item $\eta : \forall a:A.\ g\ (f\ a) = a$,
+    \item $\epsilon : \forall b:B.\ f\ (g\ b) = b$,
+    \item $\alpha : \forall a:A.\ \ap\ f\ (\eta\ a) = \epsilon\ (f\ a)$.
+  \end{itemize}
+  We write $A \approx B$ for the type of equivalences between $A$ and $B$.
+\end{definition}
+
+\noindent
+An interesting to remark is that if $A$ and $B$ are sets, then an equivalence is
+exactly a bijection between types (which incidently is the notion of isomorphism
+for sets).
+
+Using transports it is trivial to construct an equivalence between to equal
+types $A = B$, this gives us an arrow $f : (A = B) \to (A \approx B)$.
+The principle of univalence states that this arrow itself is an equivalence.
+
+\begin{definition}[Univalence]
+  The trivial arrow $(A = B) \to (A \approx B)$ is itself an equivalence.
+\end{definition}
+
+\noindent
+This means in particular that to equivalent types are equal (which is usually
+how univalence is presented to people that aren't familiar with homotopy type
+theory) but it actually says more. The way to construct the equality is related
+to the equivalence.
+For instance, if you take a look at $\bool$, there are two ways to prove
+$\bool = \bool$, the usual straightforward way which corresponds to the identity
+and the twisted way coming from univalence that exchanges $\true$ and $\false$.
 
 \section{Resizing Rules}
 
