@@ -1,0 +1,126 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc} %
+% \usepackage[latin1]{inputenc} %
+\usepackage[utf8]{inputenc} %
+% \usepackage[applemac]{inputenc} %
+% \usepackage{a4wide} %
+
+% \setlength{\parskip}{0.3\baselineskip}
+
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{bm}
+\usepackage{pifont}
+
+% Add some colors
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+ linktocpage,
+ colorlinks,
+ citecolor=BlueViolet,
+ filecolor=red,
+ linkcolor=Blue,
+ urlcolor=BrickRed
+}
+
+% NTH
+\usepackage[super]{nth}
+
+% Meta comment
+\newcommand\meta[1]{\noindent\textcolor{blue}{\emph{#1}}}
+
+\begin{document}
+
+\title{Justifying Resizing Rules in HoTT \\
+\small{Through an interpretation of extensional type theory into an intensional
+one}}
+
+\author{Théo Winterhalter, Nicolas Tabareau (ASCOLA, LINA)}
+
+\date{\nth{5} of September, 2016}
+
+\maketitle
+
+\pagestyle{empty} %
+\thispagestyle{empty}
+
+%% Attention: pas plus d'un recto-verso!
+% Ne conservez pas les questions
+
+
+\subsection*{The general context}
+% What is it about ? Where does it come from ?
+% What is the state of the art in this area ?
+Homotopy Type Theory (HoTT for short) is a new domain that aims to offer a new
+axiomatisation of mathematics that allows to consider objects up to isomorphisms
+(as a result of the univalence axiom which allows to derive an equality between
+isomorphic types).
+The underlying theory thus develops a lot of notions related to equality and its
+treatment, in particular it theorises about equalities between equalities that
+are often considered to be trivial as they are in Set Theory.
+
+\subsection*{The research problem}
+
+% What is the question that you studied ?
+% Why is it important, what are the applications/consequences ?
+% Is it a new problem ?
+% If so, why are you the first researcher in the universe who consider it ?
+% If not, why did you think that you could bring an original contribution ?
+In type theory, and thus in proof assistants such as Coq or Agda, in order to
+avoid paradoxes \emph{à la} Russel, we have to establish a hierarchy of
+universes (the types of types). Without it, it would be possible to prove
+\emph{false} in Coq for instance.
+Nevertheless, the typing rules dealing with universes are purely syntactical
+and can be seen as rough approximations to preserve consistency.
+They can be annoying for the user and we can legitimately wonder whether we
+can alleviate theses restrictions in some specific cases.
+
+Stated by Vladimir Voevodsky, the \emph{resizing rules} allow to lower the
+universe level of a type under special conditions. The way he presented them
+would make type checking undecidable.
+We studied the possibility of a definition better suited to implementation
+as well as a justification that the rules we propose preserve the consistency
+of the system.
+
+\subsection*{Your contribution}
+
+% What is your solution to the question described in the last paragraph ?
+% Be careful, do \emph{not} give technical details, only rough ideas !
+% Pay a special attention to the description  of the \emph{scientific} approach.
+We propose a way to implement resizing rules in Coq (which will be possible in
+the next release) with precise typing rules.
+We then show that -- up to some axioms that are consistent in a univalent
+setting -- all resizing rules that we proposed (and that correspond to the ones
+of Voevodsky) can be reduced to only one.
+We finally show the consistency of this one rule by generalizing a result by
+Marc Oury stating that we can translate extensional type theory into
+intensional type theory in a univalent setting (up to now it relied on the
+uniqueness of identity proofs that is incompatible with univalence).
+This last step is, in itself, an interesting result.
+
+\subsection*{Arguments supporting its validity}
+
+% What is the evidence that your solution is a good solution ?
+% Experiments ? Proofs ?
+Our work consists of a proof and an implementation.
+However, our proof relies on some axioms that we deem consistent in a univalent
+setting but this would require more work to justify their use more explicitely.
+
+% Comment the robustness of your solution: how does it rely/depend on the working assumptions ?
+
+\subsection*{Summary and future work}
+
+% What is next ? In which respect is your approach general ?
+% What did your contribution bring to the area ?
+% What should be done now ?
+% What is the good \emph{next} question ?
+Our approach goes through a very gereral interpretation of extensional type
+theory into intensional type theory which is an interesting result unavailable
+in homotopy type theory. Besides we allow the use of resizing rules in actual
+proofs in Coq.
+Still, as we pointed out, we rely on an axiom and it would be interesting to
+see if it holds in the simplicial model which is the mainstream model of
+univalent homotopy type theory.
+
+\end{document}
