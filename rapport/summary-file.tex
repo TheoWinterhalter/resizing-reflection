@@ -361,12 +361,52 @@ equivalence:
     }{B : \Type_i}
 \end{mathc}
 
-As one can see, these rule seem to break decidability of type checking, thus the
-need for a more explicit statement of those rules.
+As one can see, these rule seem to break decidability of type checking, hence
+the need for a more explicit statement of those rules.
 
 \subsection{Implementation Proposal}
 
+In order to preserve decidability of type checking, we explicit tag the resized
+version of a type by $\RR$. For instance, the rule for equivalence becomes:
+
+\begin{mathc}
+  \ru{A : \Type_i \qquad
+      B : \Type_j \qquad
+      h : A \approx B
+    }{\RR\ A\ h : \Type_j}
+\end{mathc}
+
+\noindent
+However, we need to relate $\RR\ A$ (we will ignore the $h$ as it is understood
+in most cases) and $A$ in some way. Mike Shulman for instance proposed to say
+that $\RR\ A$ and $A$ are equivalent, but in this precise case, this is not
+really interesting as we could have used $B$ from the start.
+Instead we use a \emph{strict equivalence}:
+
+\begin{mathc}
+  \ru{\Gamma \der t : A
+    }{\Gamma \der \inj\ t : \RR\ A}
+  \qquad
+  \ru{\Gamma \der t : \RR\ A
+    }{\Gamma \der \proj\ t : A}
+\end{mathc}
+%
+\noindent
+such that $\proj\ (\inj\ t) \equiv t$ and $\inj\ (\proj\ t) \equiv t$ are
+conversions that hold in the system (the equalities of the equivalence are not
+only provable but definitional).
+This corresponds to records with primitive projections in Coq, hence the
+decidability.
+%
+This can be achived in Coq thanks to Pierre-Marie Pédrot by deactivating the
+universe checking locally to create a records that holds a value of type $A$.
+
+All the rules can be treated similarly.
+
+
 \section{One Rule to Resize Them All}
+
+\meta{Talk about the embedding rule as the first candidate to rule the others.}
 
 \section{Extensional to Intensional}
 
