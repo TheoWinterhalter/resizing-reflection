@@ -314,6 +314,56 @@ universe problems in Coq.
 
 \subsection{Original Statement}
 
+In a talk he gave, Vladimir Voevodsky proposed several resizing rules that would
+be helpful in UniMath, a formalisation of univalent foundations of mathematics
+in Coq. At the time of the writing, they are using the option ``type-in-type''
+(which allows $\Type : \Type$, collapsing the universe hierarchy) to avoid
+those universe problems.
+
+The first one is the one we already mentioned that says that mere propositions
+are small. It is consistent with the remark we made about mere propositions
+saying that they are intuitively $\top$ or $\bot$ which incidentally live in
+$\Type_0$. We write $\ishProp\ T$ the type of proofs that $T$ is a mere
+proposition.
+
+\begin{mathc}
+  \ru{\Gamma \der h : \ishProp\ T
+    }{\Gamma \der T : \Type_0}
+\end{mathc}
+
+$\hProp$, the type of mere propositions (a $\Sigma$-type containing a type $T$
+and a proof $\ishProp\ T$), can be seen as $\bool$ if we extend our intuition
+to saying that it only contains $\top$ and $\bot$. We also would like to put in
+the smallest universe.
+
+\begin{mathc}
+  \ru{}{\Gamma \der \hProp : \Type_0}
+\end{mathc}
+
+If we consider two types to be equal, it only seems natural that they can live
+in the same universe. As of now, if $A : \Type_i$ and $B : \Type_j$, then we
+can consider $A =_{\Type_{\max(i,j)}} B$ in the biggest universe of the two
+when we would like to see both of them in the smallest.
+This gives the following rule:
+
+\begin{mathc}
+  \ru{A : \Type_i \qquad
+      e : A = B
+    }{B : \Type_i}
+\end{mathc}
+
+Similarly (especially if we think in univalent terms), we can state a rule for
+equivalence:
+
+\begin{mathc}
+  \ru{A : \Type_i \qquad
+      h : A \approx B
+    }{B : \Type_i}
+\end{mathc}
+
+As one can see, these rule seem to break decidability of type checking, thus the
+need for a more explicit statement of those rules.
+
 \subsection{Implementation Proposal}
 
 \section{One Rule to Resize Them All}
