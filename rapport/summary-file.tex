@@ -283,7 +283,34 @@ and the twisted way coming from univalence that exchanges $\true$ and $\false$.
 
 \section{Resizing Rules}
 
-\subsection{Introduction / Justification}
+We will now present the resizing rules and try to justify their need.
+
+\subsection{Motivations}
+
+Consistency in Coq relies on a hierarchy of universes $\Type_i$ with
+$\Type_i : \Type_{i+1}$. Even though this is usually transparent to the user
+(who only sees $\Type$), sometimes the user gets presented with a
+``universe inconsistency''. This happens for instance when a function was
+defined over $\Type_3$ but we provided a type in $\Type_4$.
+This is of course the expected behavior, however in some cases the universe
+level of an object grew artifically.
+
+Take the notion of subsets: if we want to take a subset of $A$ satisfying
+a given predicate $P$, we write $B := \{ x : A \mid P\ x \}$ in Coq.
+The problem is that $P$ could live in high universes, making the universe level
+of $B$ grow as well, meaning it could be bigger than the one of $A$ although
+it was originally intended as a subset of $A$.
+The consequences are that some properties of $A$ might not be inherited by
+$B$ because of universe constraints.
+One of the resizing rules proposed by Vladimir Voevodsky states that any
+mere proposition can be taken in the smallest universe ($\Type_0$).
+In our case it would lower the universe of $P\ x$ and $B$ would fit in the same
+universe as $A$.
+
+This is meant as a motivation to research resizing rules but this does not mean
+that they are necessary or even strengthen our system.
+We will consider them as a tool that makes your life better when dealing with
+universe problems in Coq.
 
 \subsection{Original Statement}
 
