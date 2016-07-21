@@ -479,10 +479,42 @@ It is tempting to say that equivalence is the one rule that generalizes all the
 others, however for the purpose of the proof, it is worth noting that under
 univalence we can reduce it to the equality rule.
 Once we have $e : A = B$ it feels like we could simply choose $\RR\ A$ to be
-$B$, however, unless $e = \refl$, $e\inv_*\ (e_*\ t) \equiv t$ does not hold
+$B$ and use $e$ and $e\inv$ respectively for $\inj$ and $\proj$,
+however, unless $e = \refl$, $e\inv_*\ (e_*\ t) \equiv t$ does not hold
 definitionally.
 
+Nevertheless, if we could turn $A = B$ into $A \equiv B$, we would have won.
+
 \section{Extensional to Intensional}
+
+\subsection{State of the Art}
+
+In order to justify the resizing rule for equality, we would like to transform
+a propositional equality into a conversion rule:
+
+\begin{mathc}
+  \ru{\Gamma \der p : u = v
+    }{\Gamma \der u \equiv v}
+\end{mathc}
+%
+The above rule is a bridge between intensional and extensional type theory.
+Extensional type theory is more powerful as the equality is able to relate a lot
+more terms. This comes at the price of decidability for the type checking but it
+is still used in proof assistants like Nuprl or Andromeda.
+
+Marc Oury proposed a proof of the consistency of such an extension of coq by
+creating a program translation that associates a derivation in the extensional
+calculus to a derivation in the intensional one such that a proof of $\bot$
+is translated to a proof of $\bot$.
+The problem is that this translation relies on the uniqueness of identity
+proofs (UIP) that is not compatible with univalence.
+
+It is worth noting that Van Doorn \etal proposed a similar proof by showing the
+equivalence between a PTS (Pure Type System) with explicit conversion and one
+without. Indeed, the translation from the extensional type theory maps
+conversions to transports that can be seen as explicit conversions.
+
+\subsection{Translation compatible with Univalence}
 
 \section*{Conclusion}
 
