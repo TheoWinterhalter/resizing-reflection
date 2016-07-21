@@ -403,10 +403,39 @@ universe checking locally to create a records that holds a value of type $A$.
 
 All the rules can be treated similarly.
 
+\meta{Mention the surjection rule somehow?}
+
 
 \section{One Rule to Resize Them All}
 
-\meta{Talk about the embedding rule as the first candidate to rule the others.}
+As a means to justify the consistency of those rules, we wondered if was not
+possible to reduce all rules to one. We show here several candidates.
+
+\paradot{Embedding}
+The fist candidate we had was the embedding resizing rule.
+We say that $f : A \to B$  is an \emph{embedding} when $\ap\ f$ is an
+equivalence (we write $A \embd B$ for the type of embeddings).
+To put it simply, we have $(x =_A y) \approx (f\ x =_B f\ y)$.
+For sets, it corresponds to injective maps:
+$f\ x = f\ y \to x = y$.
+In such a case it feels natural to consider $A$ to be smaller than $B$:
+
+\begin{mathc}
+  \ru{\Gamma \der A : \Type_i \qquad
+      \Gamma \der B : \Type_j \qquad
+      \Gamma \der h : A \embd B
+    }{\Gamma \der \RR\ A : \Type_j}
+\end{mathc}
+
+\noindent
+This was a good candidate in the sense that any mere proposition can be embedded
+in $\top$ and that $A \approx B$ implies $A \embd B$.
+However, this does not allow us to resize $\hProp$ itself and we were not able
+to find a good justification for it.
+
+\paradot{Equivalence}
+
+\paradot{Equality}
 
 \section{Extensional to Intensional}
 
