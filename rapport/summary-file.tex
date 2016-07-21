@@ -247,6 +247,9 @@ One that is useful for instance is the congruence of equality under application:
 It has a precise definition that we won't state here, but it basically
 follows directly from the elimination principle of the equality.
 
+Similarly for any $p : x = y$ and $q : y = z$, we can define
+$p\inv : y = x$ and $p \cons q : x = z$ translating symmetry and transitivity.
+
 \subsection{Univalence}
 
 As we already mentioned, univalence is a principle that basically allows to
@@ -472,6 +475,12 @@ go? As for the rest, we should probably have it proven in a Coq file and leave
 it to the interested reader.}
 
 \subsection{Equality}
+It is tempting to say that equivalence is the one rule that generalizes all the
+others, however for the purpose of the proof, it is worth noting that under
+univalence we can reduce it to the equality rule.
+Once we have $e : A = B$ it feels like we could simply choose $\RR\ A$ to be
+$B$, however, unless $e = \refl$, $e\inv_*\ (e_*\ t) \equiv t$ does not hold
+definitionally.
 
 \section{Extensional to Intensional}
 
