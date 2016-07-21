@@ -526,7 +526,125 @@ we don't have a definite proof, it appears that for parametricity reasons,
 it is not possible to build an equivalence between $\Type_i$ and itself that
 is not the identity.
 
-Let us now detail the adapted proof. 
+Let us now detail the adapted proof.
+
+\subsubsection{(Extensional) Calculus of Constructions}
+
+Our goal is to translate judgements in the Extensional Calculus of
+Constructions (herafter called \CCe) into the regular Calculus of Constructons
+(CC). Contexts will be either the empty context $\cdot$ or of the form
+$\Gamma, x:T$ and $\der \Gamma$ shall mean that the context $\Gamma$ is
+well-formed.
+
+We will write $s$ for sort variables, sorts being of the form $\Type_i$ for
+some $i$. CC is also equipped with a relation between sorts for the function
+spaces formation: $(\Type_i, \Type_j, \Type_{\max(i,j)})$.
+
+The typing rules of CC are given in figure~\ref{fig:cc-typ} while its
+convertibility rules (judgements of the form $\Gamma \der t \equiv t'$) are
+given in figure~\ref{fig:cc-conv}.
+
+\begin{figure}[h]
+  \hrule \vspace*{2ex}%
+
+  \begin{mathc}
+    \nmru{ECon}{}{\der \cdot}
+    \qquad
+    \nmru{I-Con%
+        }{\Gamma \der A : s
+        }{\der \Gamma, x:A}
+    \qquad
+    \nmrux{Var%
+         }{\der \Gamma
+         }{\Gamma \der x : A
+         }{(x : A) \in \Gamma}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmru{Type}{}{\Type_i : \Type_{i+1}}
+    \qquad
+    \nmru{Univ%
+        }{\Gamma \der A : \Type_i
+        }{\Gamma \der A : \Type_{i+1}}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmrux{Prod%
+         }{\Gamma \der A : s_1 \qquad
+           \Gamma, x:A \der B : s_2
+         }{\Gamma \der \forall x:A.B : s_3
+         }{(s_1,s_2,s_3)}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmru{App%
+        }{\Gamma \der t : \forall x:A.B \qquad
+          \Gamma \der u : A
+        }{\Gamma \der t\ u : B[x := u]}
+    \qquad
+    \nmru{Lam%
+        }{\Gamma, x:A \der t : B
+        }{\Gamma \der \lambda x:A.t : \forall x:A.B}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmru{Conv%
+        }{\Gamma \der A \equiv B \qquad
+          \Gamma \der t : A \qquad
+          \Gamma \der B : s
+        }{\Gamma \der t : B}
+  \end{mathc}
+
+  % \vspace*{2ex} \hrule%
+  \hrule%
+
+  \caption{Typing Rules of CC}
+  \label{fig:cc-typ}
+\end{figure}
+
+\begin{figure}[h]
+  \hrule \vspace*{2ex}%
+
+  \begin{mathc}
+    \nmru{$\beta$%
+        }{\Gamma \der (\lambda x:A. t)\ u : T
+        }{\Gamma \der (\lambda x:A. t)\ u \equiv t[x := u]}
+    \qquad
+    \nmru{CApp%
+        }{\Gamma \der t_1 \equiv t_2 \qquad
+          \Gamma \der u_1 \equiv u2
+        }{\Gamma \der t_1\ u_1 \equiv t_2\ u_2}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmru{CProd%
+        }{\Gamma \der A_1 \equiv A_2 \qquad
+          \Gamma, x:A_1 \der B_1 \equiv B_2
+        }{\Gamma \der \forall x:A_1.B_1 \equiv \forall x:A_2.B_2}
+  \end{mathc}
+
+  \begin{mathc}
+    \nmru{CLam%
+        }{\Gamma \der A_1 \equiv A_2 \qquad
+          \Gamma, x:A_1 \der t_1 \equiv t_2
+        }{\Gamma \der \lambda x:A_1.t_1 \equiv \lambda x:A_2.t_2}
+  \end{mathc}
+
+  \hrule%
+
+  \caption{Convertibility Rules of CC}
+  \label{fig:cc-conv}
+\end{figure}
+
+In order to obtain \CCe we only add the extensionality rule:
+\begin{mathc}
+  \nmru{Ext%
+      }{\Gamma \der p : u_1 = u_2
+      }{\Gamma \der u_1 \equiv u_2}
+\end{mathc}
+
+Please remark that, as in the work by Nicolas Oury, we will not speak about the
+typing rules of the propositional equality as it would hinder readability.
 
 \section*{Conclusion}
 
