@@ -121,7 +121,7 @@ setting -- all resizing rules that we proposed %(and that correspond to the ones
 % of Voevodsky)
 can be reduced to only one.
 We finally show the consistency of this one rule by generalizing a result by
-Marc Oury stating that we can translate extensional type theory into
+Nicolas Oury stating that we can translate extensional type theory into
 intensional type theory in a univalent setting (up to now it relied on the
 uniqueness of identity proofs that is incompatible with univalence).
 This last step is, in itself, an interesting result.
@@ -502,7 +502,7 @@ Extensional type theory is more powerful as the equality is able to relate a lot
 more terms. This comes at the price of decidability for the type checking but it
 is still used in proof assistants like Nuprl or Andromeda.
 
-Marc Oury proposed a proof of the consistency of such an extension of coq by
+Nicolas Oury proposed a proof of the consistency of such an extension of coq by
 creating a program translation that associates a derivation in the extensional
 calculus to a derivation in the intensional one such that a proof of $\bot$
 is translated to a proof of $\bot$.
@@ -515,6 +515,18 @@ without. Indeed, the translation from the extensional type theory maps
 conversions to transports that can be seen as explicit conversions.
 
 \subsection{Translation compatible with Univalence}
+
+As we said, the work of Nicolas Oury relies on UIP -- which cannot be assumed in
+HoTT -- but in name only. Indeed, if we only assume it for equalities over
+type, namely:
+\[ \forall (p : \Type_i = \Type_i).\ p = \refl, \]
+then we can adapt the proof so that it still holds.
+There is of course the question of whether it is safe to assume it and, while
+we don't have a definite proof, it appears that for parametricity reasons,
+it is not possible to build an equivalence between $\Type_i$ and itself that
+is not the identity.
+
+Let us now detail the adapted proof. 
 
 \section*{Conclusion}
 
