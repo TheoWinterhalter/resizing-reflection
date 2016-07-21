@@ -636,11 +636,12 @@ given in figure~\ref{fig:cc-conv}.
   \label{fig:cc-conv}
 \end{figure}
 
-In order to obtain \CCe we only add the extensionality rule:
+In order to obtain \CCe we only add the extensionality rule below.
+All judgements in \CCe will be written with $\dere$ whereas CC will use $\der$.
 \begin{mathc}
   \nmru{Ext%
-      }{\Gamma \der p : u_1 = u_2
-      }{\Gamma \der u_1 \equiv u_2}
+      }{\Gamma \dere p : u_1 = u_2
+      }{\Gamma \dere u_1 \equiv u_2}
 \end{mathc}
 
 Please remark that, as in the work by Nicolas Oury, we will not speak about the
