@@ -117,8 +117,9 @@ of the system.
 We propose a way to implement resizing rules in Coq (which will be possible in
 the next release) with precise typing rules.
 We then show that -- up to some axioms that are consistent in a univalent
-setting -- all resizing rules that we proposed (and that correspond to the ones
-of Voevodsky) can be reduced to only one.
+setting -- all resizing rules that we proposed %(and that correspond to the ones
+% of Voevodsky)
+can be reduced to only one.
 We finally show the consistency of this one rule by generalizing a result by
 Marc Oury stating that we can translate extensional type theory into
 intensional type theory in a univalent setting (up to now it relied on the
@@ -152,10 +153,8 @@ univalent homotopy type theory.
 
 \subsection*{Notes}
 
-Given that the translation from extensional type theory into intensional type
-theory without using uniqueness of identity proofs and that justifying
-resizing rule might serve as a basis for articles we decided to write this
-report in English.
+Given that this report might serve as a basis for articles we decided to write
+it in English.
 
 \newpage
 \pagestyle{plain} %
@@ -179,14 +178,14 @@ such as the inductive types as CIC will serve as our implicit context.
 
 \subsection{Proofs and Equality}
 
-Even though in Coq, one notion of equality is built-in: conversion which
+Even though in Coq, one notion of equality is built-in, the conversion which
 identifies terms up to $\beta$-reductions, it is often interesting to talk
 about equality inside of proof terms.
-We thus use the so-called identity types $\Id\ A\ u\ v$ (meaning the type of
-proofs that $u$ and $v$ of type $A$ are equal; often written
-$u =_A v$ or even $u = v$ when $A$ is understood) such that $\Id\ A\ x\ x$
-have one inhabitant: $\refl_x$.
-Basically this means that we can only prove equality of objects that are already
+We thus use the so-called identity types $\Id\ A\ u\ v$, meaning the type of
+proofs that $u$ and $v$ of type $A$ are equal. It is often written
+$u =_A v$ or even $u = v$ when $A$ is understood.
+$\Id\ A\ x\ x$ have one inhabitant: $\refl_x$,
+basically this means that we can only prove equality of objects that are already
 convertible without relying on hypotheses of course: this is the smallest
 reflexive relation.
 
@@ -204,10 +203,10 @@ $\base : \S1$ and one non-trivial equality $\sloop : \base = \base$
 This can go against the intuition but this type doesn't have only one element,
 \ie it is not provable that $\forall x,y : \S1.\ x = y$. It is however
 reassuring that the circle doesn't consist of only one point.
-Obviously, all equalities in $\sloop = \sloop$ aren't provably equal either.
-However, for a type such as $\bool$ whose elements are clearly not all
-identifiable (we can even prove $\true \neq \false$), we can prove (this does
-not come easily) that all proofs of $b =_{\bool} b$ are equal.
+All equalities in $\sloop = \sloop$ aren't provably equal either.
+However, for a type such as $\bool$ whose elements are not all
+identifiable (we can even prove $\true \neq \false$), we can prove that all
+proofs of $b =_{\bool} b$ are equal, but this does not come easily.
 This gives rise to a classification of types depending on the properties
 of their (higher) equalities.
 
@@ -227,6 +226,10 @@ following the intuition that such a type is either \emph{true} ($\top$ -- the
 unit type) or \emph{false} ($\bot$ -- the empty type).
 We also say that a $0-\Type$ is a \emph{set} as it verifies uniqueness of
 identity proofs as sets of set theory.
+
+For instance, $\bool$ is a set as all proofs of $b_1 = b_2$ are equal, but it
+is not a mere proposition because $\true = \false$ is not inhabited and thus
+not contractible.
 
 \paradot{Transport}
 We represented the circle by drawing $\sloop$ as a path from $\base$ to
@@ -264,16 +267,17 @@ An interesting to remark is that if $A$ and $B$ are sets, then an equivalence is
 exactly a bijection between types (which incidently is the notion of isomorphism
 for sets).
 
-Using transports it is trivial to construct an equivalence between to equal
-types $A = B$, this gives us an arrow $f : (A = B) \to (A \approx B)$.
+Using transports it is trivial to construct an equivalence between two equal
+types $A = B$ which gives us an arrow $f : (A = B) \to (A \approx B)$.
 The principle of univalence states that this arrow itself is an equivalence.
 
 \begin{definition}[Univalence]
-  The trivial arrow $(A = B) \to (A \approx B)$ is itself an equivalence.
+  The univalence axiom states that
+  the trivial arrow $(A = B) \to (A \approx B)$ is itself an equivalence.
 \end{definition}
 
 \noindent
-This means in particular that to equivalent types are equal (which is usually
+This means in particular that two equivalent types are equal (which is usually
 how univalence is presented to people that aren't familiar with homotopy type
 theory) but it actually says more. The way to construct the equality is related
 to the equivalence.
@@ -353,7 +357,7 @@ This gives the following rule:
 \end{mathc}
 
 Similarly (especially if we think in univalent terms), we can state a rule for
-equivalence:
+equivalence that generalize the previous one:
 
 \begin{mathc}
   \ru{A : \Type_i \qquad
