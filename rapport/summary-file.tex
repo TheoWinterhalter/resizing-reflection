@@ -447,6 +447,23 @@ For instance, the equality can trivially be reduced to equivalence.
 The other need more work and we shall detail them below.
 
 \paradot{Mere Propositions}
+In HoTT with univalence, the excluded-middle $\forall T.\ T + \neg T$ is
+inconsistent. However its restriction to mere propositions can be safely
+assumed.
+\[\emd : \forall (T:\hProp).\ T + \neg T.\]
+In a way, it makes sense as we really want to decide wheter a proposition is
+true or not rather than whether a type is inhabited or not.
+
+Once we have that, for any mere proposition $T$, we can create the type $T'$
+that is $\top$ or $\bot$ depending on the result of $\emd\ T$.
+That way $T' : \Type_0$ and $T \approx T'$.
+We can conclude it is safe to assume the resizing of mere propositions as long
+as it is safe to assume the excluded-middle for them and the resizing of
+equivalence.
+
+Likewise, we can show that $\hProp \approx \bool$ using $\emd$ in the same
+fashion, and, since $\bool : \Type_0$, the resizing rule of $\hProp$ is also
+reducible to equivalence.
 
 \subsection{Equality}
 
