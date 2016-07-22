@@ -900,6 +900,7 @@ Let us give a precise meaning to a translation so that it becomes apparent.
 We now prove our translation.
 
 \begin{theorem}[Validity of the Translation]
+  \label{thm:valid}
   The following properties hold:
   \leavevmode
   \begin{enumerate}
@@ -1064,6 +1065,22 @@ We now prove our translation.
     \nextcase (\rulename{CLam}) can be treated by (\rulename{HLam}) in a similar
     fashion.
   \end{caselist}
+\end{proof}
+
+Now that we have defined a translation, we need to ensure it implies the
+consistency of \CCe\ with respect to CIC (plus our axioms).
+
+\begin{corollary}
+  For any $\barG \der \barT : s \in \den{\Gamma \dere T : s}$ and for all
+  $t$ such that $\Gamma \dere t : T$ there exists $\bart$ such that
+  $\barG \der \bart : \barT \in \den{\Gamma \dere t : T}$.
+  In particular if $\Gamma \der T : s$ then there exists $\bart$ such that
+  $\Gamma \der \bart : T \in \den{\Gamma \dere t : T}$.
+\end{corollary}
+
+\begin{proof}
+  By theorem~\ref{thm:valid}.1 we have the traduction and by
+  lemma~\ref{lem:simeq} we can chose $T$ for $\barT$.
 \end{proof}
 
 \section*{Conclusion}
