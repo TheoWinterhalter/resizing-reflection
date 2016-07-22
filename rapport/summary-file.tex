@@ -93,18 +93,19 @@ are often considered to be trivial as they are in Set Theory.
 % Is it a new problem ?
 % If so, why are you the first researcher in the universe who consider it ?
 % If not, why did you think that you could bring an original contribution ?
-In type theory, and thus in proof assistants such as Coq or Agda, in order to
-avoid paradoxes \emph{à la} Russel, we have to establish a hierarchy of
-universes (the types of types). Without it, it would be possible to prove
-\emph{false} in Coq for instance.
+In type theory, and thus in proof assistants such as Coq~\cite{coq:manual} or
+Agda~\cite{norell2007towards}, in order to avoid paradoxes \emph{à la} Russel,
+we have to establish a hierarchy of universes (the types of types). Without it,
+it would be possible to prove \emph{false} in Coq for instance
+\cite{coquand:typetype}.
 Nevertheless, the typing rules dealing with universes are purely syntactical
 and can be seen as rough approximations to preserve consistency.
 They can be annoying for the user and we can legitimately wonder whether we
 can alleviate theses restrictions in some specific cases.
 
-Stated by Vladimir Voevodsky, the \emph{resizing rules} allow to lower the
-universe level of a type under special conditions. The way he presented them
-would make type checking undecidable.
+Stated by Vladimir Voevodsky~\cite{vv:resizing}, the \emph{resizing rules} allow
+to lower the universe level of a type under special conditions. The way he
+presented them would make type checking undecidable.
 We studied the possibility of a definition better suited to implementation
 as well as a justification that the rules we propose preserve the consistency
 of the system.
@@ -121,9 +122,10 @@ setting -- all resizing rules that we proposed %(and that correspond to the ones
 % of Voevodsky)
 can be reduced to only one.
 We finally show the consistency of this one rule by generalizing a result by
-Nicolas Oury stating that we can translate extensional type theory into
-intensional type theory in a univalent setting (up to now it relied on the
-uniqueness of identity proofs that is incompatible with univalence).
+Nicolas Oury~\cite{oury2005extensionality} stating that we can translate
+extensional type theory into intensional type theory in a univalent setting
+(up to now it relied on the uniqueness of identity proofs that is incompatible
+with univalence).
 This last step is, in itself, an interesting result.
 
 \subsection*{Arguments supporting its validity}
@@ -166,10 +168,11 @@ counterpart.
 
 \subsection{Proof Theory and Proof Assistants}
 
-The Curry-Howard isomorphism sets the basis for seeing $\lambda$-terms as
-proofs and types as propositions. Since then, many systems such as
-Martin-L\" of Type Theory (the theory behind Agda) or the Calculus of
-Inductive Constructions (CIC -- the theory behind Coq) extended it to dependent
+The Curry-Howard isomorphism~\cite{howard1995formulae} sets the basis for seeing
+$\lambda$-terms as proofs and types as propositions. Since then, many systems
+such as Martin-L\" of Type Theory~\cite{manin1975intuitionistic} (the theory
+behind Agda) or the Calculus of Inductive Constructions (CIC -- the theory
+behind Coq) extended it to dependent
 types that allow types to depend on terms.
 % This way, the dependent product $\Pi x:A.B$ (where $B$ can mention $x$)
 % represents the proposition $\forall x:A, B$.
@@ -178,7 +181,7 @@ such as the inductive types as CIC will serve as our implicit context.
 
 \subsection{Proofs and Equality}
 
-Even though in Coq, one notion of equality is built-in, the conversion which
+Even though in Coq one notion of equality is built-in, the conversion which
 identifies terms up to $\beta$-reductions, it is often interesting to talk
 about equality inside of proof terms.
 We thus use the so-called identity types $\Id\ A\ u\ v$, meaning the type of
@@ -193,10 +196,10 @@ reflexive relation.
     \centering
     \includegraphics[scale=.4]{s1.eps}
 \end{wrapfigure}
-Homotopy type theory comes with concepts that tend to inhabit equlity through
-other means than reflexivity. For instance, it introduces the notion of
-\emph{higher inductive types} that are not only described by constructors but
-also by equalities.
+Homotopy type theory~\cite{HoTTbook} comes with concepts that tend to inhabit
+equlity through other means than reflexivity. For instance, it introduces the
+notion of \emph{higher inductive types}~\cite{lumsdaine2013higher} that are not
+only described by constructors but also by equalities.
 The most standard example is probably the circle $\S1$ that has one constructor
 $\base : \S1$ and one non-trivial equality $\sloop : \base = \base$
 (in the figure on the right we implicitely see an equality as a directed arrow).
@@ -206,7 +209,7 @@ reassuring that the circle doesn't consist of only one point.
 All equalities in $\sloop = \sloop$ aren't provably equal either.
 However, for a type such as $\bool$ whose elements are not all
 identifiable (we can even prove $\true \neq \false$), we can prove that all
-proofs of $b =_{\bool} b$ are equal, but this does not come easily.
+proofs of $b_1 =_{\bool} b_2$ are equal, but this does not come easily.
 This gives rise to a classification of types depending on the properties
 of their (higher) equalities.
 
@@ -275,7 +278,8 @@ for sets).
 
 Using transports it is trivial to construct an equivalence between two equal
 types $A = B$ which gives us an arrow $f : (A = B) \to (A \approx B)$.
-The principle of univalence states that this arrow itself is an equivalence.
+The principle of univalence (\meta{cite?}) states that this arrow itself is an
+equivalence.
 
 \begin{definition}[Univalence]
   The univalence axiom states that
@@ -324,11 +328,11 @@ universe problems in Coq.
 
 \subsection{Original Statement}
 
-In a talk he gave, Vladimir Voevodsky proposed several resizing rules that would
-be helpful in UniMath, a formalisation of univalent foundations of mathematics
-in Coq. At the time of the writing, they are using the option ``type-in-type''
-(which allows $\Type : \Type$, collapsing the universe hierarchy) to avoid
-those universe problems.
+In a talk he gave~\cite{vv:resizing}, Vladimir Voevodsky proposed several
+resizing rules that would be helpful in UniMath~\cite{UniMath}, a formalisation
+of univalent foundations of mathematics in Coq. At the time of the writing, they
+are using the option ``type-in-type'' (which allows $\Type : \Type$, collapsing
+the universe hierarchy) to avoid those universe problems.
 
 The first one is the one we already mentioned that says that mere propositions
 are small. It is consistent with the remark we made about mere propositions
@@ -390,9 +394,9 @@ version of a type by $\RR$. For instance, the rule for equivalence becomes:
 
 \noindent
 However, we need to relate $\RR\ A$ (we will ignore the $h$ as it is understood
-in most cases) and $A$ in some way. Mike Shulman for instance proposed to say
-that $\RR\ A$ and $A$ are equivalent, but in this precise case, this is not
-really interesting as we could have used $B$ from the start.
+in most cases) and $A$ in some way. Mike Shulman (\meta{cite?}) for instance
+proposed to say that $\RR\ A$ and $A$ are equivalent, but in this precise case,
+this is not really interesting as we could have used $B$ from the start.
 Instead we use a \emph{strict equivalence}:
 
 \begin{mathc}
@@ -410,8 +414,9 @@ only provable but definitional).
 This corresponds to records with primitive projections in Coq, hence the
 decidability.
 %
-This can be achived in Coq thanks to Pierre-Marie Pédrot by deactivating the
-universe checking locally to create a records that holds a value of type $A$.
+This can be achived in Coq thanks to Pierre-Marie Pédrot~\cite{pperdot:pr} by
+deactivating the universe checking locally to create a records that holds a
+value of type $A$.
 
 All the rules can be treated similarly.
 
@@ -500,19 +505,21 @@ a propositional equality into a conversion rule:
 The above rule is a bridge between intensional and extensional type theory.
 Extensional type theory is more powerful as the equality is able to relate a lot
 more terms. This comes at the price of decidability for the type checking but it
-is still used in proof assistants like Nuprl or Andromeda.
+is still used in proof assistants like Nuprl~\cite{constableimplementing} or
+Andromeda~\cite{andromeda}.
 
-Nicolas Oury proposed a proof of the consistency of such an extension of coq by
-creating a program translation that associates a derivation in the extensional
-calculus to a derivation in the intensional one such that a proof of $\bot$
-is translated to a proof of $\bot$.
+Nicolas Oury~\cite{oury2005extensionality} proposed a proof of the consistency
+of such an extension of coq by creating a program translation that associates a
+derivation in the extensional calculus to a derivation in the intensional one
+such that a proof of $\bot$ is translated to a proof of $\bot$.
 The problem is that this translation relies on the uniqueness of identity
 proofs (UIP) that is not compatible with univalence.
 
-It is worth noting that Van Doorn \etal proposed a similar proof by showing the
-equivalence between a PTS (Pure Type System) with explicit conversion and one
-without. Indeed, the translation from the extensional type theory maps
-conversions to transports that can be seen as explicit conversions.
+It is worth noting that Van Doorn \etal \cite{van2013explicit} proposed a
+similar proof by showing the equivalence between a PTS (Pure Type System) with
+explicit conversion and one without. Indeed, the translation from the
+extensional type theory maps conversions to transports that can be seen as
+explicit conversions.
 
 \subsection{Translation compatible with Univalence}
 
@@ -714,5 +721,13 @@ make transports (that only come for types).
 \subsubsection{Proof of the Translation}
 
 \section*{Conclusion}
+
+% Bibliography
+% \nocite{%
+%   coq:manual%
+% }
+
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}

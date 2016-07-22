@@ -1,0 +1,77 @@
+\begin{thebibliography}{10}
+
+\bibitem{andromeda}
+The andromeda theorem prover.
+\newblock \url{https://github.com/Andromedans/andromeda}.
+
+\bibitem{constableimplementing}
+R~Constable.
+\newblock Implementing mathematics with the nuprl development system. 1986.
+
+\bibitem{coquand:typetype}
+Thierry Coquand.
+\newblock Reynold's paradox with the type:type axiom.
+\newblock In {\em The Calculus of Constructions, The Calculus of Constructions,
+  Documentation and user's guide}. Huet, Gerard, Projet FORMEL, 1989.
+
+\bibitem{howard1995formulae}
+William~A Howard.
+\newblock The formulae-as-types notion of construction.
+\newblock 1995.
+
+\bibitem{lumsdaine2013higher}
+PL~Lumsdaine and Michael Shulman.
+\newblock Higher inductive types.
+\newblock {\em preparation (cit. on pp. 3, 6, 26)}, 2013.
+
+\bibitem{manin1975intuitionistic}
+Per Martin-L\"of.
+\newblock An intuitionistic theory of types: predicative part, logic colloquium
+  73, 1975.
+
+\bibitem{coq:manual}
+\mbox{The Coq development team}.
+\newblock {\em The Coq proof assistant reference manual}.
+\newblock LogiCal Project, 2016.
+\newblock Version 8.5pl2.
+
+\bibitem{norell2007towards}
+Ulf Norell.
+\newblock {\em Towards a practical programming language based on dependent type
+  theory}, volume~32.
+\newblock Citeseer, 2007.
+
+\bibitem{oury2005extensionality}
+Nicolas Oury.
+\newblock Extensionality in the calculus of constructions.
+\newblock In {\em International Conference on Theorem Proving in Higher Order
+  Logics}, pages 278--293. Springer, 2005.
+
+\bibitem{pperdot:pr}
+Pierre-Marie P{\'e}drot.
+\newblock Local type-in-type flag (pull request for coq).
+\newblock Available at \url{https://github.com/coq/coq/pull/169}, 2016.
+
+\bibitem{HoTTbook}
+The Univalent~Foundations Program.
+\newblock Homotopy type theory: Univalent foundations of mathematics.
+\newblock Technical report, Institute for Advanced Study, 2013.
+
+\bibitem{van2013explicit}
+Floris van Doorn, Herman Geuvers, and Freek Wiedijk.
+\newblock Explicit convertibility proofs in pure type systems.
+\newblock In {\em Proceedings of the Eighth ACM SIGPLAN international workshop
+  on Logical frameworks \& meta-languages: theory \& practice}, pages 25--36.
+  ACM, 2013.
+
+\bibitem{vv:resizing}
+Vladimir Voevodsky.
+\newblock Resizing rules, their need and semantic justification.
+\newblock TYPES, 2011.
+
+\bibitem{UniMath}
+Vladimir Voevodsky, Benedikt Ahrens, Daniel Grayson, et~al.
+\newblock {\em UniMath}: {Univalent} {Mathematics}.
+\newblock Available at \url{https://github.com/UniMath}.
+
+\end{thebibliography}

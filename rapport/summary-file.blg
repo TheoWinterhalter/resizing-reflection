@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: summary-file.aux
+The style file: plain.bst
+Database file #1: biblio.bib
+Warning--to sort, need author or key in andromeda
+Warning--empty journal in howard1995formulae
+You've used 14 entries,
+            2118 wiz_defined-function locations,
+            568 strings with 5910 characters,
+and the built_in function-call counts, 3471 in all, are:
+= -- 341
+> -- 125
+< -- 3
++ -- 56
+- -- 38
+* -- 152
+:= -- 583
+add.period$ -- 43
+call.type$ -- 14
+change.case$ -- 59
+chr.to.int$ -- 0
+cite$ -- 16
+duplicate$ -- 149
+empty$ -- 319
+format.name$ -- 38
+if$ -- 752
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 7
+newline$ -- 71
+num.names$ -- 26
+pop$ -- 93
+preamble$ -- 1
+purify$ -- 46
+quote$ -- 0
+skip$ -- 116
+stack$ -- 0
+substring$ -- 130
+swap$ -- 31
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 54
+warning$ -- 2
+while$ -- 32
+width$ -- 16
+write$ -- 141
+(There were 2 warnings)
