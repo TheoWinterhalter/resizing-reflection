@@ -718,6 +718,54 @@ make transports (that only come for types).
 
 \subsubsection{Term Equivalence}
 
+We want to equate all translations of the same term, this is not possible to
+prove it by induction during the translation directly. In homotopy terms
+we need a center of contraction, \ie a fixed object that will serve as the
+intermediary between all translations of the same term.
+The following \emph{untyped} relation serves this purpose.
+
+\begin{definition}
+  We define the relation $\sim$ on CIC terms by induction:
+  \begin{mathc}
+    {\color{gray}
+      \rux{}{x \sim x}{x \text{ variable}}
+    }
+    \qquad
+    \ru{t_1 \sim t_2
+      }{p_*\ t_1 \sim t_2}
+    \qquad
+    \ru{t_1 \sim t_2
+      }{t_1 \sim p_*\ t_2}
+    \qquad
+    {\color{gray}
+      \ru{t_1 \sim t_2 \qquad
+          u_1 \sim u_2
+        }{t_1\ u_1 \sim t_2\ u_2}
+    }
+  \end{mathc}
+  \begin{mathc}
+    \color{gray}
+    \ru{A_1 \sim A_2 \qquad
+        t_1 \sim t_2
+      }{\lambda x:A_1.t_1 \sim \lambda x:A_2.t_2}
+    \qquad
+    \ru{A_1 \sim A_2 \qquad
+        B_1 \sim B_2
+      }{\forall x:A_1.B_1 \sim \forall x:A_2.B_2}
+  \end{mathc}
+\end{definition}
+
+In black are the most interesting rules while others are simply congruences.
+The main idea is that $t_1 \sim t_2$ means that $t_1$ and $t_2$ are the same
+terms up to some transports labelling given subterms.
+These rules illustrates the need of heterogenous equality.
+We can extend this relation canonically to contexts (pointwise).
+
+Our goal here is to subsume (heterogenous) equality with this relation.
+For that we will discuss some rules that are admissible in CIC with two extra
+axioms. They are pretty similar than the one proposed by Nicolas Oury, allowing
+to adapt his proof with almost no change.
+
 \subsubsection{Proof of the Translation}
 
 \section*{Conclusion}
