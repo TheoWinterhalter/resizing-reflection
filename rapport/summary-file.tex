@@ -677,6 +677,36 @@ to do so.
 
 \subsubsection{Heterogenous Equality}
 
+We already stated that the conversion is not the right choice to compare two
+translations of a term.
+Besides, two translations can be different, but also of different types.
+This means that the propositonal equality is also not best suited for our task
+as it requires both terms it compares to inhabit the same type.
+
+In his work, Nicolas Oury relied on an heterogenous propistional equality
+often call John Major equality: $\JMeq\ A\ a\ B\ b$ for any $a : A$ and $b: B$
+with $\JMrefl_a : \JMeq\ A\ a\ A\ a$.
+However he relies on UIP to derive the following property that links it with
+the usual propositional equality:
+\[\JMeq\ A\ u_1\ A\ u_2 \to u_1 =_A u_2.\]
+This property itself is not compatible with univalence so we don't want to rely
+on it. However, we noticed that it is only necessary to have it when $A$ is a
+sort (meaning some $\Type_i$).
+
+In order to emulate heterogenous equality with the tools of HoTT, we will
+instead rely on equality between pointed types.
+To compare $a : A$ and $b : B$ we will compare (with the propositional equality)
+the pairs $(A,a)$ and $(B,b)$ of type $\Sigma (T : Type).T$.
+Proving $(A,a) = (B,b)$ comes down to first finding $p : A = B$ and then
+proving $p_*\ a =_B b$.
+Let us now remind the axiom we mentioned earlier:
+\[ \axt : \forall (p : \Type = \Type).\ p = \refl. \]
+It becomes useful now as it allows us to recover an homogenous equality from
+an heterogenous equality on $\Type$:
+\[ (\Type, A) = (\Type, B) \to A = B. \]
+This will prove sufficient for us as we only want to recover equalities to
+make transports (that only come for types).
+
 \subsubsection{Main Difficulty}
 
 \subsubsection{Term Equivalence}
