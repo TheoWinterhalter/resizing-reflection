@@ -849,6 +849,24 @@ here.
 
 \subsubsection{Proof of the Translation}
 
+We now have the setting to link different translations of a given term.
+Let us give a precise meaning to a translation so that it becomes apparent.
+
+\begin{definition}[Translation]
+  For any valid judgement $\mathcal{J}$ in \CCe, we define a set of valid
+  judgements $\den{\mathcal{J}}$ in CIC as follows:
+  \leavevmode
+  \begin{itemize}
+    \item $\der \cdot \in \den{\dere \cdot}$.
+    \item $\der \overline{\Gamma}, x:\overline{T} \in \den{\der \Gamma, x:T}$
+          when $\der \overline{\Gamma} \in \den{\dere \Gamma}$ and
+          $\overline{T} \sim T$.
+    \item $\overline{\Gamma} \der \overline{t} : \overline{T}$ when
+          $\der \overline{\Gamma} \in \den{\dere \Gamma}$ and
+          $\overline{t} \sim t$ and $\overline{T} \sim T$.
+  \end{itemize}
+\end{definition}
+
 \section*{Conclusion}
 
 % Bibliography
