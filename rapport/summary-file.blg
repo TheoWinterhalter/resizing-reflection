@@ -5,45 +5,46 @@ The style file: plain.bst
 Database file #1: biblio.bib
 Warning--to sort, need author or key in andromeda
 Warning--empty journal in howard1995formulae
-You've used 14 entries,
+Warning--empty journal in mcbride2000dependently
+You've used 15 entries,
             2118 wiz_defined-function locations,
-            568 strings with 5910 characters,
-and the built_in function-call counts, 3471 in all, are:
-= -- 341
-> -- 125
+            573 strings with 6087 characters,
+and the built_in function-call counts, 3674 in all, are:
+= -- 360
+> -- 132
 < -- 3
-+ -- 56
-- -- 38
-* -- 152
-:= -- 583
-add.period$ -- 43
-call.type$ -- 14
-change.case$ -- 59
++ -- 59
+- -- 40
+* -- 160
+:= -- 621
+add.period$ -- 46
+call.type$ -- 15
+change.case$ -- 63
 chr.to.int$ -- 0
-cite$ -- 16
-duplicate$ -- 149
-empty$ -- 319
-format.name$ -- 38
-if$ -- 752
+cite$ -- 18
+duplicate$ -- 159
+empty$ -- 336
+format.name$ -- 40
+if$ -- 792
 int.to.chr$ -- 0
-int.to.str$ -- 14
-missing$ -- 7
-newline$ -- 71
-num.names$ -- 26
-pop$ -- 93
+int.to.str$ -- 15
+missing$ -- 8
+newline$ -- 76
+num.names$ -- 28
+pop$ -- 99
 preamble$ -- 1
-purify$ -- 46
+purify$ -- 49
 quote$ -- 0
-skip$ -- 116
+skip$ -- 123
 stack$ -- 0
-substring$ -- 130
+substring$ -- 135
 swap$ -- 31
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 54
-warning$ -- 2
-while$ -- 32
-width$ -- 16
-write$ -- 141
-(There were 2 warnings)
+type$ -- 58
+warning$ -- 3
+while$ -- 34
+width$ -- 17
+write$ -- 150
+(There were 3 warnings)

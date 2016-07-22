@@ -278,8 +278,7 @@ for sets).
 
 Using transports it is trivial to construct an equivalence between two equal
 types $A = B$ which gives us an arrow $f : (A = B) \to (A \approx B)$.
-The principle of univalence (\meta{cite?}) states that this arrow itself is an
-equivalence.
+The principle of univalence states that this arrow itself is an equivalence.
 
 \begin{definition}[Univalence]
   The univalence axiom states that
@@ -691,7 +690,8 @@ This means that the propositonal equality is also not best suited for our task
 as it requires both terms it compares to inhabit the same type.
 
 In his work, Nicolas Oury relied on an heterogenous propistional equality
-often call John Major equality: $\JMeq\ A\ a\ B\ b$ for any $a : A$ and $b: B$
+often called John Major equality~\cite{mcbride2000dependently}:
+$\JMeq\ A\ a\ B\ b$ for any $a : A$ and $b: B$
 with $\JMrefl_a : \JMeq\ A\ a\ A\ a$.
 However he relies on UIP to derive the following property that links it with
 the usual propositional equality:

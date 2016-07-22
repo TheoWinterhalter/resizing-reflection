@@ -35,6 +35,11 @@ Per Martin-L\"of.
 \newblock LogiCal Project, 2016.
 \newblock Version 8.5pl2.
 
+\bibitem{mcbride2000dependently}
+Conor McBride.
+\newblock Dependently typed functional programs and their proofs.
+\newblock 2000.
+
 \bibitem{norell2007towards}
 Ulf Norell.
 \newblock {\em Towards a practical programming language based on dependent type
