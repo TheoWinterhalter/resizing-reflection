@@ -811,6 +811,7 @@ and ``$B_1 = B_2$''.
 We can finally prove that two equivalent terms are equal.
 
 \begin{lemma}
+  \label{lem:simeq}
   If $t_1 \sim t_2$ and $\Gamma \der t_1 : T_1$ and $\Gamma \der t_2 : T_2$
   then there exists $p$ such that $\Gamma \der p : (T_1,t_1) = (T_2,t_2)$.
 \end{lemma}
@@ -858,14 +859,33 @@ Let us give a precise meaning to a translation so that it becomes apparent.
   \leavevmode
   \begin{itemize}
     \item $\der \cdot \in \den{\dere \cdot}$.
-    \item $\der \overline{\Gamma}, x:\overline{T} \in \den{\der \Gamma, x:T}$
-          when $\der \overline{\Gamma} \in \den{\dere \Gamma}$ and
-          $\overline{T} \sim T$.
-    \item $\overline{\Gamma} \der \overline{t} : \overline{T}$ when
-          $\der \overline{\Gamma} \in \den{\dere \Gamma}$ and
-          $\overline{t} \sim t$ and $\overline{T} \sim T$.
+    \item $\der \barG, x:\barT \in \den{\der \Gamma, x:T}$
+          when $\der \barG \in \den{\dere \Gamma}$ and
+          $\barT \sim T$.
+    \item $\barG \der \bart : \barT$ when
+          $\der \barG \in \den{\dere \Gamma}$ and
+          $\bart \sim t$ and $\barT \sim T$.
   \end{itemize}
 \end{definition}
+
+\begin{lemma}
+  We can always chose types $\barT$ that have the same head constructor
+  as $T$.
+\end{lemma}
+
+\begin{proof}
+  Assume $\barG \der \bart : \barT$, then $\barT \sim T$ and thus,
+  by definition of $\sim$, $\barT$ can be written as
+  ${p_1}_*\ (...)\ {p_n}_*\ \barT'$ where $\barT' \sim T$ and $\barT'$ has
+  the same head constructor as $T$ (when you can no longer apply the rule
+  with transport labelling, you have to apply the corresponding congruence
+  rule).
+  Since $\sim$ ignores all transports, we have $\barT \sim \barT'$.
+  Since they are both types, by lemma~\ref{lem:simeq},
+  $\Gamma \der p : (\Type,\barT) = (\Type,\barT')$ and using $\axt$ we can
+  assume $\Gamma \der p : \barT = \barT'$ instead.
+  Finally we have $\barG \der p_*\ \bart : \barT' \in \den{\Gamma \der t : T}$.
+\end{proof}
 
 \section*{Conclusion}
 
