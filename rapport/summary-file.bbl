@@ -19,6 +19,11 @@ William~A Howard.
 \newblock The formulae-as-types notion of construction.
 \newblock 1995.
 
+\bibitem{kapulkin2012simplicial}
+Chris Kapulkin, Peter~LeFanu Lumsdaine, and Vladimir Voevodsky.
+\newblock The simplicial model of univalent foundations.
+\newblock {\em arXiv preprint arXiv:1211.2851}, 2012.
+
 \bibitem{lumsdaine2013higher}
 PL~Lumsdaine and Michael Shulman.
 \newblock Higher inductive types.
