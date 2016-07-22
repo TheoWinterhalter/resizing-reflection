@@ -766,6 +766,49 @@ For that we will discuss some rules that are admissible in CIC with two extra
 axioms. They are pretty similar than the one proposed by Nicolas Oury, allowing
 to adapt his proof with almost no change.
 
+The first rule we already mentioned allows us to turn an heterogenous equality
+over types into a transport.
+\begin{mathc}
+  \ru{\Gamma \der \_ : (\Type, A) = (\Type, B)}{\Gamma \der \_ : A = B}
+\end{mathc}
+Then, we want to relate a term and its transported version.
+\begin{mathc}
+  \nmru{HSubst%
+      }{\Gamma \der p : A = B \qquad
+        \Gamma \der t : A
+      }{\Gamma \der \_ : (A,t) = (B,p_*\ t)}
+\end{mathc}
+This actually holds simply by $(p,\refl)$.
+Then, we have the different congruences.
+We will write $\Gamma \der t = t'$ for $\Gamma \der \_ : t = t'$.
+\begin{mathc}
+  \nmdrux{HProd%
+        }{\Gamma \der (s,A_1) = (s,A_2)
+        }{\Gamma, x:A_1, y:A_2, p : x = y \der (s',B_1) = (s',B_2)
+        }{\Gamma \der (s'',\forall x:A_1.B_1) = (s'',\forall y:A_2.B_2)
+        }{(s,s',s'')}
+\end{mathc}
+\begin{mathc}
+  \nmdru{HLam%
+       }{\Gamma \der (s,A_1) = (s,A_2)
+       }{\Gamma x:A_1, y:A_2, p : x = y \der (B_1, t_1) = (B_2,t_2)
+       }{\Gamma \der (\forall x:A_1.B_1, \lambda x:A_1.t_1) =
+         (\forall y:A_2.B_2, \lambda y:A_2.t_2)}
+\end{mathc}
+These last two rely on function extensionality which is admissible under
+univalence (it can be seen as a weaker version).
+\begin{mathc}
+  \nmru{HApp%
+      }{\Gamma \der (\forall x:A_1.B_1, t_1) = (\forall y:A_2.B_2, t_2) \qquad
+        \Gamma \der (A_1,u_1) = (A_2,u_2)
+      }{\Gamma \der (B_1[x:=u_1], t_1\ u_1) = (B_2[y:=u_2], t_2\ u_2)}
+\end{mathc}
+This last one unfortunately isn't provable in Coq without yet an extra axiom
+of parametricity. We would actually need such an axiom for every negative
+type such as the coinductive types. The axiom states that to prove
+$\forall x:A_1.B_1 = \forall x:A_2.B_2$, you have to prove $A_1 = A_2$
+and ``$B_1 = B_2$''.
+
 \subsubsection{Proof of the Translation}
 
 \section*{Conclusion}
