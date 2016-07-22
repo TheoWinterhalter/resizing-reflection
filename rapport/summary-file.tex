@@ -1071,6 +1071,7 @@ Now that we have defined a translation, we need to ensure it implies the
 consistency of \CCe\ with respect to CIC (plus our axioms).
 
 \begin{corollary}
+  \label{cor:choice}
   For any $\barG \der \barT : s \in \den{\Gamma \dere T : s}$ and for all
   $t$ such that $\Gamma \dere t : T$ there exists $\bart$ such that
   $\barG \der \bart : \barT \in \den{\Gamma \dere t : T}$.
@@ -1081,6 +1082,15 @@ consistency of \CCe\ with respect to CIC (plus our axioms).
 \begin{proof}
   By theorem~\ref{thm:valid}.1 we have the traduction and by
   lemma~\ref{lem:simeq} we can chose $T$ for $\barT$.
+\end{proof}
+
+\begin{corollary}[Conistency]
+  If $\Gamma \dere t : \forall X:\Type.X$
+  then $\Gamma \der \bart : \forall X:\Type.X$ for some $\bart$.
+\end{corollary}
+
+\begin{proof}
+  Immediately by corollary~\ref{cor:choice}.
 \end{proof}
 
 \section*{Conclusion}
