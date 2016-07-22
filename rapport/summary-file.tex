@@ -567,7 +567,7 @@ given in figure~\ref{fig:cc-conv}.
   \end{mathc}
 
   \begin{mathc}
-    \nmru{Type}{}{\Type_i : \Type_{i+1}}
+    \nmru{Type}{}{\der \Type_i : \Type_{i+1}}
     \qquad
     \nmru{Univ%
         }{\Gamma \der A : \Type_i
@@ -848,6 +848,15 @@ Remark that implicitely, we used some inversion lemmata to type the subterms
 of the involved terms in order to conclude, they do hold but we won't detail it
 here.
 
+\begin{lemma}[Subsitution]
+  \label{lem:subst}
+  If $t_1 \sim t_2$ and $u_1 \sim u_2$ then $t_1[x := u_1] \sim t_2[x := u_2]$.
+\end{lemma}
+
+\begin{proof}
+  By induction on the derivation of $t_1 \sim t_2$.
+\end{proof}
+
 \subsubsection{Proof of the Translation}
 
 We now have the setting to link different translations of a given term.
@@ -869,6 +878,7 @@ Let us give a precise meaning to a translation so that it becomes apparent.
 \end{definition}
 
 \begin{lemma}
+  \label{lem:choice}
   We can always chose types $\barT$ that have the same head constructor
   as $T$.
 \end{lemma}
@@ -885,6 +895,175 @@ Let us give a precise meaning to a translation so that it becomes apparent.
   $\Gamma \der p : (\Type,\barT) = (\Type,\barT')$ and using $\axt$ we can
   assume $\Gamma \der p : \barT = \barT'$ instead.
   Finally we have $\barG \der p_*\ \bart : \barT' \in \den{\Gamma \der t : T}$.
+\end{proof}
+
+We now prove our translation.
+
+\begin{theorem}[Validity of the Translation]
+  The following properties hold:
+  \leavevmode
+  \begin{enumerate}
+    \item If $\Gamma \dere t : T$ then, there exists
+    $\der \barG \in \den{\dere \Gamma}$
+    and for any such $\barG$ there exists $\bart$ and $\barT$ such
+    that $\barG \der \bart : \barT \in \den{\Gamma \dere t : T}$.
+    \item If $\dere \Gamma$ then there exists $\barG \in \den{\dere \Gamma}$.
+    \item If $\Gamma \dere t_1 \equiv t_2$ then there exists
+    $\barG \der \barp : (\barT_1,\bart_1) = (\barT_2,\bart_2) \in
+    \den{\Gamma \dere p : (T_1,t_1) = (T_2,t_2)}$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+  We proceed by induction on the derivation in \CCe.
+  \begin{caselist}
+    \nextcase $\nmru{ECon}{}{\dere \cdot}$.
+    We have $\der \cdot \in \den{\dere \cdot}$.
+
+    \nextcase
+    \(
+    \nmru{I-Con%
+        }{\Gamma \dere A : s
+        }{\dere \Gamma, x:A}
+    \).
+    By induction hypothesis there exists
+    $\barG \der \barA : s \in \den{\Gamma \dere A : s}$ (implicitely using
+    lemma~\ref{lem:choice}). Thus
+    $\der \barG, x:\barA \in \den{\dere \Gamma, x:A}$.
+
+    \nextcase
+    \(
+      \nmrux{Var%
+           }{\dere \Gamma
+           }{\Gamma \dere x : A
+           }{(x : A) \in \Gamma}
+    \).
+    By induction hypothesis, there exists $\der \barG \in \den{\dere \Gamma}$.
+    For any such $\barG$ we have $(x : \barA) \in \barG$ for some $\barA \sim A$
+    by definition of $\den{\dere \Gamma}$ and thus
+    $\barG \der x : \barA \in \den{\Gamma \dere x : A}$.
+
+    \nextcase \(\nmru{Type}{}{\dere \Type_i : \Type_{i+1}}\).
+    This translates to the same rule in CIC.
+
+    \nextcase \(
+      \nmru{Univ%
+          }{\Gamma \dere A : \Type_i
+          }{\Gamma \dere A : \Type_{i+1}}
+    \).
+    By induction hypothesis
+    $\barG \der \barA : \Type_i \in \den{\Gamma \dere A : \Type_i}$
+    and thus
+    $\barG \der \barA : \Type_{i+1} \in \den{\Gamma \dere A : \Type_{i+1}}$.
+
+    \nextcase \(
+      \nmrux{Prod%
+           }{\Gamma \dere A : s_1 \qquad
+             \Gamma, x:A \dere B : s_2
+           }{\Gamma \dere \forall x:A.B : s_3
+           }{(s_1,s_2,s_3)}
+    \).
+    By induction hypothesis
+    $\barG \der \barA : s_1 \in \den{\Gamma \dere A : s_1}$ and
+    thus $\der \barG, x:\barA \in \den{\dere \Gamma, x:A}$ so by second
+    induction hypothesis
+    $\barG, x:\barA \der \barB : s_2 \in \den{\Gamma, x:A \dere B : s_2}$.
+    We conclude by saying
+    $\barG \der \forall x:\barA.\barB : s_3
+    \in \den{\Gamma \dere \forall x:A.B : s_3}$.
+
+    \nextcase \(
+      \nmru{App%
+          }{\Gamma \dere t : \forall x:A.B \qquad
+            \Gamma \dere u : A
+          }{\Gamma \dere t\ u : B[x := u]}
+    \).
+    By induction hypotheses
+    $\barG \der \bart : \forall x:\barA.\barB \in
+    \den{\Gamma \dere t : \forall x:A.B}$ and
+    $\barG \der \baru : \barA' \in \den{\Gamma \dere u : A}$.
+    Then we have $\barA \sim A$ and $\barA' \sim A$ so $\barA \sim \barA'$
+    and thus, by lemma~\ref{lem:simeq}, we have $\barG \der \barA = \barA'$
+    (as they are both types we dropped the first component).
+    Up to some transport we can safely assume
+    $\barG \der \baru : \barA \in \den{\Gamma \dere u : A}$.
+    We can then conclude
+    $\barG \der \bart\ \baru : \barB[x := \baru] \in
+    \den{\Gamma \dere t\ u : B[x := u]}$ (using lemma~\ref{lem:subst}).
+
+    \nextcase \(
+      \nmru{Lam%
+          }{\Gamma, x:A \dere t : B
+          }{\Gamma \dere \lambda x:A.t : \forall x:A.B}
+    \).
+    By induction hypothesis
+    $\barG, x:\barA \der \bart : \barB \in
+    \den{\Gamma, x:A \dere t : B}$ and thus
+    $\barG \der \lambda x:\barA.\bart : \forall x:\barA.\barB \in
+    \den{\Gamma \dere \lambda x:A.t : \forall x:A.B}$.
+
+    \nextcase \(
+      \nmru{Conv%
+          }{\Gamma \dere A \equiv B \qquad
+            \Gamma \dere t : A \qquad
+            \Gamma \dere B : s
+          }{\Gamma \dere t : B}
+    \).
+    By induction hypotheses (silently using lemma~\ref{lem:simeq} and $\axt$)
+    $\barG \der \barp : \barA = \barB \in \den{\Gamma \dere p : A = B}$
+    and $\barG \der \bart : \barA \in \den{\Gamma \dere t : A}$.
+    We can conclude $\barG \der \barp_*\ \bart : \barB \in
+    \den{\Gamma \dere t : B}$.
+
+    \nextcase \(
+      \nmru{Ext%
+          }{\Gamma \dere p : u_1 = u_2
+          }{\Gamma \dere u_1 \equiv u_2}
+    \).
+    By induction hypothesis,
+    $\barG \der \barp : \baru_1 = \baru_2 \in \den{\Gamma \dere p : u_1 = u_2}$.
+    Thus $\barG \der (\refl,p) : (\_,\baru_1) = (\_,\baru_2) \in
+    \den{\Gamma \dere u_1 \equiv u_2}$.
+    (Remark: This case illustrates how we could have used our pointed-type
+    heterogenous equality in the \CCe.)
+
+    \nextcase \(
+      \nmru{$\beta$%
+          }{\Gamma \dere (\lambda x:A. t)\ u : T
+          }{\Gamma \dere (\lambda x:A. t)\ u \equiv t[x := u]}
+    \).
+    By induction hypotheses, lemmata~\ref{lem:simeq} and~\ref{lem:choice} and
+    inversion of typing, we have
+    $\barG \der \lambda x:\barA.\bart : \forall x:\barA.\barB$ and
+    $\barG \der \baru : \bar \barA$.
+    By $\beta$-reduction we have the conversion which can be turned into
+    an heterogenous equality with the proof term $(\refl,\refl)$.
+
+    \nextcase \(
+      \nmru{CApp%
+          }{\Gamma \dere t_1 \equiv t_2 \qquad
+            \Gamma \dere u_1 \equiv u2
+          }{\Gamma \dere t_1\ u_1 \equiv t_2\ u_2}
+    \).
+    We conclude by our rule (\rulename{HApp}).
+
+    \nextcase \(
+      \nmru{CProd%
+          }{\Gamma \dere A_1 \equiv A_2 \qquad
+            \Gamma, x:A_1 \dere B_1 \equiv B_2
+          }{\Gamma \dere \forall x:A_1.B_1 \equiv \forall x:A_2.B_2}
+    \).
+    This is equivalent in \CCe\ to
+    \[
+      \ru{\Gamma \dere A_1 \equiv A_2 \qquad
+          \Gamma, x:A_1, y:A_2, p : x = y \dere B_1 \equiv B_2[x := y]
+        }{\Gamma \dere \forall x:A_1.B_1 \equiv \forall x:A_2.B_2}.
+    \]
+    We can then conclude by (\rulename{HProd}).
+
+    \nextcase (\rulename{CLam}) can be treated by (\rulename{HLam}) in a similar
+    fashion.
+  \end{caselist}
 \end{proof}
 
 \section*{Conclusion}
