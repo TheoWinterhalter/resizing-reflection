@@ -782,16 +782,15 @@ This actually holds simply by $(p,\refl)$.
 Then, we have the different congruences.
 We will write $\Gamma \der t = t'$ for $\Gamma \der \_ : t = t'$.
 \begin{mathc}
-  \nmdrux{HProd%
-        }{\Gamma \der (s,A_1) = (s,A_2)
-        }{\Gamma, x:A_1, y:A_2, p : x = y \der (s',B_1) = (s',B_2)
-        }{\Gamma \der (s'',\forall x:A_1.B_1) = (s'',\forall y:A_2.B_2)
-        }{(s,s',s'')}
+  \nmdru{HProd%
+       }{\Gamma \der (s,A_1) = (s,A_2)
+       }{\Gamma, x:A_1, y:A_2, p : (A_1,x) = (A_2,y) \der (s,B_1) = (s,B_2)
+       }{\Gamma \der (s,\forall x:A_1.B_1) = (s,\forall y:A_2.B_2)}
 \end{mathc}
 \begin{mathc}
   \nmdru{HLam%
        }{\Gamma \der (s,A_1) = (s,A_2)
-       }{\Gamma x:A_1, y:A_2, p : x = y \der (B_1, t_1) = (B_2,t_2)
+       }{\Gamma x:A_1, y:A_2, p : (A_1,x) = (A_2,y) \der (B_1, t_1) = (B_2,t_2)
        }{\Gamma \der (\forall x:A_1.B_1, \lambda x:A_1.t_1) =
          (\forall y:A_2.B_2, \lambda y:A_2.t_2)}
 \end{mathc}
@@ -808,6 +807,42 @@ of parametricity. We would actually need such an axiom for every negative
 type such as the coinductive types. The axiom states that to prove
 $\forall x:A_1.B_1 = \forall x:A_2.B_2$, you have to prove $A_1 = A_2$
 and ``$B_1 = B_2$''.
+
+We can finally prove that two equivalent terms are equal.
+
+\begin{lemma}
+  If $t_1 \sim t_2$ and $\Gamma \der t_1 : T_1$ and $\Gamma \der t_2 : T_2$
+  then there exists $p$ such that $\Gamma \der p : (T_1,t_1) = (T_2,t_2)$.
+\end{lemma}
+
+\begin{proof}
+  We first extend the relation $\sim$ with a set of pairs of variables $E$
+  such that if $(x,y) \in E$ then $x \sim_E y$ and $t_1 \sim t_2$ implies
+  $t_1 \sim_E t_2$.
+  We then prove by induction on the formation of $\sim_E$ that for all $E$,
+  $\Gamma$ if for all $(x,y) \in E$ we have $\Gamma \der (\_,x) = (\_,y)$ and if
+  $t_1 \sim_E t_2$ and $\Gamma \der t_1 : T_1$ and $\Gamma \der t_2 : T_2$
+  then $\Gamma \der (T_1,t_1) = (T_2,t_2)$.
+  \begin{itemize}
+    \item For $(x,y) \in E$, the result is in the hypothesis.
+    \item For $x \sim_E x$, the result can be obtained by reflexivity.
+    \item For $t_1 \sim_E p_*\ t_2$, by induction hypothesis,
+          $\Gamma \der (T_1,t_1) = (T_2,t_2)$ and we conclude by
+          (\rulename{HSubst}).
+    \item For $t_1\ u_1 \sim_E t_2\ u_2$, we conclude by using
+          (\rulename{HApp}) using the induction hypotheses.
+    \item For $\forall x:A_1.B_1 \sim_E \forall y:A_2.B_2$ (we use $y$ instead
+          of $x$ by $\alpha$-conversion), we consider
+          $E' := E \bigcup \{ (x,y) \}$ and conclude by induction hypothesis
+          that $\Gamma \der (s,A_1) = (s,A_2)$ and
+          $\Gamma, x:A_1, y:A_2, p : (A_1,x) = (A_2,y) \der
+          (s',B_1) = (s',B_2)$.
+          We conclude by using (\rulename{HProd}).
+    \item The $\lambda$-abstraction case is similar and we conclude by
+          (\rulename{HLam}).
+  \end{itemize}
+  The original statement is proven using $E = \emptyset$.
+\end{proof}
 
 \subsubsection{Proof of the Translation}
 
