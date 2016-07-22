@@ -677,6 +677,8 @@ conversions in the target system.
 This is however not so simple as the terms involved are also translated,
 most likely labeled by transports. Moreover, a given term can have
 several translations depending on the chosen typing derivation.
+This problem can arise when a rule like (\rulename{CApp}) mentions twice the
+same term in two different derivations.
 In order for that not to be a problem we have to be able to relate different
 translations of a given term. We thus have to chose some equality judgement
 to do so.
@@ -713,8 +715,6 @@ an heterogenous equality on $\Type$:
 \[ (\Type, A) = (\Type, B) \to A = B. \]
 This will prove sufficient for us as we only want to recover equalities to
 make transports (that only come for types).
-
-\subsubsection{Main Difficulty}
 
 \subsubsection{Term Equivalence}
 
