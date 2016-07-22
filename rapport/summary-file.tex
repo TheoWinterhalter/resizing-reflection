@@ -653,6 +653,28 @@ parametricity axioms that we will discuss later.
 
 \subsubsection{Principle of the Translation}
 
+The main idea behind the translation is to turn every conversion
+$\Gamma \der t_1 \equiv t_2$ into a proof of equality
+$\Gamma \der p : t_1 = t_2$ and then to translate the conversion
+rule to a transport.
+\begin{mathc}
+  \ru{\Gamma \der t : A \qquad
+      \Gamma \der p : A = B \qquad
+      \Gamma \der B : s
+    }{\Gamma \der p_*\ t : B}
+\end{mathc}
+This stresses out the fact that we cannot embed the extensional
+conversion into the intensional one as we need to keep more information
+about why the two types are equal. Thus, we switch to explicit
+conversions in the target system.
+
+This is however not so simple as the terms involved are also translated,
+most likely labeled by transports. Moreover, a given term can have
+several translations depending on the chosen typing derivation.
+In order for that not to be a problem we have to be able to relate different
+translations of a given term. We thus have to chose some equality judgement
+to do so.
+
 \subsubsection{Heterogenous Equality}
 
 \subsubsection{Main Difficulty}
