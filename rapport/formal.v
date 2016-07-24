@@ -58,6 +58,24 @@ Section Translation.
     - simpl. exact e.
   Qed.
 
+  Definition forall_eq {A} {B1} {B2} (p : forall x : A, B1 x = B2 x) :
+    (forall x : A, B1 x) = (forall x : A, B2 x).
+  Proof.
+    cut (B1 = B2).
+    - intro e. destruct e. exact idpath.
+    - apply path_forall. exact p.
+  Defined.
+  
+  Lemma forall_eq_transport :
+    forall A B1 B2 (p : forall (x:A), B1 x = B2 x) (t1 : forall (x : A), B1 x),
+      @paths (forall (x:A), B2 x)
+        (transport idmap (@forall_eq A B1 B2 p) (fun (x : A) => t1 x))
+        (fun (x : A) => transport idmap (p x) (t1 x)).
+  Proof.
+    intros A B1 B2 p t1.
+    (* Maybe through univalence? *)
+  Abort.
+
   Lemma HLam : forall A1 A2 B1 B2 t1 t2,
                  [Type, A1] = [Type, A2] ->
                  (forall (x : A1) (y : A2) (p : [A1,x] = [A2,y]),
@@ -70,21 +88,9 @@ Section Translation.
     { apply typeq. exact p. }
     destruct e. rename A1 into A.
     assert (eq : forall x : A, [A, x] = [A, x]) by (intro x ; exact idpath).
-    (* assert (e : forall x : A, B1 x = B2 x). *)
-    (* { intro x. *)
-    (*   cut ([A, x] = [A, x]). *)
-    (*   - intro eq. pose proof (h x x eq) as h'. *)
-    (*     exact h'..1. *)
-    (*   - reflexivity. *)
-    (* } *)
-    (* pose proof (path_forall B1 B2 e) as e'. *)
-    (* It would be nice to be able to say where e comes from... *)
-    (* destruct e'. rename B1 into B. clear e. *)
     simple refine (path_sigma _ _ _ _ _) ; simpl.
-    - (* I would like to use h x x eq as a proof. *)
-    - simpl. apply path_forall. intro x.
-      (* The hypothesis is not strong enough now. We should find a way to have
-         the transport somewhere. *)
+    - exact (forall_eq (fun x => (h x x (eq x))..1)).
+    - 
 
 End Translation.
 
