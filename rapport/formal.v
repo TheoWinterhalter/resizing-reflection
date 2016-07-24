@@ -58,5 +58,21 @@ Section Translation.
     - simpl. exact e.
   Qed.
 
+  Lemma HLam : forall A1 A2 B1 B2 t1 t2,
+                 [Type, A1] = [Type, A2] ->
+                 (forall (x : A1) (y : A2) (p : [A1,x] = [A2,y]),
+                    [B1 x, t1 x] = [B2 y, t2 y]) ->
+                 [forall (x : A1), B1 x, fun (x:A1) => t1 x] =
+                 [forall (y : A2), B2 y, fun (y:A2) => t2 y].
+  Proof.
+    intros A1 A2 B1 B2 t1 t2 p h.
+    assert (e : A1 = A2).
+    { apply typeq. exact p. }
+    destruct e. rename A1 into A.
+    assert (e : forall x : A, B1 x = B2 x).
+    { intro x. (* For some reason, using h x x seems to loop... *)pose proof (h x x) as h.}
+    simple refine (path_sigma _ _ _ _ _) ; simpl.
+    - 
+
 End Translation.
 
