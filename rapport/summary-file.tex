@@ -187,9 +187,9 @@ about equality inside of proof terms.
 We thus use the so-called identity types $\Id\ A\ u\ v$, meaning the type of
 proofs that $u$ and $v$ of type $A$ are equal. It is often written
 $u =_A v$ or even $u = v$ when $A$ is understood.
-$\Id\ A\ x\ x$ have one inhabitant: $\refl_x$,
+$\Id\ A\ x\ x$ has one inhabitant: $\refl_x$,
 basically this means that we can only prove equality of objects that are already
-convertible without relying on hypotheses of course: this is the smallest
+convertible without relying on hypotheses of course. This is the smallest
 reflexive relation.
 
 \begin{wrapfigure}{r}{0.25\textwidth}
@@ -197,7 +197,7 @@ reflexive relation.
     \includegraphics[scale=.4]{s1.eps}
 \end{wrapfigure}
 Homotopy type theory~\cite{HoTTbook} comes with concepts that tend to inhabit
-equlity through other means than reflexivity. For instance, it introduces the
+equality through other means than reflexivity. For instance, it introduces the
 notion of \emph{higher inductive types}~\cite{lumsdaine2013higher} that are not
 only described by constructors but also by equalities.
 The most standard example is probably the circle $\S1$ that has one constructor
@@ -272,9 +272,9 @@ need to define what we mean by equivalence.
 \end{definition}
 
 \noindent
-An interesting to remark is that if $A$ and $B$ are sets, then an equivalence is
-exactly a bijection between types (which incidently is the notion of isomorphism
-for sets).
+An interesting thing to remark is that if $A$ and $B$ are sets, then an
+equivalence is exactly a bijection between types (which incidently is the notion
+of isomorphism for sets).
 
 Using transports it is trivial to construct an equivalence between two equal
 types $A = B$ which gives us an arrow $f : (A = B) \to (A \approx B)$.
@@ -301,7 +301,7 @@ We will now present the resizing rules and try to justify their need.
 \subsection{Motivations}
 
 Consistency in Coq relies on a hierarchy of universes $\Type_i$ with
-$\Type_i : \Type_{i+1}$. Even though this is usually transparent to the user
+$\Type_i : \Type_{i+1}$. Even though this is usually hidden to the user
 (who only sees $\Type$), sometimes the user gets presented with a
 ``universe inconsistency''. This happens for instance when a function was
 defined over $\Type_3$ but we provided a type in $\Type_4$.
@@ -374,15 +374,16 @@ equivalence that generalize the previous one:
     }{B : \Type_i}
 \end{mathc}
 
-As one can see, these rule seem to break decidability of type checking, hence
+As one can see, these rules seem to break decidability of type checking, hence
 the need for a more explicit statement of those rules.
 
 \meta{Mention the surjection rule somehow?}
 
 \subsection{Implementation Proposal}
 
-In order to preserve decidability of type checking, we explicit tag the resized
-version of a type by $\RR$. For instance, the rule for equivalence becomes:
+In order to preserve decidability of type checking, we explicitly tag the
+resized version of a type by $\RR$. For instance, the rule for equivalence
+becomes:
 
 \begin{mathc}
   \ru{A : \Type_i \qquad
@@ -414,7 +415,7 @@ This corresponds to records with primitive projections in Coq, hence the
 decidability.
 %
 This can be achived in Coq thanks to Pierre-Marie Pédrot~\cite{pperdot:pr} by
-deactivating the universe checking locally to create a records that holds a
+deactivating the universe checking locally to create a record that holds a
 value of type $A$.
 
 All the rules can be treated similarly.
@@ -422,11 +423,11 @@ All the rules can be treated similarly.
 
 \section{One Rule to Resize Them All}
 
-As a means to justify the consistency of those rules, we wondered if was not
+As a means to justify the consistency of those rules, we wondered if it was not
 possible to reduce all rules to one. We show here several candidates.
 
 \subsection{Embedding}
-The fist candidate we had was the embedding resizing rule.
+The first candidate we had was the embedding resizing rule.
 We say that $f : A \to B$  is an \emph{embedding} when $\ap\ f$ is an
 equivalence (we write $A \embd B$ for the type of embeddings).
 To put it simply, we have $(x =_A y) \approx (f\ x =_B f\ y)$.
@@ -458,7 +459,7 @@ In HoTT with univalence, the excluded-middle $\forall T.\ T + \neg T$ is
 inconsistent. However its restriction to mere propositions can be safely
 assumed.
 \[\emd : \forall (T:\hProp).\ T + \neg T.\]
-In a way, it makes sense as we really want to decide wheter a proposition is
+In a way, it makes sense as we really want to decide whether a proposition is
 true or not rather than whether a type is inhabited or not.
 
 Once we have that, for any mere proposition $T$, we can create the type $T'$
@@ -508,7 +509,7 @@ is still used in proof assistants like Nuprl~\cite{constableimplementing} or
 Andromeda~\cite{andromeda}.
 
 Nicolas Oury~\cite{oury2005extensionality} proposed a proof of the consistency
-of such an extension of coq by creating a program translation that associates a
+of such an extension of Coq by creating a program translation that associates a
 derivation in the extensional calculus to a derivation in the intensional one
 such that a proof of $\bot$ is translated to a proof of $\bot$.
 The problem is that this translation relies on the uniqueness of identity
@@ -537,7 +538,7 @@ Let us now detail the adapted proof.
 \subsubsection{(Extensional) Calculus of Constructions}
 
 Our goal is to translate judgements in the Extensional Calculus of
-Constructions (herafter called \CCe) into the regular Calculus of Constructons
+Constructions (herrafter called \CCe) into the regular Calculus of Constructions
 (CC). Contexts will be either the empty context $\cdot$ or of the form
 $\Gamma, x:T$ and $\der \Gamma$ shall mean that the context $\Gamma$ is
 well-formed.
@@ -650,7 +651,7 @@ All judgements in \CCe will be written with $\dere$ whereas CC will use $\der$.
       }{\Gamma \dere u_1 \equiv u_2}
 \end{mathc}
 
-Please remark that, as in the work by Nicolas Oury, we will not speak about the
+Please remark that, as in the work of Nicolas Oury, we will not speak about the
 typing rules of the propositional equality as it would hinder readability.
 Besides, our translation will actually go in the Calculus of Inductive
 Constructions, the theory of Coq at full power with inductive types,
@@ -691,7 +692,7 @@ Besides, two translations can be different, but also of different types.
 This means that the propositonal equality is also not best suited for our task
 as it requires both terms it compares to inhabit the same type.
 
-In his work, Nicolas Oury relied on an heterogenous propistional equality
+In his work, Nicolas Oury relied on an heterogeneous propositional equality
 often called John Major equality~\cite{mcbride2000dependently}:
 $\JMeq\ A\ a\ B\ b$ for any $a : A$ and $b: B$
 with $\JMrefl_a : \JMeq\ A\ a\ A\ a$.
@@ -702,7 +703,7 @@ This property itself is not compatible with univalence so we don't want to rely
 on it. However, we noticed that it is only necessary to have it when $A$ is a
 sort (meaning some $\Type_i$).
 
-In order to emulate heterogenous equality with the tools of HoTT, we will
+In order to emulate heterogeneous equality with the tools of HoTT, we will
 instead rely on equality between pointed types.
 To compare $a : A$ and $b : B$ we will compare (with the propositional equality)
 the pairs $(A,a)$ and $(B,b)$ of type $\Sigma (T : Type).T$.
@@ -710,16 +711,16 @@ Proving $(A,a) = (B,b)$ comes down to first finding $p : A = B$ and then
 proving $p_*\ a =_B b$.
 Let us now remind the axiom we mentioned earlier:
 \[ \axt : \forall (p : \Type = \Type).\ p = \refl. \]
-It becomes useful now as it allows us to recover an homogenous equality from
-an heterogenous equality on $\Type$:
+It becomes useful now as it allows us to recover an homogeneous equality from
+an heterogeneous equality on $\Type$:
 \[ (\Type, A) = (\Type, B) \to A = B. \]
 This will prove sufficient for us as we only want to recover equalities to
 make transports (that only come for types).
 
 \subsubsection{Term Equivalence}
 
-We want to equate all translations of the same term, this is not possible to
-prove it by induction during the translation directly. In homotopy terms
+We want to equate all translations of the same term, however it is not possible
+to prove it by induction during the translation directly. In homotopy terms
 we need a center of contraction, \ie a fixed object that will serve as the
 intermediary between all translations of the same term.
 The following \emph{untyped} relation serves this purpose.
@@ -758,15 +759,15 @@ The following \emph{untyped} relation serves this purpose.
 In black are the most interesting rules while others are simply congruences.
 The main idea is that $t_1 \sim t_2$ means that $t_1$ and $t_2$ are the same
 terms up to some transports labelling given subterms.
-These rules illustrates the need of heterogenous equality.
+These rules illustrates the need of heterogeneous equality.
 We can extend this relation canonically to contexts (pointwise).
 
-Our goal here is to subsume (heterogenous) equality with this relation.
+Our goal here is to subsume (heterogeneous) equality with this relation.
 For that we will discuss some rules that are admissible in CIC with two extra
 axioms. They are pretty similar than the one proposed by Nicolas Oury, allowing
 to adapt his proof with almost no change.
 
-The first rule we already mentioned allows us to turn an heterogenous equality
+The first rule we already mentioned allows us to turn an heterogeneous equality
 over types into a transport.
 \begin{mathc}
   \ru{\Gamma \der \_ : (\Type, A) = (\Type, B)}{\Gamma \der \_ : A = B}
@@ -1026,7 +1027,7 @@ We now prove our translation.
     Thus $\barG \der (\refl,p) : (\_,\baru_1) = (\_,\baru_2) \in
     \den{\Gamma \dere u_1 \equiv u_2}$.
     (Remark: This case illustrates how we could have used our pointed-type
-    heterogenous equality in the \CCe.)
+    heterogeneous equality in the \CCe.)
 
     \nextcase \(
       \nmru{$\beta$%
@@ -1038,7 +1039,7 @@ We now prove our translation.
     $\barG \der \lambda x:\barA.\bart : \forall x:\barA.\barB$ and
     $\barG \der \baru : \bar \barA$.
     By $\beta$-reduction we have the conversion which can be turned into
-    an heterogenous equality with the proof term $(\refl,\refl)$.
+    an heterogeneous equality with the proof term $(\refl,\refl)$.
 
     \nextcase \(
       \nmru{CApp%
