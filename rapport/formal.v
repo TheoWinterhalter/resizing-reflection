@@ -77,7 +77,8 @@ Section Translation.
       - reflexivity.
     }
     pose proof (path_forall B1 B2 e) as e'.
-    destruct e'. rename B1 into B. clear e.
+    (* It would be nice to be able to say where e comes from... *)
+    (* destruct e'. rename B1 into B. clear e. *)
     simple refine (path_sigma _ _ _ _ _) ; simpl.
     - exact idpath.
     - simpl. apply path_forall. intro x.
