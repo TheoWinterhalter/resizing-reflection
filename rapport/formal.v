@@ -69,18 +69,19 @@ Section Translation.
     assert (e : A1 = A2).
     { apply typeq. exact p. }
     destruct e. rename A1 into A.
-    assert (e : forall x : A, B1 x = B2 x).
-    { intro x.
-      cut ([A, x] = [A, x]).
-      - intro eq. pose proof (h x x eq) as h'.
-        exact h'..1.
-      - reflexivity.
-    }
-    pose proof (path_forall B1 B2 e) as e'.
+    assert (eq : forall x : A, [A, x] = [A, x]) by (intro x ; exact idpath).
+    (* assert (e : forall x : A, B1 x = B2 x). *)
+    (* { intro x. *)
+    (*   cut ([A, x] = [A, x]). *)
+    (*   - intro eq. pose proof (h x x eq) as h'. *)
+    (*     exact h'..1. *)
+    (*   - reflexivity. *)
+    (* } *)
+    (* pose proof (path_forall B1 B2 e) as e'. *)
     (* It would be nice to be able to say where e comes from... *)
     (* destruct e'. rename B1 into B. clear e. *)
     simple refine (path_sigma _ _ _ _ _) ; simpl.
-    - exact idpath.
+    - (* I would like to use h x x eq as a proof. *)
     - simpl. apply path_forall. intro x.
       (* The hypothesis is not strong enough now. We should find a way to have
          the transport somewhere. *)
