@@ -7,13 +7,11 @@ Section Translation.
 
   Context `{Funext}.
 
-  (* Pointed types are records:
-     Record pType :=
-     { pointed_type : Type ;
-       ispointed_type : IsPointed pointed_type }.
-     Build_pType is too long a name so we will make a shortcut.
-  *)
-  Notation "[ A , a ]" := (Build_pType A a) (at level 0).
+  (* Pointed types as Sigmas *)
+  Definition BuildPType A (a : A) : { typ : Type & typ }.
+    exists A. exact a.
+  Defined.
+  Notation "[ A , a ]" := (BuildPType A a) (at level 0).
 
   (* We state our parametricity axiom. *)
   Axiom axType : forall p : Type = Type, p = idpath.
@@ -23,13 +21,20 @@ Section Translation.
                        A = B.
   Proof.
     intros A B p.
-  Admitted.
+    pose proof (equiv_path_sigma _ [Type,A] [Type,B]) as h.
+    pose proof (h ^-1 p) as h'. simpl in h'.
+    destruct h' as [p1 p2].
+    rewrite (axType p1) in p2. simpl in p2. exact p2.
+  Qed.
 
   Lemma HSubst : forall A B (p : A = B) (t : A),
-                   ([A, t] = [B, transport idmap p t]).
+                   ([A, t] = [B, p # t]).
   Proof.
     intros A B p t.
-  Admitted.
+    simple refine (path_sigma _ _ _ _ _) ; simpl.
+    - exact p.
+    - reflexivity.
+  Qed.
 
   Lemma HProd : forall A A' B B'
                   (p : [Type, A] = [Type, A'])
@@ -48,8 +53,10 @@ Section Translation.
           pose proof (q x x e) as h. apply typeq. apply h.
       - apply typeq. apply p.
     }
-    (* simple refine (path_sigma _ _ _ _ _). *)
-Admitted.
+    simple refine (path_sigma _ _ _ _ _).
+    - exact idpath.
+    - simpl. exact e.
+  Qed.
 
 End Translation.
 
