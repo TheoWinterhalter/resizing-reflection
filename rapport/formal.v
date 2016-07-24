@@ -70,9 +70,19 @@ Section Translation.
     { apply typeq. exact p. }
     destruct e. rename A1 into A.
     assert (e : forall x : A, B1 x = B2 x).
-    { intro x. (* For some reason, using h x x seems to loop... *)pose proof (h x x) as h.}
+    { intro x.
+      cut ([A, x] = [A, x]).
+      - intro eq. pose proof (h x x eq) as h'.
+        exact h'..1.
+      - reflexivity.
+    }
+    pose proof (path_forall B1 B2 e) as e'.
+    destruct e'. rename B1 into B. clear e.
     simple refine (path_sigma _ _ _ _ _) ; simpl.
-    - 
+    - exact idpath.
+    - simpl. apply path_forall. intro x.
+      (* The hypothesis is not strong enough now. We should find a way to have
+         the transport somewhere. *)
 
 End Translation.
 
