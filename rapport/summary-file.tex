@@ -110,15 +110,15 @@ We studied the possibility of a definition better suited to implementation
 as well as a justification that the rules we propose preserve the consistency
 of the system.
 
-\subsection*{Your contribution}
+\subsection*{My contribution}
 
 % What is your solution to the question described in the last paragraph ?
 % Be careful, do \emph{not} give technical details, only rough ideas !
 % Pay a special attention to the description  of the \emph{scientific} approach.
 We propose a way to implement resizing rules in Coq (which will be possible in
 the next release) with precise typing rules.
-We then show that -- up to some axioms that are consistent in a univalent
-setting -- all resizing rules that we proposed %(and that correspond to the ones
+We then show that---up to some axioms that are consistent in a univalent
+setting---all resizing rules that we proposed %(and that correspond to the ones
 % of Voevodsky)
 can be reduced to only one.
 We finally show the consistency of this one rule by generalizing a result by
@@ -133,8 +133,9 @@ This last step is, in itself, an interesting result.
 % What is the evidence that your solution is a good solution ?
 % Experiments ? Proofs ?
 Our work consists of a proof and an implementation.
-However, our proof relies on some axioms that we deem consistent in a univalent
-setting but this would require more work to justify their use more explicitely.
+However, our proof relies on some parametricity hypotheses commonly believed to
+be compatible with univalence. However a formalized treatment of this statement
+is ongoing work.
 
 % Comment the robustness of your solution:
 % how does it rely/depend on the working assumptions ?
@@ -176,7 +177,7 @@ counterpart.
 The Curry-Howard isomorphism~\cite{howard1995formulae} sets the basis for seeing
 $\lambda$-terms as proofs and types as propositions. Since then, many systems
 such as Martin-L\" of Type Theory~\cite{manin1975intuitionistic} (the theory
-behind Agda) or the Calculus of Inductive Constructions (CIC -- the theory
+behind Agda) or the Calculus of Inductive Constructions (CIC---the theory
 behind Coq) extended it to dependent
 types that allow types to depend on terms.
 % This way, the dependent product $\Pi x:A.B$ (where $B$ can mention $x$)
@@ -230,8 +231,8 @@ of their (higher) equalities.
 %
 \noindent
 In particular, we shall say that a $(-1)-\Type$ is a \emph{(mere) proposition}
-following the intuition that such a type is either \emph{true} ($\top$ -- the
-unit type) or \emph{false} ($\bot$ -- the empty type).
+following the intuition that such a type is either \emph{true} ($\top$---the
+unit type) or \emph{false} ($\bot$---the empty type).
 We also say that a $0-\Type$ is a \emph{set} as it verifies uniqueness of
 identity proofs as sets of set theory.
 
@@ -528,8 +529,8 @@ explicit conversions.
 
 \subsection{Translation compatible with Univalence}
 
-As we said, the work of Nicolas Oury relies on UIP -- which cannot be assumed in
-HoTT -- but in name only. Indeed, if we only assume it for equalities over
+As we said, the work of Nicolas Oury relies on UIP---which cannot be assumed in
+HoTT---but in name only. Indeed, if we only assume it for equalities over
 type, namely:
 \[ \forall (p : \Type_i = \Type_i).\ p = \refl, \]
 then we can adapt the proof so that it still holds.
