@@ -35,6 +35,36 @@ Section Operations.
 
 End Operations.
 
+(*! Section 3. Reduction between rules. !*)
+Section OneRule.
+
+  (* Propositions are embedded in True *)
+  Lemma prop_in_top :
+    forall (A : Type) `{h : IsHProp A}, { f : A -> True | IsEmbedding f}.
+  Proof.
+    intros A h.
+    exists (fun a => tt). intro x. destruct x.
+    
+    intros x y. destruct x as [x p]. destruct y as [y q].
+    assert (e : x = y).
+    - apply path_ishprop.
+    - destruct e. assert (e : p = q).
+      + apply hset_decpaths. intros u v. destruct u. destruct v.
+        left. reflexivity.
+      + destruct e. exists idpath. intro y.
+        apply hset_decpaths. intros u v.
+        destruct u as [u q]. destruct v as [v r].
+        assert (e : u = v).
+        * apply path_ishprop.
+        * { destruct e. assert (e : q = r).
+            - apply hset_decpaths. intros v w.
+              destruct v. destruct w. left. reflexivity.
+            - destruct e. left. exact idpath.
+          }
+  Qed.
+
+End OneRule.
+
 (*! Section 4.  We prove here our admissible rules. !*)
 Section Translation.
 
