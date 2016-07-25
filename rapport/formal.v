@@ -96,6 +96,66 @@ Section OneRule.
           destruct f.
   Qed.
 
+  (* In order to prove equivalence between hProp and Bool we need univalence and
+     funext (which is implied by univalence). *)
+
+  Context `{Funext}.
+  Context `{Univalence}.
+
+  Lemma emTrue : em True = inl tt.
+  Proof.
+    destruct (em True).
+    - destruct t. reflexivity.
+    - destruct (t tt).
+  Defined.
+
+  Lemma emFalse : em False = inr (fun x => x).
+  Proof.
+    destruct (em False).
+    - destruct t.
+    - cut (t = idmap).
+      + intro h. destruct h. reflexivity.
+      + apply path_ishprop.
+  Defined.
+
+  Lemma eqUnit : forall (A : hProp), A -> A = Unit_hp.
+  Proof.
+    intros A a.
+    apply path_trunctype.
+    apply if_hprop_then_equiv_Unit.
+    - exact _.
+    - exact a.
+  Defined.
+
+  Lemma eqFalse : forall (A : hProp), (A -> False) -> A = False_hp.
+  Proof.
+    intros A na.
+    apply path_trunctype.
+    apply if_not_hprop_then_equiv_Empty.
+    - exact _.
+    - intro a. apply na. exact a.
+  Defined.
+
+  (* We can build an equivalence between hProp and Bool. *)
+  Lemma boolHProp : hProp <~> Bool.
+  Proof.
+    simple refine (BuildEquiv hProp Bool _ _).
+    - intro A. destruct A as [A h].
+      destruct (em A).
+      + exact true.
+      + exact false.
+    - simple refine (BuildIsEquiv _ _ _ _ _ _ _).
+      + intro b. destruct b.
+        * exact True.
+        * exact False.
+      + intro b. cbn. destruct b ; cbn.
+        * apply (transport (fun x => match x with inl _ => true | inr _ => false end = true) emTrue^). exact idpath.
+        * apply (transport (fun x => match x with inl _ => true | inr _ => false end = false) emFalse^). exact idpath.
+      + intro A. cbn. destruct (em A).
+        * symmetry. apply eqUnit. exact t.
+        * symmetry. apply eqFalse. exact t.
+      + intro A. cbn.
+
 End OneRule.
 
 (*! Section 4.  We prove here our admissible rules. !*)
