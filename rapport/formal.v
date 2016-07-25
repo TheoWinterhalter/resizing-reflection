@@ -102,59 +102,24 @@ Section OneRule.
   Context `{Funext}.
   Context `{Univalence}.
 
-  Lemma emTrue : em True = inl tt.
+  (* We first show that hProp is equivalent do Decidable hProp (under LEM). *)
+  Lemma equiv_hprop_to_dprop : hProp <~> DProp.
   Proof.
-    destruct (em True).
-    - destruct t. reflexivity.
-    - destruct (t tt).
+    simple refine (equiv_adjointify _ _ _ _).
+    - intro A. exists A.
+      + intro H'. exact _.
+      + exact (em A).
+    - intro A. exists (dprop_type A). apply (ishprop_dprop A H).
+    - intro A. cbn. apply path_dprop. cbn. exact idpath.
+    - intro A. cbn. exact idpath.
   Defined.
 
-  Lemma emFalse : em False = inr (fun x => x).
+  Lemma equiv_hprop_bool : hProp <~> Bool.
   Proof.
-    destruct (em False).
-    - destruct t.
-    - cut (t = idmap).
-      + intro h. destruct h. reflexivity.
-      + apply path_ishprop.
+    transitivity DProp.
+    - exact equiv_hprop_to_dprop.
+    - exact equiv_dprop_to_bool.
   Defined.
-
-  Lemma eqUnit : forall (A : hProp), A -> A = Unit_hp.
-  Proof.
-    intros A a.
-    apply path_trunctype.
-    apply if_hprop_then_equiv_Unit.
-    - exact _.
-    - exact a.
-  Defined.
-
-  Lemma eqFalse : forall (A : hProp), (A -> False) -> A = False_hp.
-  Proof.
-    intros A na.
-    apply path_trunctype.
-    apply if_not_hprop_then_equiv_Empty.
-    - exact _.
-    - intro a. apply na. exact a.
-  Defined.
-
-  (* We can build an equivalence between hProp and Bool. *)
-  Lemma boolHProp : hProp <~> Bool.
-  Proof.
-    simple refine (BuildEquiv hProp Bool _ _).
-    - intro A. destruct A as [A h].
-      destruct (em A).
-      + exact true.
-      + exact false.
-    - simple refine (BuildIsEquiv _ _ _ _ _ _ _).
-      + intro b. destruct b.
-        * exact True.
-        * exact False.
-      + intro b. cbn. destruct b ; cbn.
-        * apply (transport (fun x => match x with inl _ => true | inr _ => false end = true) emTrue^). exact idpath.
-        * apply (transport (fun x => match x with inl _ => true | inr _ => false end = false) emFalse^). exact idpath.
-      + intro A. cbn. destruct (em A).
-        * symmetry. apply eqUnit. exact t.
-        * symmetry. apply eqFalse. exact t.
-      + intro A. cbn.
 
 End OneRule.
 
