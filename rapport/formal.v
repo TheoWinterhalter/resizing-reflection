@@ -63,6 +63,39 @@ Section OneRule.
           }
   Qed.
 
+  (* Let's assume the excluded middle. *)
+  Parameter em : forall (A : Type) `{h : IsHProp A}, A + (A -> False).
+
+  (* We can build an equivalent in Type0 to any hProp. *)
+  Definition propEquiv (A : Type) `{h : IsHProp A} : Type0 :=
+    match em A with
+    | inl a  => True
+    | inr na => False
+    end.
+
+  Lemma equivHProp : forall (A : Type) `{h : IsHProp A}, A <~> propEquiv A.
+  Proof.
+    intros A h.
+    simple refine (BuildEquiv A (propEquiv A) _ _).
+    - intro a. unfold propEquiv. destruct (em A) as [_ | na].
+      + exact tt.
+      + exact (na a).
+    - simple refine (BuildIsEquiv _ _ _ _ _ _ _).
+      + intro p. unfold propEquiv in *. destruct (em A) as [a | na].
+        * exact a.
+        * destruct p.
+      + unfold Sect. unfold propEquiv. destruct (em A).
+        * intro x. destruct x. reflexivity.
+        * intro x. destruct x.
+      + unfold Sect. intro x. destruct (em A).
+        * apply h.
+        * destruct (t x).
+      + intro x. cbn. unfold propEquiv. destruct (em A).
+        * apply path_ishprop.
+        * assert (f : False) by (destruct (t x)).
+          destruct f.
+  Qed.
+
 End OneRule.
 
 (*! Section 4.  We prove here our admissible rules. !*)
