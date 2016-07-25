@@ -22,6 +22,17 @@ Section Operations.
   Definition ex_trans {A} {x y z : A} (p : x = y) (q : y = z) : x = z :=
     paths_rect A x (fun y p => y = z -> x = z) (fun q => q) y p q.
 
+  (* We also explicit the arrow between equality and equivalence. *)
+  Definition ex_eq_equiv {A} {B} (p : A = B) : A <~> B.
+    simple refine (BuildEquiv A B _ _).
+    - exact (transport idmap p).
+    - simple refine (BuildIsEquiv A B _ _ _ _ _).
+      + exact (transport idmap (p^)).
+      + intro x. destruct p. cbn. reflexivity.
+      + intro x. destruct p. cbn. reflexivity.
+      + intro x. cbn. destruct p. cbn. reflexivity.
+  Qed.
+
 End Operations.
 
 (*! Section 4.  We prove here our admissible rules. !*)
