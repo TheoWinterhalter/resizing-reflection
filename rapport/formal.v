@@ -121,6 +121,19 @@ Section OneRule.
     - exact equiv_dprop_to_bool.
   Defined.
 
+  (* Finally we prove that if A embeds in B, then A is equivalent to its image
+     through the embdedding. *)
+
+  Lemma embed_image : forall A B (f : A -> B) `{IsEmbedding f}, A <~> himage f.
+  Proof.
+    intros A B f h.
+    simple refine (BuildEquiv A (himage f) _ _).
+    - intro a. exists (f a). apply tr. exists a. exact idpath.
+    - apply isequiv_surj_emb.
+      + intro b. destruct b as [b p].
+        simple refine (Trunc_ind _ _ _).
+  Abort.
+
 End OneRule.
 
 (*! Section 4.  We prove here our admissible rules. !*)
