@@ -1,6 +1,28 @@
 (* You need to compile it with HoTT (from the github HoTT/HoTT). *)
 Require Import HoTT.
 
+(*! Section 1. Operations on equality !*)
+(* We implement them although they are already available in the HoTT library for
+   the sake of the example. *)
+Section Operations.
+
+  (* Transport *)
+  Definition ex_transport {A} {B} (p : A = B) : A -> B :=
+    paths_rect _ A (fun B p => A -> B) (fun x => x) B p.
+
+  (* Ap(plication) *)
+  Definition ex_ap {A} {B} (f : A -> B) {x y : A} (p : x = y) : f x = f y :=
+    paths_rect A x (fun y p => f x = f y) idpath y p.
+
+  (* Symmetry *)
+  Definition ex_sym {A} {x y : A} (p : x = y) : y = x :=
+    paths_rect A x (fun y p => y = x) idpath y p.
+
+  (* Transitivity *)
+  Definition ex_trans {A} {x y z : A} (p : x = y) (q : y = z) : x = z :=
+    paths_rect A x (fun y p => y = z -> x = z) (fun q => q) y p q.
+
+End Operations.
 
 (*! Section 4.  We prove here our admissible rules. !*)
 Section Translation.
