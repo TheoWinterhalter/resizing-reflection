@@ -91,12 +91,17 @@ Section Translation.
   Lemma forall_eq_transport :
     forall A B1 B2 (p : forall (x:A), B1 x = B2 x) (t1 : forall (x : A), B1 x),
       @paths (forall (x:A), B2 x)
-        (transport idmap (@forall_eq A B1 B2 p) (fun (x : A) => t1 x))
-        (fun (x : A) => transport idmap (p x) (t1 x)).
+             (transport idmap (@forall_eq A B1 B2 p) (fun (x : A) => t1 x))
+             (fun (x : A) => transport idmap (p x) (t1 x)).
   Proof.
-    intros A B1 B2 p t1.
-    (* Maybe through univalence? *)
-  Abort.
+    intros A B1 B2 p t1. cbn.
+    apply path_forall; intro x. unfold forall_eq. cbn.
+
+    path_via (transport idmap ((apD10 (path_forall B1 B2 p)) x) (t1 x)).
+    - generalize (path_forall B1 B2 p). intro q; destruct q.
+      reflexivity.
+    - rewrite apD10_path_forall. reflexivity.
+  Defined.
 
   Lemma HLam : forall A1 A2 B1 B2 t1 t2,
                  [Type, A1] = [Type, A2] ->
