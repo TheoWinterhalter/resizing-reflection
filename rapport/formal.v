@@ -117,7 +117,11 @@ Section Translation.
     assert (eq : forall x : A, [A, x] = [A, x]) by (intro x ; exact idpath).
     simple refine (path_sigma _ _ _ _ _) ; simpl.
     - exact (forall_eq (fun x => (h x x (eq x))..1)).
-    - 
+    - eapply transitivity.
+      + apply forall_eq_transport.
+      + cbn. apply path_forall. intro x.
+        exact ((h x x (eq x))..2).
+  Qed.
 
 End Translation.
 
