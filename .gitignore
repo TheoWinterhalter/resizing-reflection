@@ -15,3 +15,5 @@ Makefile
 *.gz
 *.vtc
 *.agdai
+*.bbl
+*.blg
