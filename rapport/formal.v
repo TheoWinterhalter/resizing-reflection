@@ -1,3 +1,8 @@
+(** This file contains a formalization of several of my claims in my internship
+    report.
+    I would like to thank Kevin Quirin for his help in using HoTT and some of
+    the proofs. **)
+
 (* You need to compile it with HoTT (from the github HoTT/HoTT). *)
 Require Import HoTT.
 
@@ -154,6 +159,8 @@ Section OneRule.
       simple refine (@contr_equiv' _ _ X _).
   Qed.
 
+  Definition Im {A B} (f : A -> B) := { b : B & Trunc (-1) (hfiber f b) }.
+
   Lemma embed_image : forall A B (f : A -> B) `{IsEmbedding f}, A <~> himage f.
   Proof.
     intros A B f h.
@@ -168,31 +175,23 @@ Section OneRule.
           apply tr. exists a. destruct pf. exact idpath.
       + apply IsEmbedding_IsMono. intros x y.
         simple refine (isequiv_adjointify _ _ _ _).
-        * intro e. apply (isinj_embedding f h).
-          exact (e..1).
-        * intro e. 
-
-
-(*         intro b. apply hprop_allpath. intros [x p] [y q]. *)
-(*         apply path_sigma_hprop. *)
-
-
-(*         intro b. destruct b as [b p]. *)
-(*         apply equiv_hprop_allpath. *)
-(*         intros u v. destruct u as [u pu]. destruct v as [v pv]. *)
-(*         cut (u = v). *)
-(*         * intro e. destruct e. *)
-(*           assert (e : pu = pv). *)
-(*           Focus 1. *)
-(*           unshelve eapply (path_ishprop). *)
-          
-          
-          
-(*         * apply (isinj_embedding f h). *)
-(*           apply (pu..1 @ (pv..1)^). *)
-
-(* eapply path_hfiber. *)
-  Abort.
+        * intro e.
+          assert (Emb : IsMono f) by (apply IsEmbedding_IsMono ; exact h).
+          apply (equiv_inv (IsEquiv := Emb x y)).
+          exact e..1.
+        * intro p.
+          simple refine (path_path_sigma _ _ _ _ _ _ _).
+          2: apply path_ishprop.
+          unfold pr1_path.
+          match goal with
+            |[|- ap ?ff (ap ?gg ?pp) = _]
+             => rewrite <- (ap_compose gg ff pp)
+          end.
+          cbn.
+          rewrite eisretr. reflexivity.
+        * intro p. destruct p. cbn.
+          apply moveR_equiv_V ; reflexivity.
+  Defined.
 
 End OneRule.
 
