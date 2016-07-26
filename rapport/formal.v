@@ -308,15 +308,6 @@ Section Translation.
     apply PiExt.
   Defined.
 
-  Lemma PiInv :
-    forall A B1 B2,
-      (forall x : A, B1 x) = (forall x : A, B2 x) ->
-      forall x : A, B1 x = B2 x.
-  Proof.
-    intros A B1 B2 h.
-    apply PiEquiv. exact (transport idmap h).
-  Defined.
-
   Lemma PiGet' :
     forall A B1 B2 (tp : (forall x : A, B1 x) -> (forall x : A, B2 x)),
       exists (q : forall x : A, B1 x = B2 x),
@@ -336,16 +327,6 @@ Section Translation.
     apply PiGet'.
   Defined.
 
-  (* Lemma PiGetBetter : *)
-  (*   forall A B1 B2 (p : (forall x : A, B1 x) = (forall x : A, B2 x)), *)
-  (*     exists (q : forall x : A, B1 x = B2 x), *)
-  (*       forall_eq q = p. *)
-  (* Proof. *)
-  (*   intros A B1 B2 p. *)
-  (*   exists (PiInv A B1 B2 p). *)
-  (*   unfold PiInv. unfold PiEquiv. cbn. *)
-  (* Abort. *)
-
   Lemma HApp :
     forall A1 A2 B1 B2 t1 t2 u1 u2,
       [forall x:A1, B1 x, t1] = [forall y:A2, B2 y, t2] -> [A1, u1] = [A2, u2] ->
@@ -358,14 +339,21 @@ Section Translation.
     destruct e. cbn in e'. destruct e'.
     rename A1 into A. rename u1 into u.
     pose (p1 := p..1). cbn in p1.
-    pose (ip1 := PiInv A B1 B2 p1).
+    assert (
+        e : exists (q : forall x : A, B1 x = B2 x),
+              transport idmap (forall_eq q) = transport idmap p1
+    ) by (apply PiGet).
+    destruct e as [e he].
     simple refine (path_sigma _ _ _ _ _) ; simpl.
-    - exact (ip1 u).
-    - pose (p2 := p..2). cbn in p2.
-      (* rewrite forall_eq_transport in p2. *)
-      (* unfold ip1. unfold PiInv. unfold PiEquiv. cbn. *)
-  Abort.
-    
+    - exact (e u).
+    - pose proof (p..2) as p2. cbn in p2.
+      assert (triv : p..1 = p1) by reflexivity. rewrite triv in p2. clear triv.
+      pose proof (ap (fun f => f t1) he) as h1. cbn in h1.
+      pose proof (h1 @ p2) as h2.
+      pose proof (forall_eq_transport _ _ _ e t1) as ht.
+      pose proof (ht^ @ h2) as h3.
+      exact (ap (fun f => f u) h3).
+  Qed.
 
 End Translation.
 
