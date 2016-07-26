@@ -810,9 +810,12 @@ univalence (it can be seen as a weaker version).
 \end{mathc}
 This last one unfortunately isn't provable in Coq without yet an extra axiom
 of parametricity. We would actually need such an axiom for every negative
-type such as the coinductive types. The axiom states that to prove
-$\forall x:A_1.B_1 = \forall x:A_2.B_2$, you have to prove $A_1 = A_2$
-and something close to $B_1 = B_2$.
+type such as the coinductive types. The axiom states that the operation
+\[
+  \ap_\Pi : (\forall a.\ B_1\ a = B_2\ a) \to
+            (\forall a.\ B_1\ a) = (\forall a.\ B_2\ a)
+\]
+is an equivalence, meaning we can invert on equalities of function spaces.
 
 We can finally prove that two equivalent terms are equal.
 
