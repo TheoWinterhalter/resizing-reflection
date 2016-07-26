@@ -159,10 +159,11 @@ the mainstream model of univalent homotopy type theory.
 Given that this report might serve as a basis for articles we decided to write
 it in English.
 
-The file ``formal.v'' is a Coq file that requires the HoTT library\ %
+The file \verb|formal.v| is a Coq file that requires the HoTT library\ %
 \cite{HoTTlib}.
-Its purpose is to basically explicit everything that we assert without proof in
-this report.
+Its purpose is to explicit everything that we assert without proof in this
+report. We will write \cqf{name} to reference the function called \verb|name|
+in the Coq file.
 
 \newpage
 \pagestyle{plain} %
@@ -244,8 +245,9 @@ not contractible.
 We represented the circle by drawing $\sloop$ as a path from $\base$ to
 $\base$, this way of representing the equality can be explicited by the notion
 of transport.
-Basically, given $p : A =_{\Type} B$, it is possible to construct a function
-$p_* : A \to B$ using the elimination principle of equality.
+Basically, given $p : A =_{\Type} B$, it is possible~\cqf{ex\_transport} to
+construct a function $p_* : A \to B$ using the elimination principle of
+equality.
 
 \paradot{Operations}
 The elimination principle for equality can be annoying to use in general so we
@@ -253,11 +255,12 @@ rather prove basic lemmata that make reasoning about equality easier.
 One that is useful for instance is the congruence of equality under application:
 \[ \ap : \forall (f : A \to B).\ x =_A y \to f\ x =_B f\ y. \]
 \noindent
-It has a precise definition that we won't state here, but it basically
-follows directly from the elimination principle of the equality.
+It has a precise definition~\cqf{ap\_f} that we won't state here, but it
+basically follows directly from the elimination principle of the equality.
 
 Similarly for any $p : x = y$ and $q : y = z$, we can define
-$p\inv : y = x$ and $p \cons q : x = z$ translating symmetry and transitivity.
+$p\inv : y = x$ and $p \cons q : x = z$ translating symmetry and
+transitivity~\cqf{ex\_sym,ex\_trans}.
 
 \subsection{Univalence}
 
@@ -282,8 +285,9 @@ An interesting thing to remark is that if $A$ and $B$ are sets, then an
 equivalence is exactly a bijection between types (which incidently is the notion
 of isomorphism for sets).
 
-Using transports it is trivial to construct an equivalence between two equal
-types $A = B$ which gives us an arrow $f : (A = B) \to (A \approx B)$.
+Using transports it is trivial~\cqf{ex\_eq\_equiv} to construct an equivalence
+between two equal types $A = B$ which gives us an arrow
+$f : (A = B) \to (A \approx B)$.
 The principle of univalence states that this arrow itself is an equivalence.
 
 \begin{definition}[Univalence]
@@ -450,13 +454,13 @@ In such a case it feels natural to consider $A$ to be smaller than $B$:
 
 \noindent
 This was a good candidate in the sense that any mere proposition can be embedded
-in $\top$ and that $A \approx B$ implies $A \embd B$.
+in $\top$~\cqf{prop\_in\_top} and that $A \approx B$ implies $A \embd B$.
 However, this does not allow us to resize $\hProp$ itself and we were not able
 to find a good justification for it.
 
 \subsection{Equivalence}
 If we are ready to rely on some axioms we can reduce all the resizing rules we
-mentioned (even the embedding one) to the equivalence resizing rule.
+mentioned to the equivalence resizing rule.
 For instance, the equality can trivially be reduced to equivalence.
 The other need more work and we shall detail them below.
 
@@ -470,14 +474,15 @@ true or not rather than whether a type is inhabited or not.
 
 Once we have that, for any mere proposition $T$, we can create the type $T'$
 that is $\top$ or $\bot$ depending on the result of $\emd\ T$.
-That way $T' : \Type_0$ and $T \approx T'$.
+That way $T' : \Type_0$ and $T \approx T'$~\cqf{equivHProp}.
 We can conclude it is safe to assume the resizing of mere propositions as long
 as it is safe to assume the excluded-middle for them and the resizing of
 equivalence.
 
 Likewise, we can show that $\hProp \approx \bool$ using $\emd$ in the same
 fashion, and, since $\bool : \Type_0$, the resizing rule of $\hProp$ is also
-reducible to equivalence. However, this time we also need univalence.
+reducible to equivalence. However, this time we also need
+univalence~\cqf{equiv\_hprop\_bool}.
 
 \paradot{Embeddings}
 We can prove that, when $f : A \embd B$, we have $A \approx \Img\ f$
@@ -487,7 +492,7 @@ for some $a$. There is a catch though, the ``such that'' part is
 rule for embedding reduces to the equivalence only if we assume
 (or reduce as well) the resizing rule for propositions.
 We won't dwell too much into details for this one, the interested reader should
-refer to the Coq file for more information.
+refer to the Coq file for more information~\cqf{embed\_image}.
 
 \subsection{Equality}
 It is tempting to say that equivalence is the one rule that generalizes all the
