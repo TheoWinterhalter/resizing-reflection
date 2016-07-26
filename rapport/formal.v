@@ -316,7 +316,17 @@ Section Translation.
   Proof.
     intros A B1 B2 h.
     apply PiEquiv. exact (transport idmap h).
-  Defined. 
+  Defined.
+
+  Lemma PiGet :
+    forall A B1 B2 (p : (forall x : A, B1 x) = (forall x : A, B2 x)),
+      exists (q : forall x : A, B1 x = B2 x),
+        forall_eq q = p.
+  Proof.
+    intros A B1 B2 p.
+    exists (PiInv A B1 B2 p).
+    unfold PiInv. unfold PiEquiv. cbn.
+  Abort.
 
   Lemma HApp :
     forall A1 A2 B1 B2 t1 t2 u1 u2,
@@ -335,7 +345,8 @@ Section Translation.
     - exact (ip1 u).
     - pose (p2 := p..2). cbn in p2.
       (* rewrite forall_eq_transport in p2. *)
-(* unfold ip1. unfold PiInv. unfold PiEquiv. cbn. *)
+      (* unfold ip1. unfold PiInv. unfold PiEquiv. cbn. *)
+  Abort.
     
 
 End Translation.
