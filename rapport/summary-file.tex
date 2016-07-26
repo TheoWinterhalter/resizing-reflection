@@ -383,7 +383,7 @@ equivalence that generalize the previous one:
 As one can see, these rules seem to break decidability of type checking, hence
 the need for a more explicit statement of those rules.
 
-\meta{Mention the surjection rule somehow?}
+% \meta{Mention the surjection rule somehow?}
 
 \subsection{Implementation Proposal}
 
@@ -480,9 +480,14 @@ fashion, and, since $\bool : \Type_0$, the resizing rule of $\hProp$ is also
 reducible to equivalence. However, this time we also need univalence.
 
 \paradot{Embeddings}
-\meta{Say it is equivalent to the image of $f$, how much into details should we
-go? As for the rest, we should probably have it proven in a Coq file and leave
-it to the interested reader.}
+We can prove that, when $f : A \embd B$, we have $A \approx \Img\ f$
+where $\Img\ f$ is the image of $f$ \ie\ the set of $b : B$ such that $b = f\ a$
+for some $a$. There is a catch though, the ``such that'' part is
+\emph{truncated} to a mere proposition but it still mentions $A$. The resizing
+rule for embedding reduces to the equivalence only if we assume
+(or reduce as well) the resizing rule for propositions.
+We won't dwell too much into details for this one, the interested reader should
+refer to the Coq file for more information.
 
 \subsection{Equality}
 It is tempting to say that equivalence is the one rule that generalizes all the
