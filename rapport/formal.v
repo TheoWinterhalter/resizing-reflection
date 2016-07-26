@@ -317,15 +317,34 @@ Section Translation.
     apply PiEquiv. exact (transport idmap h).
   Defined.
 
+  Lemma PiGet' :
+    forall A B1 B2 (tp : (forall x : A, B1 x) -> (forall x : A, B2 x)),
+      exists (q : forall x : A, B1 x = B2 x),
+        transport idmap (forall_eq q) = tp.
+  Proof.
+    intros A B1 B2 tp.
+    exists ((PiEquiv A B1 B2)^-1 (tp)).
+    apply (eisretr (fun p => transport idmap (@forall_eq A B1 B2 p))).
+  Defined.
+
   Lemma PiGet :
     forall A B1 B2 (p : (forall x : A, B1 x) = (forall x : A, B2 x)),
       exists (q : forall x : A, B1 x = B2 x),
-        forall_eq q = p.
+        transport idmap (forall_eq q) = transport idmap p.
   Proof.
     intros A B1 B2 p.
-    exists (PiInv A B1 B2 p).
-    unfold PiInv. unfold PiEquiv. cbn.
-  Abort.
+    apply PiGet'.
+  Defined.
+
+  (* Lemma PiGetBetter : *)
+  (*   forall A B1 B2 (p : (forall x : A, B1 x) = (forall x : A, B2 x)), *)
+  (*     exists (q : forall x : A, B1 x = B2 x), *)
+  (*       forall_eq q = p. *)
+  (* Proof. *)
+  (*   intros A B1 B2 p. *)
+  (*   exists (PiInv A B1 B2 p). *)
+  (*   unfold PiInv. unfold PiEquiv. cbn. *)
+  (* Abort. *)
 
   Lemma HApp :
     forall A1 A2 B1 B2 t1 t2 u1 u2,
