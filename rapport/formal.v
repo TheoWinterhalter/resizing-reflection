@@ -99,8 +99,8 @@ Section OneRule.
   (* In order to prove equivalence between hProp and Bool we need univalence and
      funext (which is implied by univalence). *)
 
-  Context `{Funext}.
-  Context `{Univalence}.
+  Context `{fs : Funext}.
+  Context `{un : Univalence}.
 
   (* We first show that hProp is equivalent do Decidable hProp (under LEM). *)
   Lemma equiv_hprop_to_dprop : hProp <~> DProp.
@@ -109,7 +109,7 @@ Section OneRule.
     - intro A. exists A.
       + intro H'. exact _.
       + exact (em A).
-    - intro A. exists (dprop_type A). apply (ishprop_dprop A H).
+    - intro A. exists (dprop_type A). apply (ishprop_dprop A fs).
     - intro A. cbn. apply path_dprop. cbn. exact idpath.
     - intro A. cbn. exact idpath.
   Defined.
@@ -124,6 +124,36 @@ Section OneRule.
   (* Finally we prove that if A embeds in B, then A is equivalent to its image
      through the embdedding. *)
 
+  Definition IsMono {A B : Type} (f : A -> B)
+    := forall x y, IsEquiv (ap f (x:=x) (y:=y)).
+
+  Open Scope path_scope.
+  Require Import Utf8_core.
+
+  Lemma IsEmbedding_IsMono {A B : Type} (f : A -> B)
+  : IsEmbedding f <-> IsMono f.
+    split.
+    - intros H x y.
+      apply isequiv_fcontr. intro q.
+      pose (Y := equiv_path_hfiber (x;1) (y;q^)); cbn in Y.
+      simple refine (contr_equiv' (∃ q0 : x = y, 1 = ap f q0 @ q^) _).
+      simple refine (equiv_functor_sigma_id _); intro a.
+      pose (ff:= (equiv_inverse (BuildEquiv _ _ _ (isequiv_moveL_pV q 1 (ap f a))))).
+      rewrite concat_1p in ff.
+      exact (equiv_compose' (equiv_path_inverse q (ap f a)) ff).
+      simple refine (@contr_equiv' ((x; 1) = (y; q^)) _ (equiv_inverse Y) _).
+    - intros H b x y; simpl. pose (Y:=equiv_path_hfiber x y).
+      simple refine (@contr_equiv' _ _ Y _).
+      pose (fcontr_isequiv (ap f) (H x.1 y.1) (x.2@y.2^)).
+      match goal with
+        |[ i : Contr ?AA |- Contr ?BB ] => assert (X: AA <~> BB)
+      end.
+      simple refine (equiv_functor_sigma_id _); intro a.
+      pose (ff:= (equiv_inverse (BuildEquiv _ _ _ (isequiv_moveL_pV y.2 (ap f a) x.2)))).
+      exact (equiv_compose' (equiv_path_inverse (ap f a @ y.2) x.2) ff).
+      simple refine (@contr_equiv' _ _ X _).
+  Qed.
+
   Lemma embed_image : forall A B (f : A -> B) `{IsEmbedding f}, A <~> himage f.
   Proof.
     intros A B f h.
@@ -131,7 +161,37 @@ Section OneRule.
     - intro a. exists (f a). apply tr. exists a. exact idpath.
     - apply isequiv_surj_emb.
       + intro b. destruct b as [b p].
-        simple refine (Trunc_ind _ _ _).
+        unfold TrM.IsConnected. apply equiv_hprop_inhabited_contr.
+        * exact _.
+        * simple refine (Trunc_ind _ _ p).
+          intro fa. destruct fa as [a pf].
+          apply tr. exists a. destruct pf. exact idpath.
+      + apply IsEmbedding_IsMono. intros x y.
+        simple refine (isequiv_adjointify _ _ _ _).
+        * intro e. apply (isinj_embedding f h).
+          exact (e..1).
+        * intro e. 
+
+
+        intro b. apply hprop_allpath. intros [x p] [y q].
+        apply path_sigma_hprop.
+
+
+        intro b. destruct b as [b p].
+        apply equiv_hprop_allpath.
+        intros u v. destruct u as [u pu]. destruct v as [v pv].
+        cut (u = v).
+        * intro e. destruct e.
+          assert (e : pu = pv).
+          Focus 1.
+          unshelve eapply (path_ishprop).
+          
+          
+          
+        * apply (isinj_embedding f h).
+          apply (pu..1 @ (pv..1)^).
+
+eapply path_hfiber.
   Abort.
 
 End OneRule.
