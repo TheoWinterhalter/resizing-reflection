@@ -1107,7 +1107,7 @@ consistency of \CCe\ with respect to CIC (plus our axioms).
   Immediately by corollary~\ref{cor:choice}.
 \end{proof}
 
-\section*{Conclusion}
+\section*{Conclusion and Future Work}
 
 We presented resizing rules as well as a way to implement them in proof
 assistants such as Coq. Thanks to a pretty general result regarding the
@@ -1115,14 +1115,18 @@ consistency of extensional type theory in a univalent context (up to some
 parametricity axioms) we were able to prove the consistency of the few
 resizing rules that we presented.
 
-As we already mentioned, it would be interesting to try and prove that these
-extra axioms actually hold in the simplicial model in order to ``complete''
-our coverage of the resizing rules.
-
-% Bibliography
-% \nocite{%
-%   coq:manual%
-% }
+However if this seems to work fine for the equivalence / equality, the resizing
+rule for mere propositions that relies on the excluded middle still needs to be
+addressed. Indeed, in all generality, the excluded middle is incompatible with
+parametricity (as it allows to flip $\bot$ and $\top$ in an equivalence
+$\Type \approx \Type$). As such we need to be extra cautious when trying
+to apply the extended result of Nicolas Oury to a univalent setting.
+The idea is that from ``\CCe + $A = B$'' we can go to ``CIC + $A = B$ +
+parametricity axioms'' and we still need to figure how to go back to plain CIC
+\ie\ interpreting the axioms as well as the equality $A = B$ which might be
+using $\emd$. This missing translation does not need to be the identity and
+could be translating $\Type$ to some other type with extra assumptions on
+parametricity for instance.
 
 \bibliographystyle{plain}
 \bibliography{biblio}
