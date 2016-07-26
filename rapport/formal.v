@@ -173,25 +173,25 @@ Section OneRule.
         * intro e. 
 
 
-        intro b. apply hprop_allpath. intros [x p] [y q].
-        apply path_sigma_hprop.
+(*         intro b. apply hprop_allpath. intros [x p] [y q]. *)
+(*         apply path_sigma_hprop. *)
 
 
-        intro b. destruct b as [b p].
-        apply equiv_hprop_allpath.
-        intros u v. destruct u as [u pu]. destruct v as [v pv].
-        cut (u = v).
-        * intro e. destruct e.
-          assert (e : pu = pv).
-          Focus 1.
-          unshelve eapply (path_ishprop).
+(*         intro b. destruct b as [b p]. *)
+(*         apply equiv_hprop_allpath. *)
+(*         intros u v. destruct u as [u pu]. destruct v as [v pv]. *)
+(*         cut (u = v). *)
+(*         * intro e. destruct e. *)
+(*           assert (e : pu = pv). *)
+(*           Focus 1. *)
+(*           unshelve eapply (path_ishprop). *)
           
           
           
-        * apply (isinj_embedding f h).
-          apply (pu..1 @ (pv..1)^).
+(*         * apply (isinj_embedding f h). *)
+(*           apply (pu..1 @ (pv..1)^). *)
 
-eapply path_hfiber.
+(* eapply path_hfiber. *)
   Abort.
 
 End OneRule.
@@ -294,6 +294,49 @@ Section Translation.
       + cbn. apply path_forall. intro x.
         exact ((h x x (eq x))..2).
   Qed.
+
+  (* We state the parametricity axiom necessary for HApp. *)
+  Axiom PiExt :
+    forall A B1 B2,
+      IsEquiv (fun p => transport idmap (@forall_eq A B1 B2 p)).
+
+  Lemma PiEquiv :
+    forall A B1 B2,
+      (forall x:A, B1 x = B2 x) <~> ((forall x:A, B1 x) -> (forall x:A, B2 x)).
+  Proof.
+    intros A B1 B2.
+    exists (fun p => transport idmap (@forall_eq A B1 B2 p)).
+    apply PiExt.
+  Defined.
+
+  Lemma PiInv :
+    forall A B1 B2,
+      (forall x : A, B1 x) = (forall x : A, B2 x) ->
+      forall x : A, B1 x = B2 x.
+  Proof.
+    intros A B1 B2 h.
+    apply PiEquiv. exact (transport idmap h).
+  Defined. 
+
+  Lemma HApp :
+    forall A1 A2 B1 B2 t1 t2 u1 u2,
+      [forall x:A1, B1 x, t1] = [forall y:A2, B2 y, t2] -> [A1, u1] = [A2, u2] ->
+      [B1 u1, t1 u1] = [B2 u2, t2 u2].
+  Proof.
+    intros A1 A2 B1 B2 t1 t2 u1 u2 p q.
+    pose (e' := q..2). cbn in e'.
+    pose (e := q..1). cbn in e. assert (h : e = q..1) by reflexivity.
+    rewrite <- h in e'. clear h.
+    destruct e. cbn in e'. destruct e'.
+    rename A1 into A. rename u1 into u.
+    pose (p1 := p..1). cbn in p1.
+    pose (ip1 := PiInv A B1 B2 p1).
+    simple refine (path_sigma _ _ _ _ _) ; simpl.
+    - exact (ip1 u).
+    - pose (p2 := p..2). cbn in p2.
+      (* rewrite forall_eq_transport in p2. *)
+(* unfold ip1. unfold PiInv. unfold PiEquiv. cbn. *)
+    
 
 End Translation.
 
