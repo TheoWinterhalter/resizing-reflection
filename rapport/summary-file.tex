@@ -94,14 +94,14 @@ are often considered to be trivial as they are in Set Theory.
 % If so, why are you the first researcher in the universe who consider it ?
 % If not, why did you think that you could bring an original contribution ?
 In type theory, and thus in proof assistants such as Coq~\cite{coq:manual} or
-Agda~\cite{norell2007towards}, in order to avoid paradoxes \emph{à la} Russel,
+Agda~\cite{norell2007towards}, in order to avoid paradoxes \emph{à la} Russell,
 we have to establish a hierarchy of universes (the types of types). Without it,
 it would be possible to prove \emph{false} in Coq for instance
 \cite{coquand:typetype}.
 Nevertheless, the typing rules dealing with universes are purely syntactical
 and can be seen as rough approximations to preserve consistency.
 They can be annoying for the user and we can legitimately wonder whether we
-can alleviate theses restrictions in some specific cases.
+can alleviate these restrictions in some specific cases.
 
 Stated by Vladimir Voevodsky~\cite{vv:resizing}, the \emph{resizing rules} allow
 to lower the universe level of a type under special conditions. The way he
@@ -408,9 +408,10 @@ becomes:
 
 \noindent
 However, we need to relate $\RR\ A$ (we will ignore the $h$ as it is understood
-in most cases) and $A$ in some way. Mike Shulman (\meta{cite?}) for instance
-proposed to say that $\RR\ A$ and $A$ are equivalent, but in this precise case,
-this is not really interesting as we could have used $B$ from the start.
+in most cases) and $A$ in some way. Mike Shulman~\cite{ShulmanResize} for
+instance proposed to say that $\RR\ A$ and $A$ are equivalent, but in this
+precise case, this is not really interesting as we could have used $B$ from the
+start.
 Instead we use a \emph{strict equivalence}:
 
 \begin{mathc}
@@ -557,7 +558,7 @@ Let us now detail the adapted proof.
 \subsubsection{(Extensional) Calculus of Constructions}
 
 Our goal is to translate judgements in the Extensional Calculus of
-Constructions (herrafter called \CCe) into the regular Calculus of Constructions
+Constructions (hereafter called \CCe) into the regular Calculus of Constructions
 (CC). Contexts will be either the empty context $\cdot$ or of the form
 $\Gamma, x:T$ and $\der \Gamma$ shall mean that the context $\Gamma$ is
 well-formed.
@@ -662,8 +663,9 @@ given in figure~\ref{fig:cc-conv}.
   \label{fig:cc-conv}
 \end{figure}
 
-In order to obtain \CCe we only add the extensionality rule below.
-All judgements in \CCe will be written with $\dere$ whereas CC will use $\der$.
+In order to obtain {\CCe} we only add the extensionality rule below.
+All judgements in {\CCe} will be written with $\dere$ whereas CC will use
+$\der$.
 \begin{mathc}
   \nmru{Ext%
       }{\Gamma \dere p : u_1 = u_2
@@ -1078,7 +1080,7 @@ We now prove our translation.
             \Gamma, x:A_1 \dere B_1 \equiv B_2
           }{\Gamma \dere \forall x:A_1.B_1 \equiv \forall x:A_2.B_2}
     \).
-    This is equivalent in \CCe\ to
+    This is equivalent in {\CCe} to
     \[
       \ru{\Gamma \dere A_1 \equiv A_2 \qquad
           \Gamma, x:A_1, y:A_2, p : x = y \dere B_1 \equiv B_2[x := y]
@@ -1092,7 +1094,7 @@ We now prove our translation.
 \end{proof}
 
 Now that we have defined a translation, we need to ensure it implies the
-consistency of \CCe\ with respect to CIC (plus our axioms).
+consistency of {\CCe} with respect to CIC (plus our axioms).
 
 \begin{corollary}
   \label{cor:choice}
@@ -1104,7 +1106,7 @@ consistency of \CCe\ with respect to CIC (plus our axioms).
 \end{corollary}
 
 \begin{proof}
-  By theorem~\ref{thm:valid}.1 we have the traduction and by
+  By theorem~\ref{thm:valid}.1 we have the translation and by
   lemma~\ref{lem:simeq} we can chose $T$ for $\barT$.
 \end{proof}
 
