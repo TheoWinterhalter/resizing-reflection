@@ -320,9 +320,13 @@ level of an object grew artifically.
 
 Take the notion of subsets: if we want to take a subset of $A$ satisfying
 a given predicate $P$, we write $B := \{ x : A \mid P\ x \}$ in Coq.
+For instance, we could consider
+$\even := \{ n : \mathbb{N} \mid \squash{\exists p.\ n = 2 \times p} \}$ the
+subset of even natural numbers (herein, $\squash{T}$ turns $T$ into a mere
+proposition by identifying all of its elements).
 The problem is that $P$ could live in high universes, making the universe level
 of $B$ grow as well, meaning it could be bigger than the one of $A$ although
-it was originally intended as a subset of $A$.
+$B$ was originally intended as a subset of $A$.
 The consequences are that some properties of $A$ might not be inherited by
 $B$ because of universe constraints.
 One of the resizing rules proposed by Vladimir Voevodsky states that any
