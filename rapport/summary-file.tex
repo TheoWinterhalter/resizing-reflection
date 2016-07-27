@@ -133,7 +133,7 @@ This last step is, in itself, an interesting result.
 % What is the evidence that your solution is a good solution ?
 % Experiments ? Proofs ?
 Our work consists of a proof and an implementation.
-However, our proof relies on some parametricity hypotheses commonly believed to
+Our proof relies on some parametricity hypotheses commonly believed to
 be compatible with univalence. However a formalized treatment of this statement
 is ongoing work.
 
@@ -183,8 +183,8 @@ behind Coq) extended it to dependent
 types that allow types to depend on terms.
 % This way, the dependent product $\Pi x:A.B$ (where $B$ can mention $x$)
 % represents the proposition $\forall x:A, B$.
-We shall assume the reader is familiar with basic concepts associated to CIC
-such as the inductive types as CIC will serve as our implicit context.
+We shall assume the reader is familiar with basic concepts associated to CIC,
+such as the inductive types, as CIC will serve as our implicit context.
 
 \subsection{Proofs and Equality}
 
@@ -211,7 +211,7 @@ The most standard example is probably the circle $\S1$ that has one constructor
 $\base : \S1$ and one non-trivial equality $\sloop : \base = \base$
 (in the figure on the right we implicitely see an equality as a directed arrow).
 This can go against the intuition but this type doesn't have only one element,
-\ie it is not provable that $\forall x,y : \S1.\ x = y$. It is however
+\ie it is not provable that $\forall x,y : \S1.\ x = y$. It is in a sense
 reassuring that the circle doesn't consist of only one point.
 All equalities in $\sloop = \sloop$ aren't provably equal either.
 However, for a type such as $\bool$ whose elements are not all
@@ -256,7 +256,7 @@ One that is useful for instance is the congruence of equality under application:
 \[ \ap : \forall (f : A \to B).\ x =_A y \to f\ x =_B f\ y. \]
 \noindent
 It has a precise definition~\cqf{ap\_f} that we won't state here, but it
-basically follows directly from the elimination principle of the equality.
+follows directly from the elimination principle of the equality.
 
 Similarly for any $p : x = y$ and $q : y = z$, we can define
 $p\inv : y = x$ and $p \cons q : x = z$ translating symmetry and
