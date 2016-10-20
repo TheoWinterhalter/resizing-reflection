@@ -6,3 +6,5 @@ as well as the modifications brought by Simon Boulier for the paper "The Next 70
 `Sort.v` contains the basic definitions related to sorts.  
 `PTS.v` contains a formalization of MLTT + some axioms which will be the target of our translation.  
 `PTS_Ext.v` contains a formalization of MLTT + reflection.
+`translation.v` contains the translation from MLTT + reflection to
+MLTT + axiom
