@@ -102,59 +102,11 @@ Definition item_lift (t:Term) (Γ:Env) (n:nat) :=
 Hint Unfold item_lift.
 Notation " t ↓ n ⊂ Γ " := (item_lift t Γ n) (at level 80, no associativity): UT_scope.
 
-(** ** Usual Beta-reduction:
- - one step
- - multi step (reflexive, transitive closure)
- - converesion (reflexive, symetric, transitive closure)
- *)
-Reserved Notation " A → B " (at level 80).
-
-Inductive Beta : Term -> Term -> Prop :=
-| Beta_head  : forall A M N, (λ A M) · N → M [← N]
-| Beta_eq    : forall A P M N, J A P M N M (refle M) → N
-(* Congruence rules *)
-| Beta_Π1    : forall A A' B , A → A' -> Π A B → Π A' B
-| Beta_Π2    : forall A B  B', B → B' -> Π A B → Π A  B'
-| Beta_λ1    : forall A A' M , A → A' -> λ A M → λ A' M
-| Beta_λ2    : forall A M  M', M → M' -> λ A M → λ A  M'
-| Beta_App1  : forall M M' N , M → M' -> M · N  → M' · N
-| Beta_App2  : forall M N  N', N → N' -> M · N  → M · N'
-| Beta_Eq1   : forall A A' M N, A → A' -> Eq A M N → Eq A' M N
-| Beta_Eq2   : forall A M M' N, M → M' -> Eq A M N → Eq A M' N
-| Beta_Eq3   : forall A M N N', N → N' -> Eq A M N → Eq A M N'
-| Beta_refle : forall M M' , M → M' -> refle M  → refle M'
-| Beta_J1     : forall A A' P M1 N M2 p, A → A' -> J A P M1 N M2 p → J A' P M1 N M2 p
-| Beta_J2     : forall A P P' M1 N M2 p, P → P' -> J A P M1 N M2 p → J A P' M1 N M2 p
-| Beta_J3     : forall A P M1 M1' N M2 p, M1 → M1' -> J A P M1 N M2 p → J A P M1' N M2 p
-| Beta_J4     : forall A P M1 N N' M2 p, N → N' -> J A P M1 N M2 p → J A P M1 N' M2 p
-| Beta_J5     : forall A P M1 N M2 M2' p, M2 → M2' -> J A P M1 N M2 p → J A P M1 N M2' p
-| Beta_J6     : forall A P M1 N M2 p p', p → p' -> J A P M1 N M2 p → J A P M1 N M2 p'
-where "M → N" := (Beta M N) : UT_scope.
-  
-Reserved Notation " A →→ B " (at level 80).
-
-Inductive Betas : Term -> Term -> Prop :=
-| Betas_refl  : forall M    , M →→ M
-| Betas_Beta  : forall M N  , M → N  -> M →→ N
-| Betas_trans : forall M N P, M →→ N -> N →→ P -> M →→ P
-where  " A →→ B " := (Betas A B) : UT_scope.
-
-Reserved Notation " A ≡ B " (at level 80).
-
-Inductive Betac : Term -> Term -> Prop :=
-| Betac_Betas : forall M N  , M →→ N -> M ≡ N
-| Betac_sym   : forall M N  , M ≡ N  -> N ≡ M
-| Betac_trans : forall M N P, M ≡ N  -> N ≡ P -> M ≡ P
-where " A ≡ B " := (Betac A B)  : UT_scope.
-
-Hint Constructors Beta.
-Hint Constructors Betas.
-Hint Constructors Betac.
-
-
 (** Typing judgements:*)
-Reserved Notation "Γ ⊢ t : T" (at level 80, t, T at level 30, no associativity) .
+Reserved Notation "Γ ⊢ t : T" (at level 80, t, T at level 30, no associativity).
 Reserved Notation "Γ ⊣ " (at level 80, no associativity).
+Reserved Notation "Γ ⊢ u ≡ v"
+         (at level 80, u, v at level 30, no associativity).
 
 Notation "A ⇒ B" := (Π A (B ↑)) (at level 20, right associativity).
 Definition empty := Π !(U 0) #0.
@@ -166,25 +118,48 @@ Inductive wf : Env -> Prop :=
 where "Γ ⊣" := (wf Γ) : UT_scope
 with
 typ : Env -> Term -> Term -> Prop :=
-| cVar  : forall Γ A v, Γ ⊣ -> A ↓ v  ⊂ Γ -> Γ ⊢ #v : A
-| cSort : forall Γ s s', Γ ⊣ -> Ax s s' -> Γ  ⊢ !s : !s'
-| cΠ   : forall Γ A B s s' s''  , Rel s s' s'' -> Γ ⊢ A : !s -> A::Γ ⊢ B : !s' -> Γ ⊢  Π  A B : !s''
-| cλ   : forall Γ A B s s' s'' M, Rel s s' s'' -> Γ ⊢ A : !s -> A::Γ ⊢ B : !s' -> A::Γ ⊢ M : B
-               -> Γ ⊢ λ A M : Π  A B
-| cApp  : forall Γ M N A B , Γ ⊢ M : Π A B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[←N]
-| cEq : forall Γ A t1 t2 s, Γ ⊢ A : !s -> Γ ⊢ t1 : A -> Γ ⊢ t2 : A -> Γ ⊢ Eq A t1 t2 : !s
-| crefle : forall Γ t A, Γ ⊢ t : A -> Γ ⊢ refle t : Eq A t t
-| cJ : forall Γ A P t1 u t2 p s, A :: Γ ⊢ P : !s -> Γ ⊢ u : P[←t1] -> Γ ⊢ p : Eq A t1 t2
-                                -> Γ ⊢ J A P t1 u t2 p : P[←t2]
-| Cnv   : forall Γ M A B s, A ≡ B  -> Γ ⊢ M : A -> Γ ⊢ B : !s -> Γ ⊢ M : B
-where "Γ ⊢ t : T" := (typ Γ t T) : UT_scope.
+| cVar   : forall Γ A v              , Γ ⊣ -> A ↓ v  ⊂ Γ -> Γ ⊢ #v : A
+| cSort  : forall Γ s s'             , Γ ⊣ -> Ax s s' -> Γ  ⊢ !s : !s'
+| cΠ     : forall Γ A B s s' s''     , Rel s s' s'' -> Γ ⊢ A : !s -> A :: Γ ⊢ B : !s' ->
+                                  Γ ⊢  Π  A B : !s''
+| cλ     : forall Γ A B s s' s'' M   , Rel s s' s'' -> Γ ⊢ A : !s -> A::Γ ⊢ B : !s' ->
+                                  A :: Γ ⊢ M : B -> Γ ⊢ λ A M : Π  A B
+| cApp   : forall Γ M N A B          , Γ ⊢ M : Π A B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[← N]
+| cEq    : forall Γ A t1 t2 s        , Γ ⊢ A : !s -> Γ ⊢ t1 : A -> Γ ⊢ t2 : A ->
+                                  Γ ⊢ Eq A t1 t2 : !s
+| crefle : forall Γ t A              , Γ ⊢ t : A -> Γ ⊢ refle t : Eq A t t
+| cJ     : forall Γ A P t1 u t2 p s  , A :: Γ ⊢ P : !s -> Γ ⊢ u : P[← t1] ->
+                                  Γ ⊢ p : Eq A t1 t2 ->
+                                  Γ ⊢ J A P t1 u t2 p : P[← t2]
+| Cnv    : forall Γ M A B s          , Γ ⊢ A ≡ B -> Γ ⊢ M : A -> Γ ⊢ B : !s -> Γ ⊢ M : B
+where "Γ ⊢ t : T" := (typ Γ t T) : UT_scope
+with
+eq : Env -> Term -> Term -> Prop :=
+| eβ     : forall Γ A t u T          , Γ ⊢ (λ A t) · u : T ->
+                                  Γ ⊢ (λ A t) · u ≡ t [← u]
+| eApp   : forall Γ t1 t2 u1 u2      , Γ ⊢ t1 ≡ t2 -> Γ ⊢ u1 ≡ u2 ->
+                                  Γ ⊢ t1 · u1 ≡ t2 · u2
+| eΠ     : forall Γ A1 A2 B1 B2      , Γ ⊢ A1 ≡ A2 -> A1 :: Γ ⊢ B1 ≡ B2 ->
+                                  Γ ⊢ Π A1 B1 ≡ Π A2 B2
+| eλ     : forall Γ A1 A2 t1 t2      , Γ ⊢ A1 ≡ A2 -> A1 :: Γ ⊢ t1 ≡ t2 ->
+                                  Γ ⊢ λ A1 t1 ≡ λ A2 t2
+| eEq    : forall Γ A1 A2 t1 t2 u1 u2, Γ ⊢ A1 ≡ A2 -> Γ ⊢ t1 ≡ t2 -> Γ ⊢ u1 ≡ u2 ->
+                                  Γ ⊢ Eq A1 t1 u1 ≡ Eq A2 t2 u2
+| erefle : forall Γ t1 t2            , Γ ⊢ t1 ≡ t2 -> Γ ⊢ refle t1 ≡ refle t2
+| eJ     : forall Γ A1 A2 P1 P2 t1 t2 u1 u2 v1 v2 p1 p2,
+                                  Γ ⊢ A1 ≡ A2 -> A1 :: Γ ⊢ P1 ≡ P2 -> Γ ⊢ u1 ≡ u2 ->
+                                  Γ ⊢ t1 ≡ t2 -> Γ ⊢ v1 ≡ v2 -> Γ ⊢ p1 ≡ p2 ->
+                                  Γ ⊢ J A1 P1 t1 u1 v1 p1 ≡ J A2 P2 t2 u2 v2 p2
+| eJβ    : forall Γ A P M N          , Γ ⊢ J A P M N M (refle M) ≡ N
+where "Γ ⊢ u ≡ v" := (eq Γ u v) : UT_scope.
 
-Hint Constructors wf typ.
+Hint Constructors wf typ eq.
 Open Scope UT_scope.
 
 Scheme typ_ind' := Induction for typ Sort Prop
-with wf_ind' := Induction for wf Sort Prop.
-Combined Scheme typ_induc from typ_ind', wf_ind'.
+with wf_ind' := Induction for wf Sort Prop
+with eq_ind' := Induction for eq Sort Prop.
+Combined Scheme typ_induc from typ_ind', wf_ind', eq_ind'.
 
 Lemma wf_typ : forall Γ t T, Γ ⊢ t : T -> Γ ⊣.
 induction 1; eauto.
