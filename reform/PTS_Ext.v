@@ -151,7 +151,7 @@ eq : Env -> Term -> Term -> Prop :=
                                   Γ ⊢ t1 ≡ t2 -> Γ ⊢ v1 ≡ v2 -> Γ ⊢ p1 ≡ p2 ->
                                   Γ ⊢ J A1 P1 t1 u1 v1 p1 ≡ J A2 P2 t2 u2 v2 p2
 | eJβ    : forall Γ A P M N          , Γ ⊢ J A P M N M (refle M) ≡ N
-(* The only difference is the reflection rule. *)
+(* The only difference is the reflection rule (and the absence of axioms). *)
 | eRef   : forall Γ p A u v          , Γ ⊢ p : Eq A u v -> Γ ⊢ u ≡ v
 where "Γ ⊢ u ≡ v" := (eq Γ u v) : UT_scope.
 
