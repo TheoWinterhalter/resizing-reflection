@@ -20,6 +20,7 @@ Inductive Term : Set :=
 (* We also add two axioms required by the translation. *)
 | axType : forall (p : Term), Term
 | apΠ    : forall (A B1 B2 : Term), Term
+| funext : forall (A B f g : Term), Term
 .
 
 Notation "# v" := (Var v) (at level 1) : UT_scope.
@@ -49,6 +50,8 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T}
                            (u ↑ n # k) (t2 ↑ n # k) (p ↑ n # k)
      | axType p => axType (p ↑ n # k)
      | apΠ A B1 B2 => apΠ (A ↑ n # k) (B1 ↑ n # (S k)) (B2 ↑ n # (S k))
+     | funext A B f g =>
+       funext (A ↑ n # k) (B ↑ n # (S k)) (f ↑ n # k) (g ↑ n # k)
      end  
 where "t ↑ n # k" := (lift_rec n k t) : UT_scope.
 
@@ -78,6 +81,8 @@ Fixpoint subst_rec u t n {struct t} :=
                         (u [ n ← u ]) (t2 [ n ← u ]) (p [ n ← u ])
   | axType p => axType (p [ n ← u ])
   | apΠ A B1 B2 => apΠ (A [ n ← u ]) (B1 [ S n ← u ]) (B2 [ S n ← u ])
+  | funext A B f g =>
+    funext (A [ n ← u ]) (B [ S n ← u ]) (f [ n ← u ]) (g [ n ← u ])
   end
 where " t [ n ← u ] " := (subst_rec u t n) : UT_scope.
 
@@ -146,8 +151,12 @@ typ : Env -> Term -> Term -> Prop :=
                                   A :: Γ ⊢ B1 : !t ->
                                   A :: Γ ⊢ B2 : !t ->
                                   Γ ⊢ apΠ A B1 B2 :
-                                    Π (Π A (Eq !t B1 B2))
-                                      (Eq !tt (Π A B1) (Π A B2))
+                                    (Π A (Eq !t B1 B2)) ⇒
+                                    (Eq !tt (Π A B1) (Π A B2))
+| FunExt : forall Γ A B f g          , Γ ⊢ f : Π A B -> Γ ⊢ g : Π A B ->
+                                  Γ ⊢ funext A B f g :
+                                    (Π A (Eq B ((f ↑) · #0) ((g ↑) · #0))) ⇒
+                                    (Eq (Π A B) f g)
 where "Γ ⊢ t : T" := (typ Γ t T) : UT_scope
 with
 eq : Env -> Term -> Term -> Prop :=
