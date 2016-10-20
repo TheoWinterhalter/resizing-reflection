@@ -7,3 +7,4 @@
 * **quotient**: My own implementation of quotient with resizing rules as axioms
 * **texreport**: Trying to add RRe in a mini-CoC
 * **squash**: Trying to justify a squash resizing rule basically
+* **reform**: Formalization of the translation between MLTT + reflection and MLTT + axioms
