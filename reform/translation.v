@@ -91,9 +91,22 @@ where "t ≃ u @ E" := (equiv E t u).
 Notation "t ~ u" := (t ≃ u @ nil).
 
 (* Now let's see how such terms relate. *)
-(* Lemma equiv_equal : *)
-(*   forall Γ t1 t2 T1 T2, *)
-(*     Γ ⊢ t1 : T1 -> Γ ⊢ t2 : T2 -> t1 ~ t2 -> *)
-(*     exists p, Γ ⊢ p : (* We need Σ-types... *) *)
+Lemma equiv_equal_gen :
+  forall E Γ,
+    (forall x y, In (x,y) E ->
+            exists s A1 A2 q, Γ ⊢ q : Eq (Σ !s #0) ⟨ A1 , #x ⟩ ⟨ A2 , #y ⟩) ->
+    forall t1 t2 T1 T2 s,
+      Γ ⊢ T1 : !s -> Γ ⊢ T2 : !s ->
+      Γ ⊢ t1 : T1 -> Γ ⊢ t2 : T2 -> t1 ≃ t2 @ E ->
+      exists p, Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩.
+Proof.
+Admitted.
+
+Lemma equiv_equal :
+  forall Γ t1 t2 T1 T2 s,
+    Γ ⊢ T1 : !s -> Γ ⊢ T2 : !s ->
+    Γ ⊢ t1 : T1 -> Γ ⊢ t2 : T2 -> t1 ~ t2 ->
+    exists p, Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩.
+Admitted.
 
 
