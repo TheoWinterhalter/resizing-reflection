@@ -93,13 +93,22 @@ Notation "t ~ u" := (t ≃ u @ nil).
 (* Now let's see how such terms relate. *)
 Lemma equiv_equal_gen :
   forall E Γ,
-    (forall x y, In (x,y) E ->
-            exists s A1 A2 q, Γ ⊢ q : Eq (Σ !s #0) ⟨ A1 , #x ⟩ ⟨ A2 , #y ⟩) ->
+    (forall x y, In (x,y) E -> forall s A1 A2,
+                      Γ ⊢ A1 : !s -> Γ ⊢ A2 : !s ->
+                      Γ ⊢ #x : A1 -> Γ ⊢ #y : A2 ->
+            exists q, Γ ⊢ q : Eq (Σ !s #0) ⟨ A1 , #x ⟩ ⟨ A2 , #y ⟩) ->
     forall t1 t2 T1 T2 s,
       Γ ⊢ T1 : !s -> Γ ⊢ T2 : !s ->
       Γ ⊢ t1 : T1 -> Γ ⊢ t2 : T2 -> t1 ≃ t2 @ E ->
       exists p, Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩.
 Proof.
+  intros E Γ h t1 t2 T1 T2 s hT1 hT2 ht1 ht2 sim.
+  induction sim.
+  - destruct (h x y H s T1 T2 hT1 hT2 ht1 ht2) as (p & hyp).
+    exists p. exact hyp.
+  - admit. (* reflexevity isn't quite right, we need more to go on... *)
+  - admit. (* we have to build the corresponding terms... *)
+  - admit.
 Admitted.
 
 Lemma equiv_equal :
@@ -107,6 +116,10 @@ Lemma equiv_equal :
     Γ ⊢ T1 : !s -> Γ ⊢ T2 : !s ->
     Γ ⊢ t1 : T1 -> Γ ⊢ t2 : T2 -> t1 ~ t2 ->
     exists p, Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩.
-Admitted.
+Proof.
+  intros Γ t1 t2 T1 T2 s hT1 hT2 ht1 ht2 sim.
+  apply (equiv_equal_gen nil) ; auto.
+  intros x y abs. inversion abs.
+Defined.
 
 
