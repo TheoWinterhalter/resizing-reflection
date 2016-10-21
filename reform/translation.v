@@ -90,6 +90,28 @@ where "t ≃ u @ E" := (equiv E t u).
 
 Notation "t ~ u" := (t ≃ u @ nil).
 
+(* Unicity of typing (for variables at least) *)
+Lemma unicity_type_var :
+  forall Γ x A B, Γ ⊢ #x : A -> Γ ⊢ #x : B -> A = B.
+Proof.
+  intros Γ x A B h1 h2.
+  inversion h1 ; inversion h2.
+  - inversion H2. inversion H7.
+    destruct H9. destruct H10.
+    assert (forall x Γ, x0 ↓ x ∈ Γ -> x1 ↓ x ∈ Γ -> x0 = x1).
+    { induction x2 ; intros G hyp1 hyp2.
+      - induction G ; inversion hyp1. now inversion hyp2.
+      - induction G ; inversion hyp1. inversion hyp2.
+        apply (IHx2 G) ; auto.
+    }
+    assert (x0 = x1).
+    { apply (H13 x Γ) ; eauto. }
+    rewrite H9. rewrite H10.
+    now rewrite H14.
+  - subst.
+Abort.
+
+
 (* Now let's see how such terms relate. *)
 Lemma equiv_equal_gen :
   forall E Γ,
