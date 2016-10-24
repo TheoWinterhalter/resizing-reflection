@@ -140,7 +140,12 @@ Proof.
   induction sim.
   - destruct (h x y H s T1 T2 hT1 hT2 ht1 ht2) as (p & hyp).
     exists p. exact hyp.
-  - admit. (* reflexevity isn't quite right, we need more to go on... *)
+  - assert (eq : Γ ⊢ T1 ≡ T2).
+    { apply (unicity_type_var _ x) ; easy. }
+    exists (refle ⟨ T1, # x ⟩). eapply Cnv.
+    Focus 2. apply crefle. admit. (* Forgot sigma typing rules... *)
+    + admit.
+    + admit.
   - admit. (* we have to build the corresponding terms... *)
   - admit.
 Admitted.
