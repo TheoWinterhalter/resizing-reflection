@@ -143,9 +143,54 @@ Proof.
   - assert (eq : Γ ⊢ T1 ≡ T2).
     { apply (unicity_type_var _ x) ; easy. }
     exists (refle ⟨ T1, # x ⟩). eapply Cnv.
-    Focus 2. apply crefle. admit. (* Forgot sigma typing rules... *)
-    + admit.
-    + admit.
+    Focus 2. apply crefle. apply cPair. exact hT1.
+    assert (pr : Γ ⊢ #x : (#0) [← T1]).
+    { simpl. now rewrite subst0. }
+    exact pr.
+    + apply eEq.
+      * case s. intro n. eapply eRefl.
+        { apply cΣ.
+          - apply (@cSort _ (U n) (U (S n))).
+            + eapply wf_typ. exact ht1.
+            + apply Ax0. auto.
+          - apply cVar.
+            + apply (@wf_cons _ _ (U (S n))).
+              apply cSort. eapply wf_typ. exact ht1.
+              apply Ax0. auto.
+            + exists (! (U n)). split.
+              * reflexivity.
+              * apply item_hd.
+        }
+      * eapply eRefl. apply cPair. exact hT1.
+        assert (pr : Γ ⊢ #x : (#0) [← T1]).
+        { simpl. now rewrite subst0. }
+        exact pr.
+      * { apply ePair.
+          - exact eq.
+          - eapply eRefl. exact ht1.
+        }
+    + induction s. apply cEq.
+      * (* { apply cΣ.
+          - apply (@cSort _ (U n) (U (S n))).
+            + eapply wf_typ. exact ht1.
+            + apply Ax0. auto.
+          - apply cVar.
+            + apply (@wf_cons _ _ (U (S n))).
+              apply cSort. eapply wf_typ. exact ht1.
+              apply Ax0. auto.
+            + exists (! (U n)). split.
+              * reflexivity.
+              * apply item_hd.
+         } *)
+        admit. (* Scope problem, wtf... *)
+      * { apply cPair.
+          - exact hT1.
+          - simpl. now rewrite subst0.
+        }
+      * { apply cPair.
+          - exact hT2.
+          - simpl. now rewrite subst0.
+        }
   - admit. (* we have to build the corresponding terms... *)
   - admit.
 Admitted.

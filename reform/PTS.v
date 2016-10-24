@@ -151,6 +151,10 @@ typ : Env -> Term -> Term -> Prop :=
 | cλ     : forall Γ A B s s' s'' M   , Rel s s' s'' -> Γ ⊢ A : !s -> A::Γ ⊢ B : !s' ->
                                   A :: Γ ⊢ M : B -> Γ ⊢ λ A M : Π  A B
 | cApp   : forall Γ M N A B          , Γ ⊢ M : Π A B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[← N]
+| cΣ : forall Γ A B i j, Γ ⊢ A : !(U i) -> A::Γ ⊢ B : !(U j) -> Γ ⊢ Σ A B : !(U (max i j))
+| cPair : forall Γ M N A B, Γ ⊢ M : A -> Γ ⊢ N : B [←M] -> Γ ⊢ ⟨M,N⟩ : Σ A B
+| cπ1 : forall Γ M A B, Γ ⊢ M : Σ A B -> Γ ⊢ π1 M : A
+| cπ2 : forall Γ M A B, Γ ⊢ M : Σ A B -> Γ ⊢ π2 M : B[← π1 M]
 | cEq    : forall Γ A t1 t2 s        , Γ ⊢ A : !s -> Γ ⊢ t1 : A -> Γ ⊢ t2 : A ->
                                   Γ ⊢ Eq A t1 t2 : !s
 | crefle : forall Γ t A              , Γ ⊢ t : A -> Γ ⊢ refle t : Eq A t t
@@ -182,6 +186,12 @@ eq : Env -> Term -> Term -> Prop :=
                                   Γ ⊢ Π A1 B1 ≡ Π A2 B2
 | eλ     : forall Γ A1 A2 t1 t2      , Γ ⊢ A1 ≡ A2 -> A1 :: Γ ⊢ t1 ≡ t2 ->
                                   Γ ⊢ λ A1 t1 ≡ λ A2 t2
+| eΣ      : forall Γ A1 A2 B1 B2      , Γ ⊢ A1 ≡ A2 -> A1 :: Γ ⊢ B1 ≡ B2 ->
+                                  Γ ⊢ Π A1 B1 ≡ Π A2 B2
+| ePair : forall Γ u1 u2 t1 t2     , Γ ⊢ u1 ≡ u2 -> Γ ⊢ t1 ≡ t2 ->
+                                  Γ ⊢ ⟨u1,t1⟩ ≡ ⟨u2,t2⟩
+| eπ1    : forall Γ t u, Γ ⊢ t ≡ u -> Γ ⊢π1 t ≡ π1 u
+| eπ2    : forall Γ t u, Γ ⊢ t ≡ u -> Γ ⊢π2 t ≡ π2 u
 | eEq    : forall Γ A1 A2 t1 t2 u1 u2, Γ ⊢ A1 ≡ A2 -> Γ ⊢ t1 ≡ t2 -> Γ ⊢ u1 ≡ u2 ->
                                   Γ ⊢ Eq A1 t1 u1 ≡ Eq A2 t2 u2
 | erefle : forall Γ t1 t2            , Γ ⊢ t1 ≡ t2 -> Γ ⊢ refle t1 ≡ refle t2
