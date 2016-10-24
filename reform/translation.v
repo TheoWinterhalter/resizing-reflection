@@ -90,26 +90,36 @@ where "t ≃ u @ E" := (equiv E t u).
 
 Notation "t ~ u" := (t ≃ u @ nil).
 
+(* Inversion of typing for variables *)
+Lemma var_inversion :
+  forall Γ x A, Γ ⊢ #x : A -> exists B, B ↓ x ⊂ Γ /\ Γ ⊢ A ≡ B.
+Proof.
+  intros Γ x A h.
+  induction h.
+  (* It would be nice to be able to do an induction that doesn't come up with
+     another x... There are only two possible cases, how do we tell it to coq? *)
+Admitted.
+
 (* Unicity of typing (for variables at least) *)
 Lemma unicity_type_var :
   forall Γ x A B, Γ ⊢ #x : A -> Γ ⊢ #x : B -> Γ ⊢ A ≡ B.
 Proof.
   intros Γ x A B h1 h2.
-  (* induction h1 ; induction h2. *) (* Cleaner but too many cases *)
-  inversion h1 ; inversion h2 ; subst.
-  - inversion H2. inversion H7.
-    destruct H. destruct H1.
-    assert (forall x Γ, x0 ↓ x ∈ Γ -> x1 ↓ x ∈ Γ -> x0 = x1).
-    { induction x2 ; intros G hyp1 hyp2.
-      - induction G ; inversion hyp1. now inversion hyp2.
-      - induction G ; inversion hyp1. inversion hyp2.
-        apply (IHx2 G) ; auto.
-    }
-    assert (x0 = x1).
-    { apply (H6 x Γ) ; eauto. }
-    rewrite H. rewrite H1. rewrite H8.
-    (* We actually forgot the equivalence rules for equality! *)
-Abort.
+  destruct (var_inversion Γ x A h1) as (A' & h11 & h12).
+  destruct (var_inversion Γ x B h2) as (B' & h21 & h22).
+  inversion h11 as (A'' & Aeq & Actx).
+  inversion h21 as (B'' & Beq & Bctx).
+  assert (h : forall y Γ, A'' ↓ y ∈ Γ -> B'' ↓ y ∈ Γ -> A'' = B'').
+  { induction y ; intros G hyp1 hyp2.
+    - induction G ; inversion hyp1. now inversion hyp2.
+    - induction G ; inversion hyp1. inversion hyp2.
+      apply (IHy G) ; auto.
+  }
+  assert (eq : A'' = B'').
+  { apply (h x Γ) ; auto. }
+  subst.
+  (* Now we need the equivalence rules of conversion. *)
+Admitted.
 
 
 (* Now let's see how such terms relate. *)
