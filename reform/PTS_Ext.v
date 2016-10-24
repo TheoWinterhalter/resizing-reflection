@@ -153,6 +153,10 @@ eq : Env -> Term -> Term -> Prop :=
 | eJβ    : forall Γ A P M N          , Γ ⊢ J A P M N M (refle M) ≡ N
 (* The only difference is the reflection rule (and the absence of axioms). *)
 | eRef   : forall Γ p A u v          , Γ ⊢ p : Eq A u v -> Γ ⊢ u ≡ v
+(* Equivalence rules *)
+| eRefl  : forall Γ M T, Γ ⊢ M : T -> Γ ⊢ M ≡ M
+| eSym   : forall Γ M N, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ M
+| eTrans : forall Γ M N U, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ U -> Γ ⊢ M ≡ U
 where "Γ ⊢ u ≡ v" := (eq Γ u v) : UT_scope.
 
 Hint Constructors wf typ eq.

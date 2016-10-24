@@ -118,8 +118,10 @@ Proof.
   assert (eq : A'' = B'').
   { apply (h x Γ) ; auto. }
   subst.
-  (* Now we need the equivalence rules of conversion. *)
-Admitted.
+  eapply eTrans.
+  - exact h12.
+  - now apply eSym.
+Qed.
 
 
 (* Now let's see how such terms relate. *)

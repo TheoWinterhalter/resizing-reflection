@@ -190,6 +190,10 @@ eq : Env -> Term -> Term -> Prop :=
                                   Γ ⊢ t1 ≡ t2 -> Γ ⊢ v1 ≡ v2 -> Γ ⊢ p1 ≡ p2 ->
                                   Γ ⊢ J A1 P1 t1 u1 v1 p1 ≡ J A2 P2 t2 u2 v2 p2
 | eJβ    : forall Γ A P M N          , Γ ⊢ J A P M N M (refle M) ≡ N
+(* Equivalence rules *)
+| eRefl  : forall Γ M T, Γ ⊢ M : T -> Γ ⊢ M ≡ M
+| eSym   : forall Γ M N, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ M
+| eTrans : forall Γ M N U, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ U -> Γ ⊢ M ≡ U
 where "Γ ⊢ u ≡ v" := (eq Γ u v) : UT_scope.
 
 Hint Constructors wf typ eq.
