@@ -222,4 +222,42 @@ Proof.
   intros x y abs. inversion abs.
 Defined.
 
+Lemma equiv_subst :
+  forall t1 t2, t1 ~ t2 ->
+  forall u1 u2 n,
+  u1 ~ u2 -> t1[n ← u1] ~ t2[n ← u2].
+Proof.
+  intros t1 t2 ht.
+  induction ht ; intros iu1 iu2 n hu.
+  - inversion H.
+  - simpl. destruct (lt_eq_lt_dec x n) ; simpl.
+    + destruct s.
+      * apply EquivVar.
+      * admit. (* We probably need some lemma here *)
+    + apply EquivVar.
+  - admit. (* We need a lemma for subst over transport! *)
+  - admit. (* Same case basically. *)
+  - simpl. apply EquivApp.
+    + now apply IHht1.
+    + now apply IHht2.
+  - simpl. apply Equivλ.
+    + now apply IHht1.
+    + now apply IHht2.
+  - simpl. apply EquivΠ.
+    + now apply IHht1.
+    + now apply IHht2.
+  - simpl. apply EquivEq.
+    + now apply IHht1.
+    + now apply IHht2.
+    + now apply IHht3.
+  - simpl. apply EquivRfl.
+    now apply IHht.
+  - simpl. apply EquivJ.
+    + now apply IHht1.
+    + now apply IHht2.
+    + now apply IHht3.
+    + now apply IHht4.
+    + now apply IHht5.
+    + now apply IHht6.
+Admitted.
 
