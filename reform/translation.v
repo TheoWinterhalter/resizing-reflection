@@ -294,6 +294,14 @@ Proof.
   now apply equiv_lift.
 Qed.
 
+Lemma transport_subst :
+  forall s A B p n u,
+  (transport s A B p) [n ← u] = transport s (A [n ← u]) (B [n ← u]) (p  [n ← u]).
+Proof.
+  intros s A B p n u.
+  unfold transport. simpl. f_equal. f_equal.
+Abort. (* Something weird happens with the substitution... *)
+
 Lemma equiv_subst :
   forall t1 t2, t1 ~ t2 ->
   forall u1 u2 n,
