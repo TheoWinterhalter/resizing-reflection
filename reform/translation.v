@@ -28,8 +28,24 @@ Definition transport (s : Sorts) (A B p : Term) : Term :=
   λ A (J !s #0 (A ↑) #0 (B ↑) (p ↑)).
 (* Notation "p ⋆ a" := ((transport ? ? ? p) · a) *)
 
-Lemma subst0 : forall t n, t ↑ 0 # n = t.
-Admitted.
+Lemma lift_rec0 : forall M n, M ↑ 0 # n = M.
+Proof.
+  induction M; intros; simpl ;
+  try reflexivity ;
+  try (rewrite IHM ; reflexivity) ;
+  try (rewrite IHM1 ; rewrite IHM2 ; reflexivity) ;
+  try (rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; reflexivity).
+  - destruct (le_gt_dec n v); reflexivity.
+  - rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; rewrite IHM4 ;
+    rewrite IHM5 ; rewrite IHM6 ; reflexivity.
+  - rewrite IHM1 ; rewrite IHM2 ; rewrite IHM3 ; rewrite IHM4 ;
+    reflexivity.
+Qed.
+
+Lemma lift0 : forall M, M ↑ 0 = M.
+Proof.
+  intros; apply lift_rec0.
+Qed.
 
 Lemma transport_typ :
   forall Γ s A B p,
@@ -45,7 +61,7 @@ Proof.
   - cut (
       A :: Γ ⊢ J !(U n) #0 (A ↑) #0 (B ↑) (p ↑) : (#0)[← B ↑]
     ).
-    + simpl. rewrite subst0. auto.
+    + simpl. rewrite lift0. auto.
     + eapply cJ.
       * { apply cVar.
           - eapply wf_cons. apply cSort.
@@ -55,7 +71,7 @@ Proof.
               + simpl. auto.
               + apply item_hd.
         }
-      * simpl. rewrite subst0.
+      * simpl. rewrite lift0.
         { apply cVar.
           - eapply wf_cons. exact hA.
           - exists A ; split ; auto.
@@ -145,7 +161,7 @@ Proof.
     exists (refle ⟨ T1, # x ⟩). eapply Cnv.
     Focus 2. apply crefle. apply cPair. exact hT1.
     assert (pr : Γ ⊢ #x : (#0) [← T1]).
-    { simpl. now rewrite subst0. }
+    { simpl. now rewrite lift0. }
     exact pr.
     + apply eEq.
       * case s. intro n. eapply eRefl.
@@ -163,7 +179,7 @@ Proof.
         }
       * eapply eRefl. apply cPair. exact hT1.
         assert (pr : Γ ⊢ #x : (#0) [← T1]).
-        { simpl. now rewrite subst0. }
+        { simpl. now rewrite lift0. }
         exact pr.
       * { apply ePair.
           - exact eq.
@@ -185,11 +201,11 @@ Proof.
         admit. (* Scope problem, wtf... *)
       * { apply cPair.
           - exact hT1.
-          - simpl. now rewrite subst0.
+          - simpl. now rewrite lift0.
         }
       * { apply cPair.
           - exact hT2.
-          - simpl. now rewrite subst0.
+          - simpl. now rewrite lift0.
         }
   - admit. (* we have to build the corresponding terms... *)
   - admit.
