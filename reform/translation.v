@@ -222,6 +222,45 @@ Proof.
   intros x y abs. inversion abs.
 Defined.
 
+Lemma equiv_lift :
+  forall u v, u ~ v -> forall n k, u ↑ n # k ~ v ↑ n # k.
+Proof.
+  intros u v h. induction h ; intros n k.
+  - inversion H.
+  - simpl. destruct (le_gt_dec k x) ; simpl ; apply EquivVar.
+  - admit. (* We need stability for transport. *)
+  - admit. (* Same here. *)
+  - simpl. apply EquivApp.
+    + now apply IHh1.
+    + now apply IHh2.
+  - simpl. apply Equivλ.
+    + now apply IHh1.
+    + now apply IHh2.
+  - simpl. apply EquivΠ.
+    + now apply IHh1.
+    + now apply IHh2.
+  - simpl. apply EquivEq.
+    + now apply IHh1.
+    + now apply IHh2.
+    + now apply IHh3.
+  - simpl. apply EquivRfl.
+    now apply IHh.
+  - simpl. apply EquivJ.
+    + now apply IHh1.
+    + now apply IHh2.
+    + now apply IHh3.
+    + now apply IHh4.
+    + now apply IHh5.
+    + now apply IHh6.
+Admitted.
+
+Lemma equiv_lift0 :
+  forall u v, u ~ v -> forall n, u ↑ n ~ v ↑ n.
+Proof.
+  intros u v h n.
+  now apply equiv_lift.
+Qed.
+
 Lemma equiv_subst :
   forall t1 t2, t1 ~ t2 ->
   forall u1 u2 n,
@@ -233,7 +272,7 @@ Proof.
   - simpl. destruct (lt_eq_lt_dec x n) ; simpl.
     + destruct s.
       * apply EquivVar.
-      * admit. (* We probably need some lemma here *)
+      * now apply equiv_lift0.
     + apply EquivVar.
   - admit. (* We need a lemma for subst over transport! *)
   - admit. (* Same case basically. *)
