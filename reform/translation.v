@@ -222,14 +222,47 @@ Proof.
   intros x y abs. inversion abs.
 Defined.
 
+Lemma liftP2: forall M i j k n, i <= n ->
+  (M ↑ j # i) ↑ k # (j+n) = (M ↑ k # n) ↑ j # i.
+Admitted. (* This comes from Siles work and should hold. *)
+
+Lemma pre_lift_lift0 :
+  forall A n k, (A ↑ 1 # 0) ↑ n # (1 + k) = (A ↑ n # k) ↑ 1 # 0.
+Proof.
+  intros A n k.
+  apply liftP2. intuition.
+Qed.
+
+Lemma lift_lift0 :
+  forall A n k, (A ↑) ↑ n # (S k) = (A ↑ n # k) ↑.
+Proof.
+  intros A n k.
+  apply pre_lift_lift0.
+Qed.
+
+Lemma transport_lift :
+  forall s A B p n k,
+  (transport s A B p) ↑ n # k = transport s (A ↑ n # k) (B ↑ n # k) (p  ↑ n # k).
+Proof.
+  intros s A B p n k.
+  unfold transport. simpl.
+  f_equal. f_equal ; apply lift_lift0.
+Qed.
+
+Lemma app_lift :
+  forall t u n k, (t · u) ↑ n # k = (t ↑ n # k) · (u ↑ n # k).
+Proof.
+  intros ; simpl ; reflexivity.
+Qed.
+
 Lemma equiv_lift :
   forall u v, u ~ v -> forall n k, u ↑ n # k ~ v ↑ n # k.
 Proof.
   intros u v h. induction h ; intros n k.
   - inversion H.
   - simpl. destruct (le_gt_dec k x) ; simpl ; apply EquivVar.
-  - admit. (* We need stability for transport. *)
-  - admit. (* Same here. *)
+  - rewrite app_lift. rewrite transport_lift. now apply EquivTL.
+  - rewrite app_lift. rewrite transport_lift. now apply EquivTR.
   - simpl. apply EquivApp.
     + now apply IHh1.
     + now apply IHh2.
@@ -252,7 +285,7 @@ Proof.
     + now apply IHh4.
     + now apply IHh5.
     + now apply IHh6.
-Admitted.
+Qed.
 
 Lemma equiv_lift0 :
   forall u v, u ~ v -> forall n, u ↑ n ~ v ↑ n.
