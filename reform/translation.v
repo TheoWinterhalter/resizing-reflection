@@ -307,6 +307,12 @@ Proof.
   apply substP2 ; intuition.
 Qed.
 
+Lemma app_subst :
+  forall t u n v, (t · u) [n ← v] = (t [n ← v]) · (u [n ← v]).
+Proof.
+  auto.
+Qed.
+
 Lemma equiv_subst :
   forall t1 t2, t1 ~ t2 ->
   forall u1 u2 n,
@@ -320,8 +326,8 @@ Proof.
       * apply EquivVar.
       * now apply equiv_lift0.
     + apply EquivVar.
-  - admit. (* We need a lemma for subst over transport! *)
-  - admit. (* Same case basically. *)
+  - rewrite app_subst. rewrite transport_subst. apply EquivTL. now apply IHht.
+  - rewrite app_subst. rewrite transport_subst. apply EquivTR. now apply IHht.
   - simpl. apply EquivApp.
     + now apply IHht1.
     + now apply IHht2.
@@ -344,5 +350,5 @@ Proof.
     + now apply IHht4.
     + now apply IHht5.
     + now apply IHht6.
-Admitted.
+Qed.
 
