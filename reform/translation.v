@@ -294,13 +294,18 @@ Proof.
   now apply equiv_lift.
 Qed.
 
+Lemma substP2: forall M N i j n, i <= n ->
+  (M ↑ j # i ) [ j+n ← N ] = ( M [ n ← N]) ↑ j # i.
+Admitted. (* From Siles. *)
+
 Lemma transport_subst :
   forall s A B p n u,
   (transport s A B p) [n ← u] = transport s (A [n ← u]) (B [n ← u]) (p  [n ← u]).
 Proof.
   intros s A B p n u.
-  unfold transport. simpl. f_equal. f_equal.
-Abort. (* Something weird happens with the substitution... *)
+  unfold transport. simpl. f_equal. f_equal ;
+  apply substP2 ; intuition.
+Qed.
 
 Lemma equiv_subst :
   forall t1 t2, t1 ~ t2 ->
