@@ -294,15 +294,6 @@ Proof.
   now apply equiv_lift.
 Qed.
 
-(* Some rewriting lemmata to understand more *)
-Lemma λsubst : forall A t n u, (λ A t) [n ← u] = λ (A[n ← u]) (t[S n ← u]).
-Proof.
-  intros A t n u. reflexivity.
-Qed.
-
-(* Lemma Jsubst : forall A P t1 u t2 p n v,
-  (J A P t1 u t2 p) [n ← v] = J (A [n ← v])  *)
-
 Lemma transport_subst :
   forall s A B p n u,
   (transport s A B p) [n ← u] = transport s (A [n ← u]) (B [n ← u]) (p  [n ← u]).

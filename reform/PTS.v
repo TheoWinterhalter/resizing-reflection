@@ -91,8 +91,8 @@ Fixpoint subst_rec u t n {struct t} :=
   | π2 M => π2 (M [ n ← u ])
   | Eq A t1 t2 => Eq (A [ n ← u ]) (t1 [ n ← u ]) (t2 [ n ← u ])
   | refle t => refle (t [ n ← u ])
-  | J A P t1 u t2 p => J (A [ n ← u ]) (P [ S n ← u ]) (t1 [ n ← u ])
-                        (u [ n ← u ]) (t2 [ n ← u ]) (p [ n ← u ])
+  | J A P t1 v t2 p => J (A [ n ← u ]) (P [ S n ← u ]) (t1 [ n ← u ])
+                        (v [ n ← u ]) (t2 [ n ← u ]) (p [ n ← u ])
   | axType p => axType (p [ n ← u ])
   | apΠ A B1 B2 => apΠ (A [ n ← u ]) (B1 [ S n ← u ]) (B2 [ S n ← u ])
   | funext A B f g =>
