@@ -359,19 +359,33 @@ Inductive ctx_trans : Env -> S.Env -> Prop :=
 .
 
 (* And for term typing *)
-Inductive trans : (Env * Term * Term) -> (S.Env * S.Term * S.Term) -> Prop :=
-| trans_def : forall Γ a A Δ b B, ctx_trans Γ Δ -> ι b ~ a -> ι B ~ A -> trans (Γ,a,A) (Δ,b,B)
-.
+Definition trans Γ a A Δ b B : Prop :=
+  ctx_trans Γ Δ /\
+    ι b ~ a /\
+    ι B ~ A.
 
 (* The next lemma is supposed to say that we can always chose a translation with a type
    having the same head constructor. This has to be divided in several lemmata, one for each
    type of constructor. *)
 
 Lemma trans_Π :
-  forall Γ a A1 A2 Δ b B, trans (Γ,a,Π A1 A2) (Δ,b,B) ->
-  exists B1 B2 c, trans (Γ,a,Π A1 A2) (Δ,c,S.Π B1 B2).
+  forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
+  exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
 Proof.
   intros Γ a A1 A2 Δ b B h.
+  destruct h as (h1 & h2 & h3).
+
+(*   dependent induction.
+
+  pose (Π A1 A2) as S.
+
+
+  exact equiv_ind.
+  refine (equiv_ind nil 
+
+  induction h3.
+  - inversion H.
+  -  *)
 Abort.
 
 
