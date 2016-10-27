@@ -8,7 +8,7 @@ Require Import Coq.Program.Equality.
 Require Sorts PTS PTS_Ext.
 Module S := PTS_Ext.
 Module T := PTS.
-Import T Sorts Sorts.withoutProp.
+Import S T Sorts Sorts.withoutProp.
 
 (* We first would like to express an equivalence between terms that can either
    be in S or in T. If we only look at the terms, then S is included in T. *)
@@ -401,6 +401,19 @@ Proof.
   exists C1. exists C2. repeat split ; now inversion h.
 Qed.
 
+Delimit Scope Ext_scope with Ext.
+
+Lemma ι_inv_transport :
+  forall s A B p t C, (transport s A B p) · t = ι C ->
+  exists (A' B' p' t' : S.Term),
+    C = ((S.λ A' (S.J !s #0 (A' ↑) #0 (B' ↑) (p' ↑))) · t')%Ext /\
+       ι A' = A /\ ι B' = B /\ ι p' = p /\ ι t' = t.
+Proof.
+  intros s A B p t C h.
+(*   induction C ; simpl in h ; try discriminate. *)
+  (* Probably better to just rely on the other inversion lemmata *)
+Admitted.
+
 Lemma trans_Π :
   forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
   exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
@@ -409,7 +422,10 @@ Proof.
   destruct h as (h1 & h2 & h3 & h4 & h5).
 
   dependent induction h3.
-  - admit.
+  - destruct (ι_inv_transport _ _ _ _ _ _ x) as (A' & B' & p' & t' & eq1 & eq2 & eq3 & eq4 & eq5).
+    assert (eq5' : t1 = ι t') by intuition.
+    pose (IHh3 A1 A2 t' h1 h2 eq5' eq_refl h4).
+    admit. (* Something is wrong? *)
   - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
     exists B0. exists B2.
     exists b.

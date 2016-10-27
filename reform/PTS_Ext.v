@@ -19,11 +19,11 @@ Inductive Term : Set :=
 | J : forall (A P M1 N M2 p : Term), Term
 .
 
-Notation "# v" := (Var v) (at level 1) : UT_scope.
-Notation "! s" := (Sort s) (at level 1) : UT_scope.
-Notation "x · y" := (App x y) (at level 15, left associativity) : UT_scope.
-Delimit Scope UT_scope with UT. 
-Open Scope UT_scope.
+Notation "# v" := (Var v) (at level 1) : Ext_scope.
+Notation "! s" := (Sort s) (at level 1) : Ext_scope.
+Notation "x · y" := (App x y) (at level 15, left associativity) : Ext_scope.
+Delimit Scope Ext_scope with Ext.
+Open Scope Ext_scope.
 
 
 Reserved Notation " t ↑ x # n " (at level 5, x at level 0, left associativity).
@@ -45,10 +45,10 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T}
      | J A P t1 u t2 p => J (A ↑ n # k) (P ↑ n # (S k)) (t1 ↑ n # k)
                            (u ↑ n # k) (t2 ↑ n # k) (p ↑ n # k)
      end  
-where "t ↑ n # k" := (lift_rec n k t) : UT_scope.
+where "t ↑ n # k" := (lift_rec n k t) : Ext_scope.
 
-Notation " t ↑ n " := (lift_rec n 0 t) (at level 5, n at level 0, left associativity) : UT_scope.
-Notation " t ↑ " := (lift_rec 1 0 t) (at level 5, left associativity) : UT_scope.
+Notation " t ↑ n " := (lift_rec n 0 t) (at level 5, n at level 0, left associativity) : Ext_scope.
+Notation " t ↑ " := (lift_rec 1 0 t) (at level 5, left associativity) : Ext_scope.
 
 (** We will consider the usual implicit substitution without variable capture
 (this is where the lift operator comes in handy).
@@ -72,9 +72,9 @@ Fixpoint subst_rec u t n {struct t} :=
   | J A P t1 v t2 p => J (A [ n ← u ]) (P [ S n ← u ]) (t1 [ n ← u ])
                         (v [ n ← u ]) (t2 [ n ← u ]) (p [ n ← u ])
   end
-where " t [ n ← u ] " := (subst_rec u t n) : UT_scope.
+where " t [ n ← u ] " := (subst_rec u t n) : Ext_scope.
 
-Notation " t [ ← u ] " := (subst_rec u t 0) (at level 5) : UT_scope.
+Notation " t [ ← u ] " := (subst_rec u t 0) (at level 5) : Ext_scope.
   
 (** Since we use de Bruijn indexes, Environment (or Context) are
 simply lists of terms:  Γ(x:A) is encoded as  [A::Γ]. *)
@@ -90,7 +90,7 @@ Inductive item (A:Type) (x:A): list A -> nat -> Prop :=
 Hint Constructors item.
 
 (** In the list [Γ], the [n]th item is syntacticaly [x]. *)
-Notation " x ↓ n ∈ Γ " := (item x Γ n) (at level 80, no associativity) : UT_scope.
+Notation " x ↓ n ∈ Γ " := (item x Γ n) (at level 80, no associativity) : Ext_scope.
 
 (** In the list [Γ], [t] is  [n]th element correctly lifted according to [Γ]:
 e.g.: if t ↓ n ⊂ Γ and we insert something in Γ, then 
@@ -100,7 +100,7 @@ Definition item_lift (t:Term) (Γ:Env) (n:nat) :=
   exists u ,  t= u ↑ (S n) /\  u ↓ n ∈ Γ .
 
 Hint Unfold item_lift.
-Notation " t ↓ n ⊂ Γ " := (item_lift t Γ n) (at level 80, no associativity): UT_scope.
+Notation " t ↓ n ⊂ Γ " := (item_lift t Γ n) (at level 80, no associativity): Ext_scope.
 
 (** Typing judgements:*)
 Reserved Notation "Γ ⊢ t : T" (at level 80, t, T at level 30, no associativity).
@@ -115,7 +115,7 @@ Notation "⊥" := empty.
 Inductive wf : Env -> Prop :=
 | wf_nil   : nil ⊣
 | wf_cons : forall Γ A s, Γ ⊢ A : !s -> A::Γ ⊣
-where "Γ ⊣" := (wf Γ) : UT_scope
+where "Γ ⊣" := (wf Γ) : Ext_scope
 with
 typ : Env -> Term -> Term -> Prop :=
 | cVar   : forall Γ A v              , Γ ⊣ -> A ↓ v  ⊂ Γ -> Γ ⊢ #v : A
@@ -132,7 +132,7 @@ typ : Env -> Term -> Term -> Prop :=
                                   Γ ⊢ p : Eq A t1 t2 ->
                                   Γ ⊢ J A P t1 u t2 p : P[← t2]
 | Cnv    : forall Γ M A B s          , Γ ⊢ A ≡ B -> Γ ⊢ M : A -> Γ ⊢ B : !s -> Γ ⊢ M : B
-where "Γ ⊢ t : T" := (typ Γ t T) : UT_scope
+where "Γ ⊢ t : T" := (typ Γ t T) : Ext_scope
 with
 eq : Env -> Term -> Term -> Prop :=
 | eβ     : forall Γ A t u T          , Γ ⊢ (λ A t) · u : T ->
@@ -157,10 +157,10 @@ eq : Env -> Term -> Term -> Prop :=
 | eRefl  : forall Γ M T, Γ ⊢ M : T -> Γ ⊢ M ≡ M
 | eSym   : forall Γ M N, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ M
 | eTrans : forall Γ M N U, Γ ⊢ M ≡ N -> Γ ⊢ N ≡ U -> Γ ⊢ M ≡ U
-where "Γ ⊢ u ≡ v" := (eq Γ u v) : UT_scope.
+where "Γ ⊢ u ≡ v" := (eq Γ u v) : Ext_scope.
 
 Hint Constructors wf typ eq.
-Open Scope UT_scope.
+Open Scope Ext_scope.
 
 Scheme typ_ind' := Induction for typ Sort Prop
 with wf_ind' := Induction for wf Sort Prop
