@@ -368,6 +368,16 @@ Definition trans Γ a A Δ b B : Prop :=
    having the same head constructor. This has to be divided in several lemmata, one for each
    type of constructor. *)
 
+Require Import Coq.Program.Equality.
+
+Lemma ι_inv_Π :
+  forall A B C, Π A B = ι C -> exists A' B', C = S.Π A' B' /\ ι A' = A /\ ι B' = B.
+Proof.
+  intros A B C h.
+  induction C ; simpl in h ; try discriminate.
+  exists C1. exists C2. repeat split ; now inversion h.
+Qed.
+
 Lemma trans_Π :
   forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
   exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
@@ -375,18 +385,18 @@ Proof.
   intros Γ a A1 A2 Δ b B h.
   destruct h as (h1 & h2 & h3).
 
-(*   dependent induction.
-
-  pose (Π A1 A2) as S.
-
-
-  exact equiv_ind.
-  refine (equiv_ind nil 
-
-  induction h3.
-  - inversion H.
-  -  *)
-Abort.
+  dependent induction h3.
+  - admit.
+  - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
+    exists B0. exists B2.
+    exists b. (* We have to change the b. Indeed we forgot to ask for typing. *)
+    repeat split.
+    + exact h1.
+    + exact h2. (* This will have to change. *)
+    + simpl. apply EquivΠ.
+      * now rewrite eq2.
+      * now rewrite eq3.
+Admitted.
 
 
 
