@@ -353,16 +353,25 @@ Proof.
 Qed.
 
 (* We now will be defining what it is to be a translation for a context. *)
-Inductive ctx_trans : Env -> S.Env -> Prop :=
-| trans_nil  : ctx_trans nil nil
-| trans_cons : forall Γ Δ A B, ctx_trans Γ Δ -> ι B ~ A -> ctx_trans (A :: Γ) (B :: Δ)
+Inductive ctx_trans_step : Env -> S.Env -> Prop :=
+| trans_nil  : ctx_trans_step nil nil
+| trans_cons : forall Γ Δ A B, ctx_trans_step Γ Δ -> ι B ~ A -> ctx_trans_step (A :: Γ) (B :: Δ)
+.
+
+Definition ctx_trans Γ Δ :=
+  ctx_trans_step Γ Δ /\
+    Γ ⊣ /\
+  S.wf Δ
 .
 
 (* And for term typing *)
 Definition trans Γ a A Δ b B : Prop :=
   ctx_trans Γ Δ /\
     ι b ~ a /\
-    ι B ~ A.
+    ι B ~ A /\
+    Γ ⊢ a : A /\
+  S.typ Δ b B
+.
 
 (* The next lemma is supposed to say that we can always chose a translation with a type
    having the same head constructor. This has to be divided in several lemmata, one for each
@@ -383,19 +392,20 @@ Lemma trans_Π :
   exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
 Proof.
   intros Γ a A1 A2 Δ b B h.
-  destruct h as (h1 & h2 & h3).
+  destruct h as (h1 & h2 & h3 & h4 & h5).
 
   dependent induction h3.
   - admit.
   - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
     exists B0. exists B2.
-    exists b. (* We have to change the b. Indeed we forgot to ask for typing. *)
-    repeat split.
-    + exact h1.
-    + exact h2. (* This will have to change. *)
+    exists b.
+    split ; try exact h1 ; repeat split.
+    + exact h2.
     + simpl. apply EquivΠ.
       * now rewrite eq2.
       * now rewrite eq3.
+    + exact h4.
+    + now rewrite <- eq1.
 Admitted.
 
 
