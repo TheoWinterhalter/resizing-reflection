@@ -3,6 +3,8 @@ Require Import Peano_dec.
 Require Import Compare_dec.
 Require Import Lt Le Gt.
 
+Require Import Coq.Program.Equality.
+
 Require Sorts PTS PTS_Ext.
 Module S := PTS_Ext.
 Module T := PTS.
@@ -111,9 +113,23 @@ Lemma var_inversion :
   forall Γ x A, Γ ⊢ #x : A -> exists B, B ↓ x ⊂ Γ /\ Γ ⊢ A ≡ B.
 Proof.
   intros Γ x A h.
-  induction h.
-  (* It would be nice to be able to do an induction that doesn't come up with
-     another x... There are only two possible cases, how do we tell it to coq? *)
+  dependent induction h.
+  - exists A. split.
+    + exact H0.
+    + dependent induction Γ.
+      * inversion H0. destruct H1. inversion H2.
+      * { induction x.
+          - inversion H0. destruct H1. inversion H2. subst.
+            inversion H. subst. admit. (* Weakening. *)
+          - inversion H0. destruct H1. inversion H2. subst.
+            admit. (* So annoying, it is obviously true but I need to figure out how. *)
+        }
+  - destruct IHh1 as (B0 & h3 & h4).
+    exists B0. split.
+    + exact h3.
+    + eapply eTrans.
+      * apply eSym. exact H.
+      * exact h4.
 Admitted.
 
 (* Unicity of typing (for variables at least) *)
@@ -376,8 +392,6 @@ Definition trans Γ a A Δ b B : Prop :=
 (* The next lemma is supposed to say that we can always chose a translation with a type
    having the same head constructor. This has to be divided in several lemmata, one for each
    type of constructor. *)
-
-Require Import Coq.Program.Equality.
 
 Lemma ι_inv_Π :
   forall A B C, Π A B = ι C -> exists A' B', C = S.Π A' B' /\ ι A' = A /\ ι B' = B.
