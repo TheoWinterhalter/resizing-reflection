@@ -452,25 +452,52 @@ Lemma ι_inv_lift :
   forall A C n m, A ↑ n # m = ι C ->
   exists A', C = (A' ↑ n # m)%Ext /\ ι A' = A.
 Proof.
-  intros A C n m h.
-  induction A ; induction C ; simpl in h ; try discriminate ;
+  intro A ; induction A ;
+  intro C ; induction C ;
+  intros  n m h ;
+  simpl in h ; try discriminate ;
   try (destruct (le_gt_dec m v) ; discriminate).
   - exists (#v)%Ext. simpl. destruct (le_gt_dec m v) ;
     inversion h ; split ; simpl ; easy.
   - inversion h ; subst. exists (!s0)%Ext. split ; easy.
   - inversion h.
-Abort.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    subst.
+    exists (S.Π A1' A2'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    subst. exists (S.λ A1' A2'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    subst. exists (A1' · A2')%Ext. split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    destruct (IHA3 _ _ _ H2) as (A3' & h31 & h32).
+    subst. exists (S.Eq A1' A2' A3')%Ext. split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA _ _ _ H0) as (A' & h1 & h2).
+    subst. exists (S.refle A'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    destruct (IHA3 _ _ _ H2) as (A3' & h31 & h32).
+    destruct (IHA4 _ _ _ H3) as (A4' & h41 & h42).
+    destruct (IHA5 _ _ _ H4) as (A5' & h51 & h52).
+    destruct (IHA6 _ _ _ H5) as (A6' & h61 & h62).
+    subst. exists (S.J A1' A2' A3' A4' A5' A6'). split ; simpl ; easy.
+Qed.
 
-Lemma ι_inv_lift :
+Lemma ι_inv_lift0 :
   forall A C, A ↑ = ι C ->
   exists A', C = (A' ↑)%Ext /\ ι A' = A.
 Proof.
   intros A C h.
-  induction A ; induction C ; simpl in h ; try discriminate.
-  - exists (#v)%Ext. inversion h. split ; simpl ; easy.
-  - inversion h ; subst. exists (!s0)%Ext. split ; easy.
-  - (* Damn, we need to prove it for any n m... ↑ n # m *)
-Abort.
+  now apply ι_inv_lift.
+Qed.
 
 Lemma ι_inv_transport :
   forall s A B p t C, (transport s A B p) · t = ι C ->
@@ -487,16 +514,23 @@ Proof.
   destruct (ι_inv_J _ _ _ _ _ _ _ h23)
     as (
       C121 & C122 & C123 & C124 & C125 & C126 &
-      h231 & h232' & h233' & h234 & h235' & h236 & h237
+      h231 & h232' & h233' & h234' & h235' & h236' & h237'
     ).
   assert (h232 : !s = ι C121) by easy ; clear h232'.
   assert (h233 : #0 = ι C122) by easy ; clear h233'.
   assert (h235 : #0 = ι C124) by easy ; clear h235'.
+  assert (h234 : A ↑ = ι C123) by easy ; clear h234'.
+  assert (h236 : B ↑ = ι C125) by easy ; clear h236'.
+  assert (h237 : p ↑ = ι C126) by easy ; clear h237'.
   pose proof (ι_inv_sort _ _ h232) as h121.
   pose proof (ι_inv_var _ _ h233) as h122.
   pose proof (ι_inv_var _ _ h235) as h124.
-(*   induction C ; simpl in h ; try discriminate. *)
-  (* Probably better to just rely on the other inversion lemmata *)
+  destruct (ι_inv_lift0 _ _ h234) as (A' & h123 & h123').
+  destruct (ι_inv_lift0 _ _ h236) as (B' & h125 & h125').
+  destruct (ι_inv_lift0 _ _ h237) as (p' & h126 & h126').
+  subst.
+  exists C11, B', p', C2. repeat split ; simpl ; try easy.
+  (* For some reason we need injectivity on h123'... *)
 Admitted.
 
 Lemma trans_Π :
