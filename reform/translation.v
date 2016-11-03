@@ -389,9 +389,11 @@ Definition trans Γ a A Δ b B : Prop :=
   S.typ Δ b B
 .
 
-(* The next lemma is supposed to say that we can always chose a translation with a type
-   having the same head constructor. This has to be divided in several lemmata, one for each
-   type of constructor. *)
+(* The next lemma is supposed to say that we can always chose a translation with
+   a type having the same head constructor. This has to be divided in several
+   lemmata, one for each type of constructor. *)
+
+Delimit Scope Ext_scope with Ext.
 
 Lemma ι_inv_Π :
   forall A B C, Π A B = ι C -> exists A' B', C = S.Π A' B' /\ ι A' = A /\ ι B' = B.
@@ -401,7 +403,61 @@ Proof.
   exists C1. exists C2. repeat split ; now inversion h.
 Qed.
 
-Delimit Scope Ext_scope with Ext.
+Lemma ι_inv_app :
+  forall t u C, t · u = ι C ->
+  exists t' u', C = (t' · u')%Ext /\ ι t' = t /\ ι u' = u.
+Proof.
+  intros t u C h.
+  induction C ; simpl in h ; try discriminate.
+  exists C1. exists C2. repeat split ; now inversion h.
+Qed.
+
+Lemma ι_inv_λ :
+  forall A t C, λ A t = ι C ->
+  exists A' t', C = S.λ A' t' /\ ι A' = A /\ ι t' = t.
+Proof.
+  intros A t C h.
+  induction C ; simpl in h ; try discriminate.
+  exists C1. exists C2. repeat split ; now inversion h.
+Qed.
+
+Lemma ι_inv_J :
+  forall A P M1 N M2 p C, J A P M1 N M2 p = ι C ->
+  exists A' P' M1' N' M2' p', C = S.J A' P' M1' N' M2' p' /\
+                         ι A' = A /\ ι P' = P /\ ι M1' = M1 /\
+                         ι N' = N /\ ι M2' = M2 /\ ι p' = p.
+Proof.
+  intros A P M1 N M2 p C h.
+  induction C ; simpl in h ; try discriminate.
+  exists C1, C2, C3, C4, C5, C6. inversion h. now repeat split.
+Qed.
+
+Lemma ι_inv_sort :
+  forall s C, !s = ι C -> C = (!s)%Ext.
+Proof.
+  intros s C h.
+  induction C ; simpl in h ; try discriminate.
+  now inversion h.
+Qed.
+
+Lemma ι_inv_var :
+  forall n C, #n = ι C -> C = (#n)%Ext.
+Proof.
+  intros n C h.
+  induction C ; simpl in h ; try discriminate.
+  now inversion h.
+Qed.
+
+Lemma ι_inv_lift :
+  forall A C, A ↑ = ι C ->
+  exists A', C = (A' ↑)%Ext /\ ι A' = A.
+Proof.
+  intros A C h.
+  induction A ; induction C ; simpl in h ; try discriminate.
+  - exists (#v)%Ext. inversion h. split ; simpl ; easy.
+  - inversion h ; subst. exists (!s0)%Ext. split ; easy.
+  - (* Damn, we need to prove it for any n m... ↑ n # m *)
+Abort.
 
 Lemma ι_inv_transport :
   forall s A B p t C, (transport s A B p) · t = ι C ->
@@ -410,6 +466,22 @@ Lemma ι_inv_transport :
        ι A' = A /\ ι B' = B /\ ι p' = p /\ ι t' = t.
 Proof.
   intros s A B p t C h.
+  unfold transport in h.
+  destruct (ι_inv_app _ _ _ h) as (C1 & C2 & h1 & h2' & h3).
+  assert (h2 : λ A (J !s #0 (A ↑) #0 (B ↑) (p ↑)) = ι C1) by easy. clear h2'.
+  destruct (ι_inv_λ _ _ _ h2) as (C11 & C12 & h21 & h22 & h23').
+  assert (h23 : J !s #0 (A ↑) #0 (B ↑) (p ↑) = ι C12) by easy. clear h23'.
+  destruct (ι_inv_J _ _ _ _ _ _ _ h23)
+    as (
+      C121 & C122 & C123 & C124 & C125 & C126 &
+      h231 & h232' & h233' & h234 & h235' & h236 & h237
+    ).
+  assert (h232 : !s = ι C121) by easy ; clear h232'.
+  assert (h233 : #0 = ι C122) by easy ; clear h233'.
+  assert (h235 : #0 = ι C124) by easy ; clear h235'.
+  pose proof (ι_inv_sort _ _ h232) as h121.
+  pose proof (ι_inv_var _ _ h233) as h122.
+  pose proof (ι_inv_var _ _ h235) as h124.
 (*   induction C ; simpl in h ; try discriminate. *)
   (* Probably better to just rely on the other inversion lemmata *)
 Admitted.
