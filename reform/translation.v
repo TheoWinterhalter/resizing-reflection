@@ -449,6 +449,19 @@ Proof.
 Qed.
 
 Lemma ι_inv_lift :
+  forall A C n m, A ↑ n # m = ι C ->
+  exists A', C = (A' ↑ n # m)%Ext /\ ι A' = A.
+Proof.
+  intros A C n m h.
+  induction A ; induction C ; simpl in h ; try discriminate ;
+  try (destruct (le_gt_dec m v) ; discriminate).
+  - exists (#v)%Ext. simpl. destruct (le_gt_dec m v) ;
+    inversion h ; split ; simpl ; easy.
+  - inversion h ; subst. exists (!s0)%Ext. split ; easy.
+  - inversion h.
+Abort.
+
+Lemma ι_inv_lift :
   forall A C, A ↑ = ι C ->
   exists A', C = (A' ↑)%Ext /\ ι A' = A.
 Proof.
