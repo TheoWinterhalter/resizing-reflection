@@ -499,6 +499,13 @@ Proof.
   now apply ι_inv_lift.
 Qed.
 
+Lemma ι_inj : forall a b, ι a = ι b -> a = b.
+Proof.
+  intro a ; induction a ; intro b ; induction b ; intro h ;
+  simpl in h ; try discriminate ; inversion h ; try easy ;
+  f_equal ; auto.
+Qed.
+
 Lemma ι_inv_transport :
   forall s A B p t C, (transport s A B p) · t = ι C ->
   exists (A' B' p' t' : S.Term),
@@ -530,8 +537,8 @@ Proof.
   destruct (ι_inv_lift0 _ _ h237) as (p' & h126 & h126').
   subst.
   exists C11, B', p', C2. repeat split ; simpl ; try easy.
-  (* For some reason we need injectivity on h123'... *)
-Admitted.
+  now destruct (ι_inj _ _ h123').
+Qed.
 
 Lemma trans_Π :
   forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
