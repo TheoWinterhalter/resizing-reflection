@@ -546,12 +546,17 @@ Lemma trans_Π :
 Proof.
   intros Γ a A1 A2 Δ b B h.
   destruct h as (h1 & h2 & h3 & h4 & h5).
+  revert h2 h5. revert b.
 
-  dependent induction h3.
-  - destruct (ι_inv_transport _ _ _ _ _ _ x) as (A' & B' & p' & t' & eq1 & eq2 & eq3 & eq4 & eq5).
+  dependent induction h3 ; intros b h2 h5.
+  - destruct (ι_inv_transport _ _ _ _ _ _ x) as (
+      A' & B' & p' & t' & eq1 & eq2 & eq3 & eq4 & eq5
+    ).
     assert (eq5' : t1 = ι t') by intuition.
-    pose (IHh3 A1 A2 t' h1 h2 eq5' eq_refl h4).
-    admit. (* Something is wrong? *)
+    pose proof (IHh3 A1 A2 t' h1 eq5' eq_refl h4).
+    (* We have to build an equality between B and t1 to transport b along it
+       and use this one as argument to H... *)
+    admit
   - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
     exists B0. exists B2.
     exists b.
