@@ -1,7 +1,0 @@
-Rules:
-  ✔ Add equality to the syntax @done(2016-05-10 11:39) @project(Rules)
-  ☐ Add elimination rule for equality
-  ✔ Add equality type to definitional equality @done(2016-05-10 11:45) @project(Rules)
-  ✔ Add equality to alg. eq. @done(2016-05-10 13:33) @project(Rules)
-  ☐ We still need to have alg. eq. for refl (through J?)
-  ☐ Add equality to the induction measure

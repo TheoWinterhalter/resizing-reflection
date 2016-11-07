@@ -1,5 +1,0 @@
--R . ""
-COQC = hoqc
--arg -type-in-type
-
-./hSetImp.v
