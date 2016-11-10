@@ -552,6 +552,33 @@ Proof.
   intro A. apply ι_lift.
 Qed.
 
+Lemma destruct_eq :
+  forall {Γ s p T1 T2 t1 t2},
+    Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩ ->
+    exists p1, Γ ⊢ p1 : Eq !s T1 T2 /\
+    exists p2, Γ ⊢ p2 : Eq T2 ((transport s T1 T2 p1) · t1) t2.
+Proof.
+  intros Γ s p T1 T2 t1 t2 h.
+  exists (J (Σ !s #0) (Eq !s (T1 ↑) (π1 #0)) ⟨ T1 , t1 ⟩ (refle T1) ⟨ T2 , t2 ⟩ p).
+  split.
+  - (* The following is only true up to β-equality. *)
+    (* assert (eq : (Eq !s (T1 ↑) (π1 #0)) [← ⟨ T2 , t2 ⟩] = Eq !s T1 T2) by admit. *)
+    admit.
+  - admit.
+Admitted.
+
+Lemma typeq :
+  forall Γ t s A B p,
+    Γ ⊢ p : Eq (Σ !t #0) ⟨ !s , A ⟩ ⟨ !s , B ⟩ ->
+    exists q, Γ ⊢ q : Eq !s A B.
+Proof.
+  intros Γ t s A B p h.
+  destruct (destruct_eq h) as (p1 & h1 & p2 & h2).
+  admit.
+Admitted.
+
+(* We'll also need to be able to inverse path for ι... *)
+
 Lemma trans_Π :
   forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
   exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
