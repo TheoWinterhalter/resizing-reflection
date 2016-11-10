@@ -540,6 +540,18 @@ Proof.
   now destruct (ι_inj _ _ h123').
 Qed.
 
+Lemma ι_lift : forall A n m, ι (A ↑ n # m)%Ext = (ι A) ↑ n # m.
+Proof.
+  intro A. induction A ; intros n m ;
+  try (simpl ; f_equal ; easy).
+  simpl. destruct (le_gt_dec m v) ; now simpl.
+Qed.
+  
+Lemma ι_lift0 : forall A, ι (A ↑)%Ext = (ι A) ↑.
+Proof.
+  intro A. apply ι_lift.
+Qed.
+
 Lemma trans_Π :
   forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
   exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
@@ -554,9 +566,18 @@ Proof.
     ).
     assert (eq5' : t1 = ι t') by intuition.
     pose proof (IHh3 A1 A2 t' h1 eq5' eq_refl h4).
-    (* We have to build an equality between B and t1 to transport b along it
-       and use this one as argument to H... *)
-    admit
+    assert (path : exists p, (Δ ⊢ p : S.Eq !s B t')%Ext).
+    + admit.
+      (* We have to build an equality between B and t1 to transport b along it
+         and use this one as argument to H... *)
+    + (* Here we want to use "transport s B t' q" on b. *)
+      destruct path as (q & hq).
+      (* pose proof (H (S.J !s #0 B b t' q)%Ext). *)
+      pose proof (H ((S.λ B (S.J !s #0 (B ↑) #0 (t' ↑) (q ↑))) · b)%Ext).
+      apply H0.
+      * simpl. rewrite !ι_lift0.
+        apply EquivTL. exact h2.
+      * admit.
   - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
     exists B0. exists B2.
     exists b.
