@@ -2,6 +2,7 @@ Require Import List.
 Require Import Peano_dec.
 Require Import Compare_dec.
 Require Import Lt Le Gt.
+Require Omega.
 
 Require Import Coq.Program.Equality.
 
@@ -552,6 +553,15 @@ Proof.
   intro A. apply ι_lift.
 Qed.
 
+Definition next (s : Sorts) : Sorts.
+  destruct s. exact (U (n+1)).
+Defined.
+
+Lemma SortSort : forall s, Ax s (next s).
+Proof.
+  intro s. destruct s. simpl. apply Ax0. Omega.omega.
+Defined.
+
 Lemma destruct_eq :
   forall {Γ s p T1 T2 t1 t2},
     Γ ⊢ p : Eq (Σ !s #0) ⟨ T1 , t1 ⟩ ⟨ T2 , t2 ⟩ ->
@@ -561,7 +571,18 @@ Proof.
   intros Γ s p T1 T2 t1 t2 h.
   exists (J (Σ !s #0) (Eq !s (T1 ↑) (π1 #0)) ⟨ T1 , t1 ⟩ (refle T1) ⟨ T2 , t2 ⟩ p).
   split.
-  - (* The following is only true up to β-equality. *)
+  - eapply (@Cnv _ _ _ _ s).
+    Focus 2.
+      eapply cJ with (s := next s).
+      + eapply cEq with (s := next s).
+        * { eapply cSort.
+            - eapply wf_cons with (s := next s).
+              destruct s. simpl. (* eapply cΣ. *)
+              (* + eapply cSort. *)
+              (*   * eapply wf_typ. exact h. *)
+              (*   * destruct (SortSort s). destruct x. exact H. *)
+
+    (* The following is only true up to β-equality. *)
     (* assert (eq : (Eq !s (T1 ↑) (π1 #0)) [← ⟨ T2 , t2 ⟩] = Eq !s T1 T2) by admit. *)
     admit.
   - admit.
