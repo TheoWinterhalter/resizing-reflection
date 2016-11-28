@@ -547,7 +547,7 @@ Proof.
   try (simpl ; f_equal ; easy).
   simpl. destruct (le_gt_dec m v) ; now simpl.
 Qed.
-  
+
 Lemma ι_lift0 : forall A, ι (A ↑)%Ext = (ι A) ↑.
 Proof.
   intro A. apply ι_lift.
@@ -639,7 +639,24 @@ Proof.
 Admitted.
 
 
+Lemma trans_Id :
+  forall Γ a A u1 u2 Δ b B, trans Γ a (Eq A u1 u2) Δ b B ->
+  exists B v1 v2 c, trans Γ a (Eq A u1 u2) Δ c (S.Eq B v1 v2).
+Proof.
+Admitted.
 
-
-
-
+Theorem validity :
+  (forall Δ, (Δ ⊣)%Ext -> exists Γ, ctx_trans Γ Δ) /\
+  (forall Δ b B,
+      (Δ ⊢ b : B)%Ext ->
+      (exists Γ, ctx_trans Γ Δ) /\
+      (forall Γ, ctx_trans Γ Δ -> exists a A, trans Γ a A Δ b B)) (* /\ *)
+  (* (forall Δ b1 b2, *)
+  (*     (Δ ⊢ b1 ≡ b2)%Ext -> *)
+  (*     (exists Γ, ctx_trans Γ Δ) /\ *)
+  (*     (forall Γ, ctx_trans Γ Δ -> *)
+  (*        exists p q A1 A2 a1 a2 B1 B2 s, *)
+  (*          trans Γ p (Eq (Σ !s #0) ⟨ A1 , a1 ⟩ ⟨ A2 , a2 ⟩) *)
+  (*                Δ q (S.Eq (S.Σ !s #0) ⟨ B1 , b1 ⟩ ⟨ B2 , b2 ⟩)%Ext)) *).
+Proof.
+Admitted.
