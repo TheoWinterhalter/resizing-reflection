@@ -669,6 +669,28 @@ Lemma trans_Σ :
 Proof.
 Admitted.
 
+Fixpoint translate_ctx Δ (h : (Δ ⊣)%Ext) {struct h} :
+       exists Γ, ctx_trans Γ Δ
+
+with translate_ty Δ b B (h : (Δ ⊢ b : B)%Ext) {struct h} :
+       (exists Γ, ctx_trans Γ Δ) /\
+       (forall Γ, ctx_trans Γ Δ -> exists a A, trans Γ a A Δ b B)
+
+with translate_eq Δ b1 b2 (h : (Δ ⊢ b1 ≡ b2)%Ext) {struct h} :
+       (exists Γ, ctx_trans Γ Δ) /\
+       (forall Γ, ctx_trans Γ Δ ->
+             exists p q A1 A2 a1 a2 B1 B2 s,
+               trans Γ p (Eq (Σ !s #0) ⟨ A1 , a1 ⟩ ⟨ A2 , a2 ⟩)
+                     Δ q (S.Eq (S.Σ !s #0) ⟨ B1 , b1 ⟩ ⟨ B2 , b2 ⟩)%Ext).
+Proof.
+  (* translate_ctx *)
+  - admit.
+  (* translate_ty *)
+  - admit.
+  (* translate_eq *)
+  - admit.
+Admitted.
+
 Theorem validity :
   (forall Δ, (Δ ⊣)%Ext -> exists Γ, ctx_trans Γ Δ) /\
   (forall Δ b B,
