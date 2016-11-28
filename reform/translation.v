@@ -684,7 +684,13 @@ with translate_eq Δ b1 b2 (h : (Δ ⊢ b1 ≡ b2)%Ext) {struct h} :
                      Δ q (S.Eq (S.Σ !s #0) ⟨ B1 , b1 ⟩ ⟨ B2 , b2 ⟩)%Ext).
 Proof.
   (* translate_ctx *)
-  - admit.
+  - induction h.
+    + exists nil. repeat split ; try easy.
+      exact trans_nil.
+    + destruct (translate_ty _ _ _ H) as [[Γ' transΓ] H'].
+      destruct (H' Γ' transΓ) as [A' [s' transA]].
+      (* We need to be able to chose the shape also for sorts. *)
+      admit.
   (* translate_ty *)
   - admit.
   (* translate_eq *)
