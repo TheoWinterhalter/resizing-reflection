@@ -17,11 +17,16 @@ Inductive Term : Set :=
 | Eq : forall (A M N : Term), Term
 | refle : Term -> Term
 | J : forall (A P M1 N M2 p : Term), Term
+| Σ : Term -> Term -> Term
+| Pair : Term -> Term -> Term
+| π1 : Term -> Term
+| π2 : Term -> Term
 .
 
 Notation "# v" := (Var v) (at level 1) : Ext_scope.
 Notation "! s" := (Sort s) (at level 1) : Ext_scope.
 Notation "x · y" := (App x y) (at level 15, left associativity) : Ext_scope.
+Notation "⟨ A , B ⟩" := (Pair A B) (at level 4) : Ext_scope.
 Delimit Scope Ext_scope with Ext.
 Open Scope Ext_scope.
 
@@ -39,12 +44,16 @@ Fixpoint lift_rec (n:nat) (k:nat) (T:Term) {struct T}
      | ! s => !s
      | M · N =>  App (M ↑ n # k) (N ↑ n # k)
      | Π  A B => Π  (A ↑ n # k) (B ↑ n # (S k))
-     | λ A M => λ (A ↑ n # k) (M ↑ n # (S k)) 
+     | λ A M => λ (A ↑ n # k) (M ↑ n # (S k))
+     | Σ A B => Σ (A ↑ n # k) (B ↑ n # (S k))
+     | ⟨ M , N ⟩ => ⟨ (M ↑ n # k) , (N ↑ n # k) ⟩
+     | π1 M => π1 (M ↑ n # k)
+     | π2 M => π2 (M ↑ n # k)
      | Eq A t1 t2 => Eq (A ↑ n # k) (t1 ↑ n # k) (t2 ↑ n # k)
      | refle t => refle (t ↑ n # k)
      | J A P t1 u t2 p => J (A ↑ n # k) (P ↑ n # (S k)) (t1 ↑ n # k)
                            (u ↑ n # k) (t2 ↑ n # k) (p ↑ n # k)
-     end  
+     end
 where "t ↑ n # k" := (lift_rec n k t) : Ext_scope.
 
 Notation " t ↑ n " := (lift_rec n 0 t) (at level 5, n at level 0, left associativity) : Ext_scope.
@@ -64,9 +73,13 @@ Fixpoint subst_rec u t n {struct t} :=
           | inright _ => # (x - 1) (* x > n *)
           end
   | ! s => ! s
-  | M · N => (M [ n ← u ]) · ( N [ n ← u ]) 
-  | Π  A B => Π ( A [ n ← u ] ) (B [ S n ← u ]) 
-  | λ  A M => λ (A [ n ← u ]) (M [ S n ← u ]) 
+  | M · N => (M [ n ← u ]) · ( N [ n ← u ])
+  | Π  A B => Π ( A [ n ← u ] ) (B [ S n ← u ])
+  | λ  A M => λ (A [ n ← u ]) (M [ S n ← u ])
+  | Σ  A B => Σ ( A [ n ← u ] ) (B [ S n ← u ])
+  | ⟨ M , N ⟩ => ⟨ (M [ n ← u ]) , (N [ n ← u ]) ⟩
+  | π1 M => π1 (M [ n ← u ])
+  | π2 M => π2 (M [ n ← u ])
   | Eq A t1 t2 => Eq (A [ n ← u ]) (t1 [ n ← u ]) (t2 [ n ← u ])
   | refle t => refle (t [ n ← u ])
   | J A P t1 v t2 p => J (A [ n ← u ]) (P [ S n ← u ]) (t1 [ n ← u ])
@@ -75,7 +88,7 @@ Fixpoint subst_rec u t n {struct t} :=
 where " t [ n ← u ] " := (subst_rec u t n) : Ext_scope.
 
 Notation " t [ ← u ] " := (subst_rec u t 0) (at level 5) : Ext_scope.
-  
+
 (** Since we use de Bruijn indexes, Environment (or Context) are
 simply lists of terms:  Γ(x:A) is encoded as  [A::Γ]. *)
 
@@ -93,7 +106,7 @@ Hint Constructors item.
 Notation " x ↓ n ∈ Γ " := (item x Γ n) (at level 80, no associativity) : Ext_scope.
 
 (** In the list [Γ], [t] is  [n]th element correctly lifted according to [Γ]:
-e.g.: if t ↓ n ⊂ Γ and we insert something in Γ, then 
+e.g.: if t ↓ n ⊂ Γ and we insert something in Γ, then
 we can still speak about t without think of the lift hidden by the insertion. *)
 
 Definition item_lift (t:Term) (Γ:Env) (n:nat) :=

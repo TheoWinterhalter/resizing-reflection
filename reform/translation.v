@@ -20,6 +20,10 @@ Fixpoint ι (t : S.Term) : Term :=
   | S.Π A B => Π (ι A) (ι B)
   | S.λ A t => λ (ι A) (ι t)
   | S.App t u => (ι t) · (ι u)
+  | S.Σ A B => Σ (ι A) (ι B)
+  | S.Pair M N => ⟨ (ι M) , (ι N) ⟩
+  | S.π1 M => π1 (ι M)
+  | S.π2 M => π2 (ι M)
   | S.Eq A u v => Eq (ι A) (ι u) (ι v)
   | S.refle t => refle (ι t)
   | S.J A P M1 N M2 p => J (ι A) (ι P) (ι M1) (ι N) (ι M2) (ι p)
@@ -490,6 +494,20 @@ Proof.
     destruct (IHA5 _ _ _ H4) as (A5' & h51 & h52).
     destruct (IHA6 _ _ _ H5) as (A6' & h61 & h62).
     subst. exists (S.J A1' A2' A3' A4' A5' A6'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    subst. exists (S.Σ A1' A2'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA1 _ _ _ H0) as (A1' & h11 & h12).
+    destruct (IHA2 _ _ _ H1) as (A2' & h21 & h22).
+    subst. exists (S.Pair A1' A2'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA _ _ _ H0) as (A' & h1 & h2).
+    subst. exists (S.π1 A'). split ; simpl ; easy.
+  - inversion h.
+    destruct (IHA _ _ _ H0) as (A' & h1 & h2).
+    subst. exists (S.π2 A'). split ; simpl ; easy.
 Qed.
 
 Lemma ι_inv_lift0 :
@@ -639,9 +657,15 @@ Proof.
 Admitted.
 
 
-Lemma trans_Id :
+Lemma trans_Eq :
   forall Γ a A u1 u2 Δ b B, trans Γ a (Eq A u1 u2) Δ b B ->
   exists B v1 v2 c, trans Γ a (Eq A u1 u2) Δ c (S.Eq B v1 v2).
+Proof.
+Admitted.
+
+Lemma trans_Σ :
+  forall Γ a A1 A2 Δ b B, trans Γ a (Σ A1 A2) Δ b B ->
+  exists B1 B2 c, trans Γ a (Σ A1 A2) Δ c (S.Σ B1 B2).
 Proof.
 Admitted.
 
@@ -650,13 +674,13 @@ Theorem validity :
   (forall Δ b B,
       (Δ ⊢ b : B)%Ext ->
       (exists Γ, ctx_trans Γ Δ) /\
-      (forall Γ, ctx_trans Γ Δ -> exists a A, trans Γ a A Δ b B)) (* /\ *)
-  (* (forall Δ b1 b2, *)
-  (*     (Δ ⊢ b1 ≡ b2)%Ext -> *)
-  (*     (exists Γ, ctx_trans Γ Δ) /\ *)
-  (*     (forall Γ, ctx_trans Γ Δ -> *)
-  (*        exists p q A1 A2 a1 a2 B1 B2 s, *)
-  (*          trans Γ p (Eq (Σ !s #0) ⟨ A1 , a1 ⟩ ⟨ A2 , a2 ⟩) *)
-  (*                Δ q (S.Eq (S.Σ !s #0) ⟨ B1 , b1 ⟩ ⟨ B2 , b2 ⟩)%Ext)) *).
+      (forall Γ, ctx_trans Γ Δ -> exists a A, trans Γ a A Δ b B)) /\
+  (forall Δ b1 b2,
+      (Δ ⊢ b1 ≡ b2)%Ext ->
+      (exists Γ, ctx_trans Γ Δ) /\
+      (forall Γ, ctx_trans Γ Δ ->
+         exists p q A1 A2 a1 a2 B1 B2 s,
+           trans Γ p (Eq (Σ !s #0) ⟨ A1 , a1 ⟩ ⟨ A2 , a2 ⟩)
+                 Δ q (S.Eq (S.Σ !s #0) ⟨ B1 , b1 ⟩ ⟨ B2 , b2 ⟩)%Ext)).
 Proof.
 Admitted.
