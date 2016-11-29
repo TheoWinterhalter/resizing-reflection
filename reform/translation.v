@@ -619,59 +619,59 @@ Admitted.
 (* We'll also need to be able to inverse path for ι... *)
 
 Lemma trans_Π :
-  forall Γ a A1 A2 Δ b B, trans Γ a (Π A1 A2) Δ b B ->
-  exists B1 B2 c, trans Γ a (Π A1 A2) Δ c (S.Π B1 B2).
+  forall Γ a A Δ b B1 B2, trans Γ a A Δ b (S.Π B1 B2) ->
+  exists A1 A2 c, trans Γ c (Π A1 A2) Δ b (S.Π B1 B2).
 Proof.
-  intros Γ a A1 A2 Δ b B h.
-  destruct h as (h1 & h2 & h3 & h4 & h5).
-  revert h2 h5. revert b.
+  (* intros Γ a A1 A2 Δ b B h. *)
+  (* destruct h as (h1 & h2 & h3 & h4 & h5). *)
+  (* revert h2 h5. revert b. *)
 
-  dependent induction h3 ; intros b h2 h5.
-  - destruct (ι_inv_transport _ _ _ _ _ _ x) as (
-      A' & B' & p' & t' & eq1 & eq2 & eq3 & eq4 & eq5
-    ).
-    assert (eq5' : t1 = ι t') by intuition.
-    pose proof (IHh3 A1 A2 t' h1 eq5' eq_refl h4).
-    assert (path : exists p, (Δ ⊢ p : S.Eq !s B t')%Ext).
-    + admit.
-      (* We have to build an equality between B and t1 to transport b along it
-         and use this one as argument to H... *)
-    + (* Here we want to use "transport s B t' q" on b. *)
-      destruct path as (q & hq).
-      (* pose proof (H (S.J !s #0 B b t' q)%Ext). *)
-      pose proof (H ((S.λ B (S.J !s #0 (B ↑) #0 (t' ↑) (q ↑))) · b)%Ext).
-      apply H0.
-      * simpl. rewrite !ι_lift0.
-        apply EquivTL. exact h2.
-      * admit.
-  - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3).
-    exists B0. exists B2.
-    exists b.
-    split ; try exact h1 ; repeat split.
-    + exact h2.
-    + simpl. apply EquivΠ.
-      * now rewrite eq2.
-      * now rewrite eq3.
-    + exact h4.
-    + now rewrite <- eq1.
+  (* dependent induction h3 ; intros b h2 h5. *)
+  (* - destruct (ι_inv_transport _ _ _ _ _ _ x) as ( *)
+  (*     A' & B' & p' & t' & eq1 & eq2 & eq3 & eq4 & eq5 *)
+  (*   ). *)
+  (*   assert (eq5' : t1 = ι t') by intuition. *)
+  (*   pose proof (IHh3 A1 A2 t' h1 eq5' eq_refl h4). *)
+  (*   assert (path : exists p, (Δ ⊢ p : S.Eq !s B t')%Ext). *)
+  (*   + admit. *)
+  (*     (* We have to build an equality between B and t1 to transport b along it *)
+  (*        and use this one as argument to H... *) *)
+  (*   + (* Here we want to use "transport s B t' q" on b. *) *)
+  (*     destruct path as (q & hq). *)
+  (*     (* pose proof (H (S.J !s #0 B b t' q)%Ext). *) *)
+  (*     pose proof (H ((S.λ B (S.J !s #0 (B ↑) #0 (t' ↑) (q ↑))) · b)%Ext). *)
+  (*     apply H0. *)
+  (*     * simpl. rewrite !ι_lift0. *)
+  (*       apply EquivTL. exact h2. *)
+  (*     * admit. *)
+  (* - destruct (ι_inv_Π A0 B1 B x) as (B0 & B2 & eq1 & eq2 & eq3). *)
+  (*   exists B0. exists B2. *)
+  (*   exists b. *)
+  (*   split ; try exact h1 ; repeat split. *)
+  (*   + exact h2. *)
+  (*   + simpl. apply EquivΠ. *)
+  (*     * now rewrite eq2. *)
+  (*     * now rewrite eq3. *)
+  (*   + exact h4. *)
+  (*   + now rewrite <- eq1. *)
 Admitted.
 
 
 Lemma trans_Eq :
-  forall Γ a A u1 u2 Δ b B, trans Γ a (Eq A u1 u2) Δ b B ->
-  exists B v1 v2 c, trans Γ a (Eq A u1 u2) Δ c (S.Eq B v1 v2).
+  forall Γ a A Δ b B v1 v2, trans Γ a A Δ b (S.Eq B v1 v2) ->
+  exists A' u1 u2 c, trans Γ c (Eq A' u1 u2) Δ b (S.Eq B v1 v2).
 Proof.
 Admitted.
 
 Lemma trans_Σ :
-  forall Γ a A1 A2 Δ b B, trans Γ a (Σ A1 A2) Δ b B ->
-  exists B1 B2 c, trans Γ a (Σ A1 A2) Δ c (S.Σ B1 B2).
+  forall Γ a A Δ b B1 B2, trans Γ a A Δ b (S.Σ B1 B2) ->
+  exists A1 A2 c, trans Γ c (Σ A1 A2) Δ b (S.Σ B1 B2).
 Proof.
 Admitted.
 
 Lemma trans_sort :
-  forall Γ a s Δ b B, trans Γ a !s Δ b B ->
-  exists c, trans Γ a !s Δ c (!s)%Ext.
+  forall Γ a A Δ b s, trans Γ a A Δ b (!s)%Ext ->
+  exists c, trans Γ c !s Δ b (!s)%Ext.
 Proof.
 Admitted.
 
