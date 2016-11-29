@@ -669,6 +669,12 @@ Lemma trans_Σ :
 Proof.
 Admitted.
 
+Lemma trans_sort :
+  forall Γ a s Δ b B, trans Γ a !s Δ b B ->
+  exists c, trans Γ a !s Δ c (!s)%Ext.
+Proof.
+Admitted.
+
 Fixpoint translate_ctx Δ (h : (Δ ⊣)%Ext) {struct h} :
        exists Γ, ctx_trans Γ Δ
 
