@@ -138,6 +138,10 @@ typ : Env -> Term -> Term -> Prop :=
 | cλ     : forall Γ A B s s' s'' M   , Rel s s' s'' -> Γ ⊢ A : !s -> A::Γ ⊢ B : !s' ->
                                   A :: Γ ⊢ M : B -> Γ ⊢ λ A M : Π  A B
 | cApp   : forall Γ M N A B          , Γ ⊢ M : Π A B -> Γ ⊢ N : A -> Γ ⊢ M · N : B[← N]
+| cΣ : forall Γ A B i j, Γ ⊢ A : !(U i) -> A::Γ ⊢ B : !(U j) -> Γ ⊢ Σ A B : !(U (max i j))
+| cPair : forall Γ M N A B, Γ ⊢ M : A -> Γ ⊢ N : B [←M] -> Γ ⊢ ⟨M,N⟩ : Σ A B
+| cπ1 : forall Γ M A B, Γ ⊢ M : Σ A B -> Γ ⊢ π1 M : A
+| cπ2 : forall Γ M A B, Γ ⊢ M : Σ A B -> Γ ⊢ π2 M : B[← π1 M]
 | cEq    : forall Γ A t1 t2 s        , Γ ⊢ A : !s -> Γ ⊢ t1 : A -> Γ ⊢ t2 : A ->
                                   Γ ⊢ Eq A t1 t2 : !s
 | crefle : forall Γ t A              , Γ ⊢ t : A -> Γ ⊢ refle t : Eq A t t

@@ -723,7 +723,18 @@ Proof.
     (* App *)
     + apply (translate_ty _ _ _ h1).
     + admit.
-    (* TODO: Σ typing *)
+    (* Σ *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* Pair *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* π1 *)
+    + easy.
+    + admit.
+    (* π2 *)
+    + easy.
+    + admit.
     (* Eq *)
     + apply (translate_ty _ _ _ h1).
     + admit.
