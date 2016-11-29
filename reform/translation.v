@@ -691,8 +691,10 @@ with translate_eq Δ b1 b2 (h : (Δ ⊢ b1 ≡ b2)%Ext) {struct h} :
 Proof.
   (* translate_ctx *)
   - induction h.
+    (* ECon *)
     + exists nil. repeat split ; try easy.
       exact trans_nil.
+    (* I-Con *)
     + destruct (translate_ty _ _ _ H) as [[Γ' transΓ] H'].
       destruct (H' Γ' transΓ) as [A' [s' transA]].
       destruct (trans_sort transA) as [A'' transA'].
@@ -701,7 +703,39 @@ Proof.
       * eapply wf_cons. now inversion transA'.
       * eapply S.wf_cons. now inversion transA'.
   (* translate_ty *)
-  - admit.
+  - induction h ; split ; try (intros Γ' transΓ).
+    (* Var *)
+    + now apply translate_ctx.
+    + admit. (* We need a lemma to translate A ↓ v ⊂ Γ *)
+    (* Type *)
+    + now apply translate_ctx.
+    + exists !s, !s'. repeat split ; try (now inversion transΓ).
+      * simpl. admit. (* TODO the definition of ~ doesn't talk about sorts! *)
+      * simpl. admit. (* Same here. *)
+      * apply cSort ; inversion transΓ ; easy.
+      * apply S.cSort ; assumption.
+    (* Π *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* λ *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* App *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* TODO: Σ typing *)
+    (* Eq *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
+    (* refle *)
+    + easy.
+    + admit.
+    (* J *)
+    + easy.
+    + admit.
+    (* Conv *)
+    + apply (translate_ty _ _ _ h1).
+    + admit.
   (* translate_eq *)
   - admit.
 Admitted.
