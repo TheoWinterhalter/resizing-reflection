@@ -670,7 +670,7 @@ Proof.
 Admitted.
 
 Lemma trans_sort :
-  forall Γ a A Δ b s, trans Γ a A Δ b (!s)%Ext ->
+  forall {Γ a A Δ b s}, trans Γ a A Δ b (!s)%Ext ->
   exists c, trans Γ c !s Δ b (!s)%Ext.
 Proof.
 Admitted.
@@ -695,8 +695,11 @@ Proof.
       exact trans_nil.
     + destruct (translate_ty _ _ _ H) as [[Γ' transΓ] H'].
       destruct (H' Γ' transΓ) as [A' [s' transA]].
-      (* We need to be able to chose the shape also for sorts. *)
-      admit.
+      destruct (trans_sort transA) as [A'' transA'].
+      exists (A'' :: Γ'). repeat split.
+      * apply trans_cons. now inversion transΓ. now inversion transA'.
+      * eapply wf_cons. now inversion transA'.
+      * eapply S.wf_cons. now inversion transA'.
   (* translate_ty *)
   - admit.
   (* translate_eq *)
