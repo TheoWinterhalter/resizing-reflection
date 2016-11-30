@@ -675,6 +675,30 @@ Lemma trans_sort :
 Proof.
 Admitted.
 
+(* Lemma to open up a translated context *)
+Lemma in_ctx_trans :
+  forall {Γ Δ},
+    ctx_trans Δ Γ ->
+    forall {A v},
+      (A ↓ v ⊂ Γ)%Ext ->
+      exists A', (A' ↓ v ⊂ Δ) /\ (ι A ~ A').
+Proof.
+  intros Γ Δ [hΔΓ [hΔ hΓ]].
+  induction hΔΓ ; intros C v h.
+  - inversion h. destruct H. inversion H0.
+  - induction v.
+    + induction h as [C' [eq h]].
+      inversion h.
+      exists (A ↑). split.
+      * exists A. split ; easy.
+      * rewrite eq. rewrite ι_lift0. rewrite H1.
+        now apply equiv_lift0.
+    + induction h as [C' [eq h]].
+      inversion h.
+      admit.
+Admitted.
+
+(* The translation *)
 Fixpoint translate_ctx Δ (h : (Δ ⊣)%Ext) {struct h} :
        exists Γ, ctx_trans Γ Δ
 
@@ -706,7 +730,17 @@ Proof.
   - induction h ; split ; try (intros Γ' transΓ).
     (* Var *)
     + now apply translate_ctx.
-    + admit. (* We need a lemma to translate A ↓ v ⊂ Γ *)
+    + destruct (in_ctx_trans transΓ H0) as [A' [h1 h2]].
+      exists #v, A'. repeat split.
+      * now inversion transΓ.
+      * now inversion transΓ.
+      * assumption.
+      * simpl. apply EquivVar.
+      * assumption.
+      * apply cVar.
+        now inversion transΓ.
+        assumption.
+      * apply S.cVar ; assumption.
     (* Type *)
     + now apply translate_ctx.
     + exists !s, !s'. repeat split ; try (now inversion transΓ).
