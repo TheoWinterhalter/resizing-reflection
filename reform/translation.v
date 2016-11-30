@@ -92,23 +92,24 @@ Reserved Notation "t ≃ u @ E" (at level 80, no associativity).
 
 (* For the purpose of the proof we define an extension of the relation first. *)
 Inductive equiv (E : list (Vars * Vars)) : Term -> Term -> Prop :=
-| EquivGen : forall (x y : Vars), In (x,y) E -> #x ≃ #y @ E
-| EquivVar : forall (x : Vars), #x ≃ #x @ E
-| EquivTL  : forall t1 t2 s A B p,
-               t1 ≃ t2 @ E -> (transport s A B p) · t1 ≃ t2 @ E
-| EquivTR  : forall t1 t2 s A B p,
-               t1 ≃ t2 @ E -> t1 ≃ (transport s A B p) · t2 @ E
-| EquivApp : forall t1 t2 u1 u2, t1 ≃ t2 @ E -> u1 ≃ u2 @ E -> t1 · u1 ≃ t2 · u2 @ E
-| Equivλ   : forall A1 A2 t1 t2, A1 ≃ A2 @ E -> t1 ≃ t2 @ E -> λ A1 t1 ≃ λ A2 t2 @ E
-| EquivΠ   : forall A1 A2 B1 B2, A1 ≃ A2 @ E -> B1 ≃ B2 @ E -> Π A1 B1 ≃ Π A2 B2 @ E
-| EquivEq  : forall A1 A2 u1 u2 v1 v2,
-               A1 ≃ A2 @ E -> u1 ≃ u2 @ E -> v1 ≃ v2 @ E ->
-               Eq A1 u1 v1 ≃ Eq A2 u2 v2 @ E
-| EquivRfl : forall t1 t2, t1 ≃ t2 @ E -> refle t1 ≃ refle t2 @ E
-| EquivJ   : forall A1 A2 P1 P2 u1 u2 t1 t2 v1 v2 p1 p2,
-               A1 ≃ A2 @ E -> P1 ≃ P2 @ E -> u1 ≃ u2 @ E -> t1 ≃ t2 @ E ->
-               v1 ≃ v2 @ E -> p1 ≃ p2 @ E ->
-               J A1 P1 u1 t1 v1 p1 ≃ J A2 P2 u2 t2 v2 p2 @ E
+| EquivGen  : forall (x y : Vars), In (x,y) E -> #x ≃ #y @ E
+| EquivVar  : forall (x : Vars), #x ≃ #x @ E
+| EquivSort : forall (s : Sorts), !s ≃ !s @ E
+| EquivTL   : forall t1 t2 s A B p,
+                t1 ≃ t2 @ E -> (transport s A B p) · t1 ≃ t2 @ E
+| EquivTR   : forall t1 t2 s A B p,
+                t1 ≃ t2 @ E -> t1 ≃ (transport s A B p) · t2 @ E
+| EquivApp  : forall t1 t2 u1 u2, t1 ≃ t2 @ E -> u1 ≃ u2 @ E -> t1 · u1 ≃ t2 · u2 @ E
+| Equivλ    : forall A1 A2 t1 t2, A1 ≃ A2 @ E -> t1 ≃ t2 @ E -> λ A1 t1 ≃ λ A2 t2 @ E
+| EquivΠ    : forall A1 A2 B1 B2, A1 ≃ A2 @ E -> B1 ≃ B2 @ E -> Π A1 B1 ≃ Π A2 B2 @ E
+| EquivEq   : forall A1 A2 u1 u2 v1 v2,
+                A1 ≃ A2 @ E -> u1 ≃ u2 @ E -> v1 ≃ v2 @ E ->
+                Eq A1 u1 v1 ≃ Eq A2 u2 v2 @ E
+| EquivRfl  : forall t1 t2, t1 ≃ t2 @ E -> refle t1 ≃ refle t2 @ E
+| EquivJ    : forall A1 A2 P1 P2 u1 u2 t1 t2 v1 v2 p1 p2,
+                A1 ≃ A2 @ E -> P1 ≃ P2 @ E -> u1 ≃ u2 @ E -> t1 ≃ t2 @ E ->
+                v1 ≃ v2 @ E -> p1 ≃ p2 @ E ->
+                J A1 P1 u1 t1 v1 p1 ≃ J A2 P2 u2 t2 v2 p2 @ E
 where "t ≃ u @ E" := (equiv E t u).
 
 Notation "t ~ u" := (t ≃ u @ nil).
@@ -282,6 +283,7 @@ Proof.
   intros u v h. induction h ; intros n k.
   - inversion H.
   - simpl. destruct (le_gt_dec k x) ; simpl ; apply EquivVar.
+  - simpl. apply EquivSort.
   - rewrite app_lift. rewrite transport_lift. now apply EquivTL.
   - rewrite app_lift. rewrite transport_lift. now apply EquivTR.
   - simpl. apply EquivApp.
@@ -347,6 +349,7 @@ Proof.
       * apply EquivVar.
       * now apply equiv_lift0.
     + apply EquivVar.
+  - simpl. apply EquivSort.
   - rewrite app_subst. rewrite transport_subst. apply EquivTL. now apply IHht.
   - rewrite app_subst. rewrite transport_subst. apply EquivTR. now apply IHht.
   - simpl. apply EquivApp.
@@ -724,8 +727,11 @@ Proof.
       destruct (trans_sort transA) as [A'' transA'].
       exists (A'' :: Γ'). repeat split.
       * apply trans_cons. now inversion transΓ. now inversion transA'.
-      * eapply wf_cons. now inversion transA'.
-      * eapply S.wf_cons. now inversion transA'.
+      * eapply wf_cons. inversion transA'. destruct H1 as (H1 & H2 & H3 & H4).
+        eassumption.
+      * eapply S.wf_cons. (* now inversion transA'. *)
+        inversion transA'. destruct H1 as (H1 & H2 & H3 & H4).
+        eassumption.
   (* translate_ty *)
   - induction h ; split ; try (intros Γ' transΓ).
     (* Var *)
@@ -744,8 +750,8 @@ Proof.
     (* Type *)
     + now apply translate_ctx.
     + exists !s, !s'. repeat split ; try (now inversion transΓ).
-      * simpl. admit. (* TODO the definition of ~ doesn't talk about sorts! *)
-      * simpl. admit. (* Same here. *)
+      * simpl. apply EquivSort.
+      * simpl. apply EquivSort.
       * apply cSort ; inversion transΓ ; easy.
       * apply S.cSort ; assumption.
     (* Π *)
