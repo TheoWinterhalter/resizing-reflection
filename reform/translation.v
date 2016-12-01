@@ -756,7 +756,38 @@ Proof.
       * apply S.cSort ; assumption.
     (* Π *)
     + apply (translate_ty _ _ _ h1).
-    + admit.
+    + destruct (translate_ty _ _ _ h1) as [_ h].
+      destruct (h Γ' transΓ) as [A' [t h']].
+      destruct (trans_sort h') as [A'' h''].
+      destruct (translate_ty _ _ _ h2) as [_ hB].
+      assert (transΓA : ctx_trans (A'' :: Γ') (A :: Γ)).
+      { repeat split.
+        - apply trans_cons.
+          + now inversion transΓ.
+          + now inversion h''.
+        - eapply wf_cons.
+          inversion h'' as [_ [_ [_ [hyp _]]]].
+          eassumption.
+        - eapply S.wf_cons.
+          inversion h'' as [_ [_ [_ [_ hyp]]]].
+          eassumption.
+      }
+      destruct (hB (A'' :: Γ') transΓA) as [B' [t' hB']].
+      destruct (trans_sort hB') as [B'' hB''].
+      { exists (Π A'' B''), !s''. repeat split.
+        - now inversion transΓ.
+        - now inversion transΓ.
+        - now inversion transΓ.
+        - simpl. apply EquivΠ.
+          + now inversion h''.
+          + now inversion hB''.
+        - simpl. apply EquivSort.
+        - eapply cΠ.
+          + eassumption.
+          + now inversion h''.
+          + now inversion hB''.
+        - eapply S.cΠ ; eassumption.
+      }
     (* λ *)
     + apply (translate_ty _ _ _ h1).
     + admit.
