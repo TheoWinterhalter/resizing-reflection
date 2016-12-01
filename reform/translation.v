@@ -756,10 +756,11 @@ Proof.
       * apply S.cSort ; assumption.
     (* Π *)
     + apply (translate_ty _ _ _ h1).
-    + destruct (translate_ty _ _ _ h1) as [_ h].
+    + (* Translating A *)
+      destruct (translate_ty _ _ _ h1) as [_ h].
       destruct (h Γ' transΓ) as [A' [t h']].
       destruct (trans_sort h') as [A'' h''].
-      destruct (translate_ty _ _ _ h2) as [_ hB].
+      (* Extending Γ' with A'' *)
       assert (transΓA : ctx_trans (A'' :: Γ') (A :: Γ)).
       { repeat split.
         - apply trans_cons.
@@ -772,8 +773,11 @@ Proof.
           inversion h'' as [_ [_ [_ [_ hyp]]]].
           eassumption.
       }
+      (* Translating B *)
+      destruct (translate_ty _ _ _ h2) as [_ hB].
       destruct (hB (A'' :: Γ') transΓA) as [B' [t' hB']].
       destruct (trans_sort hB') as [B'' hB''].
+      (* We can now conclude. *)
       { exists (Π A'' B''), !s''. repeat split.
         - now inversion transΓ.
         - now inversion transΓ.
@@ -790,7 +794,33 @@ Proof.
       }
     (* λ *)
     + apply (translate_ty _ _ _ h1).
-    + admit.
+    + (* Translate A *)
+      destruct (translate_ty _ _ _ h1) as [_ hA].
+      destruct (hA Γ' transΓ) as [A' [t hA']].
+      destruct (trans_sort hA') as [A'' hA''].
+      assert (transΓA : ctx_trans (A'' :: Γ') (A :: Γ)).
+      (* Extend Γ' by A'' *)
+      { repeat split.
+        - apply trans_cons.
+          + now inversion transΓ.
+          + now inversion hA''.
+        - eapply wf_cons.
+          inversion hA'' as [_ [_ [_ [hyp _]]]].
+          eassumption.
+        - eapply S.wf_cons.
+          inversion hA'' as [_ [_ [_ [_ hyp]]]].
+          eassumption.
+      }
+      (* Translate B *)
+      destruct (translate_ty _ _ _ h2) as [_ hB].
+      destruct (hB (A'' :: Γ') transΓA) as [B' [t' hB']].
+      destruct (trans_sort hB') as [B'' hB''].
+      (* Translate M *)
+      destruct (translate_ty _ _ _ h3) as [_ hM].
+      destruct (hM (A'' :: Γ') transΓA) as [M' [B''' hM']].
+      (* We need to be able to convert to B'' on the basis that they are
+         equivalent. *)
+      admit.
     (* App *)
     + apply (translate_ty _ _ _ h1).
     + admit.
