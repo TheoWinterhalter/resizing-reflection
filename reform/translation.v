@@ -114,6 +114,24 @@ where "t ≃ u @ E" := (equiv E t u).
 
 Notation "t ~ u" := (t ≃ u @ nil).
 
+(* Transitivity of equivalence *)
+Lemma equiv_trans :
+  forall A B, A ~ B ->
+         forall C, B ~ C -> A ~ C.
+Proof.
+  intros A B AB.
+  induction AB ; intros C BC.
+  - inversion H.
+  - assumption.
+  - assumption.
+  - apply EquivTL. now apply IHAB.
+  - dependent induction BC.
+    + now apply IHAB.
+    + apply EquivTR. now apply IHBC.
+    + admit.
+Admitted.
+
+
 (* Inversion of typing for variables *)
 Lemma var_inversion :
   forall Γ x A, Γ ⊢ #x : A -> exists B, B ↓ x ⊂ Γ /\ Γ ⊢ A ≡ B.
